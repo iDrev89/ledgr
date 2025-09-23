@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +23,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Dummy login - simulate API call
     setTimeout(() => {
       console.log("Login attempt:", { email, password });
@@ -36,68 +42,86 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
-      
-      {/* Animated background elements */}
+      {/* Background with dark gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-slate-900 to-black" />
+
+      {/* Dark animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-purple-600/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/30 to-cyan-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-600/20 to-purple-800/30 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-600/20 to-cyan-700/30 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-indigo-600/15 to-pink-700/25 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "4s" }}
+        />
+        <div
+          className="absolute top-20 left-20 w-60 h-60 bg-gradient-to-br from-emerald-600/10 to-teal-700/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "6s" }}
+        />
       </div>
 
       {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]">
-        <div className="w-full h-full" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
+      <div className="absolute inset-0 opacity-[0.1]">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)",
+            backgroundSize: "32px 32px",
+          }}
+        />
       </div>
 
-      <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/80 dark:bg-gray-950/80 border-white/20 shadow-2xl shadow-blue-500/10">
+      <Card className="w-full max-w-md relative backdrop-blur-xl bg-gray-900/90 border-gray-700/50 shadow-2xl shadow-black/50 ring-1 ring-white/10">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 shadow-2xl shadow-purple-500/25 ring-1 ring-white/20">
               <Database className="h-8 w-8 text-white" />
               <span className="text-2xl font-bold text-white">Ledgr</span>
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
             Welcome back
           </CardTitle>
-          <CardDescription className="text-center text-base mt-2">
+          <CardDescription className="text-center text-base mt-2 text-gray-300">
             Sign in to your business account
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-200 font-medium">
+                Email
+              </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-4 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-4 h-4 w-4 text-gray-400" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9 h-12 border-2 focus:border-blue-500 transition-colors"
+                  className="pl-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-violet-500 text-white placeholder:text-gray-400 transition-all duration-200"
                   required
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-gray-200 font-medium">
+                Password
+              </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-4 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute left-3 top-4 h-4 w-4 text-gray-400" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-9 pr-9 h-12 border-2 focus:border-blue-500 transition-colors"
+                  className="pl-9 pr-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-violet-500 text-white placeholder:text-gray-400 transition-all duration-200"
                   required
                 />
                 <Button
@@ -116,9 +140,9 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]" 
+            <Button
+              type="submit"
+              className="w-full h-12 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 hover:from-violet-500 hover:via-purple-500 hover:to-indigo-600 text-white font-semibold shadow-lg hover:shadow-lg transition-all duration-300 ease-out hover:brightness-110"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
@@ -130,15 +154,15 @@ export default function LoginPage() {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white/80 dark:bg-gray-950/80 px-3 py-1 rounded-full text-muted-foreground backdrop-blur-sm">
+              <span className="bg-gray-900/90 px-3 py-1 rounded-full text-gray-400 backdrop-blur-sm border border-gray-700">
                 Or continue with
               </span>
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
-            className="w-full h-12 border-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]" 
+          <Button
+            variant="outline"
+            className="w-full h-12 border-2 border-gray-600 bg-gray-800/30 hover:bg-gray-700/60 text-gray-200 transition-all duration-300 ease-out hover:border-gray-500"
             onClick={handleGoogleLogin}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -163,14 +187,20 @@ export default function LoginPage() {
           </Button>
 
           <div className="text-center">
-            <Button variant="link" className="text-sm text-muted-foreground">
+            <Button
+              variant="link"
+              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            >
               Forgot your password?
             </Button>
           </div>
 
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-gray-400">
             Don't have an account?{" "}
-            <Button variant="link" className="p-0 h-auto text-sm">
+            <Button
+              variant="link"
+              className="p-0 h-auto text-sm text-violet-400 hover:text-violet-300 transition-colors"
+            >
               Contact your administrator
             </Button>
           </div>

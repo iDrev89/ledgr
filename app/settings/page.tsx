@@ -12,20 +12,20 @@ export default function SettingsPage() {
         pageDes="Configure your business preferences and application settings."
       />
 
-      <Card>
-        <CardHeader>
+          <Card>
+            <CardHeader>
           <CardTitle>Business Configuration</CardTitle>
-        </CardHeader>
+            </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded-lg">
             <div className="text-center">
               <Settings className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold">Settings Panel</h3>
               <p className="text-muted-foreground">Business configuration options will be implemented here</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+                  </div>
   );
 }
