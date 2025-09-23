@@ -185,7 +185,6 @@ export default function LoginPage() {
             </svg>
             Continue with Google
           </Button>
-
         </CardContent>
       </Card>
     </div>
