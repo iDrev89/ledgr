@@ -82,17 +82,17 @@ export default function LoginPage() {
               <span className="text-2xl font-bold text-white">Ledgr</span>
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold text-white">
             Welcome back
           </CardTitle>
-          <CardDescription className="text-center text-base mt-2 text-gray-300">
+          <CardDescription className="text-center text-base mt-2 text-gray-100">
             Sign in to your business account
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pb-8">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-200 font-medium">
+              <Label htmlFor="email" className="text-gray-100 font-medium">
                 Email
               </Label>
               <div className="relative">
@@ -110,7 +110,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-200 font-medium">
+              <Label htmlFor="password" className="text-gray-100 font-medium">
                 Password
               </Label>
               <div className="relative">
@@ -154,7 +154,7 @@ export default function LoginPage() {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-gray-900/90 px-3 py-1 rounded-full text-gray-400 backdrop-blur-sm border border-gray-700">
+              <span className="bg-gray-900/90 px-3 py-1 rounded-full text-gray-200 backdrop-blur-sm border border-gray-700">
                 Or continue with
               </span>
             </div>
@@ -162,7 +162,7 @@ export default function LoginPage() {
 
           <Button
             variant="outline"
-            className="w-full h-12 border-2 border-gray-600 bg-gray-800/20 hover:bg-gray-700/30 text-gray-200 hover:text-white transition-all duration-200 hover:border-gray-400"
+            className="w-full h-12 border-2 border-gray-600 bg-gray-800/20 hover:bg-gray-700/30 text-gray-100 hover:text-white transition-all duration-200 hover:border-gray-400"
             onClick={handleGoogleLogin}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
