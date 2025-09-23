@@ -142,7 +142,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 hover:from-violet-500 hover:via-purple-500 hover:to-indigo-600 text-white font-semibold shadow-lg hover:shadow-lg transition-all duration-300 ease-out hover:brightness-110"
+              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-colors duration-200"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
