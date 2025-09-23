@@ -77,8 +77,8 @@ export default function LoginPage() {
       <Card className="w-full max-w-md relative backdrop-blur-xl bg-gray-900/90 border-gray-700/50 shadow-2xl shadow-black/50 ring-1 ring-white/10">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 shadow-2xl shadow-purple-500/25 ring-1 ring-white/20">
-              <Database className="h-8 w-8 text-white" />
+            <div className="flex items-center gap-2">
+              <Database className="h-7 w-7 text-violet-400" />
               <span className="text-2xl font-bold text-white">Ledgr</span>
             </div>
           </div>
