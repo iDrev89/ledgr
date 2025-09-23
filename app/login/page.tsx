@@ -89,7 +89,7 @@ export default function LoginPage() {
             Sign in to your business account
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pb-8">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-200 font-medium">
@@ -103,7 +103,7 @@ export default function LoginPage() {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-violet-500 text-white placeholder:text-gray-400 transition-all duration-200"
+                  className="pl-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-gray-400 focus:ring-0 text-white placeholder:text-gray-400 transition-all duration-200"
                   required
                 />
               </div>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-9 pr-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-violet-500 text-white placeholder:text-gray-400 transition-all duration-200"
+                  className="pl-9 pr-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-gray-400 focus:ring-0 text-white placeholder:text-gray-400 transition-all duration-200"
                   required
                 />
                 <Button
@@ -162,7 +162,7 @@ export default function LoginPage() {
 
           <Button
             variant="outline"
-            className="w-full h-12 border-2 border-gray-600 bg-gray-800/30 hover:bg-gray-700/60 text-gray-200 transition-all duration-300 ease-out hover:border-gray-500"
+            className="w-full h-12 border-2 border-gray-600 bg-gray-800/20 hover:bg-gray-700/30 text-gray-200 hover:text-white transition-all duration-200 hover:border-gray-400"
             onClick={handleGoogleLogin}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -186,24 +186,6 @@ export default function LoginPage() {
             Continue with Google
           </Button>
 
-          <div className="text-center">
-            <Button
-              variant="link"
-              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-            >
-              Forgot your password?
-            </Button>
-          </div>
-
-          <div className="text-center text-sm text-gray-400">
-            Don't have an account?{" "}
-            <Button
-              variant="link"
-              className="p-0 h-auto text-sm text-violet-400 hover:text-violet-300 transition-colors"
-            >
-              Contact your administrator
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>
