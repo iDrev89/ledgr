@@ -1,0 +1,63 @@
+---
+alwaysApply: true
+---
+## 🔐 Autenticación y Roles
+- Implementar **login híbrido**:
+  - Usuario/contraseña tradicional.
+  - “Continuar con Google” (SSO) para reducir fricción.
+- MFA/TOTP opcional.
+- Roles principales:
+  - **Admin**: configuración, reportes, control total.
+  - **Colaborador**: registro de ventas/servicios.
+  - **Cajero** (opcional): caja, pagos y conciliación.
+
+---
+
+## 🛠️ Fases del Proyecto
+
+### 🚦 Fase 1 – Registro Diario
+- Módulo de ventas (productos y servicios).
+- Registro de gastos diarios.
+- Dashboard de ingresos, egresos y actividad por colaborador.
+
+### 📊 Fase 2 – Consolidación & Nómina
+- Cálculo automático de comisiones y salarios.
+- Totales por periodo (semana/mes).
+- Estado de resultados básico (ingresos, costos, utilidad neta).
+
+### 📦 Fase 3 – Inventario & Cuentas por Cobrar
+- Control de stock: entradas, salidas, alertas.
+- Registro y gestión de deudores (saldo, abonos, historial).
+
+### 💸 Fase 4 – Finanzas Avanzadas
+- Transferencias internas (caja ↔ banco).
+- Estado de resultados detallado y flujo de caja.
+- Exportación de reportes en PDF/Excel.
+
+### 🚀 Fase 5 – Escalamiento (Opcional)
+- App móvil para registro en tiempo real.
+- POS con facturación e impresión.
+- Notificaciones inteligentes (stock bajo, pagos pendientes, etc.).
+- Integración con pasarelas de pago (Stripe, Nequi, MercadoPago).
+
+---
+
+## 🧱 Guías Técnicas
+- **Frontend:** Next.js + React.
+- **Backend:** Node.js con Prisma o Supabase.
+- **Base de datos:** PostgreSQL.
+- **Auth:** Cognito o Supabase Auth.
+- **Infraestructura:** Vercel (frontend), AWS o Supabase (backend).
+
+---
+
+## 📐 Principios de Diseño
+- **Modularidad:** cada módulo debe ser independiente pero integrable.
+- **Escalabilidad:** preparado para multiempresa y múltiples usuarios.
+- **Usabilidad:** formularios simples, dashboards claros y reportes automatizados.
+- **Extensibilidad:** integración con servicios externos (pagos, contabilidad, etc.).
+
+---
+
+## ✅ Regla Global
+Cualquier decisión técnica, funcional o de arquitectura debe **alinearse con el objetivo global**: transformar el flujo manual actual en Excel en un **sistema SaaS de gestión empresarial completo, genérico y escalable**, enfocado en automatización, claridad y crecimiento.
