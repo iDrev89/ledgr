@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -12,32 +13,60 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Database, Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Database, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
+import { signIn } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // Dummy login - simulate API call
-    setTimeout(() => {
-      console.log("Login attempt:", { email, password });
+    try {
+      const result = await signIn.email({
+        email,
+        password,
+        callbackURL: "/dashboard",
+      });
+
+      if (result.error) {
+        setError(result.error.message || "Failed to sign in");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
       setIsLoading(false);
-      // TODO: Implement actual authentication
-      alert("Login functionality will be implemented later");
-    }, 1000);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    // Dummy Google login
-    console.log("Google login clicked");
-    // TODO: Implement Google OAuth
-    alert("Google login functionality will be implemented later");
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+
+      if (result.error) {
+        setError(result.error.message || "Failed to sign in with Google");
+      }
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -164,6 +193,7 @@ export default function LoginPage() {
             variant="outline"
             className="w-full h-12 border-2 border-gray-600 bg-gray-800/20 hover:bg-gray-700/30 text-gray-100 hover:text-white transition-all duration-200 hover:border-gray-400"
             onClick={handleGoogleLogin}
+            disabled={isLoading}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -185,6 +215,13 @@ export default function LoginPage() {
             </svg>
             Continue with Google
           </Button>
+
+          {error && (
+            <Alert variant="destructive" className="bg-red-900/50 border-red-700 text-red-100">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
     </div>
