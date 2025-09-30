@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   Globe,
@@ -24,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
 import user from "@/public/user11.png";
+import { signOut, useSession } from "@/lib/auth-client";
 
 interface TopBarProps {
   toggleSidebar: () => void;
@@ -32,6 +34,27 @@ interface TopBarProps {
 
 export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
   const [notificationCount, setNotificationCount] = useState(3);
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const getUserInitials = (name?: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
@@ -114,13 +137,26 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
               className="h-8 w-8 rounded-full"
             >
               <Avatar className="h-8 w-8">
-                <Image src={user} alt="User" />
-                <AvatarFallback>JD</AvatarFallback>
+                {!isPending && session?.user?.image ? (
+                  <AvatarImage src={session.user.image} alt={session.user.name || "User"} />
+                ) : !isPending && !session?.user?.image ? (
+                  <Image src={user} alt="User" />
+                ) : null}
+                <AvatarFallback>
+                  {isPending ? "" : getUserInitials(session?.user?.name)}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {isPending ? "Loading..." : (session?.user?.name || session?.user?.email || "My Account")}
+            </DropdownMenuLabel>
+            {!isPending && session?.user?.email && (
+              <div className="px-2 py-1 text-sm text-muted-foreground">
+                {session.user.email}
+              </div>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
               <User className="h-4 w-4" />
@@ -131,7 +167,7 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
