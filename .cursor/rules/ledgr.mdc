@@ -61,3 +61,4 @@ alwaysApply: true
 
 ## ✅ Regla Global
 Cualquier decisión técnica, funcional o de arquitectura debe **alinearse con el objetivo global**: transformar el flujo manual actual en Excel en un **sistema SaaS de gestión empresarial completo, genérico y escalable**, enfocado en automatización, claridad y crecimiento.
+Siempre que se implemete una nueva funcionalidad tener en cuenta el i18n con next-intl, actualizar los jsons de traduccion y demas.
