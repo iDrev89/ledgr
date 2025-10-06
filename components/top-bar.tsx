@@ -26,6 +26,7 @@ import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
 import user from "@/public/user11.png";
 import { signOut, useSession } from "@/lib/auth-client";
+import { LanguageSelector } from "./language-selector";
 
 interface TopBarProps {
   toggleSidebar: () => void;
@@ -114,20 +115,7 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-2 bg-primary/10 hover:bg-primary/5 rounded-full cursor-pointer">
-              <Globe className="h-4 w-4 text-primary" />
-              <span className="sr-only">Language</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>English</DropdownMenuItem>
-            <DropdownMenuItem>Spanish</DropdownMenuItem>
-            <DropdownMenuItem>French</DropdownMenuItem>
-            <DropdownMenuItem>German</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <LanguageSelector />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

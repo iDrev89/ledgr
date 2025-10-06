@@ -32,6 +32,7 @@ import { AlertCircle, Edit, Loader2 } from "lucide-react";
 import { User, useUpdateUser, UserRole } from "@/hooks/use-users";
 import { toast } from "sonner";
 import { updateUserSchema, type UpdateUserInput } from "@/lib/validations/user";
+import { useTranslations } from "next-intl";
 
 interface EditUserProps {
   user: User;
@@ -40,6 +41,7 @@ interface EditUserProps {
 }
 
 export function EditUser({ user, open, onOpenChange }: EditUserProps) {
+  const t = useTranslations("Users");
   const updateUserMutation = useUpdateUser();
 
   const form = useForm<UpdateUserInput>({
@@ -68,10 +70,10 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
         id: user.id,
         ...data,
       });
-      toast.success("User updated successfully");
+      toast.success(t("userUpdatedSuccess"));
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || "Failed to update user");
+      toast.error(error.message || t("updateUserError"));
     }
   };
 
@@ -81,11 +83,9 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Edit className="h-5 w-5" />
-            Edit User
+            {t("editUser")}
           </DialogTitle>
-          <DialogDescription>
-            Update user information and permissions
-          </DialogDescription>
+          <DialogDescription>{t("updateUserInfo")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -96,10 +96,10 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("name")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter user's name"
+                        placeholder={t("name")}
                         {...field}
                         disabled={updateUserMutation.isPending}
                       />
@@ -114,11 +114,11 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter user's email"
+                        placeholder={t("email")}
                         {...field}
                         disabled={updateUserMutation.isPending}
                       />
@@ -134,7 +134,7 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>{t("role")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -142,12 +142,12 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
+                        <SelectValue placeholder={t("role")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={UserRole.USER}>User</SelectItem>
-                      <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
+                      <SelectItem value={UserRole.USER}>{t("roleUser")}</SelectItem>
+                      <SelectItem value={UserRole.ADMIN}>{t("roleAdmin")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -159,7 +159,7 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  {updateUserMutation.error.message || "Failed to update user"}
+                  {updateUserMutation.error.message || t("updateUserError")}
                 </AlertDescription>
               </Alert>
             )}
@@ -171,16 +171,16 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                 onClick={() => onOpenChange(false)}
                 disabled={updateUserMutation.isPending}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={updateUserMutation.isPending}>
                 {updateUserMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    {t("saving")}
                   </>
                 ) : (
-                  "Save Changes"
+                  t("saveChanges")
                 )}
               </Button>
             </div>

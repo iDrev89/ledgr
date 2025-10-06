@@ -21,8 +21,11 @@ import { Input } from "@/components/ui/input";
 import { UsersList } from "@/components/users/users-list";
 import { CreateUser } from "@/components/users/create-user";
 import { useUsers } from "@/hooks/use-users";
+import { useTranslations } from "next-intl";
 
 export default function UsersPage() {
+  const t = useTranslations("Users");
+  const tCommon = useTranslations("Common");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -35,14 +38,12 @@ export default function UsersPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Users</h1>
-          <p className="text-muted-foreground">
-            Manage users, roles, and permissions
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("description")}</p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Create User
+          {t("createUser")}
         </Button>
       </div>
 
@@ -50,23 +51,21 @@ export default function UsersPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search users..."
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-8"
           />
         </div>
         <div className="text-sm text-muted-foreground">
-          {usersData ? `${usersData.total} users` : "Loading..."}
+          {usersData ? t("totalUsers", { count: usersData.total }) : tCommon("loading")}
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Users</CardTitle>
-          <CardDescription>
-            Manage user accounts, roles, and permissions
-          </CardDescription>
+          <CardTitle>{t("allUsers")}</CardTitle>
+          <CardDescription>{t("allUsersDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <UsersList 
@@ -81,11 +80,9 @@ export default function UsersPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
-              Create New User
+              {t("createNewUser")}
             </DialogTitle>
-            <DialogDescription>
-              Add a new user to the system with email and password
-            </DialogDescription>
+            <DialogDescription>{t("addNewUser")}</DialogDescription>
           </DialogHeader>
           <CreateUser onSuccess={() => setShowCreateModal(false)} />
         </DialogContent>

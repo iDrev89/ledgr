@@ -26,12 +26,14 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { useCreateUser, UserRole } from "@/hooks/use-users";
 import { toast } from "sonner";
 import { createUserSchema, type CreateUserInput } from "@/lib/validations/user";
+import { useTranslations } from "next-intl";
 
 interface CreateUserProps {
   onSuccess: () => void;
 }
 
 export function CreateUser({ onSuccess }: CreateUserProps) {
+  const t = useTranslations("Users");
   const createUserMutation = useCreateUser();
 
   const form = useForm<CreateUserInput>({
@@ -47,11 +49,11 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
   const onSubmit = async (data: CreateUserInput) => {
     try {
       await createUserMutation.mutateAsync(data);
-      toast.success("User created successfully");
+      toast.success(t("userCreatedSuccess"));
       form.reset();
       onSuccess();
     } catch (error: any) {
-      toast.error(error.message || "Failed to create user");
+      toast.error(error.message || t("createUserError"));
     }
   };
 
@@ -64,10 +66,10 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter user's name"
+                    placeholder={t("name")}
                     {...field}
                     disabled={createUserMutation.isPending}
                   />
@@ -82,11 +84,11 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter user's email"
+                    placeholder={t("email")}
                     {...field}
                     disabled={createUserMutation.isPending}
                   />
@@ -103,18 +105,16 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter password"
+                    placeholder={t("password")}
                     {...field}
                     disabled={createUserMutation.isPending}
                   />
                 </FormControl>
-                <FormDescription>
-                  Must contain uppercase, lowercase, and number
-                </FormDescription>
+                <FormDescription>{t("passwordHelper")}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -125,7 +125,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Role</FormLabel>
+                <FormLabel>{t("role")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -133,12 +133,12 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
+                      <SelectValue placeholder={t("role")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={UserRole.USER}>User</SelectItem>
-                    <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
+                    <SelectItem value={UserRole.USER}>{t("roleUser")}</SelectItem>
+                    <SelectItem value={UserRole.ADMIN}>{t("roleAdmin")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -151,7 +151,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {createUserMutation.error.message || "Failed to create user"}
+              {createUserMutation.error.message || t("createUserError")}
             </AlertDescription>
           </Alert>
         )}
@@ -161,10 +161,10 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             {createUserMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating...
+                {t("creating")}
               </>
             ) : (
-              "Create User"
+              t("create")
             )}
           </Button>
         </div>

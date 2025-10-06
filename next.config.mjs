@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
+
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -10,4 +14,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

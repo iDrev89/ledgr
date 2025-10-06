@@ -35,6 +35,7 @@ import { MoreHorizontal, UserX, UserCheck, Edit, Trash2 } from "lucide-react";
 import { User, useDeleteUser, useToggleUserBan } from "@/hooks/use-users";
 import { toast } from "sonner";
 import { EditUser } from "./edit-user";
+import { useTranslations } from "next-intl";
 
 interface UsersListProps {
   users: User[];
@@ -42,6 +43,7 @@ interface UsersListProps {
 }
 
 export function UsersList({ users, isLoading }: UsersListProps) {
+  const t = useTranslations("Users");
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
   
@@ -53,10 +55,10 @@ export function UsersList({ users, isLoading }: UsersListProps) {
 
     try {
       await deleteUserMutation.mutateAsync(deleteUser.id);
-      toast.success("User deleted successfully");
+      toast.success(t("userDeletedSuccess"));
       setDeleteUser(null);
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete user");
+      toast.error(error.message || t("deleteUserError"));
     }
   };
 
@@ -67,10 +69,10 @@ export function UsersList({ users, isLoading }: UsersListProps) {
         banned: !user.banned,
       });
       toast.success(
-        user.banned ? "User unbanned successfully" : "User banned successfully"
+        user.banned ? t("userUnbannedSuccess") : t("userBannedSuccess")
       );
     } catch (error: any) {
-      toast.error(error.message || "Failed to update user status");
+      toast.error(error.message || t("updateUserStatusError"));
     }
   };
 
@@ -102,7 +104,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
   if (users.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">No users found.</p>
+        <p className="text-muted-foreground">{t("noUsersFound")}</p>
       </div>
     );
   }
@@ -113,12 +115,12 @@ export function UsersList({ users, isLoading }: UsersListProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("user")}</TableHead>
+              <TableHead>{t("email")}</TableHead>
+              <TableHead>{t("role")}</TableHead>
+              <TableHead>{t("status")}</TableHead>
+              <TableHead>{t("created")}</TableHead>
+              <TableHead className="text-right">{t("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -142,11 +144,11 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                   <div>{user.email}</div>
                   {user.emailVerified ? (
                     <Badge variant="secondary" className="text-xs">
-                      Verified
+                      {t("verified")}
                     </Badge>
                   ) : (
                     <Badge variant="outline" className="text-xs">
-                      Unverified
+                      {t("unverified")}
                     </Badge>
                   )}
                 </TableCell>
@@ -157,9 +159,9 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                 </TableCell>
                 <TableCell>
                   {user.banned ? (
-                    <Badge variant="destructive">Banned</Badge>
+                    <Badge variant="destructive">{t("banned")}</Badge>
                   ) : (
-                    <Badge variant="default">Active</Badge>
+                    <Badge variant="default">{t("active")}</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
@@ -173,11 +175,11 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setEditUser(user)}>
                         <Edit className="mr-2 h-4 w-4" />
-                        Edit User
+                        {t("editUserAction")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleToggleBan(user)}
@@ -186,12 +188,12 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                         {user.banned ? (
                           <>
                             <UserCheck className="mr-2 h-4 w-4" />
-                            Unban User
+                            {t("unban")}
                           </>
                         ) : (
                           <>
                             <UserX className="mr-2 h-4 w-4" />
-                            Ban User
+                            {t("ban")}
                           </>
                         )}
                       </DropdownMenuItem>
@@ -201,7 +203,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                         onClick={() => setDeleteUser(user)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Delete User
+                        {t("deleteUserAction")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -216,21 +218,19 @@ export function UsersList({ users, isLoading }: UsersListProps) {
       <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete{" "}
-              <span className="font-semibold">{deleteUser?.name}</span>? This
-              action cannot be undone.
+              {t("deleteConfirmDescription", { name: (deleteUser?.name ?? "") as string })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteUser}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={deleteUserMutation.isPending}
             >
-              {deleteUserMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteUserMutation.isPending ? t("deleting") : t("confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
