@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { admin } from "@/lib/auth-client";
+import { admin } from "@/auth/auth-client";
 import type { UserWithRole } from "better-auth/plugins";
 import { UserRole, type UserRoleType } from "@/lib/constants";
 

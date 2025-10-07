@@ -27,7 +27,7 @@ export const auth = betterAuth({
   plugins: [
     admin({
       ac: accessControl,
-      role: { admin: adminRole, user: userRole },
+      roles: { admin: adminRole, user: userRole },
       adminUserIds: [process.env.ADMIN_USER_ID as string],
     }),
   ],
