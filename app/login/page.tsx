@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Database, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
+import { signIn } from "@/auth/auth-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

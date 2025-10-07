@@ -10,7 +10,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,9 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./theme-toggle";
-import Image from "next/image";
-import user from "@/public/user11.png";
-import { signOut, useSession } from "@/lib/auth-client";
+import { signOut, useSession } from "@/auth/auth-client";
 import { LanguageSelector } from "./language-selector";
 
 interface TopBarProps {
@@ -125,13 +123,10 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
               className="h-8 w-8 rounded-full"
             >
               <Avatar className="h-8 w-8">
-                {!isPending && session?.user?.image ? (
-                  <AvatarImage src={session.user.image} alt={session.user.name || "User"} />
-                ) : !isPending && !session?.user?.image ? (
-                  <Image src={user} alt="User" />
-                ) : null}
-                <AvatarFallback>
-                  {isPending ? "" : getUserInitials(session?.user?.name)}
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                  {isPending 
+                    ? "..." 
+                    : getUserInitials(session?.user?.name || "User")}
                 </AvatarFallback>
               </Avatar>
             </Button>

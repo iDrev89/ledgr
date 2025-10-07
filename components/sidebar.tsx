@@ -10,9 +10,20 @@ import {
   ShoppingCart,
   Users,
   X,
+  Package,
+  DollarSign,
+  FileText,
+  Warehouse,
+  Banknote,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
+import { usePermissions } from "@/hooks/use-permissions";
+import {
+  ROUTE_PERMISSIONS,
+  type RoutePermission,
+} from "@/auth/permissions-config";
 
 interface SidebarProps {
   open: boolean;
@@ -23,6 +34,7 @@ interface NavItem {
   title: string;
   icon: React.ElementType;
   href: string;
+  requiredPermission?: RoutePermission;
 }
 
 interface NavGroup {
@@ -32,6 +44,7 @@ interface NavGroup {
 
 export function Sidebar({ open, toggleSidebar }: SidebarProps) {
   const pathname = usePathname();
+  const { hasPermission, isPending } = usePermissions();
 
   const navGroups: NavGroup[] = [
     {
@@ -46,12 +59,54 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           title: "Sales",
           icon: ShoppingCart,
           href: "/sales",
+          requiredPermission: ROUTE_PERMISSIONS["/sales"],
         },
+        {
+          title: "Products",
+          icon: Package,
+          href: "/products",
+          requiredPermission: ROUTE_PERMISSIONS["/products"],
+        },
+        {
+          title: "Expenses",
+          icon: DollarSign,
+          href: "/expenses",
+          requiredPermission: ROUTE_PERMISSIONS["/expenses"],
+        },
+        {
+          title: "Inventory",
+          icon: Warehouse,
+          href: "/inventory",
+          requiredPermission: ROUTE_PERMISSIONS["/inventory"],
+        },
+      ],
+    },
+    {
+      title: "Management",
+      items: [
         {
           title: "Users",
           icon: Users,
           href: "/users",
+          requiredPermission: ROUTE_PERMISSIONS["/users"],
         },
+        {
+          title: "Payroll",
+          icon: Banknote,
+          href: "/payroll",
+          requiredPermission: ROUTE_PERMISSIONS["/payroll"],
+        },
+        {
+          title: "Reports",
+          icon: FileText,
+          href: "/reports",
+          requiredPermission: ROUTE_PERMISSIONS["/reports"],
+        },
+      ],
+    },
+    {
+      title: "System",
+      items: [
         {
           title: "Settings",
           icon: Settings,
@@ -68,8 +123,8 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
         open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}
     >
-      <div className="flex justify-between  items-center border-b px-4">
-        <Link href="/" className="flex items-center  gap-2 font-semibold h-16">
+      <div className="flex justify-between items-center border-b px-4">
+        <Link href="/" className="flex items-center gap-2 font-semibold h-16">
           <Database className="h-6 w-6 text-primary" />
           <span className="text-xl">Ledgr</span>
         </Link>
@@ -85,33 +140,74 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
         </Button>
       </div>
       <div className="overflow-auto py-2">
-        {navGroups.map((group) => (
-          <div key={group.title} className="px-3 py-2">
-            <h2 className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {group.title}
-            </h2>
-            <div className="space-y-1">
-              {group.items.map((item) => (
-                <Link
-                  key={item.title}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                    pathname === item.href
-                      ? "bg-accent text-accent-foreground"
-                      : "text-foreground"
-                  )}
-                   onClick={toggleSidebar}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                </Link>
-              ))}
-            </div>
+        {isPending ? (
+          // Show skeleton while loading permissions
+          <div className="space-y-6">
+            {[1, 2, 3].map((groupIndex) => (
+              <div key={groupIndex} className="px-3 py-2">
+                <Skeleton className="h-3 w-20 mb-3 ml-4" />
+                <div className="space-y-1">
+                  {[1, 2, 3].map((itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="flex items-center gap-3 px-4 py-2"
+                    >
+                      <Skeleton className="h-4 w-4 rounded" />
+                      <Skeleton className="h-4 flex-1" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          // Show actual menu items after loading
+          navGroups.map((group) => {
+            const visibleItems = group.items.filter((item) => {
+              // If no permission required, always show
+              if (!item.requiredPermission) return true;
+
+              // Check if user has required permission
+
+              const result = hasPermission(
+                item.requiredPermission.statement,
+                item.requiredPermission.action
+              );
+
+              return result;
+            });
+
+            // Don't render empty groups
+            if (visibleItems.length === 0) return null;
+
+            return (
+              <div key={group.title} className="px-3 py-2">
+                <h2 className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {group.title}
+                </h2>
+                <div className="space-y-1">
+                  {visibleItems.map((item) => (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                        pathname === item.href
+                          ? "bg-accent text-accent-foreground"
+                          : "text-foreground"
+                      )}
+                      onClick={toggleSidebar}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );
 }
-

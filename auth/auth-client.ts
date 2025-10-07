@@ -4,13 +4,13 @@ import {
   accessControl,
   admin as adminRole,
   user as userRole,
-} from "@/auth/permisssions";
+} from "./permisssions";
 
 const authClient = createAuthClient({
   plugins: [
     adminClient({
       ac: accessControl,
-      role: { admin: adminRole, user: userRole },
+      roles: { admin: adminRole, user: userRole },
     }),
   ],
 });
