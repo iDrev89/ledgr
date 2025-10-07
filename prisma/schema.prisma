@@ -4,10 +4,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 generator client {
-  provider = "prisma-client-js"
-  output   = "prisma-client"
+  provider      = "prisma-client-js"
+  output        = "prisma-client"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
@@ -21,6 +20,11 @@ model User {
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  role       String?
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
 
   @@unique([email])
   @@map("user")
@@ -36,6 +40,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
@@ -70,3 +76,4 @@ model Verification {
 
   @@map("verification")
 }
+

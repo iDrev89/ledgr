@@ -4,6 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
+import { QueryProvider } from "@/components/providers/query-provider";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,17 +16,24 @@ export const metadata: Metadata = {
     "Ledgr is a modern business management application for small businesses. Manage sales, expenses, payroll, inventory, and generate automated financial reports with ease.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <QueryProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </ThemeProvider>
+          </QueryProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

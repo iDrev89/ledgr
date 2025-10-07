@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Settings,
   ShoppingCart,
+  Users,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,11 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           title: "Sales",
           icon: ShoppingCart,
           href: "/sales",
+        },
+        {
+          title: "Users",
+          icon: Users,
+          href: "/users",
         },
         {
           title: "Settings",
