@@ -25,6 +25,12 @@ model User {
   banReason  String?
   banExpires DateTime?
 
+  sales            Sale[]
+  expenses         Expense[]
+  purchases        Purchase[]
+  purchasePayments PurchasePayment[]
+  payrollEntries   PayrollEntry[]
+
   @@unique([email])
   @@map("user")
 }
@@ -74,4 +80,312 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+enum ProductType {
+  PRODUCT
+  SERVICE
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  DIGITAL
+  OTHER
+}
+
+enum StockMoveType {
+  PURCHASE
+  SALE
+  ADJUSTMENT
+}
+
+enum PurchaseStatus {
+  DRAFT
+  APPROVED
+  RECEIVED
+  CLOSED
+  CANCELED
+}
+
+enum AccountsReceivableStatus {
+  OPEN
+  PARTIAL
+  PAID
+  CANCELED
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  docId     String?
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales       Sale[]
+  receivables AccountsReceivable[]
+
+  @@index([name])
+  @@map("customer")
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  type        ProductType @default(PRODUCT)
+  sku         String?     @unique
+  name        String
+  description String?
+  price       Decimal     @db.Decimal(12, 2)
+  cost        Decimal?    @db.Decimal(12, 2)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  saleItems     SaleItem[]
+  stockMoves    StockMovement[]
+  purchaseItems PurchaseItem[]
+
+  @@index([active])
+  @@map("product")
+}
+
+model Sale {
+  id            String        @id @default(cuid())
+  createdById   String
+  createdBy     User          @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  currency      String        @default("COP")
+  subtotal      Decimal       @db.Decimal(12, 2)
+  discountTotal Decimal       @default(0) @db.Decimal(12, 2)
+  taxTotal      Decimal       @default(0) @db.Decimal(12, 2)
+  total         Decimal       @db.Decimal(12, 2)
+  paymentMethod PaymentMethod
+  note          String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  items       SaleItem[]
+  receivables AccountsReceivable[]
+
+  @@index([createdById, createdAt])
+  @@index([customerId, createdAt])
+  @@map("sale")
+}
+
+model SaleItem {
+  id        String  @id @default(cuid())
+  saleId    String
+  productId String
+  quantity  Int
+  unitPrice Decimal @db.Decimal(12, 2)
+  discount  Decimal @default(0) @db.Decimal(12, 2)
+  lineTotal Decimal @db.Decimal(12, 2)
+
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([saleId])
+  @@index([productId])
+  @@map("sale_item")
+}
+
+model ExpenseCategory {
+  id        String            @id @default(cuid())
+  name      String
+  parentId  String?
+  parent    ExpenseCategory?  @relation("ExpenseCategoryHierarchy", fields: [parentId], references: [id])
+  children  ExpenseCategory[] @relation("ExpenseCategoryHierarchy")
+  active    Boolean           @default(true)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  expenses     Expense[]
+  expenseItems ExpenseItem[]
+
+  @@unique([name])
+  @@map("expense_category")
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  taxId     String?
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases Purchase[]
+  expenses  Expense[]
+
+  @@index([name])
+  @@map("supplier")
+}
+
+model Expense {
+  id          String           @id @default(cuid())
+  createdById String?
+  createdBy   User?            @relation(fields: [createdById], references: [id])
+  categoryId  String?
+  category    ExpenseCategory? @relation(fields: [categoryId], references: [id])
+  supplierId  String?
+  supplier    Supplier?        @relation(fields: [supplierId], references: [id])
+  description String?
+  invoiceNo   String?
+  attachment  String?
+  currency    String           @default("COP")
+  amount      Decimal          @db.Decimal(12, 2)
+  incurredAt  DateTime         @default(now())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  items ExpenseItem[]
+
+  @@index([createdById, incurredAt])
+  @@index([supplierId, invoiceNo])
+  @@map("expense")
+}
+
+model ExpenseItem {
+  id          String  @id @default(cuid())
+  expenseId   String
+  categoryId  String?
+  description String?
+  quantity    Decimal @default(1) @db.Decimal(12, 4)
+  unitAmount  Decimal @default(0) @db.Decimal(12, 4)
+  taxPercent  Decimal @default(0) @db.Decimal(5, 2)
+  lineTotal   Decimal @db.Decimal(12, 2)
+
+  expense  Expense          @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  category ExpenseCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([expenseId])
+  @@map("expense_item")
+}
+
+model Purchase {
+  id          String         @id @default(cuid())
+  supplierId  String?
+  supplier    Supplier?      @relation(fields: [supplierId], references: [id])
+  currency    String         @default("COP")
+  invoiceNo   String?
+  status      PurchaseStatus @default(DRAFT)
+  note        String?
+  subtotal    Decimal        @db.Decimal(12, 2)
+  taxTotal    Decimal        @default(0) @db.Decimal(12, 2)
+  total       Decimal        @db.Decimal(12, 2)
+  createdById String?
+  createdBy   User?          @relation(fields: [createdById], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  items    PurchaseItem[]
+  payments PurchasePayment[]
+
+  @@index([supplierId, invoiceNo])
+  @@index([status, createdAt])
+  @@map("purchase")
+}
+
+model PurchaseItem {
+  id         String  @id @default(cuid())
+  purchaseId String
+  productId  String
+  quantity   Int
+  unitCost   Decimal @db.Decimal(12, 4)
+  lineTotal  Decimal @db.Decimal(12, 2)
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@index([purchaseId])
+  @@index([productId])
+  @@map("purchase_item")
+}
+
+model PurchasePayment {
+  id          String        @id @default(cuid())
+  purchaseId  String
+  amount      Decimal       @db.Decimal(12, 2)
+  paidAt      DateTime      @default(now())
+  method      PaymentMethod
+  reference   String?
+  createdById String?
+  createdBy   User?         @relation(fields: [createdById], references: [id])
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([purchaseId, paidAt])
+  @@map("purchase_payment")
+}
+
+model StockMovement {
+  id        String        @id @default(cuid())
+  productId String
+  moveType  StockMoveType
+  quantity  Int
+  unitCost  Decimal?      @db.Decimal(12, 4)
+  refType   String?
+  refId     String?
+  note      String?
+  createdAt DateTime      @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId, moveType, createdAt])
+  @@map("stock_movement")
+}
+
+model AccountsReceivable {
+  id         String                   @id @default(cuid())
+  customerId String
+  customer   Customer                 @relation(fields: [customerId], references: [id])
+  saleId     String?
+  sale       Sale?                    @relation(fields: [saleId], references: [id])
+  currency   String                   @default("COP")
+  total      Decimal                  @db.Decimal(12, 2)
+  balance    Decimal                  @db.Decimal(12, 2)
+  status     AccountsReceivableStatus @default(OPEN)
+  createdAt  DateTime                 @default(now())
+  updatedAt  DateTime                 @updatedAt
+
+  payments AccountsReceivablePayment[]
+
+  @@index([customerId, status, createdAt])
+  @@map("receivable")
+}
+
+model AccountsReceivablePayment {
+  id           String        @id @default(cuid())
+  receivableId String
+  amount       Decimal       @db.Decimal(12, 2)
+  paidAt       DateTime      @default(now())
+  method       PaymentMethod
+  note         String?
+
+  receivable AccountsReceivable @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+
+  @@index([receivableId, paidAt])
+  @@map("receivable_payment")
+}
+
+model PayrollEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  period      String
+  kind        String
+  description String?
+  currency    String   @default("COP")
+  amount      Decimal  @db.Decimal(12, 2)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, period, kind])
+  @@map("payroll_entry")
 }

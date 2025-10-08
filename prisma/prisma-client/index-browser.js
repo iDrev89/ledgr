@@ -171,6 +171,179 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CustomerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  docId: 'docId',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  sku: 'sku',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  cost: 'cost',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SaleScalarFieldEnum = {
+  id: 'id',
+  createdById: 'createdById',
+  customerId: 'customerId',
+  currency: 'currency',
+  subtotal: 'subtotal',
+  discountTotal: 'discountTotal',
+  taxTotal: 'taxTotal',
+  total: 'total',
+  paymentMethod: 'paymentMethod',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SaleItemScalarFieldEnum = {
+  id: 'id',
+  saleId: 'saleId',
+  productId: 'productId',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  discount: 'discount',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.ExpenseCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  parentId: 'parentId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  taxId: 'taxId',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExpenseScalarFieldEnum = {
+  id: 'id',
+  createdById: 'createdById',
+  categoryId: 'categoryId',
+  supplierId: 'supplierId',
+  description: 'description',
+  invoiceNo: 'invoiceNo',
+  attachment: 'attachment',
+  currency: 'currency',
+  amount: 'amount',
+  incurredAt: 'incurredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExpenseItemScalarFieldEnum = {
+  id: 'id',
+  expenseId: 'expenseId',
+  categoryId: 'categoryId',
+  description: 'description',
+  quantity: 'quantity',
+  unitAmount: 'unitAmount',
+  taxPercent: 'taxPercent',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.PurchaseScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  currency: 'currency',
+  invoiceNo: 'invoiceNo',
+  status: 'status',
+  note: 'note',
+  subtotal: 'subtotal',
+  taxTotal: 'taxTotal',
+  total: 'total',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PurchaseItemScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  productId: 'productId',
+  quantity: 'quantity',
+  unitCost: 'unitCost',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.PurchasePaymentScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  amount: 'amount',
+  paidAt: 'paidAt',
+  method: 'method',
+  reference: 'reference',
+  createdById: 'createdById'
+};
+
+exports.Prisma.StockMovementScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  moveType: 'moveType',
+  quantity: 'quantity',
+  unitCost: 'unitCost',
+  refType: 'refType',
+  refId: 'refId',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AccountsReceivableScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  saleId: 'saleId',
+  currency: 'currency',
+  total: 'total',
+  balance: 'balance',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountsReceivablePaymentScalarFieldEnum = {
+  id: 'id',
+  receivableId: 'receivableId',
+  amount: 'amount',
+  paidAt: 'paidAt',
+  method: 'method',
+  note: 'note'
+};
+
+exports.Prisma.PayrollEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  period: 'period',
+  kind: 'kind',
+  description: 'description',
+  currency: 'currency',
+  amount: 'amount',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -185,13 +358,60 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.ProductType = exports.$Enums.ProductType = {
+  PRODUCT: 'PRODUCT',
+  SERVICE: 'SERVICE'
+};
 
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  CARD: 'CARD',
+  TRANSFER: 'TRANSFER',
+  DIGITAL: 'DIGITAL',
+  OTHER: 'OTHER'
+};
+
+exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
+  DRAFT: 'DRAFT',
+  APPROVED: 'APPROVED',
+  RECEIVED: 'RECEIVED',
+  CLOSED: 'CLOSED',
+  CANCELED: 'CANCELED'
+};
+
+exports.StockMoveType = exports.$Enums.StockMoveType = {
+  PURCHASE: 'PURCHASE',
+  SALE: 'SALE',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+exports.AccountsReceivableStatus = exports.$Enums.AccountsReceivableStatus = {
+  OPEN: 'OPEN',
+  PARTIAL: 'PARTIAL',
+  PAID: 'PAID',
+  CANCELED: 'CANCELED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Customer: 'Customer',
+  Product: 'Product',
+  Sale: 'Sale',
+  SaleItem: 'SaleItem',
+  ExpenseCategory: 'ExpenseCategory',
+  Supplier: 'Supplier',
+  Expense: 'Expense',
+  ExpenseItem: 'ExpenseItem',
+  Purchase: 'Purchase',
+  PurchaseItem: 'PurchaseItem',
+  PurchasePayment: 'PurchasePayment',
+  StockMovement: 'StockMovement',
+  AccountsReceivable: 'AccountsReceivable',
+  AccountsReceivablePayment: 'AccountsReceivablePayment',
+  PayrollEntry: 'PayrollEntry'
 };
 
 /**

@@ -143,6 +143,179 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CustomerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  docId: 'docId',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  sku: 'sku',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  cost: 'cost',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SaleScalarFieldEnum = {
+  id: 'id',
+  createdById: 'createdById',
+  customerId: 'customerId',
+  currency: 'currency',
+  subtotal: 'subtotal',
+  discountTotal: 'discountTotal',
+  taxTotal: 'taxTotal',
+  total: 'total',
+  paymentMethod: 'paymentMethod',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SaleItemScalarFieldEnum = {
+  id: 'id',
+  saleId: 'saleId',
+  productId: 'productId',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  discount: 'discount',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.ExpenseCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  parentId: 'parentId',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  taxId: 'taxId',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExpenseScalarFieldEnum = {
+  id: 'id',
+  createdById: 'createdById',
+  categoryId: 'categoryId',
+  supplierId: 'supplierId',
+  description: 'description',
+  invoiceNo: 'invoiceNo',
+  attachment: 'attachment',
+  currency: 'currency',
+  amount: 'amount',
+  incurredAt: 'incurredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExpenseItemScalarFieldEnum = {
+  id: 'id',
+  expenseId: 'expenseId',
+  categoryId: 'categoryId',
+  description: 'description',
+  quantity: 'quantity',
+  unitAmount: 'unitAmount',
+  taxPercent: 'taxPercent',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.PurchaseScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  currency: 'currency',
+  invoiceNo: 'invoiceNo',
+  status: 'status',
+  note: 'note',
+  subtotal: 'subtotal',
+  taxTotal: 'taxTotal',
+  total: 'total',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PurchaseItemScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  productId: 'productId',
+  quantity: 'quantity',
+  unitCost: 'unitCost',
+  lineTotal: 'lineTotal'
+};
+
+exports.Prisma.PurchasePaymentScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  amount: 'amount',
+  paidAt: 'paidAt',
+  method: 'method',
+  reference: 'reference',
+  createdById: 'createdById'
+};
+
+exports.Prisma.StockMovementScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  moveType: 'moveType',
+  quantity: 'quantity',
+  unitCost: 'unitCost',
+  refType: 'refType',
+  refId: 'refId',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AccountsReceivableScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  saleId: 'saleId',
+  currency: 'currency',
+  total: 'total',
+  balance: 'balance',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountsReceivablePaymentScalarFieldEnum = {
+  id: 'id',
+  receivableId: 'receivableId',
+  amount: 'amount',
+  paidAt: 'paidAt',
+  method: 'method',
+  note: 'note'
+};
+
+exports.Prisma.PayrollEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  period: 'period',
+  kind: 'kind',
+  description: 'description',
+  currency: 'currency',
+  amount: 'amount',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -157,13 +330,60 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.ProductType = exports.$Enums.ProductType = {
+  PRODUCT: 'PRODUCT',
+  SERVICE: 'SERVICE'
+};
 
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  CARD: 'CARD',
+  TRANSFER: 'TRANSFER',
+  DIGITAL: 'DIGITAL',
+  OTHER: 'OTHER'
+};
+
+exports.StockMoveType = exports.$Enums.StockMoveType = {
+  PURCHASE: 'PURCHASE',
+  SALE: 'SALE',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
+  DRAFT: 'DRAFT',
+  APPROVED: 'APPROVED',
+  RECEIVED: 'RECEIVED',
+  CLOSED: 'CLOSED',
+  CANCELED: 'CANCELED'
+};
+
+exports.AccountsReceivableStatus = exports.$Enums.AccountsReceivableStatus = {
+  OPEN: 'OPEN',
+  PARTIAL: 'PARTIAL',
+  PAID: 'PAID',
+  CANCELED: 'CANCELED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Customer: 'Customer',
+  Product: 'Product',
+  Sale: 'Sale',
+  SaleItem: 'SaleItem',
+  ExpenseCategory: 'ExpenseCategory',
+  Supplier: 'Supplier',
+  Expense: 'Expense',
+  ExpenseItem: 'ExpenseItem',
+  Purchase: 'Purchase',
+  PurchaseItem: 'PurchaseItem',
+  PurchasePayment: 'PurchasePayment',
+  StockMovement: 'StockMovement',
+  AccountsReceivable: 'AccountsReceivable',
+  AccountsReceivablePayment: 'AccountsReceivablePayment',
+  PayrollEntry: 'PayrollEntry'
 };
 /**
  * Create the Client
@@ -208,7 +428,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -217,13 +436,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"prisma-client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @default(now()) @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role       String?\n  banned     Boolean?  @default(false)\n  banReason  String?\n  banExpires DateTime?\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  impersonatedBy String?\n\n  @@unique([token])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @default(now()) @updatedAt\n\n  @@map(\"verification\")\n}\n",
-  "inlineSchemaHash": "a5ab852cc5b29b0a9436e9ab255dd9f7a4c9babc38ca84fd7f73c704f99a015a",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"prisma-client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @default(now()) @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role       String?\n  banned     Boolean?  @default(false)\n  banReason  String?\n  banExpires DateTime?\n\n  sales            Sale[]\n  expenses         Expense[]\n  purchases        Purchase[]\n  purchasePayments PurchasePayment[]\n  payrollEntries   PayrollEntry[]\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  impersonatedBy String?\n\n  @@unique([token])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @default(now()) @updatedAt\n\n  @@map(\"verification\")\n}\n\nenum ProductType {\n  PRODUCT\n  SERVICE\n}\n\nenum PaymentMethod {\n  CASH\n  CARD\n  TRANSFER\n  DIGITAL\n  OTHER\n}\n\nenum StockMoveType {\n  PURCHASE\n  SALE\n  ADJUSTMENT\n}\n\nenum PurchaseStatus {\n  DRAFT\n  APPROVED\n  RECEIVED\n  CLOSED\n  CANCELED\n}\n\nenum AccountsReceivableStatus {\n  OPEN\n  PARTIAL\n  PAID\n  CANCELED\n}\n\nmodel Customer {\n  id        String   @id @default(cuid())\n  name      String\n  email     String?\n  phone     String?\n  docId     String?\n  note      String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  sales       Sale[]\n  receivables AccountsReceivable[]\n\n  @@index([name])\n  @@map(\"customer\")\n}\n\nmodel Product {\n  id          String      @id @default(cuid())\n  type        ProductType @default(PRODUCT)\n  sku         String?     @unique\n  name        String\n  description String?\n  price       Decimal     @db.Decimal(12, 2)\n  cost        Decimal?    @db.Decimal(12, 2)\n  active      Boolean     @default(true)\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n\n  saleItems     SaleItem[]\n  stockMoves    StockMovement[]\n  purchaseItems PurchaseItem[]\n\n  @@index([active])\n  @@map(\"product\")\n}\n\nmodel Sale {\n  id            String        @id @default(cuid())\n  createdById   String\n  createdBy     User          @relation(fields: [createdById], references: [id], onDelete: Restrict)\n  customerId    String\n  customer      Customer      @relation(fields: [customerId], references: [id])\n  currency      String        @default(\"COP\")\n  subtotal      Decimal       @db.Decimal(12, 2)\n  discountTotal Decimal       @default(0) @db.Decimal(12, 2)\n  taxTotal      Decimal       @default(0) @db.Decimal(12, 2)\n  total         Decimal       @db.Decimal(12, 2)\n  paymentMethod PaymentMethod\n  note          String?\n  createdAt     DateTime      @default(now())\n  updatedAt     DateTime      @updatedAt\n\n  items       SaleItem[]\n  receivables AccountsReceivable[]\n\n  @@index([createdById, createdAt])\n  @@index([customerId, createdAt])\n  @@map(\"sale\")\n}\n\nmodel SaleItem {\n  id        String  @id @default(cuid())\n  saleId    String\n  productId String\n  quantity  Int\n  unitPrice Decimal @db.Decimal(12, 2)\n  discount  Decimal @default(0) @db.Decimal(12, 2)\n  lineTotal Decimal @db.Decimal(12, 2)\n\n  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([saleId])\n  @@index([productId])\n  @@map(\"sale_item\")\n}\n\nmodel ExpenseCategory {\n  id        String            @id @default(cuid())\n  name      String\n  parentId  String?\n  parent    ExpenseCategory?  @relation(\"ExpenseCategoryHierarchy\", fields: [parentId], references: [id])\n  children  ExpenseCategory[] @relation(\"ExpenseCategoryHierarchy\")\n  active    Boolean           @default(true)\n  createdAt DateTime          @default(now())\n  updatedAt DateTime          @updatedAt\n\n  expenses     Expense[]\n  expenseItems ExpenseItem[]\n\n  @@unique([name])\n  @@map(\"expense_category\")\n}\n\nmodel Supplier {\n  id        String   @id @default(cuid())\n  name      String\n  taxId     String?\n  email     String?\n  phone     String?\n  address   String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  purchases Purchase[]\n  expenses  Expense[]\n\n  @@index([name])\n  @@map(\"supplier\")\n}\n\nmodel Expense {\n  id          String           @id @default(cuid())\n  createdById String?\n  createdBy   User?            @relation(fields: [createdById], references: [id])\n  categoryId  String?\n  category    ExpenseCategory? @relation(fields: [categoryId], references: [id])\n  supplierId  String?\n  supplier    Supplier?        @relation(fields: [supplierId], references: [id])\n  description String?\n  invoiceNo   String?\n  attachment  String?\n  currency    String           @default(\"COP\")\n  amount      Decimal          @db.Decimal(12, 2)\n  incurredAt  DateTime         @default(now())\n  createdAt   DateTime         @default(now())\n  updatedAt   DateTime         @updatedAt\n\n  items ExpenseItem[]\n\n  @@index([createdById, incurredAt])\n  @@index([supplierId, invoiceNo])\n  @@map(\"expense\")\n}\n\nmodel ExpenseItem {\n  id          String  @id @default(cuid())\n  expenseId   String\n  categoryId  String?\n  description String?\n  quantity    Decimal @default(1) @db.Decimal(12, 4)\n  unitAmount  Decimal @default(0) @db.Decimal(12, 4)\n  taxPercent  Decimal @default(0) @db.Decimal(5, 2)\n  lineTotal   Decimal @db.Decimal(12, 2)\n\n  expense  Expense          @relation(fields: [expenseId], references: [id], onDelete: Cascade)\n  category ExpenseCategory? @relation(fields: [categoryId], references: [id])\n\n  @@index([expenseId])\n  @@map(\"expense_item\")\n}\n\nmodel Purchase {\n  id          String         @id @default(cuid())\n  supplierId  String?\n  supplier    Supplier?      @relation(fields: [supplierId], references: [id])\n  currency    String         @default(\"COP\")\n  invoiceNo   String?\n  status      PurchaseStatus @default(DRAFT)\n  note        String?\n  subtotal    Decimal        @db.Decimal(12, 2)\n  taxTotal    Decimal        @default(0) @db.Decimal(12, 2)\n  total       Decimal        @db.Decimal(12, 2)\n  createdById String?\n  createdBy   User?          @relation(fields: [createdById], references: [id])\n  createdAt   DateTime       @default(now())\n  updatedAt   DateTime       @updatedAt\n\n  items    PurchaseItem[]\n  payments PurchasePayment[]\n\n  @@index([supplierId, invoiceNo])\n  @@index([status, createdAt])\n  @@map(\"purchase\")\n}\n\nmodel PurchaseItem {\n  id         String  @id @default(cuid())\n  purchaseId String\n  productId  String\n  quantity   Int\n  unitCost   Decimal @db.Decimal(12, 4)\n  lineTotal  Decimal @db.Decimal(12, 2)\n\n  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)\n  product  Product  @relation(fields: [productId], references: [id])\n\n  @@index([purchaseId])\n  @@index([productId])\n  @@map(\"purchase_item\")\n}\n\nmodel PurchasePayment {\n  id          String        @id @default(cuid())\n  purchaseId  String\n  amount      Decimal       @db.Decimal(12, 2)\n  paidAt      DateTime      @default(now())\n  method      PaymentMethod\n  reference   String?\n  createdById String?\n  createdBy   User?         @relation(fields: [createdById], references: [id])\n\n  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)\n\n  @@index([purchaseId, paidAt])\n  @@map(\"purchase_payment\")\n}\n\nmodel StockMovement {\n  id        String        @id @default(cuid())\n  productId String\n  moveType  StockMoveType\n  quantity  Int\n  unitCost  Decimal?      @db.Decimal(12, 4)\n  refType   String?\n  refId     String?\n  note      String?\n  createdAt DateTime      @default(now())\n\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([productId, moveType, createdAt])\n  @@map(\"stock_movement\")\n}\n\nmodel AccountsReceivable {\n  id         String                   @id @default(cuid())\n  customerId String\n  customer   Customer                 @relation(fields: [customerId], references: [id])\n  saleId     String?\n  sale       Sale?                    @relation(fields: [saleId], references: [id])\n  currency   String                   @default(\"COP\")\n  total      Decimal                  @db.Decimal(12, 2)\n  balance    Decimal                  @db.Decimal(12, 2)\n  status     AccountsReceivableStatus @default(OPEN)\n  createdAt  DateTime                 @default(now())\n  updatedAt  DateTime                 @updatedAt\n\n  payments AccountsReceivablePayment[]\n\n  @@index([customerId, status, createdAt])\n  @@map(\"receivable\")\n}\n\nmodel AccountsReceivablePayment {\n  id           String        @id @default(cuid())\n  receivableId String\n  amount       Decimal       @db.Decimal(12, 2)\n  paidAt       DateTime      @default(now())\n  method       PaymentMethod\n  note         String?\n\n  receivable AccountsReceivable @relation(fields: [receivableId], references: [id], onDelete: Cascade)\n\n  @@index([receivableId, paidAt])\n  @@map(\"receivable_payment\")\n}\n\nmodel PayrollEntry {\n  id          String   @id @default(cuid())\n  userId      String\n  user        User     @relation(fields: [userId], references: [id])\n  period      String\n  kind        String\n  description String?\n  currency    String   @default(\"COP\")\n  amount      Decimal  @db.Decimal(12, 2)\n  createdAt   DateTime @default(now())\n\n  @@index([userId, period, kind])\n  @@map(\"payroll_entry\")\n}\n",
+  "inlineSchemaHash": "b63bd02b6e23f7b5dd533d89bd3b9c60f5c26fa766c7396e31a146fdade1e218",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banned\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"banReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"impersonatedBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banned\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"banReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sales\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"SaleToUser\"},{\"name\":\"expenses\",\"kind\":\"object\",\"type\":\"Expense\",\"relationName\":\"ExpenseToUser\"},{\"name\":\"purchases\",\"kind\":\"object\",\"type\":\"Purchase\",\"relationName\":\"PurchaseToUser\"},{\"name\":\"purchasePayments\",\"kind\":\"object\",\"type\":\"PurchasePayment\",\"relationName\":\"PurchasePaymentToUser\"},{\"name\":\"payrollEntries\",\"kind\":\"object\",\"type\":\"PayrollEntry\",\"relationName\":\"PayrollEntryToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"impersonatedBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"},\"Customer\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"docId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sales\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"CustomerToSale\"},{\"name\":\"receivables\",\"kind\":\"object\",\"type\":\"AccountsReceivable\",\"relationName\":\"AccountsReceivableToCustomer\"}],\"dbName\":\"customer\"},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"ProductType\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"cost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"saleItems\",\"kind\":\"object\",\"type\":\"SaleItem\",\"relationName\":\"ProductToSaleItem\"},{\"name\":\"stockMoves\",\"kind\":\"object\",\"type\":\"StockMovement\",\"relationName\":\"ProductToStockMovement\"},{\"name\":\"purchaseItems\",\"kind\":\"object\",\"type\":\"PurchaseItem\",\"relationName\":\"ProductToPurchaseItem\"}],\"dbName\":\"product\"},\"Sale\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SaleToUser\"},{\"name\":\"customerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"Customer\",\"relationName\":\"CustomerToSale\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"taxTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"paymentMethod\",\"kind\":\"enum\",\"type\":\"PaymentMethod\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"SaleItem\",\"relationName\":\"SaleToSaleItem\"},{\"name\":\"receivables\",\"kind\":\"object\",\"type\":\"AccountsReceivable\",\"relationName\":\"AccountsReceivableToSale\"}],\"dbName\":\"sale\"},\"SaleItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"saleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"lineTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"sale\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"SaleToSaleItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToSaleItem\"}],\"dbName\":\"sale_item\"},\"ExpenseCategory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"ExpenseCategory\",\"relationName\":\"ExpenseCategoryHierarchy\"},{\"name\":\"children\",\"kind\":\"object\",\"type\":\"ExpenseCategory\",\"relationName\":\"ExpenseCategoryHierarchy\"},{\"name\":\"active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expenses\",\"kind\":\"object\",\"type\":\"Expense\",\"relationName\":\"ExpenseToExpenseCategory\"},{\"name\":\"expenseItems\",\"kind\":\"object\",\"type\":\"ExpenseItem\",\"relationName\":\"ExpenseCategoryToExpenseItem\"}],\"dbName\":\"expense_category\"},\"Supplier\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"taxId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"purchases\",\"kind\":\"object\",\"type\":\"Purchase\",\"relationName\":\"PurchaseToSupplier\"},{\"name\":\"expenses\",\"kind\":\"object\",\"type\":\"Expense\",\"relationName\":\"ExpenseToSupplier\"}],\"dbName\":\"supplier\"},\"Expense\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ExpenseToUser\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"ExpenseCategory\",\"relationName\":\"ExpenseToExpenseCategory\"},{\"name\":\"supplierId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"supplier\",\"kind\":\"object\",\"type\":\"Supplier\",\"relationName\":\"ExpenseToSupplier\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"invoiceNo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attachment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"incurredAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"ExpenseItem\",\"relationName\":\"ExpenseToExpenseItem\"}],\"dbName\":\"expense\"},\"ExpenseItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expenseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"unitAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"taxPercent\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"lineTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"expense\",\"kind\":\"object\",\"type\":\"Expense\",\"relationName\":\"ExpenseToExpenseItem\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"ExpenseCategory\",\"relationName\":\"ExpenseCategoryToExpenseItem\"}],\"dbName\":\"expense_item\"},\"Purchase\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"supplierId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"supplier\",\"kind\":\"object\",\"type\":\"Supplier\",\"relationName\":\"PurchaseToSupplier\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"invoiceNo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PurchaseStatus\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"taxTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PurchaseToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"PurchaseItem\",\"relationName\":\"PurchaseToPurchaseItem\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"PurchasePayment\",\"relationName\":\"PurchaseToPurchasePayment\"}],\"dbName\":\"purchase\"},\"PurchaseItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"purchaseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitCost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"lineTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"purchase\",\"kind\":\"object\",\"type\":\"Purchase\",\"relationName\":\"PurchaseToPurchaseItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToPurchaseItem\"}],\"dbName\":\"purchase_item\"},\"PurchasePayment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"purchaseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"paidAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"method\",\"kind\":\"enum\",\"type\":\"PaymentMethod\"},{\"name\":\"reference\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PurchasePaymentToUser\"},{\"name\":\"purchase\",\"kind\":\"object\",\"type\":\"Purchase\",\"relationName\":\"PurchaseToPurchasePayment\"}],\"dbName\":\"purchase_payment\"},\"StockMovement\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"moveType\",\"kind\":\"enum\",\"type\":\"StockMoveType\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitCost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"refType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToStockMovement\"}],\"dbName\":\"stock_movement\"},\"AccountsReceivable\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"Customer\",\"relationName\":\"AccountsReceivableToCustomer\"},{\"name\":\"saleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sale\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"AccountsReceivableToSale\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"balance\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"AccountsReceivableStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"AccountsReceivablePayment\",\"relationName\":\"AccountsReceivableToAccountsReceivablePayment\"}],\"dbName\":\"receivable\"},\"AccountsReceivablePayment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"receivableId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"paidAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"method\",\"kind\":\"enum\",\"type\":\"PaymentMethod\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"receivable\",\"kind\":\"object\",\"type\":\"AccountsReceivable\",\"relationName\":\"AccountsReceivableToAccountsReceivablePayment\"}],\"dbName\":\"receivable_payment\"},\"PayrollEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PayrollEntryToUser\"},{\"name\":\"period\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"kind\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"payroll_entry\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
