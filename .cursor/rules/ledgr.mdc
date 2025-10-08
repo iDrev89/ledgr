@@ -34,22 +34,7 @@ alwaysApply: true
 - Estado de resultados detallado y flujo de caja.
 - Exportación de reportes en PDF/Excel.
 
-### 🚀 Fase 5 – Escalamiento (Opcional)
-- App móvil para registro en tiempo real.
-- POS con facturación e impresión.
-- Notificaciones inteligentes (stock bajo, pagos pendientes, etc.).
-- Integración con pasarelas de pago (Stripe, Nequi, MercadoPago).
 
----
-
-## 🧱 Guías Técnicas
-- **Frontend:** Next.js + React.
-- **Backend:** Node.js con Prisma o Supabase.
-- **Base de datos:** PostgreSQL.
-- **Auth:** Cognito o Supabase Auth.
-- **Infraestructura:** Vercel (frontend), AWS o Supabase (backend).
-
----
 
 ## 📐 Principios de Diseño
 - **Modularidad:** cada módulo debe ser independiente pero integrable.

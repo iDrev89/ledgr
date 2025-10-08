@@ -9,6 +9,7 @@ const statements = {
     "set-role",
     "impersonate",
   ],
+  customers: ["create", "read", "update", "delete"],
   sales: ["create", "read", "update", "delete"],
   products: ["create", "read", "update", "delete"],
   expenses: ["create", "read", "update", "delete"],
@@ -20,6 +21,7 @@ const statements = {
 export const accessControl = createAccessControl(statements);
 
 export const user = accessControl.newRole({
+  customers: ["create", "read", "update"],
   sales: ["create", "read"],
   products: ["read"],
   inventory: ["read"],
@@ -34,6 +36,7 @@ export const admin = accessControl.newRole({
     "set-role",
     "impersonate",
   ],
+  customers: ["create", "read", "update", "delete"],
   sales: ["create", "read", "update", "delete"],
   products: ["create", "read", "update", "delete"],
   expenses: ["create", "read", "update", "delete"],

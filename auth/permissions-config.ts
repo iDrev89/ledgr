@@ -14,6 +14,7 @@ export interface RoutePermission {
  */
 export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   "/users": { statement: "users", action: "read" },
+  "/customers": { statement: "customers", action: "read" },
   "/sales": { statement: "sales", action: "read" },
   "/products": { statement: "products", action: "read" },
   "/expenses": { statement: "expenses", action: "read" },

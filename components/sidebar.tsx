@@ -15,6 +15,7 @@ import {
   FileText,
   Warehouse,
   Banknote,
+  UserCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -54,6 +55,12 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           title: "Dashboard",
           icon: LayoutDashboard,
           href: "/dashboard",
+        },
+        {
+          title: "Customers",
+          icon: UserCircle,
+          href: "/customers",
+          requiredPermission: ROUTE_PERMISSIONS["/customers"],
         },
         {
           title: "Sales",
