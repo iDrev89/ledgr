@@ -7,6 +7,7 @@ import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default async function RootLayout({
           <QueryProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <ConditionalLayout>{children}</ConditionalLayout>
+              <Toaster position="top-right" />
             </ThemeProvider>
           </QueryProvider>
         </NextIntlClientProvider>

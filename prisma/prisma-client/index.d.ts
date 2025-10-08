@@ -7588,6 +7588,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     docId: string | null
+    birthdate: Date | null
     note: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7599,6 +7600,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     docId: string | null
+    birthdate: Date | null
     note: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7610,6 +7612,7 @@ export namespace Prisma {
     email: number
     phone: number
     docId: number
+    birthdate: number
     note: number
     createdAt: number
     updatedAt: number
@@ -7623,6 +7626,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     docId?: true
+    birthdate?: true
     note?: true
     createdAt?: true
     updatedAt?: true
@@ -7634,6 +7638,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     docId?: true
+    birthdate?: true
     note?: true
     createdAt?: true
     updatedAt?: true
@@ -7645,6 +7650,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     docId?: true
+    birthdate?: true
     note?: true
     createdAt?: true
     updatedAt?: true
@@ -7729,6 +7735,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     docId: string | null
+    birthdate: Date | null
     note: string | null
     createdAt: Date
     updatedAt: Date
@@ -7757,6 +7764,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     docId?: boolean
+    birthdate?: boolean
     note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7771,6 +7779,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     docId?: boolean
+    birthdate?: boolean
     note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7782,6 +7791,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     docId?: boolean
+    birthdate?: boolean
     note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7793,12 +7803,13 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     docId?: boolean
+    birthdate?: boolean
     note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "docId" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "docId" | "birthdate" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sales?: boolean | Customer$salesArgs<ExtArgs>
     receivables?: boolean | Customer$receivablesArgs<ExtArgs>
@@ -7819,6 +7830,7 @@ export namespace Prisma {
       email: string | null
       phone: string | null
       docId: string | null
+      birthdate: Date | null
       note: string | null
       createdAt: Date
       updatedAt: Date
@@ -8252,6 +8264,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Customer", 'String'>
     readonly phone: FieldRef<"Customer", 'String'>
     readonly docId: FieldRef<"Customer", 'String'>
+    readonly birthdate: FieldRef<"Customer", 'DateTime'>
     readonly note: FieldRef<"Customer", 'String'>
     readonly createdAt: FieldRef<"Customer", 'DateTime'>
     readonly updatedAt: FieldRef<"Customer", 'DateTime'>
@@ -25339,6 +25352,7 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     docId: 'docId',
+    birthdate: 'birthdate',
     note: 'note',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -26069,6 +26083,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"Customer"> | string | null
     phone?: StringNullableFilter<"Customer"> | string | null
     docId?: StringNullableFilter<"Customer"> | string | null
+    birthdate?: DateTimeNullableFilter<"Customer"> | Date | string | null
     note?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -26082,6 +26097,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     docId?: SortOrderInput | SortOrder
+    birthdate?: SortOrderInput | SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26098,6 +26114,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"Customer"> | string | null
     phone?: StringNullableFilter<"Customer"> | string | null
     docId?: StringNullableFilter<"Customer"> | string | null
+    birthdate?: DateTimeNullableFilter<"Customer"> | Date | string | null
     note?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -26111,6 +26128,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     docId?: SortOrderInput | SortOrder
+    birthdate?: SortOrderInput | SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26128,6 +26146,7 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     docId?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    birthdate?: DateTimeNullableWithAggregatesFilter<"Customer"> | Date | string | null
     note?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -27629,6 +27648,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27642,6 +27662,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27655,6 +27676,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27668,6 +27690,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27681,6 +27704,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27692,6 +27716,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27703,6 +27728,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29268,6 +29294,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     docId?: SortOrder
+    birthdate?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29279,6 +29306,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     docId?: SortOrder
+    birthdate?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29290,6 +29318,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     docId?: SortOrder
+    birthdate?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -32906,6 +32935,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32918,6 +32948,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33059,6 +33090,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33071,6 +33103,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34677,6 +34710,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -34689,6 +34723,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     docId?: string | null
+    birthdate?: Date | string | null
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -34780,6 +34815,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34792,6 +34828,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     docId?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
