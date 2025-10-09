@@ -14,29 +14,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteCustomer } from "@/hooks/use-customers";
-import type { Customer } from "@/lib/types/customer";
+import { useDeleteProduct } from "@/hooks/use-products";
+import type { Product } from "@/lib/types/product";
 import { DataTable } from "@/components/ui/data-table";
-import { createCustomerColumns } from "./customer-columns";
+import { createProductColumns } from "./product-columns";
 
-interface CustomerTableProps {
-  customers: Customer[];
-  onEdit: (customer: Customer) => void;
+interface ProductTableProps {
+  products: Product[];
+  onEdit: (product: Product) => void;
 }
 
-export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
-  const t = useTranslations("Customers");
-  const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
-    null
-  );
-  const deleteMutation = useDeleteCustomer();
+export function ProductTable({ products, onEdit }: ProductTableProps) {
+  const t = useTranslations("Products");
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const deleteMutation = useDeleteProduct();
 
   const handleDelete = async () => {
-    if (!customerToDelete) return;
+    if (!productToDelete) return;
 
     try {
-      await deleteMutation.mutateAsync(customerToDelete.id);
-      setCustomerToDelete(null);
+      await deleteMutation.mutateAsync(productToDelete.id);
+      setProductToDelete(null);
       toast.success(t("deleteSuccess"));
     } catch (error) {
       toast.error(t("deleteError"), {
@@ -45,16 +43,16 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
     }
   };
 
-  const columns = createCustomerColumns({
+  const columns = createProductColumns({
     onEdit,
-    onDelete: setCustomerToDelete,
+    onDelete: setProductToDelete,
     t,
   });
 
-  if (customers.length === 0) {
+  if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noCustomers")}</p>
+        <p className="text-muted-foreground">{t("noProducts")}</p>
       </div>
     );
   }
@@ -63,7 +61,7 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
     <>
       <DataTable
         columns={columns}
-        data={customers}
+        data={products}
         searchKey={["name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
@@ -71,10 +69,10 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
       />
 
       <AlertDialog
-        open={!!customerToDelete}
+        open={!!productToDelete}
         onOpenChange={(open) => {
           if (!deleteMutation.isPending && !open) {
-            setCustomerToDelete(null);
+            setProductToDelete(null);
           }
         }}
       >
@@ -82,7 +80,7 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteDescription", { name: customerToDelete?.name || "" })}
+              {t("deleteDescription", { name: productToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -105,3 +103,4 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
     </>
   );
 }
+

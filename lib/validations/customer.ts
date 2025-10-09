@@ -1,35 +1,46 @@
 import { z } from "zod";
 
-export const getCustomerSchemas = (t: (key: string) => string) => {
+// Helper to create schemas with custom messages
+const createCustomerSchemas = (messages?: {
+  nameMin?: string;
+  nameMax?: string;
+  emailInvalid?: string;
+  phoneMax?: string;
+  docIdMax?: string;
+  birthdateInvalid?: string;
+  birthdateNotToday?: string;
+  noteMax?: string;
+  idRequired?: string;
+}) => {
   const baseCustomerSchema = z.object({
     name: z
       .string()
-      .min(2, t("validation.nameMin"))
-      .max(100, t("validation.nameMax"))
+      .min(2, messages?.nameMin || "Name must be at least 2 characters")
+      .max(100, messages?.nameMax || "Name must be less than 100 characters")
       .trim(),
     email: z
       .string()
-      .email(t("validation.emailInvalid"))
+      .email(messages?.emailInvalid || "Invalid email address")
       .toLowerCase()
       .trim()
       .optional()
       .or(z.literal("")),
     phone: z
       .string()
-      .max(20, t("validation.phoneMax"))
+      .max(20, messages?.phoneMax || "Phone must be less than 20 characters")
       .trim()
       .optional()
       .or(z.literal("")),
     docId: z
       .string()
-      .max(50, t("validation.docIdMax"))
+      .max(50, messages?.docIdMax || "Document ID must be less than 50 characters")
       .trim()
       .optional()
       .or(z.literal("")),
     birthdate: z
       .string()
       .refine((date) => !date || !isNaN(Date.parse(date)), {
-        message: t("validation.birthdateInvalid"),
+        message: messages?.birthdateInvalid || "Invalid date format",
       })
       .refine(
         (date) => {
@@ -40,14 +51,14 @@ export const getCustomerSchemas = (t: (key: string) => string) => {
           return selectedDate < today;
         },
         {
-          message: t("validation.birthdateNotToday"),
+          message: messages?.birthdateNotToday || "Birthdate cannot be today or in the future",
         }
       )
       .optional()
       .or(z.literal("")),
     note: z
       .string()
-      .max(500, t("validation.noteMax"))
+      .max(500, messages?.noteMax || "Note must be less than 500 characters")
       .trim()
       .optional()
       .or(z.literal("")),
@@ -56,70 +67,31 @@ export const getCustomerSchemas = (t: (key: string) => string) => {
   const createCustomerSchema = baseCustomerSchema;
 
   const updateCustomerSchema = baseCustomerSchema.extend({
-    id: z.string().min(1, t("validation.idRequired")),
+    id: z.string().min(1, messages?.idRequired || "Customer ID is required"),
   });
 
   return { createCustomerSchema, updateCustomerSchema };
 };
 
-// Default schemas for server-side validation (English fallback)
-const baseCustomerSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be less than 100 characters")
-    .trim(),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim()
-    .optional()
-    .or(z.literal("")),
-  phone: z
-    .string()
-    .max(20, "Phone must be less than 20 characters")
-    .trim()
-    .optional()
-    .or(z.literal("")),
-  docId: z
-    .string()
-    .max(50, "Document ID must be less than 50 characters")
-    .trim()
-    .optional()
-    .or(z.literal("")),
-  birthdate: z
-    .string()
-    .refine((date) => !date || !isNaN(Date.parse(date)), {
-      message: "Invalid date format",
-    })
-    .refine(
-      (date) => {
-        if (!date) return true;
-        const selectedDate = new Date(date);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return selectedDate < today;
-      },
-      {
-        message: "Birthdate cannot be today or in the future",
-      }
-    )
-    .optional()
-    .or(z.literal("")),
-  note: z
-    .string()
-    .max(500, "Note must be less than 500 characters")
-    .trim()
-    .optional()
-    .or(z.literal("")),
-});
+// For client-side with i18n
+export const getCustomerSchemas = (t: (key: string) => string) => {
+  return createCustomerSchemas({
+    nameMin: t("validation.nameMin"),
+    nameMax: t("validation.nameMax"),
+    emailInvalid: t("validation.emailInvalid"),
+    phoneMax: t("validation.phoneMax"),
+    docIdMax: t("validation.docIdMax"),
+    birthdateInvalid: t("validation.birthdateInvalid"),
+    birthdateNotToday: t("validation.birthdateNotToday"),
+    noteMax: t("validation.noteMax"),
+    idRequired: t("validation.idRequired"),
+  });
+};
 
-export const createCustomerSchema = baseCustomerSchema;
+// For server-side (English fallback)
+const { createCustomerSchema, updateCustomerSchema } = createCustomerSchemas();
 
-export const updateCustomerSchema = baseCustomerSchema.extend({
-  id: z.string().min(1, "Customer ID is required"),
-});
+export { createCustomerSchema, updateCustomerSchema };
 
 export type CreateCustomerInput = z.infer<typeof createCustomerSchema>;
 export type UpdateCustomerInput = z.infer<typeof updateCustomerSchema>;
