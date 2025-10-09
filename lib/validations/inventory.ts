@@ -12,23 +12,21 @@ const createStockMovementSchemas = (messages?: {
   idRequired?: string;
 }) => {
   const baseStockMovementSchema = z.object({
-    productId: z.string().min(1, messages?.productIdRequired || "Product is required"),
-    moveType: z.nativeEnum(StockMoveType),
-    quantity: z
-      .number({
-        required_error: messages?.quantityRequired || "Quantity is required",
-        invalid_type_error: messages?.quantityInvalid || "Quantity must be a number",
-      })
-      .int(messages?.quantityInvalid || "Quantity must be a whole number")
-      .refine((val) => val !== 0, {
-        message: messages?.quantityInvalid || "Quantity cannot be zero",
-      }),
+    productId: z
+      .string()
+      .min(1, messages?.productIdRequired || "Product is required"),
+    moveType: z.enum(StockMoveType),
+    quantity: z.int({
+      message: messages?.quantityInvalid || "Quantity must be a number",
+    }),
     unitCost: z
       .string()
       .refine(
         (val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0),
         {
-          message: messages?.unitCostInvalid || "Unit cost must be a valid positive number",
+          message:
+            messages?.unitCostInvalid ||
+            "Unit cost must be a valid positive number",
         }
       )
       .optional()
@@ -44,7 +42,9 @@ const createStockMovementSchemas = (messages?: {
   const createStockMovementSchema = baseStockMovementSchema;
 
   const updateStockMovementSchema = baseStockMovementSchema.extend({
-    id: z.string().min(1, messages?.idRequired || "Stock movement ID is required"),
+    id: z
+      .string()
+      .min(1, messages?.idRequired || "Stock movement ID is required"),
   });
 
   return { createStockMovementSchema, updateStockMovementSchema };
@@ -64,10 +64,14 @@ export const getStockMovementSchemas = (t: (key: string) => string) => {
 };
 
 // For server-side (English fallback)
-const { createStockMovementSchema, updateStockMovementSchema } = createStockMovementSchemas();
+const { createStockMovementSchema, updateStockMovementSchema } =
+  createStockMovementSchemas();
 
 export { createStockMovementSchema, updateStockMovementSchema };
 
-export type CreateStockMovementInput = z.infer<typeof createStockMovementSchema>;
-export type UpdateStockMovementInput = z.infer<typeof updateStockMovementSchema>;
-
+export type CreateStockMovementInput = z.infer<
+  typeof createStockMovementSchema
+>;
+export type UpdateStockMovementInput = z.infer<
+  typeof updateStockMovementSchema
+>;
