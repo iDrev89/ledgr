@@ -1,0 +1,187 @@
+"use client";
+
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal, Eye, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { formatDistanceToNow } from "date-fns";
+import { es, enUS } from "date-fns/locale";
+import type { SaleWithDetails } from "@/lib/types/sales";
+import { PaymentMethod } from "@/prisma/prisma-client";
+
+interface CreateSaleColumnsProps {
+  onView: (sale: SaleWithDetails) => void;
+  onDelete: (sale: SaleWithDetails) => void;
+  t: (key: string) => string;
+  locale?: string;
+}
+
+const formatCurrency = (value: string | number) => {
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(numValue);
+};
+
+const getPaymentMethodBadge = (method: PaymentMethod, t: (key: string) => string) => {
+  const variants: Record<PaymentMethod, { label: string; variant: "default" | "secondary" | "outline" }> = {
+    [PaymentMethod.CASH]: {
+      label: t("paymentCash"),
+      variant: "default",
+    },
+    [PaymentMethod.CARD]: {
+      label: t("paymentCard"),
+      variant: "secondary",
+    },
+    [PaymentMethod.TRANSFER]: {
+      label: t("paymentTransfer"),
+      variant: "outline",
+    },
+    [PaymentMethod.DIGITAL]: {
+      label: t("paymentDigital"),
+      variant: "secondary",
+    },
+    [PaymentMethod.OTHER]: {
+      label: t("paymentOther"),
+      variant: "outline",
+    },
+  };
+
+  const config = variants[method];
+  return (
+    <Badge variant={config.variant} className="font-normal">
+      {config.label}
+    </Badge>
+  );
+};
+
+export const createSaleColumns = ({
+  onView,
+  onDelete,
+  t,
+  locale = "es",
+}: CreateSaleColumnsProps): ColumnDef<SaleWithDetails>[] => [
+  {
+    accessorKey: "saleNumber",
+    header: t("saleNumber"),
+    cell: ({ row }) => {
+      const saleNumber = row.getValue("saleNumber") as number;
+      return (
+        <span className="font-mono font-semibold">
+          #{String(saleNumber).padStart(4, "0")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "customer.name",
+    header: t("customer"),
+    cell: ({ row }) => {
+      const customerName = row.original.customer.name;
+      const customerEmail = row.original.customer.email;
+      return (
+        <div className="flex flex-col">
+          <span className="font-medium">{customerName}</span>
+          {customerEmail && (
+            <span className="text-xs text-muted-foreground">{customerEmail}</span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "items",
+    header: t("items"),
+    cell: ({ row }) => {
+      const items = row.original.items;
+      return (
+        <div className="flex flex-col">
+          <span className="font-medium">{items.length} {t("itemsCount")}</span>
+          <span className="text-xs text-muted-foreground">
+            {items.slice(0, 2).map((item) => item.product.name).join(", ")}
+            {items.length > 2 && `, +${items.length - 2}`}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "paymentMethod",
+    header: t("paymentMethod"),
+    cell: ({ row }) => {
+      const method = row.getValue("paymentMethod") as PaymentMethod;
+      return getPaymentMethodBadge(method, t);
+    },
+  },
+  {
+    accessorKey: "total",
+    header: () => <div className="text-right">{t("total")}</div>,
+    cell: ({ row }) => {
+      const total = row.getValue("total") as string;
+      return (
+        <div className="text-right font-medium">{formatCurrency(total)}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: t("createdAt"),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("createdAt"));
+      const dateLocale = locale === "es" ? es : enUS;
+      return (
+        <span className="text-sm text-muted-foreground">
+          {formatDistanceToNow(date, { addSuffix: true, locale: dateLocale })}
+        </span>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: () => <div className="text-right">{t("actions")}</div>,
+    cell: ({ row }) => {
+      const sale = row.original;
+
+      return (
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">{t("openMenu")}</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onView(sale)}>
+                <Eye className="mr-2 h-4 w-4" />
+                {t("view")}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => onDelete(sale)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                {t("delete")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
+  },
+];
+

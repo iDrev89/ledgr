@@ -3,6 +3,7 @@
 import type React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Database,
   LayoutDashboard,
@@ -32,56 +33,67 @@ interface SidebarProps {
 }
 
 interface NavItem {
-  title: string;
+  titleKey: string;
   icon: React.ElementType;
   href: string;
   requiredPermission?: RoutePermission;
 }
 
 interface NavGroup {
-  title: string;
+  titleKey: string;
   items: NavItem[];
 }
 
 export function Sidebar({ open, toggleSidebar }: SidebarProps) {
   const pathname = usePathname();
+  const t = useTranslations("Sidebar");
   const { hasPermission, isPending } = usePermissions();
 
   const navGroups: NavGroup[] = [
     {
-      title: "Main",
+      titleKey: "overview",
       items: [
         {
-          title: "Dashboard",
+          titleKey: "dashboard",
           icon: LayoutDashboard,
           href: "/dashboard",
         },
+      ],
+    },
+    {
+      titleKey: "operations",
+      items: [
         {
-          title: "Customers",
-          icon: UserCircle,
-          href: "/customers",
-          requiredPermission: ROUTE_PERMISSIONS["/customers"],
-        },
-        {
-          title: "Sales",
+          titleKey: "sales",
           icon: ShoppingCart,
           href: "/sales",
           requiredPermission: ROUTE_PERMISSIONS["/sales"],
         },
         {
-          title: "Products",
+          titleKey: "customers",
+          icon: UserCircle,
+          href: "/customers",
+          requiredPermission: ROUTE_PERMISSIONS["/customers"],
+        },
+        {
+          titleKey: "expenses",
+          icon: DollarSign,
+          href: "/expenses",
+          requiredPermission: ROUTE_PERMISSIONS["/expenses"],
+        },
+      ],
+    },
+    {
+      titleKey: "catalog",
+      items: [
+        {
+          titleKey: "products",
           icon: Package,
           href: "/products",
           requiredPermission: ROUTE_PERMISSIONS["/products"],
         },
         {
-          title: "Expenses",
-          icon: DollarSign,
-          href: "/expenses",
-          requiredPermission: ROUTE_PERMISSIONS["/expenses"],
-        },
-        {
-          title: "Inventory",
+          titleKey: "inventory",
           icon: Warehouse,
           href: "/inventory",
           requiredPermission: ROUTE_PERMISSIONS["/inventory"],
@@ -89,22 +101,22 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       ],
     },
     {
-      title: "Management",
+      titleKey: "management",
       items: [
         {
-          title: "Users",
+          titleKey: "users",
           icon: Users,
           href: "/users",
           requiredPermission: ROUTE_PERMISSIONS["/users"],
         },
         {
-          title: "Payroll",
+          titleKey: "payroll",
           icon: Banknote,
           href: "/payroll",
           requiredPermission: ROUTE_PERMISSIONS["/payroll"],
         },
         {
-          title: "Reports",
+          titleKey: "reports",
           icon: FileText,
           href: "/reports",
           requiredPermission: ROUTE_PERMISSIONS["/reports"],
@@ -112,10 +124,10 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       ],
     },
     {
-      title: "System",
+      titleKey: "system",
       items: [
         {
-          title: "Settings",
+          titleKey: "settings",
           icon: Settings,
           href: "/settings",
         },
@@ -188,14 +200,14 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
             if (visibleItems.length === 0) return null;
 
             return (
-              <div key={group.title} className="px-3 py-2">
+              <div key={group.titleKey} className="px-3 py-2">
                 <h2 className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {group.title}
+                  {t(`groups.${group.titleKey}`)}
                 </h2>
                 <div className="space-y-1">
                   {visibleItems.map((item) => (
                     <Link
-                      key={item.title}
+                      key={item.titleKey}
                       href={item.href}
                       className={cn(
                         "flex items-center gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
@@ -206,7 +218,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
                       onClick={toggleSidebar}
                     >
                       <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <span>{t(`items.${item.titleKey}`)}</span>
                     </Link>
                   ))}
                 </div>

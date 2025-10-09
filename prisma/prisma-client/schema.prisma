@@ -156,6 +156,7 @@ model Product {
 
 model Sale {
   id            String        @id @default(cuid())
+  saleNumber    Int           @unique @default(autoincrement())
   createdById   String
   createdBy     User          @relation(fields: [createdById], references: [id], onDelete: Restrict)
   customerId    String
@@ -175,6 +176,7 @@ model Sale {
 
   @@index([createdById, createdAt])
   @@index([customerId, createdAt])
+  @@index([saleNumber])
   @@map("sale")
 }
 
