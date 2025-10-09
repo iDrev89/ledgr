@@ -11,6 +11,7 @@ import type {
   CreateProductInput,
   UpdateProductInput,
 } from "@/lib/validations/product";
+import { inventoryKeys } from "./use-inventory";
 
 export const productKeys = {
   all: ["products"] as const,
@@ -69,6 +70,10 @@ export function useCreateProduct() {
       queryClient.invalidateQueries({
         queryKey: productKeys.lists(),
       });
+      // Invalidate inventory queries to show the new product in inventory
+      queryClient.invalidateQueries({
+        queryKey: inventoryKeys.summary(),
+      });
     },
   });
 }
@@ -91,6 +96,10 @@ export function useUpdateProduct() {
       );
       queryClient.invalidateQueries({
         queryKey: productKeys.lists(),
+      });
+      // Invalidate inventory queries to update product info in inventory
+      queryClient.invalidateQueries({
+        queryKey: inventoryKeys.summary(),
       });
     },
   });
