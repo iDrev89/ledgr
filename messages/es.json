@@ -102,7 +102,7 @@
     "updateError": "Error al actualizar cliente",
     "loadError": "Error al cargar clientes",
     "noCustomers": "No se encontraron clientes. Crea tu primer cliente para comenzar.",
-    "searchPlaceholder": "Buscar clientes por nombre, correo o teléfono...",
+    "searchPlaceholder": "Buscar clientes por nombre...",
     "showing": "Mostrando {count} de {total} clientes",
     "validation": {
       "nameMin": "El nombre debe tener al menos 2 caracteres",
@@ -114,6 +114,73 @@
       "birthdateNotToday": "La fecha de nacimiento no puede ser hoy o en el futuro",
       "noteMax": "La nota debe tener menos de 500 caracteres",
       "idRequired": "El ID del cliente es requerido"
+    }
+  },
+  "Products": {
+    "title": "Productos",
+    "description": "Administra tu catálogo de productos y servicios.",
+    "createProduct": "Crear Producto",
+    "editProduct": "Editar Producto",
+    "createDescription": "Agrega un nuevo producto o servicio a tu catálogo.",
+    "editDescription": "Actualiza la información del producto o servicio.",
+    "productList": "Lista de Productos",
+    "productListDescription": "Ve y administra todos tus productos y servicios.",
+    "name": "Nombre",
+    "namePlaceholder": "Ingresa el nombre del producto",
+    "type": "Tipo",
+    "typePlaceholder": "Selecciona el tipo",
+    "typeProduct": "Producto",
+    "typeService": "Servicio",
+    "sku": "SKU",
+    "skuPlaceholder": "Código del producto",
+    "skuDescription": "Opcional - Código de referencia del producto",
+    "descriptionPlaceholder": "Descripción del producto",
+    "price": "Precio",
+    "pricePlaceholder": "0.00",
+    "cost": "Costo",
+    "costPlaceholder": "0.00",
+    "costDescription": "Opcional - Costo unitario para cálculo de utilidad",
+    "active": "Activo",
+    "activeDescription": "Los productos inactivos no aparecerán en formularios de venta",
+    "inactive": "Inactivo",
+    "status": "Estado",
+    "actions": "Acciones",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "deleting": "Eliminando...",
+    "deleteTitle": "Eliminar Producto",
+    "deleteDescription": "¿Estás seguro de que deseas eliminar {name}? Esta acción no se puede deshacer.",
+    "deleteSuccess": "Producto eliminado exitosamente",
+    "deleteError": "Error al eliminar producto",
+    "createSuccess": "Producto creado exitosamente",
+    "createError": "Error al crear producto",
+    "updateSuccess": "Producto actualizado exitosamente",
+    "updateError": "Error al actualizar producto",
+    "loadError": "Error al cargar productos",
+    "noProducts": "No se encontraron productos. Crea tu primer producto para comenzar.",
+    "searchPlaceholder": "Buscar productos por nombre...",
+    "showing": "Mostrando {count} de {total} productos",
+    "validation": {
+      "nameMin": "El nombre debe tener al menos 2 caracteres",
+      "nameMax": "El nombre debe tener menos de 200 caracteres",
+      "typeInvalid": "Tipo de producto inválido",
+      "skuMax": "El SKU debe tener menos de 50 caracteres",
+      "descriptionMax": "La descripción debe tener menos de 1000 caracteres",
+      "priceInvalid": "El precio debe ser un número positivo válido",
+      "costInvalid": "El costo debe ser un número positivo válido",
+      "idRequired": "El ID del producto es requerido"
+    },
+    "errors": {
+      "fetchFailed": "Error al obtener productos",
+      "notFound": "Producto no encontrado",
+      "skuExists": "Ya existe un producto con este SKU",
+      "createFailed": "Error al crear producto",
+      "updateFailed": "Error al actualizar producto",
+      "deleteFailed": "Error al eliminar producto",
+      "cannotDelete": "No se puede eliminar un producto con ventas, movimientos de inventario o compras existentes"
     }
   },
   "DataTable": {
@@ -131,4 +198,3 @@
     "loading": "Cargando..."
   }
 }
-
