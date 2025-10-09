@@ -1,4 +1,30 @@
 {
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Resumen general de tu negocio",
+    "totalSales": "Ventas Totales",
+    "salesCount": "Número de Ventas",
+    "totalExpenses": "Gastos Totales",
+    "totalCustomers": "Total Clientes",
+    "vsLastMonth": "vs mes anterior",
+    "thisMonth": "este mes",
+    "allTime": "total",
+    "salesVsExpenses": "Ventas vs Gastos (Últimos 7 días)",
+    "sales": "Ventas",
+    "expenses": "Gastos",
+    "topProducts": "Productos Más Vendidos",
+    "unitsSold": "unidades vendidas",
+    "lowStockAlerts": "Alertas de Stock Bajo",
+    "outOfStock": "Agotado",
+    "critical": "Crítico",
+    "low": "Bajo",
+    "unitsRemaining": "unidades restantes",
+    "allProductsStocked": "Todos los productos tienen buen stock",
+    "noDataYet": "No hay datos aún",
+    "errors": {
+      "fetchFailed": "Error al obtener los datos del dashboard"
+    }
+  },
   "Users": {
     "title": "Usuarios",
     "description": "Administra los usuarios de tu aplicación y sus roles.",

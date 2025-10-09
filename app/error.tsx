@@ -62,7 +62,7 @@ export default function Error({
           </div>
           <div className="text-center pt-2">
             <p className="text-xs text-muted-foreground">
-              CargoMax Logistics Platform
+              Ledgr - Business Management App
             </p>
           </div>
         </CardContent>

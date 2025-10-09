@@ -1,4 +1,30 @@
 {
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Overview of your business",
+    "totalSales": "Total Sales",
+    "salesCount": "Sales Count",
+    "totalExpenses": "Total Expenses",
+    "totalCustomers": "Total Customers",
+    "vsLastMonth": "vs last month",
+    "thisMonth": "this month",
+    "allTime": "all time",
+    "salesVsExpenses": "Sales vs Expenses (Last 7 Days)",
+    "sales": "Sales",
+    "expenses": "Expenses",
+    "topProducts": "Top Selling Products",
+    "unitsSold": "units sold",
+    "lowStockAlerts": "Low Stock Alerts",
+    "outOfStock": "Out of Stock",
+    "critical": "Critical",
+    "low": "Low",
+    "unitsRemaining": "units remaining",
+    "allProductsStocked": "All products are well stocked",
+    "noDataYet": "No data yet",
+    "errors": {
+      "fetchFailed": "Failed to fetch dashboard data"
+    }
+  },
   "Users": {
     "title": "Users",
     "description": "Manage your application users and their roles.",
