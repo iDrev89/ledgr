@@ -3,12 +3,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTopProducts } from "@/hooks/use-dashboard";
 import { useTranslations } from "next-intl";
-import { TrendingUp } from "lucide-react";
+import { Package, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const TopProductsCard = () => {
   const t = useTranslations("Dashboard");
+  const tProducts = useTranslations("Products");
   const { data, isLoading } = useTopProducts();
 
   const formatCurrency = (value: string) => {
@@ -30,11 +32,17 @@ export const TopProductsCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-green-500/10">
-            <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-green-500/10">
+              <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
+            </div>
+            {t("topProducts")}
           </div>
-          {t("topProducts")}
+          <Badge variant="outline" className="gap-1">
+            <Package className="h-3 w-3" />
+            {tProducts("product")}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -61,8 +69,9 @@ export const TopProductsCard = () => {
                       {rank.icon}
                     </div>
                     <div>
-                      <p className="font-medium">{product.productName}</p>
+                      <p className="font-medium line-clamp-1">{product.productName}</p>
                       <div className="flex items-center gap-2 mt-1">
+                        <Package className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
                           {product.quantity} {t("unitsSold")}
                         </span>

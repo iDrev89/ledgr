@@ -137,7 +137,7 @@ export const getDashboardStats = async (): Promise<
   }
 };
 
-// Get sales chart data (last 7 days)
+// Get sales chart data (last 7 days including today)
 export const getSalesChartData = async (): Promise<
   ActionResponse<
     Array<{
@@ -152,16 +152,30 @@ export const getSalesChartData = async (): Promise<
   try {
     await requireAuth();
 
+    // Get current date and time in UTC
     const now = new Date();
-    const last7Days = new Date(now);
-    last7Days.setDate(now.getDate() - 6);
-    last7Days.setHours(0, 0, 0, 0);
+    
+    // Get today at start of day (UTC)
+    const today = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate()
+    ));
+    
+    // Calculate start date (6 days ago from today)
+    const startDate = new Date(today);
+    startDate.setUTCDate(today.getUTCDate() - 6);
+
+    // Get tomorrow's date to ensure we include all of today
+    const tomorrow = new Date(today);
+    tomorrow.setUTCDate(today.getUTCDate() + 1);
 
     const [sales, expenses] = await Promise.all([
       prisma.sale.findMany({
         where: {
           createdAt: {
-            gte: last7Days,
+            gte: startDate,
+            lt: tomorrow, // Less than tomorrow = includes all of today
           },
         },
         select: {
@@ -172,7 +186,8 @@ export const getSalesChartData = async (): Promise<
       prisma.expense.findMany({
         where: {
           incurredAt: {
-            gte: last7Days,
+            gte: startDate,
+            lt: tomorrow, // Less than tomorrow = includes all of today
           },
         },
         select: {
@@ -185,10 +200,10 @@ export const getSalesChartData = async (): Promise<
     // Group by date
     const dataMap = new Map<string, { sales: number; expenses: number }>();
 
-    // Initialize all dates
+    // Initialize all 7 dates (from startDate to today, inclusive)
     for (let i = 0; i < 7; i++) {
-      const date = new Date(last7Days);
-      date.setDate(last7Days.getDate() + i);
+      const date = new Date(startDate);
+      date.setUTCDate(startDate.getUTCDate() + i);
       const dateStr = date.toISOString().split("T")[0];
       dataMap.set(dateStr, { sales: 0, expenses: 0 });
     }
@@ -211,11 +226,14 @@ export const getSalesChartData = async (): Promise<
       }
     });
 
-    const chartData = Array.from(dataMap.entries()).map(([date, data]) => ({
-      date,
-      sales: Math.round(data.sales),
-      expenses: Math.round(data.expenses),
-    }));
+    // Convert to array and ensure it's sorted by date
+    const chartData = Array.from(dataMap.entries())
+      .map(([date, data]) => ({
+        date,
+        sales: Math.round(data.sales),
+        expenses: Math.round(data.expenses),
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
 
     return { success: true, data: chartData };
   } catch (error) {
@@ -227,12 +245,13 @@ export const getSalesChartData = async (): Promise<
   }
 };
 
-// Get top selling products
+// Get top selling products (only PRODUCT type, not services)
 export const getTopProducts = async (): Promise<
   ActionResponse<
     Array<{
       productId: string;
       productName: string;
+      productType: string;
       quantity: number;
       revenue: string;
     }>
@@ -247,44 +266,64 @@ export const getTopProducts = async (): Promise<
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const topProducts = await prisma.saleItem.groupBy({
-      by: ["productId"],
+    // Get all sale items from this month
+    const saleItems = await prisma.saleItem.findMany({
       where: {
         sale: {
           createdAt: {
             gte: startOfMonth,
           },
         },
-      },
-      _sum: {
-        quantity: true,
-        lineTotal: true,
-      },
-      orderBy: {
-        _sum: {
-          quantity: "desc",
+        product: {
+          type: "PRODUCT", // Only get PRODUCT type, exclude SERVICE
+          active: true,
         },
       },
-      take: 5,
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+          },
+        },
+      },
     });
 
-    const productsWithNames = await Promise.all(
-      topProducts.map(async (item) => {
-        const product = await prisma.product.findUnique({
-          where: { id: item.productId },
-          select: { name: true },
+    // Group and aggregate manually
+    const productMap = new Map<
+      string,
+      { name: string; type: string; quantity: number; revenue: number }
+    >();
+
+    saleItems.forEach((item) => {
+      const existing = productMap.get(item.productId);
+      if (existing) {
+        existing.quantity += item.quantity;
+        existing.revenue += item.lineTotal.toNumber();
+      } else {
+        productMap.set(item.productId, {
+          name: item.product.name,
+          type: item.product.type,
+          quantity: item.quantity,
+          revenue: item.lineTotal.toNumber(),
         });
+      }
+    });
 
-        return {
-          productId: item.productId,
-          productName: product?.name || "Unknown",
-          quantity: item._sum.quantity || 0,
-          revenue: (item._sum.lineTotal || new Decimal(0)).toString(),
-        };
-      })
-    );
+    // Convert to array and sort by quantity
+    const topProducts = Array.from(productMap.entries())
+      .map(([productId, data]) => ({
+        productId,
+        productName: data.name,
+        productType: data.type,
+        quantity: data.quantity,
+        revenue: data.revenue.toString(),
+      }))
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 5);
 
-    return { success: true, data: productsWithNames };
+    return { success: true, data: topProducts };
   } catch (error) {
     console.error("Error fetching top products:", error);
     return {

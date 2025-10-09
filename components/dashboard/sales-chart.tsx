@@ -54,9 +54,7 @@ export const SalesChart = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              📊
-            </div>
+            <div className="p-2 rounded-lg bg-primary/10">📊</div>
             {t("salesVsExpenses")}
           </CardTitle>
           <div className="flex gap-4 text-sm">
@@ -87,10 +85,7 @@ export const SalesChart = () => {
                 <YAxis tickFormatter={formatCurrency} className="text-xs" />
                 <ChartTooltip
                   content={
-                    <ChartTooltipContent
-                      labelFormatter={(label) => formatDate(label as string)}
-                      formatter={(value) => formatCurrency(value as number)}
-                    />
+                    <ChartTooltipContent label={formatDate.toString()} />
                   }
                 />
                 <Area
@@ -117,4 +112,3 @@ export const SalesChart = () => {
     </Card>
   );
 };
-

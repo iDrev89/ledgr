@@ -145,6 +145,8 @@
   "Products": {
     "title": "Productos",
     "description": "Administra tu catálogo de productos y servicios.",
+    "product": "Productos",
+    "service": "Servicios",
     "createProduct": "Crear Producto",
     "editProduct": "Editar Producto",
     "createDescription": "Agrega un nuevo producto o servicio a tu catálogo.",
