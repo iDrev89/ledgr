@@ -48,7 +48,7 @@ const createProductSchemas = (messages?: {
       )
       .optional()
       .or(z.literal("")),
-    active: z.boolean().default(true),
+    active: z.boolean(),
   });
 
   const createProductSchema = baseProductSchema;
