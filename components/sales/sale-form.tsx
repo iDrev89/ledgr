@@ -81,6 +81,8 @@ export function SaleForm({
   const handleSubmit = async (data: any) => {
     // Mark as attempted
     setAttempted(true);
+    setTouchedCustomer(true);
+    setTouchedItems(true);
 
     try {
       // Validate customer
@@ -139,7 +141,9 @@ export function SaleForm({
       note: "",
     });
     setItems([]);
-    setAttempted(false); // Reset attempt state
+    setAttempted(false);
+    setTouchedCustomer(false);
+    setTouchedItems(false);
   };
 
   // Check if form is valid for better UX
@@ -148,10 +152,16 @@ export function SaleForm({
   const allItemsHaveProducts = items.every((item) => item.productId);
   const isFormValid = customerId && hasItems && allItemsHaveProducts;
 
+  // Track which validations should be shown based on what user has interacted with
+  const [touchedCustomer, setTouchedCustomer] = useState(false);
+  const [touchedItems, setTouchedItems] = useState(false);
+
   // Reset attempted state when form becomes valid
   useEffect(() => {
     if (isFormValid && attempted) {
       setAttempted(false);
+      setTouchedCustomer(false);
+      setTouchedItems(false);
     }
   }, [isFormValid, attempted]);
 
@@ -246,26 +256,28 @@ export function SaleForm({
         />
 
         <div className="flex flex-col gap-4">
-          {/* Validation hints - only show after user has attempted to submit AND field is still invalid */}
-          {attempted && !isFormValid && (
+          {/* Validation hints - show each error independently based on what was touched */}
+          {attempted && !isFormValid && 
+            ((touchedCustomer && !customerId) || 
+             (touchedItems && (!hasItems || !allItemsHaveProducts))) && (
             <div className="text-sm space-y-1 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
               <p className="font-medium text-amber-900 dark:text-amber-100 mb-2">
                 {t("validation.requiredFields")}:
               </p>
-              {/* Only show customer error if customer is still not selected */}
-              {!customerId && (
+              {/* Only show customer error if user tried to submit and customer is still empty */}
+              {touchedCustomer && !customerId && (
                 <p className="text-amber-700 dark:text-amber-300">
                   • {t("validation.customerIdRequired")}
                 </p>
               )}
-              {/* Only show items error if there are still no items */}
-              {!hasItems && (
+              {/* Only show items error if user tried to submit and there are no items */}
+              {touchedItems && !hasItems && (
                 <p className="text-amber-700 dark:text-amber-300">
                   • {t("validation.itemsMin")}
                 </p>
               )}
-              {/* Only show product error if items exist but some don't have products */}
-              {hasItems && !allItemsHaveProducts && (
+              {/* Only show product error if user tried to submit and items exist but some don't have products */}
+              {touchedItems && hasItems && !allItemsHaveProducts && (
                 <p className="text-amber-700 dark:text-amber-300">
                   • {t("validation.productIdRequired")}
                 </p>

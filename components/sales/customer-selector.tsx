@@ -63,8 +63,14 @@ export function CustomerSelector({
     setDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+  const handleCustomerCreated = (newCustomer: Customer) => {
+    // Automatically select the newly created customer
+    onValueChange(newCustomer.id);
+    setLastCustomerName(newCustomer.name);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    setDialogOpen(open);
   };
 
   return (
@@ -158,10 +164,7 @@ export function CustomerSelector({
       <CustomerDialog
         open={dialogOpen}
         onOpenChange={handleDialogClose}
-        onSuccess={(newCustomer) => {
-          onValueChange(newCustomer.id);
-          setDialogOpen(false);
-        }}
+        onSuccess={handleCustomerCreated}
       />
     </>
   );
