@@ -1,11 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+
 import { useSalesChartData } from "@/hooks/use-dashboard";
 import { useTranslations } from "next-intl";
 import {
@@ -17,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 export const SalesChart = () => {
   const t = useTranslations("Dashboard");
@@ -83,11 +80,7 @@ export const SalesChart = () => {
                   className="text-xs"
                 />
                 <YAxis tickFormatter={formatCurrency} className="text-xs" />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent label={formatDate.toString()} />
-                  }
-                />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Area
                   type="monotone"
                   dataKey="sales"
