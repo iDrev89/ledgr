@@ -21,12 +21,14 @@ interface CustomerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   customer?: Customer;
+  onSuccess?: (customer: Customer) => void;
 }
 
 export function CustomerDialog({
   open,
   onOpenChange,
   customer,
+  onSuccess,
 }: CustomerDialogProps) {
   const t = useTranslations("Customers");
   const createMutation = useCreateCustomer();
@@ -38,14 +40,18 @@ export function CustomerDialog({
     data: CreateCustomerInput | UpdateCustomerInput
   ) => {
     try {
+      let result: Customer;
       if (customer) {
-        await updateMutation.mutateAsync(data as UpdateCustomerInput);
+        result = await updateMutation.mutateAsync(data as UpdateCustomerInput);
         toast.success(t("updateSuccess"));
       } else {
-        await createMutation.mutateAsync(data as CreateCustomerInput);
+        result = await createMutation.mutateAsync(data as CreateCustomerInput);
         toast.success(t("createSuccess"));
       }
       onOpenChange(false);
+      if (onSuccess) {
+        onSuccess(result);
+      }
     } catch (error) {
       toast.error(
         customer ? t("updateError") : t("createError"),

@@ -9964,6 +9964,7 @@ export namespace Prisma {
   }
 
   export type SaleAvgAggregateOutputType = {
+    saleNumber: number | null
     subtotal: Decimal | null
     discountTotal: Decimal | null
     taxTotal: Decimal | null
@@ -9971,6 +9972,7 @@ export namespace Prisma {
   }
 
   export type SaleSumAggregateOutputType = {
+    saleNumber: number | null
     subtotal: Decimal | null
     discountTotal: Decimal | null
     taxTotal: Decimal | null
@@ -9979,6 +9981,7 @@ export namespace Prisma {
 
   export type SaleMinAggregateOutputType = {
     id: string | null
+    saleNumber: number | null
     createdById: string | null
     customerId: string | null
     currency: string | null
@@ -9994,6 +9997,7 @@ export namespace Prisma {
 
   export type SaleMaxAggregateOutputType = {
     id: string | null
+    saleNumber: number | null
     createdById: string | null
     customerId: string | null
     currency: string | null
@@ -10009,6 +10013,7 @@ export namespace Prisma {
 
   export type SaleCountAggregateOutputType = {
     id: number
+    saleNumber: number
     createdById: number
     customerId: number
     currency: number
@@ -10025,6 +10030,7 @@ export namespace Prisma {
 
 
   export type SaleAvgAggregateInputType = {
+    saleNumber?: true
     subtotal?: true
     discountTotal?: true
     taxTotal?: true
@@ -10032,6 +10038,7 @@ export namespace Prisma {
   }
 
   export type SaleSumAggregateInputType = {
+    saleNumber?: true
     subtotal?: true
     discountTotal?: true
     taxTotal?: true
@@ -10040,6 +10047,7 @@ export namespace Prisma {
 
   export type SaleMinAggregateInputType = {
     id?: true
+    saleNumber?: true
     createdById?: true
     customerId?: true
     currency?: true
@@ -10055,6 +10063,7 @@ export namespace Prisma {
 
   export type SaleMaxAggregateInputType = {
     id?: true
+    saleNumber?: true
     createdById?: true
     customerId?: true
     currency?: true
@@ -10070,6 +10079,7 @@ export namespace Prisma {
 
   export type SaleCountAggregateInputType = {
     id?: true
+    saleNumber?: true
     createdById?: true
     customerId?: true
     currency?: true
@@ -10172,6 +10182,7 @@ export namespace Prisma {
 
   export type SaleGroupByOutputType = {
     id: string
+    saleNumber: number
     createdById: string
     customerId: string
     currency: string
@@ -10206,6 +10217,7 @@ export namespace Prisma {
 
   export type SaleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    saleNumber?: boolean
     createdById?: boolean
     customerId?: boolean
     currency?: boolean
@@ -10226,6 +10238,7 @@ export namespace Prisma {
 
   export type SaleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    saleNumber?: boolean
     createdById?: boolean
     customerId?: boolean
     currency?: boolean
@@ -10243,6 +10256,7 @@ export namespace Prisma {
 
   export type SaleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    saleNumber?: boolean
     createdById?: boolean
     customerId?: boolean
     currency?: boolean
@@ -10260,6 +10274,7 @@ export namespace Prisma {
 
   export type SaleSelectScalar = {
     id?: boolean
+    saleNumber?: boolean
     createdById?: boolean
     customerId?: boolean
     currency?: boolean
@@ -10273,7 +10288,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdById" | "customerId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "paymentMethod" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
+  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "customerId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "paymentMethod" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
   export type SaleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -10300,6 +10315,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      saleNumber: number
       createdById: string
       customerId: string
       currency: string
@@ -10739,6 +10755,7 @@ export namespace Prisma {
    */
   interface SaleFieldRefs {
     readonly id: FieldRef<"Sale", 'String'>
+    readonly saleNumber: FieldRef<"Sale", 'Int'>
     readonly createdById: FieldRef<"Sale", 'String'>
     readonly customerId: FieldRef<"Sale", 'String'>
     readonly currency: FieldRef<"Sale", 'String'>
@@ -25379,6 +25396,7 @@ export namespace Prisma {
 
   export const SaleScalarFieldEnum: {
     id: 'id',
+    saleNumber: 'saleNumber',
     createdById: 'createdById',
     customerId: 'customerId',
     currency: 'currency',
@@ -25658,20 +25676,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'PaymentMethod'
-   */
-  export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
-    
-
-
-  /**
-   * Reference to a field of type 'PaymentMethod[]'
-   */
-  export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -25682,6 +25686,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod'
+   */
+  export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod[]'
+   */
+  export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
     
 
 
@@ -26245,6 +26263,7 @@ export namespace Prisma {
     OR?: SaleWhereInput[]
     NOT?: SaleWhereInput | SaleWhereInput[]
     id?: StringFilter<"Sale"> | string
+    saleNumber?: IntFilter<"Sale"> | number
     createdById?: StringFilter<"Sale"> | string
     customerId?: StringFilter<"Sale"> | string
     currency?: StringFilter<"Sale"> | string
@@ -26264,6 +26283,7 @@ export namespace Prisma {
 
   export type SaleOrderByWithRelationInput = {
     id?: SortOrder
+    saleNumber?: SortOrder
     createdById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
@@ -26283,6 +26303,7 @@ export namespace Prisma {
 
   export type SaleWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    saleNumber?: number
     AND?: SaleWhereInput | SaleWhereInput[]
     OR?: SaleWhereInput[]
     NOT?: SaleWhereInput | SaleWhereInput[]
@@ -26301,10 +26322,11 @@ export namespace Prisma {
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     items?: SaleItemListRelationFilter
     receivables?: AccountsReceivableListRelationFilter
-  }, "id">
+  }, "id" | "saleNumber">
 
   export type SaleOrderByWithAggregationInput = {
     id?: SortOrder
+    saleNumber?: SortOrder
     createdById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
@@ -26328,6 +26350,7 @@ export namespace Prisma {
     OR?: SaleScalarWhereWithAggregatesInput[]
     NOT?: SaleScalarWhereWithAggregatesInput | SaleScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Sale"> | string
+    saleNumber?: IntWithAggregatesFilter<"Sale"> | number
     createdById?: StringWithAggregatesFilter<"Sale"> | string
     customerId?: StringWithAggregatesFilter<"Sale"> | string
     currency?: StringWithAggregatesFilter<"Sale"> | string
@@ -27839,6 +27862,7 @@ export namespace Prisma {
 
   export type SaleCreateInput = {
     id?: string
+    saleNumber?: number
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -27856,6 +27880,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     customerId: string
     currency?: string
@@ -27890,6 +27915,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
@@ -27907,6 +27933,7 @@ export namespace Prisma {
 
   export type SaleCreateManyInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     customerId: string
     currency?: string
@@ -27935,6 +27962,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
@@ -29474,6 +29502,17 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type EnumPaymentMethodFilter<$PrismaModel = never> = {
     equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
     in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
@@ -29488,6 +29527,7 @@ export namespace Prisma {
 
   export type SaleCountOrderByAggregateInput = {
     id?: SortOrder
+    saleNumber?: SortOrder
     createdById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
@@ -29502,6 +29542,7 @@ export namespace Prisma {
   }
 
   export type SaleAvgOrderByAggregateInput = {
+    saleNumber?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
     taxTotal?: SortOrder
@@ -29510,6 +29551,7 @@ export namespace Prisma {
 
   export type SaleMaxOrderByAggregateInput = {
     id?: SortOrder
+    saleNumber?: SortOrder
     createdById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
@@ -29525,6 +29567,7 @@ export namespace Prisma {
 
   export type SaleMinOrderByAggregateInput = {
     id?: SortOrder
+    saleNumber?: SortOrder
     createdById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
@@ -29539,10 +29582,27 @@ export namespace Prisma {
   }
 
   export type SaleSumOrderByAggregateInput = {
+    saleNumber?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
@@ -29553,17 +29613,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
     _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type SaleScalarRelationFilter = {
@@ -29618,22 +29667,6 @@ export namespace Prisma {
     unitPrice?: SortOrder
     discount?: SortOrder
     lineTotal?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type ExpenseCategoryNullableScalarRelationFilter = {
@@ -30878,6 +30911,14 @@ export namespace Prisma {
     deleteMany?: AccountsReceivableScalarWhereInput | AccountsReceivableScalarWhereInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type SaleItemUncheckedUpdateManyWithoutSaleNestedInput = {
     create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
@@ -30916,14 +30957,6 @@ export namespace Prisma {
     create?: XOR<ProductCreateWithoutSaleItemsInput, ProductUncheckedCreateWithoutSaleItemsInput>
     connectOrCreate?: ProductCreateOrConnectWithoutSaleItemsInput
     connect?: ProductWhereUniqueInput
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type SaleUpdateOneRequiredWithoutItemsNestedInput = {
@@ -31826,16 +31859,6 @@ export namespace Prisma {
     not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
   }
 
-  export type NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
-    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -31861,6 +31884,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
+    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
   }
 
   export type NestedEnumPurchaseStatusFilter<$PrismaModel = never> = {
@@ -31988,6 +32021,7 @@ export namespace Prisma {
 
   export type SaleCreateWithoutCreatedByInput = {
     id?: string
+    saleNumber?: number
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -32004,6 +32038,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateWithoutCreatedByInput = {
     id?: string
+    saleNumber?: number
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -32255,6 +32290,7 @@ export namespace Prisma {
     OR?: SaleScalarWhereInput[]
     NOT?: SaleScalarWhereInput | SaleScalarWhereInput[]
     id?: StringFilter<"Sale"> | string
+    saleNumber?: IntFilter<"Sale"> | number
     createdById?: StringFilter<"Sale"> | string
     customerId?: StringFilter<"Sale"> | string
     currency?: StringFilter<"Sale"> | string
@@ -32589,6 +32625,7 @@ export namespace Prisma {
 
   export type SaleCreateWithoutCustomerInput = {
     id?: string
+    saleNumber?: number
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -32605,6 +32642,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateWithoutCustomerInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -33144,6 +33182,7 @@ export namespace Prisma {
 
   export type SaleCreateWithoutItemsInput = {
     id?: string
+    saleNumber?: number
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -33160,6 +33199,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateWithoutItemsInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     customerId: string
     currency?: string
@@ -33243,6 +33283,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
@@ -34737,6 +34778,7 @@ export namespace Prisma {
 
   export type SaleCreateWithoutReceivablesInput = {
     id?: string
+    saleNumber?: number
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -34753,6 +34795,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateWithoutReceivablesInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     customerId: string
     currency?: string
@@ -34864,6 +34907,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateWithoutReceivablesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
@@ -35094,6 +35138,7 @@ export namespace Prisma {
 
   export type SaleCreateManyCreatedByInput = {
     id?: string
+    saleNumber?: number
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -35249,6 +35294,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -35265,6 +35311,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -35426,6 +35473,7 @@ export namespace Prisma {
 
   export type SaleCreateManyCustomerInput = {
     id?: string
+    saleNumber?: number
     createdById: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -35467,6 +35515,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -35483,6 +35532,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string

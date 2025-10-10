@@ -82,7 +82,7 @@ export default function NotFound() {
 
           <div className="text-center pt-4 border-t">
             <p className="text-xs text-muted-foreground mb-2">
-              CargoMax Logistics Platform
+              Ledgr - Business Management App
             </p>
             <p className="text-xs text-muted-foreground">
               Need help?{" "}
