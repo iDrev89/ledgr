@@ -58,7 +58,7 @@ export function ExpenseDetailDialog({
           {/* Amount */}
           <div className="bg-primary/5 rounded-lg p-4 text-center">
             <p className="text-sm text-muted-foreground mb-1">{t("amount")}</p>
-            <p className="text-3xl font-bold">{formatCurrency(expense.amount)}</p>
+            <p className="text-3xl font-bold">{formatCurrency(expense.amount.toNumber())}</p>
           </div>
 
           {/* Date and Invoice */}
@@ -83,11 +83,6 @@ export function ExpenseDetailDialog({
               <div>
                 <h3 className="text-sm font-semibold mb-2">{t("category")}</h3>
                 <Badge variant="outline">{expense.category.name}</Badge>
-                {expense.category.parent && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {expense.category.parent.name}
-                  </p>
-                )}
               </div>
             )}
             {expense.supplier && (

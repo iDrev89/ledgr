@@ -13,7 +13,7 @@ const createExpenseCategorySchemas = (messages?: {
       .min(2, messages?.nameMin || "Name must be at least 2 characters")
       .max(100, messages?.nameMax || "Name must be less than 100 characters")
       .trim(),
-    active: z.boolean().default(true),
+    active: z.boolean(),
   });
 
   const createExpenseCategorySchema = baseExpenseCategorySchema;

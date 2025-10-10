@@ -152,15 +152,15 @@ export function SaleDetailDialog({
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(item.unitPrice)}
+                        {formatCurrency(item.unitPrice.toNumber())}
                       </TableCell>
                       <TableCell className="text-right">
-                        {parseFloat(item.discount.toString()) > 0
-                          ? `-${formatCurrency(item.discount)}`
+                        {item.discount.toNumber() > 0
+                          ? `-${formatCurrency(item.discount.toNumber())}`
                           : "-"}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCurrency(item.lineTotal)}
+                        {formatCurrency(item.lineTotal.toNumber())}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -175,24 +175,24 @@ export function SaleDetailDialog({
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("subtotal")}</span>
                 <span className="font-medium">
-                  {formatCurrency(sale.subtotal)}
+                  {formatCurrency(sale.subtotal.toNumber())}
                 </span>
               </div>
-              {parseFloat(sale.discountTotal.toString()) > 0 && (
+              {sale.discountTotal.toNumber() > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
                     {t("discountTotal")}
                   </span>
                   <span className="font-medium text-destructive">
-                    -{formatCurrency(sale.discountTotal)}
+                    -{formatCurrency(sale.discountTotal.toNumber())}
                   </span>
                 </div>
               )}
-              {parseFloat(sale.taxTotal.toString()) > 0 && (
+              {sale.taxTotal.toNumber() > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("taxTotal")}</span>
                   <span className="font-medium">
-                    {formatCurrency(sale.taxTotal)}
+                    {formatCurrency(sale.taxTotal.toNumber())}
                   </span>
                 </div>
               )}
@@ -200,7 +200,7 @@ export function SaleDetailDialog({
               <div className="flex justify-between">
                 <span className="font-semibold">{t("total")}</span>
                 <span className="text-lg font-bold">
-                  {formatCurrency(sale.total)}
+                  {formatCurrency(sale.total.toNumber())}
                 </span>
               </div>
             </div>
