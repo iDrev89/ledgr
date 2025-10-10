@@ -21,6 +21,11 @@ type ActionResponse<T = unknown> =
 
 type SaleWithDetails = Sale & {
   customer: Customer;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
   items: (SaleItem & {
     product: Product;
   })[];
@@ -37,6 +42,13 @@ const serializeSale = (sale: any): any => {
     customer: sale.customer
       ? {
           ...sale.customer,
+        }
+      : undefined,
+    createdBy: sale.createdBy
+      ? {
+          id: sale.createdBy.id,
+          name: sale.createdBy.name,
+          email: sale.createdBy.email,
         }
       : undefined,
     items: sale.items
