@@ -27,16 +27,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useProducts } from "@/hooks/use-products";
+import { useUsers } from "@/hooks/use-users";
 import type { Product } from "@/lib/types/product";
+import { ProductType } from "@/prisma/prisma-client";
 
 export interface SaleItemRow {
   id: string;
   productId: string;
   productName: string;
+  productType?: string;
   quantity: number;
   unitPrice: string;
   discount: string;
   lineTotal: number;
+  performedById?: string;
+  performedByName?: string;
 }
 
 interface SaleItemsTableProps {
@@ -55,6 +60,9 @@ export function SaleItemsTable({
   const [openProductSelector, setOpenProductSelector] = useState<string | null>(
     null
   );
+  const [openPerformerSelector, setOpenPerformerSelector] = useState<
+    string | null
+  >(null);
 
   const { data: productsData } = useProducts({
     search: productSearch,
@@ -63,15 +71,21 @@ export function SaleItemsTable({
   });
   const products = productsData?.products || [];
 
+  const { data: usersData } = useUsers();
+  const users = usersData?.users.filter((u) => u.role === "user") || [];
+
   const handleAddItem = () => {
     const newItem: SaleItemRow = {
       id: `temp-${Date.now()}`,
       productId: "",
       productName: "",
+      productType: undefined,
       quantity: 1,
       unitPrice: "0",
       discount: "0",
       lineTotal: 0,
+      performedById: undefined,
+      performedByName: undefined,
     };
     onItemsChange([...items, newItem]);
   };
@@ -89,14 +103,39 @@ export function SaleItemsTable({
           ...item,
           productId: product.id,
           productName: product.name,
+          productType: product.type,
           unitPrice,
           lineTotal,
+          // Reset performer if switching between product types
+          performedById:
+            product.type === ProductType.SERVICE
+              ? item.performedById
+              : undefined,
+          performedByName:
+            product.type === ProductType.SERVICE
+              ? item.performedByName
+              : undefined,
         };
       }
       return item;
     });
     onItemsChange(updatedItems);
     setOpenProductSelector(null);
+  };
+
+  const handleSelectPerformer = (itemId: string, userId: string, userName: string) => {
+    const updatedItems = items.map((item) => {
+      if (item.id === itemId) {
+        return {
+          ...item,
+          performedById: userId,
+          performedByName: userName,
+        };
+      }
+      return item;
+    });
+    onItemsChange(updatedItems);
+    setOpenPerformerSelector(null);
   };
 
   const handleQuantityChange = (itemId: string, value: string) => {

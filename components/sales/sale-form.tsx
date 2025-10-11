@@ -54,12 +54,15 @@ export function SaleForm({
         id: item.id,
         productId: item.productId,
         productName: item.product.name,
+        productType: item.product.type,
         quantity: item.quantity,
         unitPrice: item.unitPrice.toString(),
         discount: item.discount.toString(),
         lineTotal:
           parseFloat(item.unitPrice.toString()) * item.quantity -
           parseFloat(item.discount.toString()),
+        performedById: item.performedById || undefined,
+        performedByName: item.performedBy?.name || undefined,
       }));
     }
     return [];
@@ -122,6 +125,7 @@ export function SaleForm({
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         discount: item.discount || "0",
+        performedById: item.performedById || undefined,
       }));
 
       // Validate payments - all payments must have an amount

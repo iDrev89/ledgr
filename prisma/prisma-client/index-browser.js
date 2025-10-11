@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.17.1
- * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.17.1",
-  engine: "272a37d34178c2894197e17273bf937f25acdeac"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -200,6 +200,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   description: 'description',
   price: 'price',
   cost: 'cost',
+  commissionPercent: 'commissionPercent',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -227,7 +228,9 @@ exports.Prisma.SaleItemScalarFieldEnum = {
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   discount: 'discount',
-  lineTotal: 'lineTotal'
+  lineTotal: 'lineTotal',
+  performedById: 'performedById',
+  commissionPercentApplied: 'commissionPercentApplied'
 };
 
 exports.Prisma.SalePaymentScalarFieldEnum = {
@@ -358,12 +361,39 @@ exports.Prisma.AccountsReceivablePaymentScalarFieldEnum = {
 exports.Prisma.PayrollEntryScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  period: 'period',
   kind: 'kind',
   description: 'description',
   currency: 'currency',
   amount: 'amount',
+  period: 'period',
+  runId: 'runId',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.PayrollRunScalarFieldEnum = {
+  id: 'id',
+  periodType: 'periodType',
+  periodLabel: 'periodLabel',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PayrollRunItemScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  userId: 'userId',
+  commissionsTotal: 'commissionsTotal',
+  advancesTotal: 'advancesTotal',
+  adjustmentsTotal: 'adjustmentsTotal',
+  salaryFixed: 'salaryFixed',
+  payableTotal: 'payableTotal',
+  paidAmount: 'paidAmount',
+  balance: 'balance',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -414,6 +444,25 @@ exports.AccountsReceivableStatus = exports.$Enums.AccountsReceivableStatus = {
   CANCELED: 'CANCELED'
 };
 
+exports.PayrollEntryKind = exports.$Enums.PayrollEntryKind = {
+  COMMISSION: 'COMMISSION',
+  ADVANCE: 'ADVANCE',
+  ADJUSTMENT: 'ADJUSTMENT',
+  PAYMENT: 'PAYMENT'
+};
+
+exports.PayrollPeriodType = exports.$Enums.PayrollPeriodType = {
+  DAILY: 'DAILY',
+  BIWEEKLY: 'BIWEEKLY',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.PayrollRunStatus = exports.$Enums.PayrollRunStatus = {
+  DRAFT: 'DRAFT',
+  FINALIZED: 'FINALIZED',
+  PAID: 'PAID'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -435,7 +484,9 @@ exports.Prisma.ModelName = {
   StockMovement: 'StockMovement',
   AccountsReceivable: 'AccountsReceivable',
   AccountsReceivablePayment: 'AccountsReceivablePayment',
-  PayrollEntry: 'PayrollEntry'
+  PayrollEntry: 'PayrollEntry',
+  PayrollRun: 'PayrollRun',
+  PayrollRunItem: 'PayrollRunItem'
 };
 
 /**

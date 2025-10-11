@@ -10,6 +10,7 @@ const createProductSchemas = (messages?: {
   descriptionMax?: string;
   priceInvalid?: string;
   costInvalid?: string;
+  commissionPercentInvalid?: string;
   idRequired?: string;
 }) => {
   const baseProductSchema = z.object({
@@ -48,6 +49,16 @@ const createProductSchemas = (messages?: {
       )
       .optional()
       .or(z.literal("")),
+    commissionPercent: z
+      .string()
+      .refine(
+        (val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0 && parseFloat(val) <= 100),
+        {
+          message: messages?.commissionPercentInvalid || "Commission percent must be between 0 and 100",
+        }
+      )
+      .optional()
+      .or(z.literal("")),
     active: z.boolean(),
   });
 
@@ -70,6 +81,7 @@ export const getProductSchemas = (t: (key: string) => string) => {
     descriptionMax: t("validation.descriptionMax"),
     priceInvalid: t("validation.priceInvalid"),
     costInvalid: t("validation.costInvalid"),
+    commissionPercentInvalid: t("validation.commissionPercentInvalid"),
     idRequired: t("validation.idRequired"),
   });
 };

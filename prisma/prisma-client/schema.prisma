@@ -25,11 +25,13 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  sales            Sale[]
-  expenses         Expense[]
-  purchases        Purchase[]
-  purchasePayments PurchasePayment[]
-  payrollEntries   PayrollEntry[]
+  sales              Sale[]
+  expenses           Expense[]
+  purchases          Purchase[]
+  purchasePayments   PurchasePayment[]
+  performedSaleItems SaleItem[]        @relation("ServicePerformer")
+  payrollEntries     PayrollEntry[]
+  payrollRunItems    PayrollRunItem[]
 
   @@unique([email])
   @@map("user")
@@ -116,6 +118,25 @@ enum AccountsReceivableStatus {
   CANCELED
 }
 
+enum PayrollPeriodType {
+  DAILY
+  BIWEEKLY
+  CUSTOM
+}
+
+enum PayrollRunStatus {
+  DRAFT
+  FINALIZED
+  PAID
+}
+
+enum PayrollEntryKind {
+  COMMISSION
+  ADVANCE
+  ADJUSTMENT
+  PAYMENT
+}
+
 model Customer {
   id        String    @id @default(cuid())
   name      String
@@ -152,16 +173,17 @@ model Bank {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  type        ProductType @default(PRODUCT)
-  sku         String?     @unique
-  name        String
-  description String?
-  price       Decimal     @db.Decimal(12, 2)
-  cost        Decimal?    @db.Decimal(12, 2)
-  active      Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id                String      @id @default(cuid())
+  type              ProductType @default(PRODUCT)
+  sku               String?     @unique
+  name              String
+  description       String?
+  price             Decimal     @db.Decimal(12, 2)
+  cost              Decimal?    @db.Decimal(12, 2)
+  commissionPercent Decimal?    @db.Decimal(5, 2)
+  active            Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
   saleItems     SaleItem[]
   stockMoves    StockMovement[]
@@ -198,19 +220,23 @@ model Sale {
 }
 
 model SaleItem {
-  id        String  @id @default(cuid())
-  saleId    String
-  productId String
-  quantity  Int
-  unitPrice Decimal @db.Decimal(12, 2)
-  discount  Decimal @default(0) @db.Decimal(12, 2)
-  lineTotal Decimal @db.Decimal(12, 2)
+  id                       String   @id @default(cuid())
+  saleId                   String
+  productId                String
+  quantity                 Int
+  unitPrice                Decimal  @db.Decimal(12, 2)
+  discount                 Decimal  @default(0) @db.Decimal(12, 2)
+  lineTotal                Decimal  @db.Decimal(12, 2)
+  performedById            String?
+  commissionPercentApplied Decimal? @db.Decimal(5, 2)
 
-  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
+  sale        Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+  performedBy User?   @relation("ServicePerformer", fields: [performedById], references: [id], onDelete: Restrict)
 
   @@index([saleId])
   @@index([productId])
+  @@index([performedById])
   @@map("sale_item")
 }
 
@@ -419,16 +445,60 @@ model AccountsReceivablePayment {
 }
 
 model PayrollEntry {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  period      String
-  kind        String
+  kind        PayrollEntryKind
   description String?
-  currency    String   @default("COP")
-  amount      Decimal  @db.Decimal(12, 2)
-  createdAt   DateTime @default(now())
+  currency    String           @default("COP")
+  amount      Decimal          @db.Decimal(12, 2)
+  period      String
+  runId       String?
+  createdAt   DateTime         @default(now())
+
+  user User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  run  PayrollRun? @relation(fields: [runId], references: [id])
 
   @@index([userId, period, kind])
+  @@index([runId])
   @@map("payroll_entry")
+}
+
+model PayrollRun {
+  id          String            @id @default(cuid())
+  periodType  PayrollPeriodType
+  periodLabel String
+  startDate   DateTime
+  endDate     DateTime
+  status      PayrollRunStatus  @default(DRAFT)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  items   PayrollRunItem[]
+  entries PayrollEntry[]
+
+  @@index([status, startDate])
+  @@map("payroll_run")
+}
+
+model PayrollRunItem {
+  id               String   @id @default(cuid())
+  runId            String
+  userId           String
+  commissionsTotal Decimal  @default(0) @db.Decimal(12, 2)
+  advancesTotal    Decimal  @default(0) @db.Decimal(12, 2)
+  adjustmentsTotal Decimal  @default(0) @db.Decimal(12, 2)
+  salaryFixed      Decimal? @db.Decimal(12, 2)
+  payableTotal     Decimal  @db.Decimal(12, 2)
+  paidAmount       Decimal  @default(0) @db.Decimal(12, 2)
+  balance          Decimal  @db.Decimal(12, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  run  PayrollRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([runId, userId])
+  @@index([runId])
+  @@index([userId])
+  @@map("payroll_run_item")
 }
