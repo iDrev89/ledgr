@@ -5,7 +5,7 @@ import {
   createSale,
   updateSale,
   deleteSale,
-} from "@/api/actions/sales";
+} from "@/apis/actions/sales";
 import type {
   CreateSaleInput,
   UpdateSaleInput,

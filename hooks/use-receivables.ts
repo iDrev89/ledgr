@@ -4,7 +4,7 @@ import {
   getReceivable,
   createReceivablePayment,
   cancelReceivable,
-} from "@/api/actions/receivables";
+} from "@/apis/actions/receivables";
 import type { CreateReceivablePaymentInput } from "@/lib/validations/receivables";
 
 export const useReceivables = (params?: {

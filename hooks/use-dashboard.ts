@@ -4,7 +4,7 @@ import {
   getSalesChartData,
   getTopProducts,
   getLowStockAlerts,
-} from "@/api/actions/dashboard";
+} from "@/apis/actions/dashboard";
 
 export const useDashboardStats = () => {
   return useQuery({

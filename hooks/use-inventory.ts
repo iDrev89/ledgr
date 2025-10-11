@@ -5,7 +5,7 @@ import {
   createStockMovement,
   getProductStock,
   getInventorySummary,
-} from "@/api/actions/inventory";
+} from "@/apis/actions/inventory";
 import type { StockMoveType } from "@/prisma/prisma-client";
 import type { CreateStockMovementInput } from "@/lib/validations/inventory";
 

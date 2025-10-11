@@ -5,7 +5,7 @@ import {
   createExpenseCategory,
   updateExpenseCategory,
   deleteExpenseCategory,
-} from "@/api/actions/expense-categories";
+} from "@/apis/actions/expense-categories";
 import type {
   CreateExpenseCategoryInput,
   UpdateExpenseCategoryInput,

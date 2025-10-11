@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBanks, getBank, createBank, updateBank, deleteBank } from "@/api/actions/banks";
+import { getBanks, getBank, createBank, updateBank, deleteBank } from "@/apis/actions/banks";
 import type { CreateBankInput, UpdateBankInput } from "@/lib/validations/bank";
 
 export const useBanks = (params?: { search?: string; activeOnly?: boolean }) => {

@@ -5,7 +5,7 @@ import {
   createExpense,
   updateExpense,
   deleteExpense,
-} from "@/api/actions/expenses";
+} from "@/apis/actions/expenses";
 import type {
   CreateExpenseInput,
   UpdateExpenseInput,
