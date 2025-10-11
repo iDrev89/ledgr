@@ -144,12 +144,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           icon: Users,
           href: "/users",
           requiredPermission: ROUTE_PERMISSIONS["/users"],
-        },
-        {
-          titleKey: "settings",
-          icon: Settings,
-          href: "/settings",
-        },
+        },       
       ],
     },
   ];
