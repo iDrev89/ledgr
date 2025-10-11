@@ -29,7 +29,7 @@ import type {
 } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
 import { SaleItemsTable, type SaleItemRow } from "./sale-items-table";
-import { PaymentMethod } from "@/prisma/prisma-client";
+import { SalePaymentsTable, type SalePaymentRow } from "./sale-payments-table";
 import type { SaleWithDetails } from "@/lib/types/sales";
 
 interface SaleFormProps {
@@ -65,15 +65,28 @@ export function SaleForm({
     return [];
   });
 
+  // Initialize payments state
+  const [payments, setPayments] = useState<SalePaymentRow[]>(() => {
+    if (sale?.payments) {
+      return sale.payments.map((payment) => ({
+        tempId: payment.id,
+        amount: payment.amount.toString(),
+        method: payment.method,
+        bankId: payment.bankId || "",
+        reference: payment.reference || "",
+      }));
+    }
+    return [];
+  });
+
   // Track if user has attempted to submit
   const [attempted, setAttempted] = useState(false);
 
-  // Simplified form without resolver for items validation
+  // Simplified form without resolver for items and payments validation
   const form = useForm({
     mode: "onChange",
     defaultValues: {
       customerId: sale?.customerId || "",
-      paymentMethod: sale?.paymentMethod || PaymentMethod.CASH,
       note: sale?.note || "",
     },
   });
@@ -111,11 +124,30 @@ export function SaleForm({
         discount: item.discount || "0",
       }));
 
+      // Validate payments - all payments must have an amount
+      if (payments.length > 0) {
+        const hasEmptyPayments = payments.some(
+          (payment) => !payment.amount || payment.amount.trim() === ""
+        );
+        if (hasEmptyPayments) {
+          toast.error(t("validation.paymentAmountRequired"));
+          return;
+        }
+      }
+
+      // Map payments to the correct format
+      const formattedPayments = payments.map((payment) => ({
+        amount: payment.amount,
+        method: payment.method,
+        bankId: payment.bankId || undefined,
+        reference: payment.reference || undefined,
+      }));
+
       const submitData: CreateSaleInput = {
         customerId: data.customerId,
-        paymentMethod: data.paymentMethod,
         note: data.note || "",
         items: formattedItems,
+        payments: formattedPayments,
       };
 
       if (sale) {
@@ -137,14 +169,19 @@ export function SaleForm({
   const handleReset = () => {
     form.reset({
       customerId: "",
-      paymentMethod: PaymentMethod.CASH,
       note: "",
     });
     setItems([]);
+    setPayments([]);
     setAttempted(false);
     setTouchedCustomer(false);
     setTouchedItems(false);
   };
+
+  // Calculate total from items
+  const total = items.reduce((sum, item) => {
+    return sum + item.lineTotal;
+  }, 0);
 
   // Check if form is valid for better UX
   const customerId = form.watch("customerId");
@@ -187,49 +224,18 @@ export function SaleForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="paymentMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("paymentMethod")}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  disabled={isLoading}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("selectPaymentMethod")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value={PaymentMethod.CASH}>
-                      {t("paymentCash")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.CARD}>
-                      {t("paymentCard")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.TRANSFER}>
-                      {t("paymentTransfer")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.DIGITAL}>
-                      {t("paymentDigital")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.OTHER}>
-                      {t("paymentOther")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <SaleItemsTable
           items={items}
           onItemsChange={setItems}
+          disabled={isLoading}
+        />
+
+        <SalePaymentsTable
+          payments={payments}
+          onPaymentsChange={setPayments}
+          total={total}
           disabled={isLoading}
         />
 

@@ -19,6 +19,8 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   "/products": { statement: "products", action: "read" },
   "/expenses": { statement: "expenses", action: "read" },
   "/inventory": { statement: "inventory", action: "read" },
+  "/receivables": { statement: "receivables", action: "read" },
+  "/banks": { statement: "banks", action: "read" },
   "/payroll": { statement: "payroll", action: "read" },
   "/reports": { statement: "reports", action: "read" },
 } as const;

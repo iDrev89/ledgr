@@ -11,9 +11,9 @@ import {
   type CreateSaleInput,
   type UpdateSaleInput,
 } from "@/lib/validations/sales";
-import type { Sale, SaleItem, Customer, Product } from "@/prisma/prisma-client";
+import type { Sale, SaleItem, SalePayment, Customer, Product, Bank } from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
-import { StockMoveType } from "@/prisma/prisma-client";
+import { StockMoveType, AccountsReceivableStatus } from "@/prisma/prisma-client";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -29,6 +29,15 @@ type SaleWithDetails = Sale & {
   items: (SaleItem & {
     product: Product;
   })[];
+  payments: (SalePayment & {
+    bank?: Bank | null;
+  })[];
+  receivable?: {
+    id: string;
+    total: Decimal;
+    balance: Decimal;
+    status: AccountsReceivableStatus;
+  } | null;
 };
 
 // Serialize Decimal fields to strings for client components
@@ -68,6 +77,21 @@ const serializeSale = (sale: any): any => {
             : undefined,
         }))
       : undefined,
+    payments: sale.payments
+      ? sale.payments.map((payment: any) => ({
+          ...payment,
+          amount: payment.amount.toString(),
+          bank: payment.bank || null,
+        }))
+      : [],
+    receivable: sale.receivable
+      ? {
+          id: sale.receivable.id,
+          total: sale.receivable.total.toString(),
+          balance: sale.receivable.balance.toString(),
+          status: sale.receivable.status,
+        }
+      : null,
   };
 };
 
@@ -86,7 +110,6 @@ const requireAuth = async () => {
 export const getSales = async (params?: {
   search?: string;
   customerId?: string;
-  paymentMethod?: string;
   limit?: number;
   offset?: number;
 }): Promise<ActionResponse<{ sales: SaleWithDetails[]; total: number }>> => {
@@ -98,7 +121,6 @@ export const getSales = async (params?: {
     const {
       search = "",
       customerId,
-      paymentMethod,
       limit = 50,
       offset = 0,
     } = params || {};
@@ -115,10 +137,6 @@ export const getSales = async (params?: {
 
     if (customerId) {
       where.customerId = customerId;
-    }
-
-    if (paymentMethod) {
-      where.paymentMethod = paymentMethod;
     }
 
     const [sales, total] = await Promise.all([
@@ -139,6 +157,19 @@ export const getSales = async (params?: {
           items: {
             include: {
               product: true,
+            },
+          },
+          payments: {
+            include: {
+              bank: true,
+            },
+          },
+          receivable: {
+            select: {
+              id: true,
+              total: true,
+              balance: true,
+              status: true,
             },
           },
         },
@@ -180,6 +211,19 @@ export const getSale = async (
         items: {
           include: {
             product: true,
+          },
+        },
+        payments: {
+          include: {
+            bank: true,
+          },
+        },
+        receivable: {
+          select: {
+            id: true,
+            total: true,
+            balance: true,
+            status: true,
           },
         },
       },
@@ -262,6 +306,30 @@ export const createSale = async (
     const taxTotal = new Decimal(0); // TODO: Implement tax calculation in future
     const total = subtotal.minus(discountTotal).plus(taxTotal);
 
+    // Calculate total paid and validate
+    let totalPaid = new Decimal(0);
+    const paymentsWithAmounts = validated.payments.map((payment) => {
+      const amount = new Decimal(payment.amount);
+      totalPaid = totalPaid.plus(amount);
+      return {
+        amount,
+        method: payment.method,
+        bankId: payment.bankId || null,
+        reference: payment.reference || null,
+      };
+    });
+
+    // Validate that payments don't exceed total
+    if (totalPaid.gt(total)) {
+      return {
+        success: false,
+        error: t("paymentsExceedTotal"),
+      };
+    }
+
+    // Calculate balance for receivable
+    const balance = total.minus(totalPaid);
+
     // Create sale with items in a transaction
     const sale = await prisma.$transaction(async (tx) => {
       // Create the sale
@@ -274,10 +342,12 @@ export const createSale = async (
           discountTotal,
           taxTotal,
           total,
-          paymentMethod: validated.paymentMethod,
           note: validated.note || null,
           items: {
             create: itemsWithTotals,
+          },
+          payments: {
+            create: paymentsWithAmounts,
           },
         },
         include: {
@@ -287,8 +357,37 @@ export const createSale = async (
               product: true,
             },
           },
+          payments: {
+            include: {
+              bank: true,
+            },
+          },
         },
       });
+
+      // Create AccountsReceivable if there's a balance
+      let receivable = null;
+      if (balance.gt(0)) {
+        receivable = await tx.accountsReceivable.create({
+          data: {
+            customerId: validated.customerId,
+            saleId: newSale.id,
+            currency: "COP",
+            total,
+            balance,
+            status:
+              totalPaid.gt(0)
+                ? AccountsReceivableStatus.PARTIAL
+                : AccountsReceivableStatus.OPEN,
+          },
+          select: {
+            id: true,
+            total: true,
+            balance: true,
+            status: true,
+          },
+        });
+      }
 
       // Create stock movements for each item (if product type is PRODUCT)
       for (const item of itemsWithTotals) {
@@ -306,7 +405,7 @@ export const createSale = async (
         }
       }
 
-      return newSale;
+      return { ...newSale, receivable };
     });
 
     revalidatePath("/sales");
@@ -396,6 +495,30 @@ export const updateSale = async (
     const taxTotal = new Decimal(0);
     const total = subtotal.minus(discountTotal).plus(taxTotal);
 
+    // Calculate total paid and validate
+    let totalPaid = new Decimal(0);
+    const paymentsWithAmounts = validated.payments.map((payment) => {
+      const amount = new Decimal(payment.amount);
+      totalPaid = totalPaid.plus(amount);
+      return {
+        amount,
+        method: payment.method,
+        bankId: payment.bankId || null,
+        reference: payment.reference || null,
+      };
+    });
+
+    // Validate that payments don't exceed total
+    if (totalPaid.gt(total)) {
+      return {
+        success: false,
+        error: t("paymentsExceedTotal"),
+      };
+    }
+
+    // Calculate balance for receivable
+    const balance = total.minus(totalPaid);
+
     // Update sale in a transaction
     const sale = await prisma.$transaction(async (tx) => {
       // Get the current sale to know its saleNumber
@@ -404,8 +527,16 @@ export const updateSale = async (
         select: { saleNumber: true },
       });
 
-      // Delete old items and stock movements
+      // Delete old items, payments, stock movements, and receivable
       await tx.saleItem.deleteMany({
+        where: { saleId: validated.id },
+      });
+
+      await tx.salePayment.deleteMany({
+        where: { saleId: validated.id },
+      });
+
+      await tx.accountsReceivable.deleteMany({
         where: { saleId: validated.id },
       });
 
@@ -418,7 +549,7 @@ export const updateSale = async (
         });
       }
 
-      // Update the sale with new items
+      // Update the sale with new items and payments
       const updatedSale = await tx.sale.update({
         where: { id: validated.id },
         data: {
@@ -427,10 +558,12 @@ export const updateSale = async (
           discountTotal,
           taxTotal,
           total,
-          paymentMethod: validated.paymentMethod,
           note: validated.note || null,
           items: {
             create: itemsWithTotals,
+          },
+          payments: {
+            create: paymentsWithAmounts,
           },
         },
         include: {
@@ -440,8 +573,37 @@ export const updateSale = async (
               product: true,
             },
           },
+          payments: {
+            include: {
+              bank: true,
+            },
+          },
         },
       });
+
+      // Create AccountsReceivable if there's a balance
+      let receivable = null;
+      if (balance.gt(0)) {
+        receivable = await tx.accountsReceivable.create({
+          data: {
+            customerId: validated.customerId,
+            saleId: updatedSale.id,
+            currency: "COP",
+            total,
+            balance,
+            status:
+              totalPaid.gt(0)
+                ? AccountsReceivableStatus.PARTIAL
+                : AccountsReceivableStatus.OPEN,
+          },
+          select: {
+            id: true,
+            total: true,
+            balance: true,
+            status: true,
+          },
+        });
+      }
 
       // Create new stock movements
       for (const item of itemsWithTotals) {
@@ -459,7 +621,7 @@ export const updateSale = async (
         }
       }
 
-      return updatedSale;
+      return { ...updatedSale, receivable };
     });
 
     revalidatePath("/sales");
@@ -489,7 +651,7 @@ export const deleteSale = async (
       where: { id },
       include: {
         items: true,
-        receivables: true,
+        receivable: true,
       },
     });
 
@@ -497,20 +659,24 @@ export const deleteSale = async (
       return { success: false, error: t("notFound") };
     }
 
-    if (sale.receivables.length > 0) {
+    if (sale.receivable) {
       return {
         success: false,
         error: t("cannotDelete"),
       };
     }
 
-    // Delete sale and related stock movements in a transaction
+    // Delete sale and related data in a transaction
     await prisma.$transaction(async (tx) => {
       await tx.stockMovement.deleteMany({
         where: {
           moveType: StockMoveType.SALE,
           note: { contains: `Venta #${String(sale.saleNumber).padStart(4, "0")}` },
         },
+      });
+
+      await tx.salePayment.deleteMany({
+        where: { saleId: id },
       });
 
       await tx.sale.delete({

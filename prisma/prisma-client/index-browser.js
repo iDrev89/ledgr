@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.16.2
- * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+ * Prisma Client JS version: 6.17.1
+ * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
  */
 Prisma.prismaVersion = {
-  client: "6.16.2",
-  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
+  client: "6.17.1",
+  engine: "272a37d34178c2894197e17273bf937f25acdeac"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -183,6 +183,15 @@ exports.Prisma.CustomerScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BankScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  accountNo: 'accountNo',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -206,7 +215,6 @@ exports.Prisma.SaleScalarFieldEnum = {
   discountTotal: 'discountTotal',
   taxTotal: 'taxTotal',
   total: 'total',
-  paymentMethod: 'paymentMethod',
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -220,6 +228,16 @@ exports.Prisma.SaleItemScalarFieldEnum = {
   unitPrice: 'unitPrice',
   discount: 'discount',
   lineTotal: 'lineTotal'
+};
+
+exports.Prisma.SalePaymentScalarFieldEnum = {
+  id: 'id',
+  saleId: 'saleId',
+  amount: 'amount',
+  method: 'method',
+  paidAt: 'paidAt',
+  reference: 'reference',
+  bankId: 'bankId'
 };
 
 exports.Prisma.ExpenseCategoryScalarFieldEnum = {
@@ -299,6 +317,7 @@ exports.Prisma.PurchasePaymentScalarFieldEnum = {
   paidAt: 'paidAt',
   method: 'method',
   reference: 'reference',
+  bankId: 'bankId',
   createdById: 'createdById'
 };
 
@@ -332,7 +351,8 @@ exports.Prisma.AccountsReceivablePaymentScalarFieldEnum = {
   amount: 'amount',
   paidAt: 'paidAt',
   method: 'method',
-  note: 'note'
+  note: 'note',
+  bankId: 'bankId'
 };
 
 exports.Prisma.PayrollEntryScalarFieldEnum = {
@@ -400,9 +420,11 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Customer: 'Customer',
+  Bank: 'Bank',
   Product: 'Product',
   Sale: 'Sale',
   SaleItem: 'SaleItem',
+  SalePayment: 'SalePayment',
   ExpenseCategory: 'ExpenseCategory',
   Supplier: 'Supplier',
   Expense: 'Expense',

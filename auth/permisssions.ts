@@ -15,6 +15,8 @@ const statements = {
   expenses: ["create", "read", "update", "delete"],
   reports: ["read"],
   inventory: ["create", "read", "update", "delete"],
+  receivables: ["create", "read", "update", "delete"],
+  banks: ["create", "read", "update", "delete"],
   payroll: ["create", "read", "update", "delete"],
 } as const;
 
@@ -25,6 +27,8 @@ export const user = accessControl.newRole({
   sales: ["create", "read"],
   products: ["read"],
   inventory: ["read"],
+  receivables: ["read"],
+  banks: ["read"],
 });
 export const admin = accessControl.newRole({
   users: [
@@ -42,5 +46,7 @@ export const admin = accessControl.newRole({
   expenses: ["create", "read", "update", "delete"],
   reports: ["read"],
   inventory: ["create", "read", "update", "delete"],
+  receivables: ["create", "read", "update", "delete"],
+  banks: ["create", "read", "update", "delete"],
   payroll: ["create", "read", "update", "delete"],
 });

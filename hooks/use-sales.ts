@@ -76,6 +76,18 @@ export function useCreateSale() {
       queryClient.invalidateQueries({
         queryKey: inventoryKeys.lists(),
       });
+      // Invalidate banks since payments may include bank transfers
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate receivables since a new receivable may have been created
+      queryClient.invalidateQueries({
+        queryKey: ["receivables"],
+      });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard"],
+      });
     },
   });
 }
@@ -102,6 +114,18 @@ export function useUpdateSale() {
       });
       queryClient.invalidateQueries({
         queryKey: inventoryKeys.lists(),
+      });
+      // Invalidate banks since payments may include bank transfers
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate receivables since receivable may have been updated
+      queryClient.invalidateQueries({
+        queryKey: ["receivables"],
+      });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard"],
       });
     },
   });
@@ -130,6 +154,18 @@ export function useDeleteSale() {
       });
       queryClient.invalidateQueries({
         queryKey: inventoryKeys.lists(),
+      });
+      // Invalidate banks in case payments included bank transfers
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate receivables in case sale had a receivable
+      queryClient.invalidateQueries({
+        queryKey: ["receivables"],
+      });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard"],
       });
     },
   });
