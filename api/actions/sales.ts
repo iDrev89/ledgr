@@ -13,35 +13,15 @@ import {
 } from "@/lib/validations/sales";
 import type { Sale, SaleItem, SalePayment, Customer, Product, Bank } from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
+import type { SaleWithDetails } from "@/lib/types/sales";
 import { StockMoveType, AccountsReceivableStatus } from "@/prisma/prisma-client";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-type SaleWithDetails = Sale & {
-  customer: Customer;
-  createdBy: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  items: (SaleItem & {
-    product: Product;
-  })[];
-  payments: (SalePayment & {
-    bank?: Bank | null;
-  })[];
-  receivable?: {
-    id: string;
-    total: Decimal;
-    balance: Decimal;
-    status: AccountsReceivableStatus;
-  } | null;
-};
-
 // Serialize Decimal fields to strings for client components
-const serializeSale = (sale: any): any => {
+const serializeSale = (sale: any): SaleWithDetails => {
   return {
     ...sale,
     subtotal: sale.subtotal.toString(),
