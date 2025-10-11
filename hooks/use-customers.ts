@@ -5,7 +5,7 @@ import {
   createCustomer,
   updateCustomer,
   deleteCustomer,
-} from "@/api/actions/customers";
+} from "@/apis/actions/customers";
 import type { Customer } from "@/lib/types/customer";
 import type {
   CreateCustomerInput,

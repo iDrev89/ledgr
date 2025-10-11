@@ -117,11 +117,37 @@ export const createSaleColumns = ({
     },
   },
   {
-    accessorKey: "paymentMethod",
-    header: t("paymentMethod"),
+    accessorKey: "payments",
+    header: t("payments"),
     cell: ({ row }) => {
-      const method = row.getValue("paymentMethod") as PaymentMethod;
-      return getPaymentMethodBadge(method, t);
+      const sale = row.original;
+      const payments = sale.payments || [];
+      const hasReceivable = sale.receivable && parseFloat(sale.receivable.balance) > 0;
+      
+      if (payments.length === 0) {
+        return (
+          <Badge variant="outline" className="font-normal">
+            {t("noPayments")}
+          </Badge>
+        );
+      }
+      
+      if (payments.length === 1 && !hasReceivable) {
+        return getPaymentMethodBadge(payments[0].method, t);
+      }
+      
+      return (
+        <div className="flex flex-col gap-1">
+          <Badge variant={hasReceivable ? "secondary" : "default"} className="font-normal w-fit">
+            {payments.length} {t("payments")}
+          </Badge>
+          {hasReceivable && sale.receivable && (
+            <span className="text-xs text-amber-600 dark:text-amber-400">
+              {t("balance")}: {formatCurrency(sale.receivable.balance)}
+            </span>
+          )}
+        </div>
+      );
     },
   },
   {

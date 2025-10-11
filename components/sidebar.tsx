@@ -17,6 +17,8 @@ import {
   Warehouse,
   Banknote,
   UserCircle,
+  Building2,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -61,10 +63,10 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       ],
     },
     {
-      titleKey: "operations",
+      titleKey: "sales",
       items: [
         {
-          titleKey: "sales",
+          titleKey: "salesMenu",
           icon: ShoppingCart,
           href: "/sales",
           requiredPermission: ROUTE_PERMISSIONS["/sales"],
@@ -76,15 +78,15 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/customers"],
         },
         {
-          titleKey: "expenses",
-          icon: DollarSign,
-          href: "/expenses",
-          requiredPermission: ROUTE_PERMISSIONS["/expenses"],
+          titleKey: "receivables",
+          icon: Receipt,
+          href: "/receivables",
+          requiredPermission: ROUTE_PERMISSIONS["/receivables"],
         },
       ],
     },
     {
-      titleKey: "catalog",
+      titleKey: "inventory",
       items: [
         {
           titleKey: "products",
@@ -93,7 +95,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/products"],
         },
         {
-          titleKey: "inventory",
+          titleKey: "inventoryMenu",
           icon: Warehouse,
           href: "/inventory",
           requiredPermission: ROUTE_PERMISSIONS["/inventory"],
@@ -101,13 +103,13 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       ],
     },
     {
-      titleKey: "management",
+      titleKey: "finance",
       items: [
         {
-          titleKey: "users",
-          icon: Users,
-          href: "/users",
-          requiredPermission: ROUTE_PERMISSIONS["/users"],
+          titleKey: "expenses",
+          icon: DollarSign,
+          href: "/expenses",
+          requiredPermission: ROUTE_PERMISSIONS["/expenses"],
         },
         {
           titleKey: "payroll",
@@ -116,7 +118,18 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/payroll"],
         },
         {
-          titleKey: "reports",
+          titleKey: "banks",
+          icon: Building2,
+          href: "/banks",
+          requiredPermission: ROUTE_PERMISSIONS["/banks"],
+        },
+      ],
+    },
+    {
+      titleKey: "reports",
+      items: [
+        {
+          titleKey: "reportsMenu",
           icon: FileText,
           href: "/reports",
           requiredPermission: ROUTE_PERMISSIONS["/reports"],
@@ -124,13 +137,14 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       ],
     },
     {
-      titleKey: "system",
+      titleKey: "administration",
       items: [
         {
-          titleKey: "settings",
-          icon: Settings,
-          href: "/settings",
-        },
+          titleKey: "users",
+          icon: Users,
+          href: "/users",
+          requiredPermission: ROUTE_PERMISSIONS["/users"],
+        },       
       ],
     },
   ];

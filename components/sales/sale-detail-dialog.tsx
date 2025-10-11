@@ -113,13 +113,60 @@ export function SaleDetailDialog({
             </div>
           </div>
 
-          {/* Payment Method */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">{t("paymentMethod")}</span>
-            <Badge variant="secondary">
-              {getPaymentMethodLabel(sale.paymentMethod)}
-            </Badge>
-          </div>
+          {/* Payments */}
+          {sale.payments && sale.payments.length > 0 && (
+            <>
+              <div>
+                <h3 className="text-sm font-semibold mb-3">{t("payments")}</h3>
+                <div className="space-y-2">
+                  {sale.payments.map((payment) => (
+                    <div
+                      key={payment.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <Badge variant="secondary" className="w-fit">
+                          {getPaymentMethodLabel(payment.method)}
+                        </Badge>
+                        {payment.bank && (
+                          <span className="text-xs text-muted-foreground">
+                            {payment.bank.name}
+                            {payment.bank.accountNo && ` - ${payment.bank.accountNo}`}
+                          </span>
+                        )}
+                        {payment.reference && (
+                          <span className="text-xs text-muted-foreground">
+                            Ref: {payment.reference}
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-medium">
+                        {formatCurrency(payment.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {sale.receivable && parseFloat(sale.receivable.balance) > 0 && (
+                <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                      {t("balance")}:
+                    </span>
+                    <span className="text-lg font-bold text-amber-900 dark:text-amber-100">
+                      {formatCurrency(sale.receivable.balance)}
+                    </span>
+                  </div>
+                  <span className="text-xs text-amber-700 dark:text-amber-300">
+                    {t("totalPaid")}: {formatCurrency(
+                      parseFloat(sale.total) - parseFloat(sale.receivable.balance)
+                    )}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
 
           <Separator />
 
@@ -152,15 +199,15 @@ export function SaleDetailDialog({
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(item.unitPrice.toNumber())}
+                        {formatCurrency(item.unitPrice)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {item.discount.toNumber() > 0
-                          ? `-${formatCurrency(item.discount.toNumber())}`
+                        {parseFloat(item.discount) > 0
+                          ? `-${formatCurrency(item.discount)}`
                           : "-"}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCurrency(item.lineTotal.toNumber())}
+                        {formatCurrency(item.lineTotal)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -175,24 +222,24 @@ export function SaleDetailDialog({
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("subtotal")}</span>
                 <span className="font-medium">
-                  {formatCurrency(sale.subtotal.toNumber())}
+                  {formatCurrency(sale.subtotal)}
                 </span>
               </div>
-              {sale.discountTotal.toNumber() > 0 && (
+              {parseFloat(sale.discountTotal) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
                     {t("discountTotal")}
                   </span>
                   <span className="font-medium text-destructive">
-                    -{formatCurrency(sale.discountTotal.toNumber())}
+                    -{formatCurrency(sale.discountTotal)}
                   </span>
                 </div>
               )}
-              {sale.taxTotal.toNumber() > 0 && (
+              {parseFloat(sale.taxTotal) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("taxTotal")}</span>
                   <span className="font-medium">
-                    {formatCurrency(sale.taxTotal.toNumber())}
+                    {formatCurrency(sale.taxTotal)}
                   </span>
                 </div>
               )}
@@ -200,7 +247,7 @@ export function SaleDetailDialog({
               <div className="flex justify-between">
                 <span className="font-semibold">{t("total")}</span>
                 <span className="text-lg font-bold">
-                  {formatCurrency(sale.total.toNumber())}
+                  {formatCurrency(sale.total)}
                 </span>
               </div>
             </div>

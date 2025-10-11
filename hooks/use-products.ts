@@ -5,7 +5,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-} from "@/api/actions/products";
+} from "@/apis/actions/products";
 import type { Product } from "@/lib/types/product";
 import type {
   CreateProductInput,
