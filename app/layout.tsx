@@ -29,10 +29,10 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
+          <Toaster position="top-right" />
           <QueryProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <ConditionalLayout>{children}</ConditionalLayout>
-              <Toaster position="top-right" />
             </ThemeProvider>
           </QueryProvider>
         </NextIntlClientProvider>

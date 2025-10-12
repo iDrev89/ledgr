@@ -59,9 +59,14 @@ export function ProductForm({
       description: product?.description || "",
       price: product?.price ? product.price.toString() : "",
       cost: product?.cost ? product.cost.toString() : "",
+      commissionPercent: product?.commissionPercent
+        ? product.commissionPercent.toString()
+        : "",
       active: product?.active ?? true,
     },
   });
+
+  const productType = form.watch("type");
 
   const handleSubmit = async (data: CreateProductInput) => {
     try {
@@ -214,6 +219,33 @@ export function ProductForm({
             )}
           />
         </div>
+
+        {productType === ProductType.SERVICE && (
+          <FormField
+            control={form.control}
+            name="commissionPercent"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("commissionPercent")}</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    placeholder={t("commissionPercentPlaceholder")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  {t("commissionPercentDescription")}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}

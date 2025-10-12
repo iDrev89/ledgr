@@ -38,6 +38,10 @@ const createSaleSchemas = (messages?: {
         message: messages?.discountInvalid || "Discount must be a valid positive number",
       })
       .default("0"),
+    performedById: z
+      .string()
+      .optional()
+      .or(z.literal("")),
   });
 
   const salePaymentSchema = z.object({

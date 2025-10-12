@@ -14,7 +14,7 @@ import {
 import type { Sale, SaleItem, SalePayment, Customer, Product, Bank } from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { SaleWithDetails } from "@/lib/types/sales";
-import { StockMoveType, AccountsReceivableStatus } from "@/prisma/prisma-client";
+import { StockMoveType, AccountsReceivableStatus, ProductType } from "@/prisma/prisma-client";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -46,6 +46,9 @@ const serializeSale = (sale: any): SaleWithDetails => {
           unitPrice: item.unitPrice.toString(),
           discount: item.discount.toString(),
           lineTotal: item.lineTotal.toString(),
+          commissionPercentApplied: item.commissionPercentApplied
+            ? item.commissionPercentApplied.toString()
+            : null,
           product: item.product
             ? {
                 ...item.product,
@@ -53,8 +56,18 @@ const serializeSale = (sale: any): SaleWithDetails => {
                 cost: item.product.cost
                   ? item.product.cost.toString()
                   : null,
+                commissionPercent: item.product.commissionPercent
+                  ? item.product.commissionPercent.toString()
+                  : null,
               }
             : undefined,
+          performedBy: item.performedBy
+            ? {
+                id: item.performedBy.id,
+                name: item.performedBy.name,
+                email: item.performedBy.email,
+              }
+            : null,
         }))
       : undefined,
     payments: sale.payments
@@ -137,6 +150,13 @@ export const getSales = async (params?: {
           items: {
             include: {
               product: true,
+              performedBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
             },
           },
           payments: {
@@ -191,6 +211,13 @@ export const getSale = async (
         items: {
           include: {
             product: true,
+            performedBy: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
         payments: {
@@ -260,11 +287,19 @@ export const createSale = async (
       };
     }
 
+    // Create a map of products for easy lookup
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
     // Calculate totals
     let subtotal = new Decimal(0);
     let discountTotal = new Decimal(0);
 
     const itemsWithTotals = validated.items.map((item) => {
+      const product = productMap.get(item.productId);
+      if (!product) {
+        throw new Error(t("productNotFound", { productId: item.productId }));
+      }
+
       const unitPrice = new Decimal(item.unitPrice);
       const discount = new Decimal(item.discount);
       const lineTotal = unitPrice
@@ -274,13 +309,30 @@ export const createSale = async (
       subtotal = subtotal.plus(unitPrice.times(item.quantity));
       discountTotal = discountTotal.plus(discount);
 
-      return {
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice,
-        discount,
-        lineTotal,
-      };
+      // For services: freeze commission % and assign performer
+      if (product.type === ProductType.SERVICE) {
+        const commissionPercent = product.commissionPercent || new Decimal(0);
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice,
+          discount,
+          lineTotal,
+          performedById: item.performedById || session.user.id, // Default to sale creator
+          commissionPercentApplied: commissionPercent,
+        };
+      } else {
+        // Products don't have commission or performer
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice,
+          discount,
+          lineTotal,
+          performedById: undefined,
+          commissionPercentApplied: null,
+        };
+      }
     });
 
     const taxTotal = new Decimal(0); // TODO: Implement tax calculation in future
@@ -335,6 +387,13 @@ export const createSale = async (
           items: {
             include: {
               product: true,
+              performedBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
             },
           },
           payments: {
@@ -449,11 +508,19 @@ export const updateSale = async (
       };
     }
 
+    // Create a map of products for easy lookup
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
     // Calculate totals
     let subtotal = new Decimal(0);
     let discountTotal = new Decimal(0);
 
     const itemsWithTotals = validated.items.map((item) => {
+      const product = productMap.get(item.productId);
+      if (!product) {
+        throw new Error(t("productNotFound", { productId: item.productId }));
+      }
+
       const unitPrice = new Decimal(item.unitPrice);
       const discount = new Decimal(item.discount);
       const lineTotal = unitPrice
@@ -463,13 +530,30 @@ export const updateSale = async (
       subtotal = subtotal.plus(unitPrice.times(item.quantity));
       discountTotal = discountTotal.plus(discount);
 
-      return {
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice,
-        discount,
-        lineTotal,
-      };
+      // For services: freeze commission % and assign performer
+      if (product.type === ProductType.SERVICE) {
+        const commissionPercent = product.commissionPercent || new Decimal(0);
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice,
+          discount,
+          lineTotal,
+          performedById: item.performedById, //|| session.user.id, // Default to sale creator
+          commissionPercentApplied: commissionPercent,
+        };
+      } else {
+        // Products don't have commission or performer
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice,
+          discount,
+          lineTotal,
+          performedById: undefined,
+          commissionPercentApplied: null,
+        };
+      }
     });
 
     const taxTotal = new Decimal(0);
@@ -551,6 +635,13 @@ export const updateSale = async (
           items: {
             include: {
               product: true,
+              performedBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
             },
           },
           payments: {

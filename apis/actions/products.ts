@@ -24,6 +24,9 @@ const serializeProduct = (product: Product): Product => {
     ...product,
     price: product.price.toString() as any,
     cost: product.cost ? (product.cost.toString() as any) : null,
+    commissionPercent: product.commissionPercent
+      ? (product.commissionPercent.toString() as any)
+      : null,
   };
 };
 
@@ -154,6 +157,9 @@ export const createProduct = async (
         description: validated.description || null,
         price: new Decimal(validated.price),
         cost: validated.cost ? new Decimal(validated.cost) : null,
+        commissionPercent: validated.commissionPercent
+          ? new Decimal(validated.commissionPercent)
+          : null,
         active: validated.active,
       },
     });
@@ -202,6 +208,9 @@ export const updateProduct = async (
         description: validated.description || null,
         price: new Decimal(validated.price),
         cost: validated.cost ? new Decimal(validated.cost) : null,
+        commissionPercent: validated.commissionPercent
+          ? new Decimal(validated.commissionPercent)
+          : null,
         active: validated.active,
       },
     });
