@@ -94,10 +94,10 @@ export const createProductColumns = (
     cell: ({ row }) => {
       const type = row.getValue("type") as ProductType;
       return (
-        <Badge
-          variant={type === ProductType.PRODUCT ? "default" : "secondary"}
-        >
-          {actions.t(type === ProductType.PRODUCT ? "typeProduct" : "typeService")}
+        <Badge variant={type === ProductType.PRODUCT ? "default" : "secondary"}>
+          {actions.t(
+            type === ProductType.PRODUCT ? "typeProduct" : "typeService"
+          )}
         </Badge>
       );
     },
@@ -177,4 +177,3 @@ export const createProductColumns = (
     },
   },
 ];
-

@@ -1,4 +1,5 @@
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,6 +17,13 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       retry: false,
+      onError: (error: unknown) => {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("An error occurred while processing your request.");
+        }
+      },
     },
   },
 });

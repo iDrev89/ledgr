@@ -17,10 +17,12 @@ import {
 import { PayrollRunTable } from "@/components/payroll/payroll-run-table";
 import { PayrollRunDialog } from "@/components/payroll/payroll-run-dialog";
 import { PayrollRunDetailDialog } from "@/components/payroll/payroll-run-detail-dialog";
+import { PayrollRunPaymentDialog } from "@/components/payroll/payroll-run-payment-dialog";
 import {
   usePayrollRuns,
   useCreatePayrollRun,
   useFinalizePayrollRun,
+  usePayPayrollRun,
   useDeletePayrollRun,
 } from "@/hooks/use-payroll";
 import type { PayrollRunWithDetails } from "@/lib/types/payroll";
@@ -43,10 +45,15 @@ export default function PayrollPage() {
   const [runToFinalize, setRunToFinalize] = useState<PayrollRunWithDetails | null>(
     null
   );
+  const [payDialogOpen, setPayDialogOpen] = useState(false);
+  const [runToPay, setRunToPay] = useState<PayrollRunWithDetails | null>(
+    null
+  );
 
   const { data, isLoading } = usePayrollRuns();
   const createMutation = useCreatePayrollRun();
   const finalizeMutation = useFinalizePayrollRun();
+  const payMutation = usePayPayrollRun();
   const deleteMutation = useDeletePayrollRun();
 
   const runs = data?.runs || [];
@@ -73,8 +80,15 @@ export default function PayrollPage() {
   };
 
   const handlePay = (run: PayrollRunWithDetails) => {
-    // TODO: Implement payment dialog
-    console.log("Pay run:", run);
+    setRunToPay(run);
+    setPayDialogOpen(true);
+  };
+
+  const handleConfirmPay = async (payments: { userId: string; amount: string }[]) => {
+    if (!runToPay) return;
+    await payMutation.mutateAsync({ id: runToPay.id, payments });
+    setPayDialogOpen(false);
+    setRunToPay(null);
   };
 
   const handleDelete = (run: PayrollRunWithDetails) => {
@@ -130,6 +144,15 @@ export default function PayrollPage() {
         run={selectedRun}
         open={detailDialogOpen}
         onOpenChange={setDetailDialogOpen}
+      />
+
+      {/* Payment Dialog */}
+      <PayrollRunPaymentDialog
+        run={runToPay}
+        open={payDialogOpen}
+        onOpenChange={setPayDialogOpen}
+        onSubmit={handleConfirmPay}
+        isLoading={payMutation.isPending}
       />
 
       {/* Finalize Confirmation */}

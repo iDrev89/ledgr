@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
+import { format } from "date-fns";
 import {
   createPayrollRunSchema,
   createPayrollEntrySchema,
@@ -30,7 +31,7 @@ import {
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
-  | { success: false; error: string };
+  | { success: false; error: string; errorCode?: string };
 
 // Serialize Decimal fields to strings for client components
 const serializePayrollRun = (run: any): PayrollRunWithDetails => {
@@ -107,7 +108,9 @@ export const getPayrollRuns = async (params?: {
   status?: PayrollRunStatus;
   limit?: number;
   offset?: number;
-}): Promise<ActionResponse<{ runs: PayrollRunWithDetails[]; total: number }>> => {
+}): Promise<
+  ActionResponse<{ runs: PayrollRunWithDetails[]; total: number }>
+> => {
   const t = await getTranslations("Payroll.errors");
 
   try {
@@ -230,6 +233,24 @@ export const createPayrollRun = async (
     const startDate = new Date(validated.startDate);
     const endDate = new Date(validated.endDate);
 
+    // Check if there's already a finalized/paid run that overlaps with this period
+    const overlappingRuns = await prisma.payrollRun.findFirst({
+      where: {
+        status: {
+          in: [PayrollRunStatus.FINALIZED, PayrollRunStatus.PAID],
+        },
+        // Check for overlapping date ranges
+        AND: [{ startDate: { lte: endDate } }, { endDate: { gte: startDate } }],
+      },
+    });
+
+    if (overlappingRuns) {
+      return {
+        success: false,
+        error: t("duplicatePeriod"),
+      };
+    }
+
     // Get all sale items with commissions in the period
     const saleItemsWithCommissions = await prisma.saleItem.findMany({
       where: {
@@ -348,7 +369,9 @@ export const createPayrollRun = async (
         const advAdjData = userAdvancesAndAdjustments.get(userId);
         const commissionsTotal = commissionData.total;
         const advancesTotal = advAdjData ? advAdjData.advances : new Decimal(0);
-        const adjustmentsTotal = advAdjData ? advAdjData.adjustments : new Decimal(0);
+        const adjustmentsTotal = advAdjData
+          ? advAdjData.adjustments
+          : new Decimal(0);
         const payableTotal = commissionsTotal
           .minus(advancesTotal)
           .plus(adjustmentsTotal);
@@ -842,4 +865,3 @@ export const deletePayrollEntry = async (
     };
   }
 };
-

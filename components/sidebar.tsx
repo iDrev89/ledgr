@@ -59,6 +59,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           titleKey: "dashboard",
           icon: LayoutDashboard,
           href: "/dashboard",
+          requiredPermission: ROUTE_PERMISSIONS["/dashboard"],
         },
       ],
     },

@@ -20,7 +20,10 @@ import type {
   PayrollRunWithDetails,
   PayrollEntryWithDetails,
 } from "@/lib/types/payroll";
-import type { PayrollRunStatus, PayrollEntryKind } from "@/prisma/prisma-client";
+import type {
+  PayrollRunStatus,
+  PayrollEntryKind,
+} from "@/prisma/prisma-client";
 
 // ==================== PAYROLL RUNS ====================
 
@@ -60,9 +63,12 @@ export const useCreatePayrollRun = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const t = useTranslations("Payroll.messages");
+  const tErrors = useTranslations("Payroll.errors");
 
   return useMutation({
-    mutationFn: async (input: CreatePayrollRunInput & { userIds?: string[] }) => {
+    mutationFn: async (
+      input: CreatePayrollRunInput & { userIds?: string[] }
+    ) => {
       const result = await createPayrollRun(input);
       if (!result.success) {
         throw new Error(result.error);
@@ -74,13 +80,6 @@ export const useCreatePayrollRun = () => {
       toast({
         title: t("createSuccess"),
         description: t("createSuccessDescription"),
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: t("createError"),
-        description: error.message,
-        variant: "destructive",
       });
     },
   });
@@ -267,4 +266,3 @@ export const useDeletePayrollEntry = () => {
     },
   });
 };
-
