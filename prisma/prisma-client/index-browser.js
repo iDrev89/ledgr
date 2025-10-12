@@ -192,6 +192,14 @@ exports.Prisma.BankScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProductCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -201,6 +209,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   price: 'price',
   cost: 'cost',
   commissionPercent: 'commissionPercent',
+  categoryId: 'categoryId',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -470,6 +479,7 @@ exports.Prisma.ModelName = {
   Verification: 'Verification',
   Customer: 'Customer',
   Bank: 'Bank',
+  ProductCategory: 'ProductCategory',
   Product: 'Product',
   Sale: 'Sale',
   SaleItem: 'SaleItem',

@@ -32,6 +32,7 @@ import {
 } from "@/lib/validations/product";
 import type { Product } from "@/lib/types/product";
 import { ProductType } from "@/prisma/prisma-client";
+import { useProductCategories } from "@/hooks/use-product-categories";
 
 interface ProductFormProps {
   product?: Product;
@@ -47,6 +48,7 @@ export function ProductForm({
   isLoading,
 }: ProductFormProps) {
   const t = useTranslations("Products");
+  const { data: categories = [] } = useProductCategories();
 
   const { createProductSchema } = useMemo(() => getProductSchemas(t), [t]);
 
@@ -62,6 +64,7 @@ export function ProductForm({
       commissionPercent: product?.commissionPercent
         ? product.commissionPercent.toString()
         : "",
+      categoryId: product?.categoryId || undefined,
       active: product?.active ?? true,
     },
   });
@@ -168,6 +171,35 @@ export function ProductForm({
                   rows={3}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="categoryId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("category")}</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={isLoading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("categoryPlaceholder")} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

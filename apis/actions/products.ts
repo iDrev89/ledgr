@@ -160,6 +160,7 @@ export const createProduct = async (
         commissionPercent: validated.commissionPercent
           ? new Decimal(validated.commissionPercent)
           : null,
+        categoryId: validated.categoryId,
         active: validated.active,
       },
     });
@@ -211,6 +212,7 @@ export const updateProduct = async (
         commissionPercent: validated.commissionPercent
           ? new Decimal(validated.commissionPercent)
           : null,
+        categoryId: validated.categoryId,
         active: validated.active,
       },
     });

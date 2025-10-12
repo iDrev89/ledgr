@@ -11,6 +11,7 @@ const createProductSchemas = (messages?: {
   priceInvalid?: string;
   costInvalid?: string;
   commissionPercentInvalid?: string;
+  categoryIdRequired?: string;
   idRequired?: string;
 }) => {
   const baseProductSchema = z.object({
@@ -59,6 +60,7 @@ const createProductSchemas = (messages?: {
       )
       .optional()
       .or(z.literal("")),
+    categoryId: z.string().min(1, messages?.categoryIdRequired || "Category is required"),
     active: z.boolean(),
   });
 
@@ -82,6 +84,7 @@ export const getProductSchemas = (t: (key: string) => string) => {
     priceInvalid: t("validation.priceInvalid"),
     costInvalid: t("validation.costInvalid"),
     commissionPercentInvalid: t("validation.commissionPercentInvalid"),
+    categoryIdRequired: t("validation.categoryIdRequired"),
     idRequired: t("validation.idRequired"),
   });
 };
