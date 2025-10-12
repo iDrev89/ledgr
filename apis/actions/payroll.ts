@@ -234,21 +234,70 @@ export const createPayrollRun = async (
     const endDate = new Date(validated.endDate);
 
     // Check if there's already a finalized/paid run that overlaps with this period
-    const overlappingRuns = await prisma.payrollRun.findFirst({
-      where: {
-        status: {
-          in: [PayrollRunStatus.FINALIZED, PayrollRunStatus.PAID],
+    // If userIds are specified, check only for those users
+    if (input.userIds && input.userIds.length > 0) {
+      // Check for overlapping runs for specific users
+      const overlappingRuns = await prisma.payrollRun.findFirst({
+        where: {
+          status: {
+            in: [PayrollRunStatus.FINALIZED, PayrollRunStatus.PAID],
+          },
+          AND: [
+            { startDate: { lte: endDate } },
+            { endDate: { gte: startDate } },
+          ],
+          items: {
+            some: {
+              userId: { in: input.userIds },
+            },
+          },
         },
-        // Check for overlapping date ranges
-        AND: [{ startDate: { lte: endDate } }, { endDate: { gte: startDate } }],
-      },
-    });
+        include: {
+          items: {
+            where: {
+              userId: { in: input.userIds },
+            },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-    if (overlappingRuns) {
-      return {
-        success: false,
-        error: t("duplicatePeriod"),
-      };
+      if (overlappingRuns && overlappingRuns.items.length > 0) {
+        return {
+          success: false,
+          error: t("duplicatePeriod"),
+          errorCode: "DUPLICATE_PERIOD",
+        };
+      }
+    } else {
+      // Check for any overlapping run (all users)
+      const overlappingRuns = await prisma.payrollRun.findFirst({
+        where: {
+          status: {
+            in: [PayrollRunStatus.FINALIZED, PayrollRunStatus.PAID],
+          },
+          // Check for overlapping date ranges
+          AND: [
+            { startDate: { lte: endDate } },
+            { endDate: { gte: startDate } },
+          ],
+        },
+      });
+
+      if (overlappingRuns) {
+        return {
+          success: false,
+          error: t("duplicatePeriod"),
+          errorCode: "DUPLICATE_PERIOD",
+        };
+      }
     }
 
     // Get all sale items with commissions in the period

@@ -7,8 +7,7 @@ import {
   admin as adminRole,
   user as userRole,
 } from "./permisssions";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

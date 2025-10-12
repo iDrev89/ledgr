@@ -471,18 +471,17 @@ export function PayrollRunDialog({
       <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t("confirmTitle")}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-2">
+            <AlertDialogTitle>{t("confirmTitle")}</AlertDialogTitle>
+            <div className="text-sm text-muted-foreground">
               {pendingData && (
-                <div className="space-y-1 text-sm">
+                <div className="space-y-3">
                   <div className="font-medium">
                     {t("confirmDescription")}
                   </div>
-                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <ul className="list-disc list-inside space-y-1">
                     <li>
-                      <strong>{t("confirmPeriodLabel")}</strong> {pendingData.periodLabel}
+                      <strong>{t("confirmPeriodLabel")}</strong>{" "}
+                      {pendingData.periodLabel}
                     </li>
                     <li>
                       <strong>{t("confirmTypeLabel")}</strong>{" "}
@@ -491,18 +490,21 @@ export function PayrollRunDialog({
                         : t("periodTypeBiweekly")}
                     </li>
                     <li>
-                      <strong>{t("confirmEmployeesLabel")}</strong> {getSelectedUsersLabel()}
+                      <strong>{t("confirmEmployeesLabel")}</strong>{" "}
+                      {getSelectedUsersLabel()}
                     </li>
                   </ul>
-                  <div className="text-xs text-muted-foreground mt-3">
+                  <div className="text-xs">
                     {t("confirmAutoCalculate")}
                   </div>
                 </div>
               )}
-            </AlertDialogDescription>
+            </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>{t("confirmCancel")}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isLoading}>
+              {t("confirmCancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmSubmit}
               disabled={isLoading}

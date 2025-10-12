@@ -106,13 +106,6 @@ export const useFinalizePayrollRun = () => {
         description: t("finalizeSuccessDescription"),
       });
     },
-    onError: (error: Error) => {
-      toast({
-        title: t("finalizeError"),
-        description: error.message,
-        variant: "destructive",
-      });
-    },
   });
 };
 
