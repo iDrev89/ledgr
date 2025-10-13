@@ -13,12 +13,10 @@ import PageHeader from "@/components/shared/PageHeader";
 import { BankTable } from "@/components/banks/bank-table";
 import { BankDialog } from "@/components/banks/bank-dialog";
 import { TransactionTable } from "@/components/bank-transactions/transaction-table";
-import { TransactionDialog } from "@/components/bank-transactions/transaction-dialog";
 import { TransferDialog } from "@/components/bank-transactions/transfer-dialog";
 import { useBanks, useDeleteBank } from "@/hooks/use-banks";
 import { useBankTransactions, useBanksWithBalance } from "@/hooks/use-bank-transactions";
 import type { BankWithRelations } from "@/lib/types/bank";
-import type { BankTransactionWithRelations } from "@/lib/types/bank-transactions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,9 +36,6 @@ export default function BanksPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bankToDelete, setBankToDelete] = useState<BankWithRelations | null>(null);
-
-  const [transactionDialogOpen, setTransactionDialogOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<BankTransactionWithRelations | undefined>();
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
 
   const { data, isLoading, error } = useBanks();
@@ -76,16 +71,6 @@ export default function BanksPage() {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  };
-
-  const handleCreateTransaction = () => {
-    setSelectedTransaction(undefined);
-    setTransactionDialogOpen(true);
-  };
-
-  const handleEditTransaction = (transaction: BankTransactionWithRelations) => {
-    setSelectedTransaction(transaction);
-    setTransactionDialogOpen(true);
   };
 
   const handleCreateTransfer = () => {
@@ -225,10 +210,6 @@ export default function BanksPage() {
                     {tTransactions("transactionHistoryDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateTransaction} size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  {tTransactions("createTransaction")}
-                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -254,7 +235,6 @@ export default function BanksPage() {
               ) : (
                 <TransactionTable
                   transactions={transactionsData?.transactions || []}
-                  onEdit={handleEditTransaction}
                 />
               )}
             </CardContent>
@@ -266,12 +246,6 @@ export default function BanksPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         bank={selectedBank}
-      />
-
-      <TransactionDialog
-        open={transactionDialogOpen}
-        onOpenChange={setTransactionDialogOpen}
-        transaction={selectedTransaction}
       />
 
       <TransferDialog

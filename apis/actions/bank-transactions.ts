@@ -144,7 +144,7 @@ export const getBankTransactions = async (params?: {
               receivable: true,
             },
           },
-          // expense: true, // TODO: Descomentar después de regenerar Prisma
+          expense: true,
           relatedBank: true,
         },
       }),
@@ -178,7 +178,7 @@ export const getBankTransaction = async (
         createdBy: true,
         salePayment: true,
         receivablePayment: true,
-        // expense: true, // TODO: Descomentar después de regenerar Prisma
+        expense: true,
         relatedBank: true,
       },
     });
@@ -355,7 +355,7 @@ export const updateBankTransaction = async (
     }
 
     // No permitir editar transacciones vinculadas a pagos o gastos
-    if (existing.salePaymentId || existing.receivablePaymentId) { // || existing.expenseId) { // TODO: Descomentar después de regenerar Prisma
+    if (existing.salePaymentId || existing.receivablePaymentId || existing.expenseId) {
       return { success: false, error: t("cannotEditLinked") };
     }
 
@@ -410,7 +410,7 @@ export const deleteBankTransaction = async (
     }
 
     // No permitir eliminar transacciones vinculadas a pagos o gastos
-    if (transaction.salePaymentId || transaction.receivablePaymentId) { // || transaction.expenseId) { // TODO: Descomentar después de regenerar Prisma
+    if (transaction.salePaymentId || transaction.receivablePaymentId || transaction.expenseId) {
       return { success: false, error: t("cannotDeleteLinked") };
     }
 

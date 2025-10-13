@@ -23,9 +23,7 @@ const createBankTransactionSchemas = (messages?: {
 }) => {
   const baseTransactionSchema = z.object({
     bankId: z.string().min(1, messages?.bankIdRequired || "Bank is required"),
-    type: z.enum(BankTransactionType, {
-      message: messages?.typeInvalid || "Invalid transaction type",
-    }),
+    type: z.nativeEnum(BankTransactionType),
     amount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) !== 0, {
@@ -41,7 +39,15 @@ const createBankTransactionSchemas = (messages?: {
       .max(100, messages?.referenceMax || "Reference must be less than 100 characters")
       .optional()
       .or(z.literal("")),
-    transactionDate: z.coerce.date(),
+    transactionDate: z
+      .string()
+      .or(z.date())
+      .refine((val) => {
+        const date = typeof val === "string" ? new Date(val) : val;
+        return !isNaN(date.getTime());
+      }, {
+        message: messages?.transactionDateInvalid || "Invalid date",
+      }),
   });
 
   const createTransactionSchema = baseTransactionSchema;
@@ -68,7 +74,15 @@ const createBankTransactionSchemas = (messages?: {
       .max(100, messages?.referenceMax || "Reference must be less than 100 characters")
       .optional()
       .or(z.literal("")),
-    transactionDate: z.coerce.date(),
+    transactionDate: z
+      .string()
+      .or(z.date())
+      .refine((val) => {
+        const date = typeof val === "string" ? new Date(val) : val;
+        return !isNaN(date.getTime());
+      }, {
+        message: messages?.transactionDateInvalid || "Invalid date",
+      }),
   }).refine((data) => data.fromBankId !== data.toBankId, {
     message: "Source and destination banks must be different",
     path: ["toBankId"],

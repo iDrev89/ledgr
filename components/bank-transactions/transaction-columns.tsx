@@ -1,33 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Trash2, ArrowUpRight, ArrowDownRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { BankTransactionWithRelations } from "@/lib/types/bank-transactions";
+import { BankTransactionType } from "@/prisma/prisma-client";
 import { format } from "date-fns";
-
-// Definir el enum localmente
-enum BankTransactionType {
-  INCOME = "INCOME",
-  EXPENSE = "EXPENSE",
-  TRANSFER_OUT = "TRANSFER_OUT",
-  TRANSFER_IN = "TRANSFER_IN",
-  ADJUSTMENT = "ADJUSTMENT",
-}
 import { es } from "date-fns/locale";
 
 interface CreateTransactionColumnsProps {
-  onEdit: (transaction: BankTransactionWithRelations) => void;
-  onDelete: (transaction: BankTransactionWithRelations) => void;
   t: (key: string) => string;
   locale?: string;
 }
@@ -55,8 +36,6 @@ const getTypeColor = (type: BankTransactionType) => {
 };
 
 export const createTransactionColumns = ({
-  onEdit,
-  onDelete,
   t,
   locale = "es",
 }: CreateTransactionColumnsProps): ColumnDef<BankTransactionWithRelations>[] => [
@@ -101,7 +80,7 @@ export const createTransactionColumns = ({
   },
   {
     accessorKey: "description",
-    header: t("description"),
+    header: t("descriptionLabel"),
     cell: ({ row }) => {
       const description = row.getValue("description") as string | null;
       const sale = row.original.salePayment?.sale;
@@ -157,47 +136,6 @@ export const createTransactionColumns = ({
           <Icon className="h-4 w-4" />
           {formatCurrency(Math.abs(amount))}
         </div>
-      );
-    },
-  },
-  {
-    id: "actions",
-    header: t("actions"),
-    cell: ({ row }) => {
-      const transaction = row.original;
-      const isLinked = !!(transaction.salePaymentId || transaction.receivablePaymentId);
-      const isTransfer = transaction.type === BankTransactionType.TRANSFER_IN || 
-                        transaction.type === BankTransactionType.TRANSFER_OUT;
-
-      // No mostrar acciones para transacciones vinculadas o transferencias
-      if (isLinked || isTransfer) {
-        return <div className="text-sm text-muted-foreground">-</div>;
-      }
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">{t("openMenu")}</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(transaction)}>
-              <Pencil className="mr-2 h-4 w-4" />
-              {t("edit")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => onDelete(transaction)}
-              className="text-destructive"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              {t("delete")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       );
     },
   },

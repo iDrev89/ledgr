@@ -46,8 +46,8 @@ const createExpenseSchemas = (messages?: {
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
         message: messages?.amountInvalid || "Amount must be a valid positive number",
       }),
-    paymentMethod: z.nativeEnum(PaymentMethod, {
-      errorMap: () => ({ message: messages?.paymentMethodInvalid || "Invalid payment method" }),
+    paymentMethod: z.enum(PaymentMethod, {
+      message: messages?.paymentMethodInvalid || "Invalid payment method",
     }),
     bankId: z.string().optional().nullable(),
     reference: z
@@ -78,9 +78,11 @@ const createExpenseSchemas = (messages?: {
 
   const createExpenseSchema = baseExpenseSchema;
 
-  const updateExpenseSchema = baseExpenseSchema.extend({
-    id: z.string().min(1, messages?.idRequired || "Expense ID is required"),
-  });
+  const updateExpenseSchema = baseExpenseSchema.merge(
+    z.object({
+      id: z.string().min(1, messages?.idRequired || "Expense ID is required"),
+    })
+  );
 
   return { createExpenseSchema, updateExpenseSchema };
 };

@@ -18,12 +18,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   getExpenseSchemas,
   type CreateExpenseInput,
   type UpdateExpenseInput,
 } from "@/lib/validations/expenses";
 import { CategorySelector } from "./category-selector";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
+import { useBanks } from "@/hooks/use-banks";
+
+enum PaymentMethod {
+  CASH = "CASH",
+  CARD = "CARD",
+  TRANSFER = "TRANSFER",
+  DIGITAL = "DIGITAL",
+  OTHER = "OTHER",
+}
 
 interface ExpenseFormProps {
   expense?: ExpenseWithDetails;
@@ -39,22 +55,29 @@ export function ExpenseForm({
   isLoading,
 }: ExpenseFormProps) {
   const t = useTranslations("Expenses");
+  const { data } = useBanks();
+  const banks = data?.banks || [];
   
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
   const form = useForm<CreateExpenseInput>({
-    resolver: zodResolver(createExpenseSchema),
+    resolver: zodResolver(createExpenseSchema) as any,
     defaultValues: {
       categoryId: expense?.categoryId || "",
       supplierId: expense?.supplierId || undefined,
       description: expense?.description || "",
       invoiceNo: expense?.invoiceNo || "",
       amount: expense?.amount ? expense.amount.toString() : "",
+      paymentMethod: (expense as any)?.paymentMethod || PaymentMethod.CASH,
+      bankId: (expense as any)?.bankId || undefined,
+      reference: (expense as any)?.reference || "",
       incurredAt: expense?.incurredAt
         ? new Date(expense.incurredAt).toISOString().split("T")[0]
         : new Date().toISOString().split("T")[0],
     },
   });
+
+  const paymentMethod = form.watch("paymentMethod");
 
   const handleSubmit = async (data: CreateExpenseInput) => {
     try {
@@ -158,6 +181,94 @@ export function ExpenseForm({
             )}
           />
         </div>
+
+        {/* Payment Method */}
+        <FormField
+          control={form.control}
+          name="paymentMethod"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {t("paymentMethod")} <span className="text-destructive">*</span>
+              </FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={isLoading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("paymentMethodPlaceholder")} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={PaymentMethod.CASH}>{t("paymentCash")}</SelectItem>
+                  <SelectItem value={PaymentMethod.CARD}>{t("paymentCard")}</SelectItem>
+                  <SelectItem value={PaymentMethod.TRANSFER}>{t("paymentTransfer")}</SelectItem>
+                  <SelectItem value={PaymentMethod.DIGITAL}>{t("paymentDigital")}</SelectItem>
+                  <SelectItem value={PaymentMethod.OTHER}>{t("paymentOther")}</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Bank (only for TRANSFER) */}
+        {paymentMethod === PaymentMethod.TRANSFER && (
+          <FormField
+            control={form.control}
+            name="bankId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("bank")} <span className="text-destructive">*</span>
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || undefined}
+                  disabled={isLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("bankPlaceholder")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {banks.map((bank) => (
+                      <SelectItem key={bank.id} value={bank.id}>
+                        {bank.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {/* Reference */}
+        {paymentMethod === PaymentMethod.TRANSFER && (
+          <FormField
+            control={form.control}
+            name="reference"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("reference")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("referencePlaceholder")}
+                    {...field}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormDescription>{t("referenceDescription")}</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {/* Invoice Number */}
         <FormField

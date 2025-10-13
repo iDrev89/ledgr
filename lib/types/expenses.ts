@@ -1,10 +1,11 @@
-import { Expense, ExpenseItem, ExpenseCategory, Supplier } from "@/prisma/prisma-client";
+import { Expense, ExpenseItem, ExpenseCategory, Supplier, Bank } from "@/prisma/prisma-client";
 
 export type { Expense, ExpenseItem };
 
 export type ExpenseWithDetails = Expense & {
   category?: ExpenseCategory | null;
   supplier?: Supplier | null;
+  bank?: Bank | null;
   createdBy?: {
     id: string;
     name: string;
