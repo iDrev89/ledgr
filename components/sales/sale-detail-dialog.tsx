@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import { ImageViewerDialog } from "@/components/shared/image-viewer-dialog";
 
 interface SaleDetailDialogProps {
   open: boolean;
@@ -122,9 +123,9 @@ export function SaleDetailDialog({
                   {sale.payments.map((payment) => (
                     <div
                       key={payment.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                      className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/50"
                     >
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1 flex-1">
                         <Badge variant="secondary" className="w-fit">
                           {getPaymentMethodLabel(payment.method)}
                         </Badge>
@@ -140,9 +141,23 @@ export function SaleDetailDialog({
                           </span>
                         )}
                       </div>
-                      <span className="font-medium">
-                        {formatCurrency(payment.amount)}
-                      </span>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium whitespace-nowrap">
+                          {formatCurrency(payment.amount)}
+                        </span>
+                        
+                        {/* Botón para ver comprobante si existe */}
+                        {payment.attachmentUrl && (
+                          <ImageViewerDialog
+                            imageUrl={payment.attachmentUrl}
+                            title={t("paymentAttachmentTitle")}
+                            buttonText={t("paymentViewAttachment")}
+                            buttonVariant="outline"
+                            buttonSize="sm"
+                          />
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
