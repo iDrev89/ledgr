@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+enum PaymentMethod {
+  CASH = "CASH",
+  CARD = "CARD",
+  TRANSFER = "TRANSFER",
+  DIGITAL = "DIGITAL",
+  OTHER = "OTHER",
+}
+
 // Helper to create schemas with custom messages
 const createExpenseSchemas = (messages?: {
   categoryIdRequired?: string;
@@ -11,6 +19,9 @@ const createExpenseSchemas = (messages?: {
   amountRequired?: string;
   incurredAtRequired?: string;
   incurredAtInvalid?: string;
+  paymentMethodInvalid?: string;
+  bankIdRequired?: string;
+  referenceMax?: string;
   idRequired?: string;
 }) => {
   const baseExpenseSchema = z.object({
@@ -35,6 +46,16 @@ const createExpenseSchemas = (messages?: {
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
         message: messages?.amountInvalid || "Amount must be a valid positive number",
       }),
+    paymentMethod: z.nativeEnum(PaymentMethod, {
+      errorMap: () => ({ message: messages?.paymentMethodInvalid || "Invalid payment method" }),
+    }),
+    bankId: z.string().optional().nullable(),
+    reference: z
+      .string()
+      .max(100, messages?.referenceMax || "Reference must be less than 100 characters")
+      .trim()
+      .optional()
+      .or(z.literal("")),
     incurredAt: z
       .string()
       .or(z.date())
@@ -44,6 +65,15 @@ const createExpenseSchemas = (messages?: {
       }, {
         message: messages?.incurredAtInvalid || "Invalid date format",
       }),
+  }).refine((data) => {
+    // If payment method is TRANSFER, bankId is required
+    if (data.paymentMethod === PaymentMethod.TRANSFER && !data.bankId) {
+      return false;
+    }
+    return true;
+  }, {
+    message: messages?.bankIdRequired || "Bank is required for transfers",
+    path: ["bankId"],
   });
 
   const createExpenseSchema = baseExpenseSchema;
@@ -65,6 +95,9 @@ export const getExpenseSchemas = (t: (key: string) => string) => {
     invoiceNoMax: t("validation.invoiceNoMax"),
     amountInvalid: t("validation.amountInvalid"),
     amountRequired: t("validation.amountRequired"),
+    paymentMethodInvalid: t("validation.paymentMethodInvalid"),
+    bankIdRequired: t("validation.bankIdRequired"),
+    referenceMax: t("validation.referenceMax"),
     incurredAtRequired: t("validation.incurredAtRequired"),
     incurredAtInvalid: t("validation.incurredAtInvalid"),
     idRequired: t("validation.idRequired"),

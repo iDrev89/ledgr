@@ -32,6 +32,7 @@ model User {
   performedSaleItems SaleItem[]        @relation("ServicePerformer")
   payrollEntries     PayrollEntry[]
   payrollRunItems    PayrollRunItem[]
+  bankTransactions   BankTransaction[]
 
   @@unique([email])
   @@map("user")
@@ -95,6 +96,14 @@ enum PaymentMethod {
   TRANSFER
   DIGITAL
   OTHER
+}
+
+enum BankTransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER_OUT
+  TRANSFER_IN
+  ADJUSTMENT
 }
 
 enum StockMoveType {
@@ -163,9 +172,12 @@ model Bank {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  salePayments       SalePayment[]
-  receivablePayments AccountsReceivablePayment[]
-  purchasePayments   PurchasePayment[]
+  salePayments        SalePayment[]
+  receivablePayments  AccountsReceivablePayment[]
+  purchasePayments    PurchasePayment[]
+  expenses            Expense[]
+  transactions        BankTransaction[]         @relation("BankMovements")
+  transfersReceived   BankTransaction[]         @relation("TransferDestination")
 
   @@unique([name])
   @@index([active])
@@ -266,7 +278,8 @@ model SalePayment {
   bankId    String?
   bank      Bank?         @relation(fields: [bankId], references: [id])
 
-  sale Sale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  sale            Sale             @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  bankTransaction BankTransaction? @relation("FromSalePayment")
 
   @@index([saleId, paidAt])
   @@index([bankId])
@@ -308,26 +321,32 @@ model Supplier {
 }
 
 model Expense {
-  id          String            @id @default(cuid())
-  createdById String?
-  createdBy   User?             @relation(fields: [createdById], references: [id])
-  categoryId  String?
-  category    ExpenseCategory?  @relation(fields: [categoryId], references: [id])
-  supplierId  String?
-  supplier    Supplier?         @relation(fields: [supplierId], references: [id])
-  description String?
-  invoiceNo   String?
-  attachment  String?
-  currency    String            @default("COP")
-  amount      Decimal           @db.Decimal(12, 2)
-  incurredAt  DateTime          @default(now())
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id            String           @id @default(cuid())
+  createdById   String?
+  createdBy     User?            @relation(fields: [createdById], references: [id])
+  categoryId    String?
+  category      ExpenseCategory? @relation(fields: [categoryId], references: [id])
+  supplierId    String?
+  supplier      Supplier?        @relation(fields: [supplierId], references: [id])
+  description   String?
+  invoiceNo     String?
+  attachment    String?
+  currency      String           @default("COP")
+  amount        Decimal          @db.Decimal(12, 2)
+  paymentMethod PaymentMethod    @default(CASH)
+  bankId        String?
+  bank          Bank?            @relation(fields: [bankId], references: [id])
+  reference     String?
+  incurredAt    DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
-  items ExpenseItem[]
+  items           ExpenseItem[]
+  bankTransaction BankTransaction? @relation("FromExpense")
 
   @@index([createdById, incurredAt])
   @@index([supplierId, invoiceNo])
+  @@index([bankId])
   @@map("expense")
 }
 
@@ -453,7 +472,8 @@ model AccountsReceivablePayment {
   bankId       String?
   bank         Bank?         @relation(fields: [bankId], references: [id])
 
-  receivable AccountsReceivable @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+  receivable      AccountsReceivable @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+  bankTransaction BankTransaction?   @relation("FromReceivablePayment")
 
   @@index([receivableId, paidAt])
   @@index([bankId])
@@ -517,4 +537,33 @@ model PayrollRunItem {
   @@index([runId])
   @@index([userId])
   @@map("payroll_run_item")
+}
+
+model BankTransaction {
+  id              String              @id @default(cuid())
+  bankId          String
+  bank            Bank                @relation("BankMovements", fields: [bankId], references: [id])
+  type            BankTransactionType
+  amount          Decimal             @db.Decimal(12, 2)
+  description     String?
+  reference       String?
+  transactionDate DateTime            @default(now())
+  createdById     String?
+  createdBy       User?               @relation(fields: [createdById], references: [id])
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  salePaymentId       String?                      @unique
+  salePayment         SalePayment?                 @relation("FromSalePayment", fields: [salePaymentId], references: [id])
+  receivablePaymentId String?                      @unique
+  receivablePayment   AccountsReceivablePayment?   @relation("FromReceivablePayment", fields: [receivablePaymentId], references: [id])
+  expenseId           String?                      @unique
+  expense             Expense?                     @relation("FromExpense", fields: [expenseId], references: [id])
+  relatedBankId       String?
+  relatedBank         Bank?                        @relation("TransferDestination", fields: [relatedBankId], references: [id])
+  transferPairId      String?                      @unique
+
+  @@index([bankId, transactionDate])
+  @@index([type])
+  @@map("bank_transaction")
 }

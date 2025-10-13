@@ -282,6 +282,9 @@ exports.Prisma.ExpenseScalarFieldEnum = {
   attachment: 'attachment',
   currency: 'currency',
   amount: 'amount',
+  paymentMethod: 'paymentMethod',
+  bankId: 'bankId',
+  reference: 'reference',
   incurredAt: 'incurredAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -405,6 +408,24 @@ exports.Prisma.PayrollRunItemScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BankTransactionScalarFieldEnum = {
+  id: 'id',
+  bankId: 'bankId',
+  type: 'type',
+  amount: 'amount',
+  description: 'description',
+  reference: 'reference',
+  transactionDate: 'transactionDate',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  salePaymentId: 'salePaymentId',
+  receivablePaymentId: 'receivablePaymentId',
+  expenseId: 'expenseId',
+  relatedBankId: 'relatedBankId',
+  transferPairId: 'transferPairId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -472,6 +493,14 @@ exports.PayrollRunStatus = exports.$Enums.PayrollRunStatus = {
   PAID: 'PAID'
 };
 
+exports.BankTransactionType = exports.$Enums.BankTransactionType = {
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE',
+  TRANSFER_OUT: 'TRANSFER_OUT',
+  TRANSFER_IN: 'TRANSFER_IN',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -496,7 +525,8 @@ exports.Prisma.ModelName = {
   AccountsReceivablePayment: 'AccountsReceivablePayment',
   PayrollEntry: 'PayrollEntry',
   PayrollRun: 'PayrollRun',
-  PayrollRunItem: 'PayrollRunItem'
+  PayrollRunItem: 'PayrollRunItem',
+  BankTransaction: 'BankTransaction'
 };
 
 /**

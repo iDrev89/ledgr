@@ -151,6 +151,7 @@ export const createBank = async (
     });
 
     revalidatePath("/settings");
+    revalidatePath("/banks");
 
     return { success: true, data: bank };
   } catch (error) {
@@ -202,6 +203,7 @@ export const updateBank = async (
     });
 
     revalidatePath("/settings");
+    revalidatePath("/banks");
 
     return { success: true, data: bank };
   } catch (error) {

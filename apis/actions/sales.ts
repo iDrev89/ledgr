@@ -444,12 +444,31 @@ export const createSale = async (
         }
       }
 
+      // Create bank transactions for payments with bank
+      for (const payment of newSale.payments) {
+        if (payment.bankId) {
+          await tx.bankTransaction.create({
+            data: {
+              bankId: payment.bankId,
+              type: "INCOME" as any,
+              amount: payment.amount,
+              description: `Venta #${String(newSale.saleNumber).padStart(4, "0")}${newSale.customer ? ` - ${newSale.customer.name}` : ""}`,
+              reference: payment.reference || null,
+              transactionDate: payment.paidAt,
+              salePaymentId: payment.id,
+              createdById: session.user.id,
+            },
+          });
+        }
+      }
+
       return { ...newSale, receivable };
     });
 
     revalidatePath("/sales");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
 
     return { success: true, data: serializeSale(sale) };
   } catch (error) {

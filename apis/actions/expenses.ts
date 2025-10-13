@@ -108,6 +108,7 @@ export const getExpenses = async (params?: {
         include: {
           category: true,
           supplier: true,
+          bank: true,
           createdBy: {
             select: {
               id: true,
@@ -146,6 +147,7 @@ export const getExpense = async (
       include: {
         category: true,
         supplier: true,
+        bank: true,
         createdBy: {
           select: {
             id: true,
@@ -216,35 +218,59 @@ export const createExpense = async (
       ? new Date(validated.incurredAt) 
       : validated.incurredAt;
 
-    const expense = await prisma.expense.create({
-      data: {
-        createdById: session.user.id,
-        categoryId: validated.categoryId || null,
-        supplierId: validated.supplierId || null,
-        description: validated.description || null,
-        invoiceNo: validated.invoiceNo || null,
-        currency: "COP",
-        amount,
-        incurredAt,
-      },
-      include: {
-        category: true,
-        supplier: true,
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
+    const result = await prisma.$transaction(async (tx) => {
+      const expense = await tx.expense.create({
+        data: {
+          createdById: session.user.id,
+          categoryId: validated.categoryId || null,
+          supplierId: validated.supplierId || null,
+          description: validated.description || null,
+          invoiceNo: validated.invoiceNo || null,
+          currency: "COP",
+          amount,
+          paymentMethod: validated.paymentMethod,
+          bankId: validated.bankId || null,
+          reference: validated.reference || null,
+          incurredAt,
         },
-        items: true,
-      },
+        include: {
+          category: true,
+          supplier: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          items: true,
+        },
+      });
+
+      // Create bank transaction if payment method is TRANSFER and bank is provided
+      if (validated.paymentMethod === "TRANSFER" && validated.bankId) {
+        await tx.bankTransaction.create({
+          data: {
+            bankId: validated.bankId,
+            type: "EXPENSE" as any,
+            amount: amount.negated(), // Negative because it's an expense
+            description: `Gasto${validated.description ? `: ${validated.description}` : ""}${validated.invoiceNo ? ` (Factura: ${validated.invoiceNo})` : ""}`,
+            reference: validated.reference || null,
+            transactionDate: incurredAt,
+            expenseId: expense.id,
+            createdById: session.user.id,
+          },
+        });
+      }
+
+      return expense;
     });
 
     revalidatePath("/expenses");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
 
-    return { success: true, data: serializeExpense(expense) };
+    return { success: true, data: serializeExpense(result) };
   } catch (error) {
     console.error("Error creating expense:", error);
     return {
@@ -312,6 +338,9 @@ export const updateExpense = async (
         description: validated.description || null,
         invoiceNo: validated.invoiceNo || null,
         amount,
+        paymentMethod: validated.paymentMethod,
+        bankId: validated.bankId || null,
+        reference: validated.reference || null,
         incurredAt,
       },
       include: {
@@ -331,6 +360,7 @@ export const updateExpense = async (
     revalidatePath("/expenses");
     revalidatePath(`/expenses/${expense.id}`);
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
 
     return { success: true, data: serializeExpense(expense) };
   } catch (error) {
