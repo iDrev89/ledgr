@@ -75,6 +75,7 @@ const serializeSale = (sale: any): SaleWithDetails => {
           ...payment,
           amount: payment.amount.toString(),
           bank: payment.bank || null,
+          attachmentUrl: payment.attachmentUrl || null,
         }))
       : [],
     receivable: sale.receivable
@@ -348,6 +349,7 @@ export const createSale = async (
         method: payment.method,
         bankId: payment.bankId || null,
         reference: payment.reference || null,
+        attachmentUrl: payment.attachmentUrl || null,
       };
     });
 
@@ -588,6 +590,7 @@ export const updateSale = async (
         method: payment.method,
         bankId: payment.bankId || null,
         reference: payment.reference || null,
+        attachmentUrl: payment.attachmentUrl || null,
       };
     });
 

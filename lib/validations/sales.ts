@@ -64,6 +64,9 @@ const createSaleSchemas = (messages?: {
       .trim()
       .optional()
       .or(z.literal("")),
+    attachmentUrl: z.url()
+      .optional()
+      .or(z.literal("")),
   });
 
   const baseSaleSchema = z.object({

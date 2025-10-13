@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { useBanks } from "@/hooks/use-banks";
 import type { SalePaymentInput } from "@/lib/validations/sales";
+import { AttachmentUpload } from "@/components/shared/attachment-upload";
 
 export type SalePaymentRow = SalePaymentInput & {
   tempId: string;
@@ -45,6 +46,7 @@ export function SalePaymentsTable({
   const t = useTranslations("Sales");
   const { data: banksData } = useBanks({ activeOnly: true });
   const banks = banksData?.banks || [];
+  const [expandedPayment, setExpandedPayment] = useState<string | null>(null);
 
   const handleAddPayment = () => {
     const newPayment: SalePaymentRow = {
@@ -53,6 +55,7 @@ export function SalePaymentsTable({
       method: PaymentMethod.CASH,
       bankId: "",
       reference: "",
+      attachmentUrl: "",
     };
     onPaymentsChange([...payments, newPayment]);
   };
@@ -70,9 +73,10 @@ export function SalePaymentsTable({
       payments.map((p) => {
         if (p.tempId === tempId) {
           const updated = { ...p, [field]: value };
-          // Clear bank if method is not TRANSFER
+          // Clear bank and attachment if method is not TRANSFER
           if (field === "method" && value !== PaymentMethod.TRANSFER) {
             updated.bankId = "";
+            updated.attachmentUrl = "";
           }
           return updated;
         }
@@ -124,105 +128,163 @@ export function SalePaymentsTable({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {payments.map((payment) => (
-                    <TableRow key={payment.tempId}>
-                      <TableCell>
-                        <Select
-                          value={payment.method}
-                          onValueChange={(value) =>
-                            handlePaymentChange(payment.tempId, "method", value)
-                          }
-                          disabled={disabled}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value={PaymentMethod.CASH}>
-                              {t("paymentCash")}
-                            </SelectItem>
-                            <SelectItem value={PaymentMethod.CARD}>
-                              {t("paymentCard")}
-                            </SelectItem>
-                            <SelectItem value={PaymentMethod.TRANSFER}>
-                              {t("paymentTransfer")}
-                            </SelectItem>
-                            <SelectItem value={PaymentMethod.DIGITAL}>
-                              {t("paymentDigital")}
-                            </SelectItem>
-                            <SelectItem value={PaymentMethod.OTHER}>
-                              {t("paymentOther")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={payment.amount}
-                          onChange={(e) =>
-                            handlePaymentChange(payment.tempId, "amount", e.target.value)
-                          }
-                          placeholder={t("paymentAmountPlaceholder")}
-                          disabled={disabled}
-                          required
-                          className={
-                            !payment.amount || payment.amount.trim() === ""
-                              ? "border-destructive"
-                              : ""
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {payment.method === PaymentMethod.TRANSFER ? (
-                          <Select
-                            value={payment.bankId || ""}
-                            onValueChange={(value) =>
-                              handlePaymentChange(payment.tempId, "bankId", value)
-                            }
-                            disabled={disabled}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder={t("selectBank")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {banks.map((bank) => (
-                                <SelectItem key={bank.id} value={bank.id}>
-                                  {bank.name}
-                                  {bank.accountNo && ` - ${bank.accountNo}`}
+                  {payments.map((payment) => {
+                    const isExpanded = expandedPayment === payment.tempId;
+                    const showAttachment = payment.method === PaymentMethod.TRANSFER;
+                    
+                    return (
+                      <Fragment key={payment.tempId}>
+                        <TableRow>
+                          <TableCell>
+                            <Select
+                              value={payment.method}
+                              onValueChange={(value) => {
+                                handlePaymentChange(payment.tempId, "method", value);
+                                // Collapse cuando cambie a otro método
+                                if (value !== PaymentMethod.TRANSFER) {
+                                  setExpandedPayment(null);
+                                }
+                              }}
+                              disabled={disabled}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value={PaymentMethod.CASH}>
+                                  {t("paymentCash")}
                                 </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
+                                <SelectItem value={PaymentMethod.CARD}>
+                                  {t("paymentCard")}
+                                </SelectItem>
+                                <SelectItem value={PaymentMethod.TRANSFER}>
+                                  {t("paymentTransfer")}
+                                </SelectItem>
+                                <SelectItem value={PaymentMethod.DIGITAL}>
+                                  {t("paymentDigital")}
+                                </SelectItem>
+                                <SelectItem value={PaymentMethod.OTHER}>
+                                  {t("paymentOther")}
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              value={payment.amount}
+                              onChange={(e) =>
+                                handlePaymentChange(payment.tempId, "amount", e.target.value)
+                              }
+                              placeholder={t("paymentAmountPlaceholder")}
+                              disabled={disabled}
+                              required
+                              className={
+                                !payment.amount || payment.amount.trim() === ""
+                                  ? "border-destructive"
+                                  : ""
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {showAttachment ? (
+                              <Select
+                                value={payment.bankId || ""}
+                                onValueChange={(value) =>
+                                  handlePaymentChange(payment.tempId, "bankId", value)
+                                }
+                                disabled={disabled}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder={t("selectBank")} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {banks.map((bank) => (
+                                    <SelectItem key={bank.id} value={bank.id}>
+                                      {bank.name}
+                                      {bank.accountNo && ` - ${bank.accountNo}`}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={payment.reference || ""}
+                              onChange={(e) =>
+                                handlePaymentChange(payment.tempId, "reference", e.target.value)
+                              }
+                              placeholder={t("paymentReferencePlaceholder")}
+                              disabled={disabled}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              {showAttachment && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() =>
+                                    setExpandedPayment(isExpanded ? null : payment.tempId)
+                                  }
+                                  disabled={disabled}
+                                  title={isExpanded ? t("paymentHideAttachment") : t("paymentShowAttachment")}
+                                >
+                                  {isExpanded ? (
+                                    <ChevronUp className="h-4 w-4" />
+                                  ) : (
+                                    <ChevronDown className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              )}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleRemovePayment(payment.tempId)}
+                                disabled={disabled}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        
+                        {/* Fila expandible para adjuntos */}
+                        {showAttachment && isExpanded && (
+                          <TableRow key={`${payment.tempId}-attachment`}>
+                            <TableCell colSpan={5} className="bg-muted/50 p-4">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <p className="text-sm font-medium">
+                                    {t("paymentAttachmentLabel")}
+                                  </p>
+                                  {payment.attachmentUrl && (
+                                    <span className="text-xs text-green-600 dark:text-green-400">
+                                      ✓ {t("paymentAttached")}
+                                    </span>
+                                  )}
+                                </div>
+                                <AttachmentUpload
+                                  currentUrl={payment.attachmentUrl}
+                                  onUploadComplete={(url) =>
+                                    handlePaymentChange(payment.tempId, "attachmentUrl", url)
+                                  }
+                                  disabled={disabled}
+                                />
+                              </div>
+                            </TableCell>
+                          </TableRow>
                         )}
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={payment.reference || ""}
-                          onChange={(e) =>
-                            handlePaymentChange(payment.tempId, "reference", e.target.value)
-                          }
-                          placeholder={t("paymentReferencePlaceholder")}
-                          disabled={disabled}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemovePayment(payment.tempId)}
-                          disabled={disabled}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      </Fragment>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>

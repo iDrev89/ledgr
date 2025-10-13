@@ -693,8 +693,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.17.1
-   * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
+   * Prisma Client JS version: 6.16.2
+   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
    */
   export type PrismaVersion = {
     client: string
@@ -15662,6 +15662,7 @@ export namespace Prisma {
     paidAt: Date | null
     reference: string | null
     bankId: string | null
+    attachmentUrl: string | null
   }
 
   export type SalePaymentMaxAggregateOutputType = {
@@ -15672,6 +15673,7 @@ export namespace Prisma {
     paidAt: Date | null
     reference: string | null
     bankId: string | null
+    attachmentUrl: string | null
   }
 
   export type SalePaymentCountAggregateOutputType = {
@@ -15682,6 +15684,7 @@ export namespace Prisma {
     paidAt: number
     reference: number
     bankId: number
+    attachmentUrl: number
     _all: number
   }
 
@@ -15702,6 +15705,7 @@ export namespace Prisma {
     paidAt?: true
     reference?: true
     bankId?: true
+    attachmentUrl?: true
   }
 
   export type SalePaymentMaxAggregateInputType = {
@@ -15712,6 +15716,7 @@ export namespace Prisma {
     paidAt?: true
     reference?: true
     bankId?: true
+    attachmentUrl?: true
   }
 
   export type SalePaymentCountAggregateInputType = {
@@ -15722,6 +15727,7 @@ export namespace Prisma {
     paidAt?: true
     reference?: true
     bankId?: true
+    attachmentUrl?: true
     _all?: true
   }
 
@@ -15819,6 +15825,7 @@ export namespace Prisma {
     paidAt: Date
     reference: string | null
     bankId: string | null
+    attachmentUrl: string | null
     _count: SalePaymentCountAggregateOutputType | null
     _avg: SalePaymentAvgAggregateOutputType | null
     _sum: SalePaymentSumAggregateOutputType | null
@@ -15848,6 +15855,7 @@ export namespace Prisma {
     paidAt?: boolean
     reference?: boolean
     bankId?: boolean
+    attachmentUrl?: boolean
     bank?: boolean | SalePayment$bankArgs<ExtArgs>
     sale?: boolean | SaleDefaultArgs<ExtArgs>
     bankTransaction?: boolean | SalePayment$bankTransactionArgs<ExtArgs>
@@ -15861,6 +15869,7 @@ export namespace Prisma {
     paidAt?: boolean
     reference?: boolean
     bankId?: boolean
+    attachmentUrl?: boolean
     bank?: boolean | SalePayment$bankArgs<ExtArgs>
     sale?: boolean | SaleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["salePayment"]>
@@ -15873,6 +15882,7 @@ export namespace Prisma {
     paidAt?: boolean
     reference?: boolean
     bankId?: boolean
+    attachmentUrl?: boolean
     bank?: boolean | SalePayment$bankArgs<ExtArgs>
     sale?: boolean | SaleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["salePayment"]>
@@ -15885,9 +15895,10 @@ export namespace Prisma {
     paidAt?: boolean
     reference?: boolean
     bankId?: boolean
+    attachmentUrl?: boolean
   }
 
-  export type SalePaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleId" | "amount" | "method" | "paidAt" | "reference" | "bankId", ExtArgs["result"]["salePayment"]>
+  export type SalePaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleId" | "amount" | "method" | "paidAt" | "reference" | "bankId" | "attachmentUrl", ExtArgs["result"]["salePayment"]>
   export type SalePaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bank?: boolean | SalePayment$bankArgs<ExtArgs>
     sale?: boolean | SaleDefaultArgs<ExtArgs>
@@ -15917,6 +15928,7 @@ export namespace Prisma {
       paidAt: Date
       reference: string | null
       bankId: string | null
+      attachmentUrl: string | null
     }, ExtArgs["result"]["salePayment"]>
     composites: {}
   }
@@ -16350,6 +16362,7 @@ export namespace Prisma {
     readonly paidAt: FieldRef<"SalePayment", 'DateTime'>
     readonly reference: FieldRef<"SalePayment", 'String'>
     readonly bankId: FieldRef<"SalePayment", 'String'>
+    readonly attachmentUrl: FieldRef<"SalePayment", 'String'>
   }
     
 
@@ -33835,7 +33848,8 @@ export namespace Prisma {
     method: 'method',
     paidAt: 'paidAt',
     reference: 'reference',
-    bankId: 'bankId'
+    bankId: 'bankId',
+    attachmentUrl: 'attachmentUrl'
   };
 
   export type SalePaymentScalarFieldEnum = (typeof SalePaymentScalarFieldEnum)[keyof typeof SalePaymentScalarFieldEnum]
@@ -35138,6 +35152,7 @@ export namespace Prisma {
     paidAt?: DateTimeFilter<"SalePayment"> | Date | string
     reference?: StringNullableFilter<"SalePayment"> | string | null
     bankId?: StringNullableFilter<"SalePayment"> | string | null
+    attachmentUrl?: StringNullableFilter<"SalePayment"> | string | null
     bank?: XOR<BankNullableScalarRelationFilter, BankWhereInput> | null
     sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
     bankTransaction?: XOR<BankTransactionNullableScalarRelationFilter, BankTransactionWhereInput> | null
@@ -35151,6 +35166,7 @@ export namespace Prisma {
     paidAt?: SortOrder
     reference?: SortOrderInput | SortOrder
     bankId?: SortOrderInput | SortOrder
+    attachmentUrl?: SortOrderInput | SortOrder
     bank?: BankOrderByWithRelationInput
     sale?: SaleOrderByWithRelationInput
     bankTransaction?: BankTransactionOrderByWithRelationInput
@@ -35167,6 +35183,7 @@ export namespace Prisma {
     paidAt?: DateTimeFilter<"SalePayment"> | Date | string
     reference?: StringNullableFilter<"SalePayment"> | string | null
     bankId?: StringNullableFilter<"SalePayment"> | string | null
+    attachmentUrl?: StringNullableFilter<"SalePayment"> | string | null
     bank?: XOR<BankNullableScalarRelationFilter, BankWhereInput> | null
     sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
     bankTransaction?: XOR<BankTransactionNullableScalarRelationFilter, BankTransactionWhereInput> | null
@@ -35180,6 +35197,7 @@ export namespace Prisma {
     paidAt?: SortOrder
     reference?: SortOrderInput | SortOrder
     bankId?: SortOrderInput | SortOrder
+    attachmentUrl?: SortOrderInput | SortOrder
     _count?: SalePaymentCountOrderByAggregateInput
     _avg?: SalePaymentAvgOrderByAggregateInput
     _max?: SalePaymentMaxOrderByAggregateInput
@@ -35198,6 +35216,7 @@ export namespace Prisma {
     paidAt?: DateTimeWithAggregatesFilter<"SalePayment"> | Date | string
     reference?: StringNullableWithAggregatesFilter<"SalePayment"> | string | null
     bankId?: StringNullableWithAggregatesFilter<"SalePayment"> | string | null
+    attachmentUrl?: StringNullableWithAggregatesFilter<"SalePayment"> | string | null
   }
 
   export type ExpenseCategoryWhereInput = {
@@ -37337,6 +37356,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
     bank?: BankCreateNestedOneWithoutSalePaymentsInput
     sale: SaleCreateNestedOneWithoutPaymentsInput
     bankTransaction?: BankTransactionCreateNestedOneWithoutSalePaymentInput
@@ -37350,6 +37370,7 @@ export namespace Prisma {
     paidAt?: Date | string
     reference?: string | null
     bankId?: string | null
+    attachmentUrl?: string | null
     bankTransaction?: BankTransactionUncheckedCreateNestedOneWithoutSalePaymentInput
   }
 
@@ -37359,6 +37380,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bank?: BankUpdateOneWithoutSalePaymentsNestedInput
     sale?: SaleUpdateOneRequiredWithoutPaymentsNestedInput
     bankTransaction?: BankTransactionUpdateOneWithoutSalePaymentNestedInput
@@ -37372,6 +37394,7 @@ export namespace Prisma {
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     bankId?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bankTransaction?: BankTransactionUncheckedUpdateOneWithoutSalePaymentNestedInput
   }
 
@@ -37383,6 +37406,7 @@ export namespace Prisma {
     paidAt?: Date | string
     reference?: string | null
     bankId?: string | null
+    attachmentUrl?: string | null
   }
 
   export type SalePaymentUpdateManyMutationInput = {
@@ -37391,6 +37415,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SalePaymentUncheckedUpdateManyInput = {
@@ -37401,6 +37426,7 @@ export namespace Prisma {
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     bankId?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExpenseCategoryCreateInput = {
@@ -39519,6 +39545,7 @@ export namespace Prisma {
     paidAt?: SortOrder
     reference?: SortOrder
     bankId?: SortOrder
+    attachmentUrl?: SortOrder
   }
 
   export type SalePaymentAvgOrderByAggregateInput = {
@@ -39533,6 +39560,7 @@ export namespace Prisma {
     paidAt?: SortOrder
     reference?: SortOrder
     bankId?: SortOrder
+    attachmentUrl?: SortOrder
   }
 
   export type SalePaymentMinOrderByAggregateInput = {
@@ -39543,6 +39571,7 @@ export namespace Prisma {
     paidAt?: SortOrder
     reference?: SortOrder
     bankId?: SortOrder
+    attachmentUrl?: SortOrder
   }
 
   export type SalePaymentSumOrderByAggregateInput = {
@@ -44128,6 +44157,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
     sale: SaleCreateNestedOneWithoutPaymentsInput
     bankTransaction?: BankTransactionCreateNestedOneWithoutSalePaymentInput
   }
@@ -44139,6 +44169,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
     bankTransaction?: BankTransactionUncheckedCreateNestedOneWithoutSalePaymentInput
   }
 
@@ -44375,6 +44406,7 @@ export namespace Prisma {
     paidAt?: DateTimeFilter<"SalePayment"> | Date | string
     reference?: StringNullableFilter<"SalePayment"> | string | null
     bankId?: StringNullableFilter<"SalePayment"> | string | null
+    attachmentUrl?: StringNullableFilter<"SalePayment"> | string | null
   }
 
   export type AccountsReceivablePaymentUpsertWithWhereUniqueWithoutBankInput = {
@@ -44881,6 +44913,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
     bank?: BankCreateNestedOneWithoutSalePaymentsInput
     bankTransaction?: BankTransactionCreateNestedOneWithoutSalePaymentInput
   }
@@ -44892,6 +44925,7 @@ export namespace Prisma {
     paidAt?: Date | string
     reference?: string | null
     bankId?: string | null
+    attachmentUrl?: string | null
     bankTransaction?: BankTransactionUncheckedCreateNestedOneWithoutSalePaymentInput
   }
 
@@ -48282,6 +48316,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
     bank?: BankCreateNestedOneWithoutSalePaymentsInput
     sale: SaleCreateNestedOneWithoutPaymentsInput
   }
@@ -48294,6 +48329,7 @@ export namespace Prisma {
     paidAt?: Date | string
     reference?: string | null
     bankId?: string | null
+    attachmentUrl?: string | null
   }
 
   export type SalePaymentCreateOrConnectWithoutBankTransactionInput = {
@@ -48515,6 +48551,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bank?: BankUpdateOneWithoutSalePaymentsNestedInput
     sale?: SaleUpdateOneRequiredWithoutPaymentsNestedInput
   }
@@ -48527,6 +48564,7 @@ export namespace Prisma {
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     bankId?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountsReceivablePaymentUpsertWithoutBankTransactionInput = {
@@ -49311,6 +49349,7 @@ export namespace Prisma {
     method: $Enums.PaymentMethod
     paidAt?: Date | string
     reference?: string | null
+    attachmentUrl?: string | null
   }
 
   export type AccountsReceivablePaymentCreateManyBankInput = {
@@ -49389,6 +49428,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     sale?: SaleUpdateOneRequiredWithoutPaymentsNestedInput
     bankTransaction?: BankTransactionUpdateOneWithoutSalePaymentNestedInput
   }
@@ -49400,6 +49440,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bankTransaction?: BankTransactionUncheckedUpdateOneWithoutSalePaymentNestedInput
   }
 
@@ -49410,6 +49451,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountsReceivablePaymentUpdateWithoutBankInput = {
@@ -49828,6 +49870,7 @@ export namespace Prisma {
     paidAt?: Date | string
     reference?: string | null
     bankId?: string | null
+    attachmentUrl?: string | null
   }
 
   export type SaleItemUpdateWithoutSaleInput = {
@@ -49869,6 +49912,7 @@ export namespace Prisma {
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bank?: BankUpdateOneWithoutSalePaymentsNestedInput
     bankTransaction?: BankTransactionUpdateOneWithoutSalePaymentNestedInput
   }
@@ -49880,6 +49924,7 @@ export namespace Prisma {
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     bankId?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     bankTransaction?: BankTransactionUncheckedUpdateOneWithoutSalePaymentNestedInput
   }
 
@@ -49890,6 +49935,7 @@ export namespace Prisma {
     paidAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     bankId?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExpenseCategoryCreateManyParentInput = {

@@ -33,6 +33,7 @@ export type SaleWithDetails = Omit<Sale, "subtotal" | "discountTotal" | "taxTota
   payments: (Omit<SalePayment, "amount"> & {
     amount: string;
     bank?: Bank | null;
+    attachmentUrl?: string | null;
   })[];
   receivable?: {
     id: string;

@@ -77,6 +77,7 @@ export function SaleForm({
         method: payment.method,
         bankId: payment.bankId || "",
         reference: payment.reference || "",
+        attachmentUrl: (payment as any).attachmentUrl || "",
       }));
     }
     return [];
@@ -145,6 +146,7 @@ export function SaleForm({
         method: payment.method,
         bankId: payment.bankId || undefined,
         reference: payment.reference || undefined,
+        attachmentUrl: payment.attachmentUrl || undefined,
       }));
 
       const submitData: CreateSaleInput = {
