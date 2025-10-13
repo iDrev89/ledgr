@@ -73,6 +73,31 @@ export const createExpenseColumns = ({
     },
   },
   {
+    accessorKey: "paymentMethod",
+    header: t("paymentMethod"),
+    cell: ({ row }) => {
+      const paymentMethod = row.original.paymentMethod;
+      const bank = row.original.bank;
+      
+      const methodLabels: Record<string, string> = {
+        CASH: t("paymentCash"),
+        CARD: t("paymentCard"),
+        TRANSFER: t("paymentTransfer"),
+        DIGITAL: t("paymentDigital"),
+        OTHER: t("paymentOther"),
+      };
+
+      return (
+        <div className="text-sm">
+          <div>{methodLabels[paymentMethod] || paymentMethod}</div>
+          {paymentMethod === "TRANSFER" && bank && (
+            <div className="text-xs text-muted-foreground">{bank.name}</div>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "invoiceNo",
     header: t("invoiceNo"),
     cell: ({ row }) => {

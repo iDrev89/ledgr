@@ -263,11 +263,27 @@ export const createReceivablePayment = async (
         },
       });
 
+      // Create bank transaction if payment has a bank
+      if (payment.bankId) {
+        await tx.bankTransaction.create({
+          data: {
+            bankId: payment.bankId,
+            type: "INCOME" as any,
+            amount: payment.amount,
+            description: `Cobro CxC - Venta #${String(updatedReceivable.sale?.saleNumber || 0).padStart(4, "0")}${updatedReceivable.customer ? ` - ${updatedReceivable.customer.name}` : ""}`,
+            reference: validated.note || null,
+            transactionDate: payment.paidAt,
+            receivablePaymentId: payment.id,
+          },
+        });
+      }
+
       return updatedReceivable;
     });
 
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
 
     return { success: true, data: serializeReceivable(result) };
   } catch (error) {

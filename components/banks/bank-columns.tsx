@@ -45,6 +45,35 @@ export const getBankColumns = ({
     },
   },
   {
+    id: "balance",
+    header: t("balance"),
+    cell: ({ row }) => {
+      const bank = row.original as any;
+      const balance = bank.currentBalance || 0;
+      const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat("es-CO", {
+          style: "currency",
+          currency: "COP",
+          minimumFractionDigits: 0,
+        }).format(amount);
+      };
+      return (
+        <div className="font-semibold">
+          {formatCurrency(balance)}
+        </div>
+      );
+    },
+  },
+  {
+    id: "transactions",
+    header: t("transactions"),
+    cell: ({ row }) => {
+      const bank = row.original as any;
+      const count = bank.transactionCount || 0;
+      return <div className="text-center text-muted-foreground">{count}</div>;
+    },
+  },
+  {
     accessorKey: "active",
     header: t("status"),
     cell: ({ row }) => {
@@ -54,18 +83,6 @@ export const getBankColumns = ({
           {active ? t("active") : t("inactive")}
         </Badge>
       );
-    },
-  },
-  {
-    id: "payments",
-    header: t("payments"),
-    cell: ({ row }) => {
-      const count = row.original._count;
-      const total =
-        (count?.salePayments || 0) +
-        (count?.receivablePayments || 0) +
-        (count?.purchasePayments || 0);
-      return <div className="text-center">{total}</div>;
     },
   },
   {

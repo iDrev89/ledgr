@@ -47,6 +47,14 @@ export function ExpenseDetailDialog({
     });
   };
 
+  const methodLabels: Record<string, string> = {
+    CASH: t("paymentCash"),
+    CARD: t("paymentCard"),
+    TRANSFER: t("paymentTransfer"),
+    DIGITAL: t("paymentDigital"),
+    OTHER: t("paymentOther"),
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -74,6 +82,32 @@ export function ExpenseDetailDialog({
               </div>
             )}
           </div>
+
+          <Separator />
+
+          {/* Payment Method */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("paymentMethod")}</h3>
+              <Badge variant="outline">
+                {methodLabels[expense.paymentMethod] || expense.paymentMethod}
+              </Badge>
+            </div>
+            {expense.paymentMethod === "TRANSFER" && expense.bank && (
+              <div>
+                <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
+                <p className="text-sm">{expense.bank.name}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Reference (for transfers) */}
+          {expense.paymentMethod === "TRANSFER" && expense.reference && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("reference")}</h3>
+              <p className="text-sm text-muted-foreground">{expense.reference}</p>
+            </div>
+          )}
 
           <Separator />
 
