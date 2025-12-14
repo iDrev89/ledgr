@@ -28,8 +28,8 @@ import type {
   UpdateSaleInput,
 } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
-import { SaleItemsTable, type SaleItemRow } from "./sale-items-table";
-import { SalePaymentsTable, type SalePaymentRow } from "./sale-payments-table";
+import { SaleItems, type SaleItemRow } from "./sale-items";
+import { SalePayments, type SalePaymentRow } from "./sale-payments";
 import type { SaleWithDetails } from "@/lib/types/sales";
 
 interface SaleFormProps {
@@ -232,13 +232,13 @@ export function SaleForm({
 
         </div>
 
-        <SaleItemsTable
+        <SaleItems
           items={items}
           onItemsChange={setItems}
           disabled={isLoading}
         />
 
-        <SalePaymentsTable
+        <SalePayments
           payments={payments}
           onPaymentsChange={setPayments}
           total={total}
