@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 interface SaleCardProps {
   sale: SaleWithDetails;
   onView: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   locale?: string;
 }
 
@@ -90,17 +90,19 @@ export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProp
               </span>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <Separator />

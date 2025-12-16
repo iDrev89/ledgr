@@ -24,9 +24,9 @@ const statements = {
 export const accessControl = createAccessControl(statements);
 
 export const user = accessControl.newRole({
-  customers: ["create", "read", "update"],
+  customers: ["create"], // Puede crear clientes en formularios pero no ver la página de clientes
   sales: ["create", "read"],
-  products: ["read"],  
+  inventory: ["read"], // Puede ver inventario pero no productos
 });
 export const admin = accessControl.newRole({
   users: [

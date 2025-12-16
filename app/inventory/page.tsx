@@ -15,6 +15,7 @@ import { InventoryTable } from "@/components/inventory/inventory-table";
 import { StockMovementDialog } from "@/components/inventory/stock-movement-dialog";
 import { StockMovementHistory } from "@/components/inventory/stock-movement-history";
 import { useInventorySummary } from "@/hooks/use-inventory";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProductStock } from "@/lib/types/inventory";
@@ -22,19 +23,26 @@ import type { Product } from "@/lib/types/product";
 
 export default function InventoryPage() {
   const t = useTranslations("Inventory");
+  const { hasPermission } = usePermissions();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { data, isLoading, error } = useInventorySummary();
+  
+  // Check permissions
+  const canCreate = hasPermission("inventory", "create");
+  const canUpdate = hasPermission("inventory", "update");
 
   const handleAddMovement = () => {
+    if (!canCreate) return;
     setSelectedProductId(undefined);
     setDialogOpen(true);
   };
 
   const handleAdjust = (item: ProductStock) => {
+    if (!canUpdate) return;
     setSelectedProductId(item.product.id);
     setDialogOpen(true);
   };
@@ -71,10 +79,12 @@ export default function InventoryPage() {
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <Button onClick={handleAddMovement}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("addMovement")}
-        </Button>
+        {canCreate && (
+          <Button onClick={handleAddMovement}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("addMovement")}
+          </Button>
+        )}
       </div>
 
       {/* Stats Cards */}
@@ -164,6 +174,7 @@ export default function InventoryPage() {
               inventory={data || []}
               onAdjust={handleAdjust}
               onViewHistory={handleViewHistory}
+              canAdjust={canUpdate}
             />
           )}
         </CardContent>
