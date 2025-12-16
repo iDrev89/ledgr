@@ -1,13 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import {
   Table,
   TableBody,
@@ -18,11 +12,13 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { ImageViewerDialog } from "@/components/shared/image-viewer-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SaleDetailDialogProps {
   open: boolean;
@@ -38,6 +34,7 @@ export function SaleDetailDialog({
   locale = "es",
 }: SaleDetailDialogProps) {
   const t = useTranslations("Sales");
+  const isMobile = useIsMobile(); // Todavía se usa dentro del contenido para items
 
   if (!sale) return null;
 
@@ -64,19 +61,9 @@ export function SaleDetailDialog({
 
   const dateLocale = locale === "es" ? es : enUS;
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {t("saleDetail")} #{String(sale.saleNumber).padStart(4, "0")}
-          </DialogTitle>
-          <DialogDescription>
-            {format(new Date(sale.createdAt), "PPP p", { locale: dateLocale })}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-6">
+  // Contenido compartido entre Dialog y Sheet
+  const content = (
+    <div className="space-y-6">
           {/* Sale Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Customer Information */}
@@ -188,47 +175,94 @@ export function SaleDetailDialog({
           {/* Items */}
           <div>
             <h3 className="text-sm font-semibold mb-3">{t("items")}</h3>
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("product")}</TableHead>
-                    <TableHead className="text-right">{t("quantity")}</TableHead>
-                    <TableHead className="text-right">{t("unitPrice")}</TableHead>
-                    <TableHead className="text-right">{t("discount")}</TableHead>
-                    <TableHead className="text-right">{t("lineTotal")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sale.items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{item.product.name}</span>
-                          {item.product.sku && (
-                            <span className="text-xs text-muted-foreground">
-                              SKU: {item.product.sku}
-                            </span>
-                          )}
+            {isMobile ? (
+              /* Vista mobile con cards */
+              <div className="space-y-3">
+                {sale.items.map((item) => (
+                  <Card key={item.id} className="border-2">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="space-y-1">
+                        <p className="font-semibold">{item.product.name}</p>
+                        {item.product.sku && (
+                          <p className="text-xs text-muted-foreground">
+                            SKU: {item.product.sku}
+                          </p>
+                        )}
+                      </div>
+                      <Separator />
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">{t("quantity")}</p>
+                          <p className="font-medium">{item.quantity}</p>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-right">{item.quantity}</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(item.unitPrice)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {parseFloat(item.discount) > 0
-                          ? `-${formatCurrency(item.discount)}`
-                          : "-"}
-                      </TableCell>
-                      <TableCell className="text-right font-medium">
-                        {formatCurrency(item.lineTotal)}
-                      </TableCell>
+                        <div>
+                          <p className="text-muted-foreground">{t("unitPrice")}</p>
+                          <p className="font-medium">{formatCurrency(item.unitPrice)}</p>
+                        </div>
+                        {parseFloat(item.discount) > 0 && (
+                          <div>
+                            <p className="text-muted-foreground">{t("discount")}</p>
+                            <p className="font-medium text-destructive">
+                              -{formatCurrency(item.discount)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between items-center pt-1">
+                        <span className="font-semibold">{t("lineTotal")}</span>
+                        <span className="text-lg font-bold">
+                          {formatCurrency(item.lineTotal)}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              /* Vista desktop con tabla */
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("product")}</TableHead>
+                      <TableHead className="text-right">{t("quantity")}</TableHead>
+                      <TableHead className="text-right">{t("unitPrice")}</TableHead>
+                      <TableHead className="text-right">{t("discount")}</TableHead>
+                      <TableHead className="text-right">{t("lineTotal")}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {sale.items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{item.product.name}</span>
+                            {item.product.sku && (
+                              <span className="text-xs text-muted-foreground">
+                                SKU: {item.product.sku}
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">{item.quantity}</TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(item.unitPrice)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {parseFloat(item.discount) > 0
+                            ? `-${formatCurrency(item.discount)}`
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatCurrency(item.lineTotal)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
 
           {/* Totals */}
@@ -277,9 +311,20 @@ export function SaleDetailDialog({
               </div>
             </div>
           )}
-        </div>
-      </DialogContent>
-    </Dialog>
+    </div>
+  );
+
+  return (
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`${t("saleDetail")} #${String(sale.saleNumber).padStart(4, "0")}`}
+      description={format(new Date(sale.createdAt), "PPP p", { locale: dateLocale })}
+      size="lg"
+      mobileHeight="90vh"
+    >
+      {content}
+    </ResponsiveDialog>
   );
 }
 

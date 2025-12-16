@@ -363,6 +363,7 @@
     "customerInfo": "Información del Cliente",
     "createdBy": "Registrado por",
     "items": "Productos",
+    "item": "producto",
     "addItem": "Agregar Producto",
     "noItems": "No hay productos agregados",
     "tapAddItemToStart": "Toca 'Agregar Producto' para comenzar",

@@ -1,12 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
@@ -56,18 +51,18 @@ export function ExpenseDetailDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("expenseDetail")}</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Amount */}
-          <div className="bg-primary/5 rounded-lg p-4 text-center">
-            <p className="text-sm text-muted-foreground mb-1">{t("amount")}</p>
-            <p className="text-3xl font-bold">{formatCurrency(expense.amount.toNumber())}</p>
-          </div>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("expenseDetail")}
+      size="md"
+    >
+      <div className="space-y-6">
+        {/* Amount */}
+        <div className="bg-primary/5 rounded-lg p-4 text-center">
+          <p className="text-sm text-muted-foreground mb-1">{t("amount")}</p>
+          <p className="text-3xl font-bold">{formatCurrency(parseFloat(expense.amount.toString()))}</p>
+        </div>
 
           {/* Date and Invoice */}
           <div className="grid grid-cols-2 gap-4">
@@ -170,9 +165,8 @@ export function ExpenseDetailDialog({
               </div>
             </>
           )}
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </ResponsiveDialog>
   );
 }
 

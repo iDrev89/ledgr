@@ -363,6 +363,7 @@
     "customerInfo": "Customer Information",
     "createdBy": "Created by",
     "items": "Items",
+    "item": "item",
     "addItem": "Add Item",
     "noItems": "No items added",
     "tapAddItemToStart": "Tap 'Add Item' to get started",

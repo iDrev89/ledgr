@@ -233,17 +233,17 @@ export function SaleForm({
         </div>
 
         <SaleItems
-          items={items}
-          onItemsChange={setItems}
-          disabled={isLoading}
-        />
+              items={items}
+              onItemsChange={setItems}
+              disabled={isLoading}
+            />
 
         <SalePayments
-          payments={payments}
-          onPaymentsChange={setPayments}
-          total={total}
-          disabled={isLoading}
-        />
+              payments={payments}
+              onPaymentsChange={setPayments}
+              total={total}
+              disabled={isLoading}
+            />
 
         <FormField
           control={form.control}

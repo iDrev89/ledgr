@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteSale } from "@/hooks/use-sales";
 import type { SaleWithDetails } from "@/lib/types/sales";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { SaleCard } from "./sale-card";
 import { createSaleColumns } from "./sale-columns";
 
 interface SaleTableProps {
@@ -51,23 +52,27 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
     locale,
   });
 
-  if (sales.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noSales")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(sale, actions) => (
+          <SaleCard
+            sale={sale}
+            onView={() => onView(sale)}
+            onDelete={() => setSaleToDelete(sale)}
+            locale={locale}
+          />
+        )}
         data={sales}
         searchKey={["customer.name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noSales")}
+        onView={onView}
+        onDelete={setSaleToDelete}
+        locale={locale}
       />
 
       <AlertDialog
