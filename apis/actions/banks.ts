@@ -21,7 +21,7 @@ type BankWithRelations = Bank & {
   _count?: {
     salePayments: number;
     receivablePayments: number;
-    purchasePayments: number;
+    purchases: number;
   };
 };
 
@@ -70,7 +70,7 @@ export const getBanks = async (params?: {
             select: {
               salePayments: true,
               receivablePayments: true,
-              purchasePayments: true,
+              purchases: true,
             },
           },
         },
@@ -103,7 +103,7 @@ export const getBank = async (
           select: {
             salePayments: true,
             receivablePayments: true,
-            purchasePayments: true,
+            purchases: true,
           },
         },
       },
@@ -228,7 +228,7 @@ export const deleteBank = async (id: string): Promise<ActionResponse<void>> => {
           select: {
             salePayments: true,
             receivablePayments: true,
-            purchasePayments: true,
+            purchases: true,
           },
         },
       },
@@ -241,7 +241,7 @@ export const deleteBank = async (id: string): Promise<ActionResponse<void>> => {
     const totalPayments =
       bank._count.salePayments +
       bank._count.receivablePayments +
-      bank._count.purchasePayments;
+      bank._count.purchases;
 
     if (totalPayments > 0) {
       return {

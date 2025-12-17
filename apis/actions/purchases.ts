@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
 import { Decimal } from "@prisma/client/runtime/library";
-import { StockMoveType } from "@/prisma/prisma-client";
+import { StockMoveType, BankTransactionType } from "@/prisma/prisma-client";
 import type {
   PurchaseWithDetails,
   SerializedPurchase,
@@ -291,7 +291,7 @@ export async function createPurchase(
         await tx.bankTransaction.create({
           data: {
             bankId: validated.bankId,
-            type: "DEBIT", // Salida de dinero
+            type: BankTransactionType.EXPENSE, // Salida de dinero por compra
             amount: new Decimal(total),
             description: `Compra #${newPurchase.purchaseNumber}${validated.invoiceNo ? ` - ${validated.invoiceNo}` : ""}`,
             reference: validated.reference || null,
