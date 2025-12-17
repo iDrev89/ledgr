@@ -26,11 +26,11 @@ export interface PurchaseReportItem {
     name: string;
   } | null;
   status: PurchaseStatus;
-  subtotal: Decimal;
-  taxTotal: Decimal;
-  total: Decimal;
-  totalPaid: Decimal;
-  balance: Decimal;
+  subtotal: number;
+  taxTotal: number;
+  total: number;
+  totalPaid: number;
+  balance: number;
 }
 
 export interface PurchaseReportMetrics {
@@ -125,14 +125,14 @@ export interface PurchaseItemDetail {
   productId: string;
   productName: string;
   quantity: number;
-  unitCost: Decimal;
-  lineTotal: Decimal;
+  unitCost: number;
+  lineTotal: number;
 }
 
 // Purchase Payment Detail
 export interface PurchasePaymentDetail {
   id: string;
-  amount: Decimal;
+  amount: number;
   method: PaymentMethod;
   paidAt: Date;
   notes: string | null;

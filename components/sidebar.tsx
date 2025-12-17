@@ -19,6 +19,8 @@ import {
   UserCircle,
   Building2,
   Receipt,
+  ShoppingBag,
+  Truck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -94,6 +96,18 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           icon: Package,
           href: "/products",
           requiredPermission: ROUTE_PERMISSIONS["/products"],
+        },
+        {
+          titleKey: "suppliers",
+          icon: Truck,
+          href: "/suppliers",
+          requiredPermission: ROUTE_PERMISSIONS["/suppliers"],
+        },
+        {
+          titleKey: "purchases",
+          icon: ShoppingBag,
+          href: "/purchases",
+          requiredPermission: ROUTE_PERMISSIONS["/purchases"],
         },
         {
           titleKey: "inventoryMenu",

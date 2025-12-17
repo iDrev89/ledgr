@@ -25,6 +25,22 @@ interface StockMovementHistoryProps {
   product: Product | null;
 }
 
+interface MovementWithRef {
+  id: string;
+  productId: string;
+  moveType: StockMoveType;
+  quantity: number;
+  unitCost: string | null;
+  refType: string | null;
+  refId: string | null;
+  note: string | null;
+  createdAt: Date | string;
+  refData?: {
+    purchaseNumber?: number;
+    saleNumber?: number;
+  } | null;
+}
+
 const getMoveTypeIcon = (type: StockMoveType) => {
   switch (type) {
     case StockMoveType.PURCHASE:
@@ -164,7 +180,12 @@ export function StockMovementHistory({
 
                       {movement.refType && movement.refId && (
                         <div className="text-xs text-muted-foreground">
-                          {t("reference")}: {movement.refType}-{movement.refId}
+                          {t("reference")}: 
+                          {movement.refType === "Purchase" && movement.refData?.purchaseNumber
+                            ? ` Compra #${String(movement.refData.purchaseNumber).padStart(4, "0")}`
+                            : movement.refType === "Sale" && movement.refData?.saleNumber
+                            ? ` Venta #${String(movement.refData.saleNumber).padStart(4, "0")}`
+                            : ` ${movement.refType}-${movement.refId.substring(0, 8)}`}
                         </div>
                       )}
 

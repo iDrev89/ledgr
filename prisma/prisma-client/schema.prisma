@@ -369,20 +369,21 @@ model ExpenseItem {
 }
 
 model Purchase {
-  id          String         @id @default(cuid())
-  supplierId  String?
-  supplier    Supplier?      @relation(fields: [supplierId], references: [id])
-  currency    String         @default("COP")
-  invoiceNo   String?
-  status      PurchaseStatus @default(DRAFT)
-  note        String?
-  subtotal    Decimal        @db.Decimal(12, 2)
-  taxTotal    Decimal        @default(0) @db.Decimal(12, 2)
-  total       Decimal        @db.Decimal(12, 2)
-  createdById String?
-  createdBy   User?          @relation(fields: [createdById], references: [id])
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  purchaseNumber Int            @unique @default(autoincrement())
+  supplierId     String?
+  supplier       Supplier?      @relation(fields: [supplierId], references: [id])
+  currency       String         @default("COP")
+  invoiceNo      String?
+  status         PurchaseStatus @default(DRAFT)
+  note           String?
+  subtotal       Decimal        @db.Decimal(12, 2)
+  taxTotal       Decimal        @default(0) @db.Decimal(12, 2)
+  total          Decimal        @db.Decimal(12, 2)
+  createdById    String?
+  createdBy      User?          @relation(fields: [createdById], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   items    PurchaseItem[]
   payments PurchasePayment[]

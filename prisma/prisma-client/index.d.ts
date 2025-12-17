@@ -21686,12 +21686,14 @@ export namespace Prisma {
   }
 
   export type PurchaseAvgAggregateOutputType = {
+    purchaseNumber: number | null
     subtotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
   }
 
   export type PurchaseSumAggregateOutputType = {
+    purchaseNumber: number | null
     subtotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
@@ -21699,6 +21701,7 @@ export namespace Prisma {
 
   export type PurchaseMinAggregateOutputType = {
     id: string | null
+    purchaseNumber: number | null
     supplierId: string | null
     currency: string | null
     invoiceNo: string | null
@@ -21714,6 +21717,7 @@ export namespace Prisma {
 
   export type PurchaseMaxAggregateOutputType = {
     id: string | null
+    purchaseNumber: number | null
     supplierId: string | null
     currency: string | null
     invoiceNo: string | null
@@ -21729,6 +21733,7 @@ export namespace Prisma {
 
   export type PurchaseCountAggregateOutputType = {
     id: number
+    purchaseNumber: number
     supplierId: number
     currency: number
     invoiceNo: number
@@ -21745,12 +21750,14 @@ export namespace Prisma {
 
 
   export type PurchaseAvgAggregateInputType = {
+    purchaseNumber?: true
     subtotal?: true
     taxTotal?: true
     total?: true
   }
 
   export type PurchaseSumAggregateInputType = {
+    purchaseNumber?: true
     subtotal?: true
     taxTotal?: true
     total?: true
@@ -21758,6 +21765,7 @@ export namespace Prisma {
 
   export type PurchaseMinAggregateInputType = {
     id?: true
+    purchaseNumber?: true
     supplierId?: true
     currency?: true
     invoiceNo?: true
@@ -21773,6 +21781,7 @@ export namespace Prisma {
 
   export type PurchaseMaxAggregateInputType = {
     id?: true
+    purchaseNumber?: true
     supplierId?: true
     currency?: true
     invoiceNo?: true
@@ -21788,6 +21797,7 @@ export namespace Prisma {
 
   export type PurchaseCountAggregateInputType = {
     id?: true
+    purchaseNumber?: true
     supplierId?: true
     currency?: true
     invoiceNo?: true
@@ -21890,6 +21900,7 @@ export namespace Prisma {
 
   export type PurchaseGroupByOutputType = {
     id: string
+    purchaseNumber: number
     supplierId: string | null
     currency: string
     invoiceNo: string | null
@@ -21924,6 +21935,7 @@ export namespace Prisma {
 
   export type PurchaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    purchaseNumber?: boolean
     supplierId?: boolean
     currency?: boolean
     invoiceNo?: boolean
@@ -21944,6 +21956,7 @@ export namespace Prisma {
 
   export type PurchaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    purchaseNumber?: boolean
     supplierId?: boolean
     currency?: boolean
     invoiceNo?: boolean
@@ -21961,6 +21974,7 @@ export namespace Prisma {
 
   export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    purchaseNumber?: boolean
     supplierId?: boolean
     currency?: boolean
     invoiceNo?: boolean
@@ -21978,6 +21992,7 @@ export namespace Prisma {
 
   export type PurchaseSelectScalar = {
     id?: boolean
+    purchaseNumber?: boolean
     supplierId?: boolean
     currency?: boolean
     invoiceNo?: boolean
@@ -21991,7 +22006,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type PurchaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "supplierId" | "currency" | "invoiceNo" | "status" | "note" | "subtotal" | "taxTotal" | "total" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
+  export type PurchaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "purchaseNumber" | "supplierId" | "currency" | "invoiceNo" | "status" | "note" | "subtotal" | "taxTotal" | "total" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
   export type PurchaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     supplier?: boolean | Purchase$supplierArgs<ExtArgs>
     createdBy?: boolean | Purchase$createdByArgs<ExtArgs>
@@ -22018,6 +22033,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      purchaseNumber: number
       supplierId: string | null
       currency: string
       invoiceNo: string | null
@@ -22457,6 +22473,7 @@ export namespace Prisma {
    */
   interface PurchaseFieldRefs {
     readonly id: FieldRef<"Purchase", 'String'>
+    readonly purchaseNumber: FieldRef<"Purchase", 'Int'>
     readonly supplierId: FieldRef<"Purchase", 'String'>
     readonly currency: FieldRef<"Purchase", 'String'>
     readonly invoiceNo: FieldRef<"Purchase", 'String'>
@@ -33918,6 +33935,7 @@ export namespace Prisma {
 
   export const PurchaseScalarFieldEnum: {
     id: 'id',
+    purchaseNumber: 'purchaseNumber',
     supplierId: 'supplierId',
     currency: 'currency',
     invoiceNo: 'invoiceNo',
@@ -35563,6 +35581,7 @@ export namespace Prisma {
     OR?: PurchaseWhereInput[]
     NOT?: PurchaseWhereInput | PurchaseWhereInput[]
     id?: StringFilter<"Purchase"> | string
+    purchaseNumber?: IntFilter<"Purchase"> | number
     supplierId?: StringNullableFilter<"Purchase"> | string | null
     currency?: StringFilter<"Purchase"> | string
     invoiceNo?: StringNullableFilter<"Purchase"> | string | null
@@ -35582,6 +35601,7 @@ export namespace Prisma {
 
   export type PurchaseOrderByWithRelationInput = {
     id?: SortOrder
+    purchaseNumber?: SortOrder
     supplierId?: SortOrderInput | SortOrder
     currency?: SortOrder
     invoiceNo?: SortOrderInput | SortOrder
@@ -35601,6 +35621,7 @@ export namespace Prisma {
 
   export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    purchaseNumber?: number
     AND?: PurchaseWhereInput | PurchaseWhereInput[]
     OR?: PurchaseWhereInput[]
     NOT?: PurchaseWhereInput | PurchaseWhereInput[]
@@ -35619,10 +35640,11 @@ export namespace Prisma {
     createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: PurchaseItemListRelationFilter
     payments?: PurchasePaymentListRelationFilter
-  }, "id">
+  }, "id" | "purchaseNumber">
 
   export type PurchaseOrderByWithAggregationInput = {
     id?: SortOrder
+    purchaseNumber?: SortOrder
     supplierId?: SortOrderInput | SortOrder
     currency?: SortOrder
     invoiceNo?: SortOrderInput | SortOrder
@@ -35646,6 +35668,7 @@ export namespace Prisma {
     OR?: PurchaseScalarWhereWithAggregatesInput[]
     NOT?: PurchaseScalarWhereWithAggregatesInput | PurchaseScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Purchase"> | string
+    purchaseNumber?: IntWithAggregatesFilter<"Purchase"> | number
     supplierId?: StringNullableWithAggregatesFilter<"Purchase"> | string | null
     currency?: StringWithAggregatesFilter<"Purchase"> | string
     invoiceNo?: StringNullableWithAggregatesFilter<"Purchase"> | string | null
@@ -37795,6 +37818,7 @@ export namespace Prisma {
 
   export type PurchaseCreateInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -37812,6 +37836,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedCreateInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -37846,6 +37871,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37863,6 +37889,7 @@ export namespace Prisma {
 
   export type PurchaseCreateManyInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -37891,6 +37918,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39801,6 +39829,7 @@ export namespace Prisma {
 
   export type PurchaseCountOrderByAggregateInput = {
     id?: SortOrder
+    purchaseNumber?: SortOrder
     supplierId?: SortOrder
     currency?: SortOrder
     invoiceNo?: SortOrder
@@ -39815,6 +39844,7 @@ export namespace Prisma {
   }
 
   export type PurchaseAvgOrderByAggregateInput = {
+    purchaseNumber?: SortOrder
     subtotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
@@ -39822,6 +39852,7 @@ export namespace Prisma {
 
   export type PurchaseMaxOrderByAggregateInput = {
     id?: SortOrder
+    purchaseNumber?: SortOrder
     supplierId?: SortOrder
     currency?: SortOrder
     invoiceNo?: SortOrder
@@ -39837,6 +39868,7 @@ export namespace Prisma {
 
   export type PurchaseMinOrderByAggregateInput = {
     id?: SortOrder
+    purchaseNumber?: SortOrder
     supplierId?: SortOrder
     currency?: SortOrder
     invoiceNo?: SortOrder
@@ -39851,6 +39883,7 @@ export namespace Prisma {
   }
 
   export type PurchaseSumOrderByAggregateInput = {
+    purchaseNumber?: SortOrder
     subtotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
@@ -43260,6 +43293,7 @@ export namespace Prisma {
 
   export type PurchaseCreateWithoutCreatedByInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -43276,6 +43310,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedCreateWithoutCreatedByInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -43634,6 +43669,7 @@ export namespace Prisma {
     OR?: PurchaseScalarWhereInput[]
     NOT?: PurchaseScalarWhereInput | PurchaseScalarWhereInput[]
     id?: StringFilter<"Purchase"> | string
+    purchaseNumber?: IntFilter<"Purchase"> | number
     supplierId?: StringNullableFilter<"Purchase"> | string | null
     currency?: StringFilter<"Purchase"> | string
     invoiceNo?: StringNullableFilter<"Purchase"> | string | null
@@ -45889,6 +45925,7 @@ export namespace Prisma {
 
   export type PurchaseCreateWithoutSupplierInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -45905,6 +45942,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedCreateWithoutSupplierInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -46857,6 +46895,7 @@ export namespace Prisma {
 
   export type PurchaseCreateWithoutItemsInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -46873,6 +46912,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedCreateWithoutItemsInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -46960,6 +47000,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47105,6 +47146,7 @@ export namespace Prisma {
 
   export type PurchaseCreateWithoutPaymentsInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -47121,6 +47163,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedCreateWithoutPaymentsInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -47265,6 +47308,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48745,6 +48789,7 @@ export namespace Prisma {
 
   export type PurchaseCreateManyCreatedByInput = {
     id?: string
+    purchaseNumber?: number
     supplierId?: string | null
     currency?: string
     invoiceNo?: string | null
@@ -49018,6 +49063,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49034,6 +49080,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50090,6 +50137,7 @@ export namespace Prisma {
 
   export type PurchaseCreateManySupplierInput = {
     id?: string
+    purchaseNumber?: number
     currency?: string
     invoiceNo?: string | null
     status?: $Enums.PurchaseStatus
@@ -50137,6 +50185,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateWithoutSupplierInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
@@ -50153,6 +50202,7 @@ export namespace Prisma {
 
   export type PurchaseUncheckedUpdateManyWithoutSupplierInput = {
     id?: StringFieldUpdateOperationsInput | string
+    purchaseNumber?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     invoiceNo?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus

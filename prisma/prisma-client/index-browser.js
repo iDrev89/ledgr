@@ -304,6 +304,7 @@ exports.Prisma.ExpenseItemScalarFieldEnum = {
 
 exports.Prisma.PurchaseScalarFieldEnum = {
   id: 'id',
+  purchaseNumber: 'purchaseNumber',
   supplierId: 'supplierId',
   currency: 'currency',
   invoiceNo: 'invoiceNo',

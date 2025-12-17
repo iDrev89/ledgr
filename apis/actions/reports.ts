@@ -121,17 +121,17 @@ export async function getPurchaseReport(
         invoiceNo: purchase.invoiceNo,
         supplier: purchase.supplier,
         status: purchase.status,
-        subtotal: purchase.subtotal,
-        taxTotal: purchase.taxTotal,
-        total: purchase.total,
-        totalPaid: new Decimal(totalPaid),
-        balance: new Decimal(balance),
+        subtotal: toNumber(purchase.subtotal),
+        taxTotal: toNumber(purchase.taxTotal),
+        total: toNumber(purchase.total),
+        totalPaid: totalPaid,
+        balance: balance,
       };
     });
 
     // Calculate metrics
-    const totalPurchases = items.reduce((sum, item) => sum + toNumber(item.total), 0);
-    const totalPaid = items.reduce((sum, item) => sum + toNumber(item.totalPaid), 0);
+    const totalPurchases = items.reduce((sum, item) => sum + item.total, 0);
+    const totalPaid = items.reduce((sum, item) => sum + item.totalPaid, 0);
     const balance = totalPurchases - totalPaid;
     const count = items.length;
     const average = count > 0 ? totalPurchases / count : 0;
@@ -245,13 +245,13 @@ export async function getPurchaseReportEnhanced(
         productId: item.productId,
         productName: item.product.name,
         quantity: item.quantity,
-        unitCost: item.unitCost,
-        lineTotal: item.lineTotal,
+        unitCost: toNumber(item.unitCost),
+        lineTotal: toNumber(item.lineTotal),
       }));
 
       const payments: PurchasePaymentDetail[] = purchase.payments.map((payment) => ({
         id: payment.id,
-        amount: payment.amount,
+        amount: toNumber(payment.amount),
         method: payment.method,
         paidAt: payment.paidAt,
         notes: payment.reference || null,
@@ -263,11 +263,11 @@ export async function getPurchaseReportEnhanced(
         invoiceNo: purchase.invoiceNo,
         supplier: purchase.supplier,
         status: purchase.status,
-        subtotal: purchase.subtotal,
-        taxTotal: purchase.taxTotal,
-        total: purchase.total,
-        totalPaid: new Decimal(totalPaid),
-        balance: new Decimal(balance),
+        subtotal: toNumber(purchase.subtotal),
+        taxTotal: toNumber(purchase.taxTotal),
+        total: toNumber(purchase.total),
+        totalPaid: totalPaid,
+        balance: balance,
         items,
         payments,
       };
@@ -275,8 +275,8 @@ export async function getPurchaseReportEnhanced(
 
     // Calculate current period metrics
     const currentMetrics: PurchaseReportMetrics = {
-      totalPurchases: detailedItems.reduce((sum, item) => sum + toNumber(item.total), 0),
-      totalPaid: detailedItems.reduce((sum, item) => sum + toNumber(item.totalPaid), 0),
+      totalPurchases: detailedItems.reduce((sum, item) => sum + item.total, 0),
+      totalPaid: detailedItems.reduce((sum, item) => sum + item.totalPaid, 0),
       balance: 0,
       count: detailedItems.length,
       average: 0,
