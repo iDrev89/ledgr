@@ -19,7 +19,7 @@ import { PaymentMethod } from "@/prisma/prisma-client";
 
 interface CreateSaleColumnsProps {
   onView: (sale: SaleWithDetails) => void;
-  onDelete: (sale: SaleWithDetails) => void;
+  onDelete?: (sale: SaleWithDetails) => void;
   t: (key: string) => string;
   locale?: string;
 }
@@ -195,14 +195,18 @@ export const createSaleColumns = ({
                 <Eye className="mr-2 h-4 w-4" />
                 {t("view")}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => onDelete(sale)}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                {t("delete")}
-              </DropdownMenuItem>
+              {onDelete && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => onDelete(sale)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t("delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

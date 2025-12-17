@@ -77,9 +77,10 @@ export function DataTable<TData, TValue>({
       
       return searchKey.some((key) => {
         try {
-          const cellValue = row.getValue(key);
-          if (cellValue === null || cellValue === undefined) return false;
-          return String(cellValue).toLowerCase().includes(searchLower);
+          // Manejar keys anidadas como "customer.name"
+          const value = key.split('.').reduce((obj: any, k: string) => obj?.[k], row.original);
+          if (value === null || value === undefined) return false;
+          return String(value).toLowerCase().includes(searchLower);
         } catch {
           return false;
         }

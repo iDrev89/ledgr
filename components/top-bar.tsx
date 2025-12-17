@@ -67,51 +67,10 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle sidebar</span>
         </Button>
-        <div className="hidden sm:block md:w-[350px]">
-          <div className="relative w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search records, users, reports..."
-              className="w-full bg-background pl-8 "
-            />
-          </div>
-        </div>
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
         <ThemeToggle />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 relative p-2 bg-primary/10 hover:bg-primary/5 rounded-full cursor-pointer">
-              <Bell className="h-4 w-4 text-primary" />
-
-              {notificationCount > 0 && (
-                <Badge
-                  className="absolute -right-1 -top-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
-                  variant="destructive"
-                >
-                  {notificationCount}
-                </Badge>
-              )}
-              <span className="sr-only">Notifications</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>New record created</DropdownMenuItem>
-            <DropdownMenuItem>Report generation completed</DropdownMenuItem>
-            <DropdownMenuItem>
-              System backup completed
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="justify-center text-muted-foreground">
-              View all
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         <LanguageSelector />
 
@@ -124,8 +83,8 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
             >
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                  {isPending 
-                    ? "..." 
+                  {isPending
+                    ? "..."
                     : getUserInitials(session?.user?.name || "User")}
                 </AvatarFallback>
               </Avatar>
@@ -133,7 +92,9 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              {isPending ? "Loading..." : (session?.user?.name || session?.user?.email || "My Account")}
+              {isPending
+                ? "Loading..."
+                : session?.user?.name || session?.user?.email || "My Account"}
             </DropdownMenuLabel>
             {!isPending && session?.user?.email && (
               <div className="px-2 py-1 text-sm text-muted-foreground">

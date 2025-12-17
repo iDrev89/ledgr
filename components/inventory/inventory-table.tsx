@@ -9,14 +9,16 @@ interface InventoryTableProps {
   inventory: ProductStock[];
   onAdjust: (item: ProductStock) => void;
   onViewHistory: (item: ProductStock) => void;
+  canAdjust?: boolean;
 }
 
-export function InventoryTable({ inventory, onAdjust, onViewHistory }: InventoryTableProps) {
+export function InventoryTable({ inventory, onAdjust, onViewHistory, canAdjust = true }: InventoryTableProps) {
   const t = useTranslations("Inventory");
 
   const columns = createInventoryColumns({
     onAdjust,
     onViewHistory,
+    canAdjust,
     t,
   });
 

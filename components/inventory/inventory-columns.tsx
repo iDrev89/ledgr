@@ -24,6 +24,7 @@ import type { ProductStock } from "@/lib/types/inventory";
 export type InventoryColumnActions = {
   onAdjust: (item: ProductStock) => void;
   onViewHistory: (item: ProductStock) => void;
+  canAdjust?: boolean;
   t: (key: string) => string;
 };
 
@@ -127,10 +128,12 @@ export const createInventoryColumns = (
               <History className="mr-2 h-4 w-4" />
               {actions.t("history")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => actions.onAdjust(item)}>
-              <Settings className="mr-2 h-4 w-4" />
-              {actions.t("adjust")}
-            </DropdownMenuItem>
+            {actions.canAdjust && (
+              <DropdownMenuItem onClick={() => actions.onAdjust(item)}>
+                <Settings className="mr-2 h-4 w-4" />
+                {actions.t("adjust")}
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -26,7 +26,9 @@ export function ReceivableTable({
   return (
     <DataTable
       columns={columns}
-      data={receivables}      
+      data={receivables}
+      searchKey={["customer.name", "sale.saleNumber"]}
+      searchPlaceholder={t("searchPlaceholder")}
       showPagination={true}
       pageSize={10}
     />

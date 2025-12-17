@@ -34,13 +34,13 @@ export default function LoginPage() {
       const result = await signIn.email({
         email,
         password,
-        callbackURL: "/dashboard",
+        callbackURL: "/sales",
       });
 
       if (result.error) {
         setError(result.error.message || "Failed to sign in");
       } else {
-        router.push("/dashboard");
+        router.push("/sales");
       }
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
@@ -56,7 +56,7 @@ export default function LoginPage() {
     try {
       const result = await signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/sales",
       });
 
       if (result.error) {

@@ -15,8 +15,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useDeleteSale } from "@/hooks/use-sales";
+import { usePermissions } from "@/hooks/use-permissions";
 import type { SaleWithDetails } from "@/lib/types/sales";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { SaleCard } from "./sale-card";
 import { createSaleColumns } from "./sale-columns";
 
 interface SaleTableProps {
@@ -27,8 +29,12 @@ interface SaleTableProps {
 
 export function SaleTable({ sales, onView, locale }: SaleTableProps) {
   const t = useTranslations("Sales");
+  const { hasPermission } = usePermissions();
   const [saleToDelete, setSaleToDelete] = useState<SaleWithDetails | null>(null);
   const deleteMutation = useDeleteSale();
+  
+  // Check delete permission
+  const canDelete = hasPermission("sales", "delete");
 
   const handleDelete = async () => {
     if (!saleToDelete) return;
@@ -46,28 +52,32 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
 
   const columns = createSaleColumns({
     onView,
-    onDelete: setSaleToDelete,
+    onDelete: canDelete ? setSaleToDelete : undefined,
     t,
     locale,
   });
 
-  if (sales.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noSales")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(sale, actions) => (
+          <SaleCard
+            sale={sale}
+            onView={() => onView(sale)}
+            onDelete={canDelete ? () => setSaleToDelete(sale) : undefined}
+            locale={locale}
+          />
+        )}
         data={sales}
         searchKey={["customer.name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noSales")}
+        onView={onView}
+        onDelete={canDelete ? setSaleToDelete : undefined}
+        locale={locale}
       />
 
       <AlertDialog
