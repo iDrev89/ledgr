@@ -166,95 +166,102 @@ export function PurchaseItems({
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {items.map((item, index) => (
-            <Card key={item.id} className="border-2 hover:border-primary/50 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg font-semibold">
-                      {item.productName || (
-                        <Button
-                          type="button"
-                          variant="link"
-                          className="p-0 h-auto text-primary"
-                          onClick={() => handleOpenProductSheet(item.id!)}
-                          disabled={disabled}
-                        >
-                          {t("selectProduct")}
-                        </Button>
-                      )}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Item #{index + 1}
-                    </p>
+            {items.map((item, index) => (
+              <Card
+                key={item.id}
+                className="border-2 hover:border-primary/50 transition-colors"
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-semibold">
+                        {item.productName || (
+                          <Button
+                            type="button"
+                            variant="link"
+                            className="p-0 h-auto text-primary"
+                            onClick={() => handleOpenProductSheet(item.id!)}
+                            disabled={disabled}
+                          >
+                            {t("selectProduct")}
+                          </Button>
+                        )}
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Item #{index + 1}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveItem(item.id!)}
+                      disabled={disabled}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
                   </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveItem(item.id!)}
-                    disabled={disabled}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {item.productId && <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor={`quantity-${item.id}`}>
-                      {t("quantity")}
-                    </Label>
-                    <Input
-                      id={`quantity-${item.id}`}
-                      type="number"
-                      min="1"
-                      step="1"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleUpdateQuantity(
-                          item.id!,
-                          parseInt(e.target.value) || 1
-                        )
-                      }
-                      disabled={disabled || !item.productId}
-                    />
-                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {item.productId && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`quantity-${item.id}`}>
+                          {t("quantity")}
+                        </Label>
+                        <Input
+                          id={`quantity-${item.id}`}
+                          type="number"
+                          min="1"
+                          step="1"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleUpdateQuantity(
+                              item.id!,
+                              parseInt(e.target.value) || 1,
+                            )
+                          }
+                          disabled={disabled || !item.productId}
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor={`unitCost-${item.id}`}>
-                      {t("unitCost")}
-                    </Label>
-                    <Input
-                      id={`unitCost-${item.id}`}
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={item.unitCost}
-                      onChange={(e) =>
-                        handleUpdateUnitCost(
-                          item.id!,
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      disabled={disabled || !item.productId}
-                    />
-                  </div>
-                </div>}
+                      <div className="space-y-2">
+                        <Label htmlFor={`unitCost-${item.id}`}>
+                          {t("unitCost")}
+                        </Label>
+                        <Input
+                          id={`unitCost-${item.id}`}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={item.unitCost}
+                          onChange={(e) =>
+                            handleUpdateUnitCost(
+                              item.id!,
+                              parseFloat(e.target.value) || 0,
+                            )
+                          }
+                          disabled={disabled || !item.productId}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-                {item.productId && <Separator />}
+                  {item.productId && <Separator />}
 
-                {item.productId && <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    {t("lineTotal")}
-                  </span>
-                  <span className="text-lg font-semibold">
-                    {formatCurrency(item.lineTotal)}
-                  </span>
-                </div>}
-              </CardContent>
-            </Card>
-          ))}
+                  {item.productId && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">
+                        {t("lineTotal")}
+                      </span>
+                      <span className="text-lg font-semibold">
+                        {formatCurrency(item.lineTotal)}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </div>
@@ -264,9 +271,7 @@ export function PurchaseItems({
         <SheetContent side="bottom" className="h-[90vh]">
           <SheetHeader>
             <SheetTitle>{t("selectProduct")}</SheetTitle>
-            <SheetDescription>
-              {t("selectProduct")}
-            </SheetDescription>
+            <SheetDescription>{t("selectProduct")}</SheetDescription>
           </SheetHeader>
 
           <div className="mt-4 space-y-4">
@@ -309,7 +314,7 @@ export function PurchaseItems({
                               {product.cost && (
                                 <Badge variant="secondary">
                                   {formatCurrency(
-                                    parseFloat(product.cost.toString())
+                                    parseFloat(product.cost.toString()),
                                   )}
                                 </Badge>
                               )}
@@ -328,4 +333,3 @@ export function PurchaseItems({
     </div>
   );
 }
-

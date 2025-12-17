@@ -41,6 +41,9 @@ const { createExpenseCategorySchema, updateExpenseCategorySchema } =
 
 export { createExpenseCategorySchema, updateExpenseCategorySchema };
 
-export type CreateExpenseCategoryInput = z.infer<typeof createExpenseCategorySchema>;
-export type UpdateExpenseCategoryInput = z.infer<typeof updateExpenseCategorySchema>;
-
+export type CreateExpenseCategoryInput = z.infer<
+  typeof createExpenseCategorySchema
+>;
+export type UpdateExpenseCategoryInput = z.infer<
+  typeof updateExpenseCategorySchema
+>;

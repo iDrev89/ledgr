@@ -55,7 +55,7 @@ export function MetricDetailModal<TData>({
 
 // Utility function to create sales detail columns
 export function createSalesDetailColumns(
-  locale: string = "es"
+  locale: string = "es",
 ): ColumnDef<SaleDetail>[] {
   const dateLocale = locale === "es" ? es : enUS;
   const formatCurrency = (value: number) => {
@@ -76,7 +76,8 @@ export function createSalesDetailColumns(
     {
       accessorKey: "createdAt",
       header: "Fecha",
-      cell: ({ row }) => format(new Date(row.original.createdAt), "PP", { locale: dateLocale }),
+      cell: ({ row }) =>
+        format(new Date(row.original.createdAt), "PP", { locale: dateLocale }),
     },
     {
       accessorKey: "customerName",
@@ -101,7 +102,7 @@ export function createSalesDetailColumns(
 
 // Utility function to create expenses detail columns
 export function createExpensesDetailColumns(
-  locale: string = "es"
+  locale: string = "es",
 ): ColumnDef<ExpenseDetail>[] {
   const dateLocale = locale === "es" ? es : enUS;
   const formatCurrency = (value: number) => {
@@ -117,7 +118,8 @@ export function createExpensesDetailColumns(
     {
       accessorKey: "incurredAt",
       header: "Fecha",
-      cell: ({ row }) => format(new Date(row.original.incurredAt), "PP", { locale: dateLocale }),
+      cell: ({ row }) =>
+        format(new Date(row.original.incurredAt), "PP", { locale: dateLocale }),
     },
     {
       accessorKey: "description",
@@ -139,4 +141,3 @@ export function createExpensesDetailColumns(
     },
   ];
 }
-

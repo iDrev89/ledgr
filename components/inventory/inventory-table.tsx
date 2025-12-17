@@ -12,7 +12,12 @@ interface InventoryTableProps {
   canAdjust?: boolean;
 }
 
-export function InventoryTable({ inventory, onAdjust, onViewHistory, canAdjust = true }: InventoryTableProps) {
+export function InventoryTable({
+  inventory,
+  onAdjust,
+  onViewHistory,
+  canAdjust = true,
+}: InventoryTableProps) {
   const t = useTranslations("Inventory");
 
   const columns = createInventoryColumns({
@@ -41,4 +46,3 @@ export function InventoryTable({ inventory, onAdjust, onViewHistory, canAdjust =
     />
   );
 }
-

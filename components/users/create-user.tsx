@@ -137,8 +137,12 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={UserRole.USER}>{t("roleUser")}</SelectItem>
-                    <SelectItem value={UserRole.ADMIN}>{t("roleAdmin")}</SelectItem>
+                    <SelectItem value={UserRole.USER}>
+                      {t("roleUser")}
+                    </SelectItem>
+                    <SelectItem value={UserRole.ADMIN}>
+                      {t("roleAdmin")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -41,6 +41,9 @@ const { createProductCategorySchema, updateProductCategorySchema } =
 
 export { createProductCategorySchema, updateProductCategorySchema };
 
-export type CreateProductCategoryInput = z.infer<typeof createProductCategorySchema>;
-export type UpdateProductCategoryInput = z.infer<typeof updateProductCategorySchema>;
-
+export type CreateProductCategoryInput = z.infer<
+  typeof createProductCategorySchema
+>;
+export type UpdateProductCategoryInput = z.infer<
+  typeof updateProductCategorySchema
+>;

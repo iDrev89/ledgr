@@ -25,4 +25,3 @@ export function BankTable({ banks, onEdit, onDelete, t }: BankTableProps) {
     />
   );
 }
-

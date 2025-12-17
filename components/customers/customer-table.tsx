@@ -27,7 +27,7 @@ interface CustomerTableProps {
 export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
   const t = useTranslations("Customers");
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
-    null
+    null,
   );
   const deleteMutation = useDeleteCustomer();
 

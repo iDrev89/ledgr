@@ -9,4 +9,3 @@ export type BankWithRelations = Bank & {
     purchasePayments: number;
   };
 };
-

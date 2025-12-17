@@ -11,4 +11,3 @@ export type ProductWithStats = Product & {
   totalSales?: number;
   currentStock?: number;
 };
-

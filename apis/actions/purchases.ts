@@ -5,7 +5,11 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
 import { Decimal } from "@prisma/client/runtime/library";
 import { StockMoveType } from "@/prisma/prisma-client";
-import type { PurchaseWithDetails, SerializedPurchase, CreatePurchaseInput } from "@/lib/types/purchases";
+import type {
+  PurchaseWithDetails,
+  SerializedPurchase,
+  CreatePurchaseInput,
+} from "@/lib/types/purchases";
 import { createPurchaseSchema } from "@/lib/validations/purchases";
 
 type ActionResponse<T = unknown> =
@@ -26,7 +30,9 @@ const requireAuth = async () => {
 };
 
 // Helper to serialize purchase
-const serializePurchase = (purchase: PurchaseWithDetails): SerializedPurchase => {
+const serializePurchase = (
+  purchase: PurchaseWithDetails,
+): SerializedPurchase => {
   return {
     id: purchase.id,
     purchaseNumber: purchase.purchaseNumber,
@@ -36,6 +42,13 @@ const serializePurchase = (purchase: PurchaseWithDetails): SerializedPurchase =>
     invoiceNo: purchase.invoiceNo,
     status: purchase.status,
     note: purchase.note,
+
+    // Campos de pago
+    paymentMethod: purchase.paymentMethod,
+    bankId: purchase.bankId,
+    bank: purchase.bank,
+    reference: purchase.reference,
+
     subtotal: purchase.subtotal.toString(),
     taxTotal: purchase.taxTotal.toString(),
     total: purchase.total.toString(),
@@ -66,6 +79,12 @@ export async function getPurchases(): Promise<
     const purchases = await prisma.purchase.findMany({
       include: {
         supplier: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        bank: {
           select: {
             id: true,
             name: true,
@@ -114,7 +133,7 @@ export async function getPurchases(): Promise<
  * Get purchase by ID
  */
 export async function getPurchaseById(
-  id: string
+  id: string,
 ): Promise<ActionResponse<SerializedPurchase>> {
   try {
     await requireAuth();
@@ -123,6 +142,12 @@ export async function getPurchaseById(
       where: { id },
       include: {
         supplier: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        bank: {
           select: {
             id: true,
             name: true,
@@ -170,7 +195,7 @@ export async function getPurchaseById(
  * Create new purchase with inventory integration
  */
 export async function createPurchase(
-  input: CreatePurchaseInput
+  input: CreatePurchaseInput,
 ): Promise<ActionResponse<SerializedPurchase>> {
   try {
     const session = await requireAuth();
@@ -181,7 +206,7 @@ export async function createPurchase(
     // Calculate totals
     const subtotal = validated.items.reduce(
       (sum, item) => sum + item.lineTotal,
-      0
+      0,
     );
     const taxTotal = validated.taxTotal || 0;
     const total = subtotal + taxTotal;
@@ -196,6 +221,12 @@ export async function createPurchase(
           invoiceNo: validated.invoiceNo || null,
           status: "APPROVED",
           note: validated.note || null,
+
+          // Campos de pago
+          paymentMethod: validated.paymentMethod,
+          bankId: validated.bankId || null,
+          reference: validated.reference || null,
+
           subtotal: new Decimal(subtotal),
           taxTotal: new Decimal(taxTotal),
           total: new Decimal(total),
@@ -211,6 +242,12 @@ export async function createPurchase(
         },
         include: {
           supplier: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          bank: {
             select: {
               id: true,
               name: true,
@@ -244,9 +281,23 @@ export async function createPurchase(
             unitCost: new Decimal(item.unitCost),
             refType: "Purchase",
             refId: newPurchase.id,
-            note: validated.invoiceNo
-              ? `Compra ${validated.invoiceNo}`
-              : `Compra ${newPurchase.id.substring(0, 8)}`,
+            note: `Compra #${newPurchase.purchaseNumber}${validated.invoiceNo ? ` - ${validated.invoiceNo}` : ""}`,
+          },
+        });
+      }
+
+      // 3. Create bank transaction if bank is associated and method is TRANSFER
+      if (validated.bankId && validated.paymentMethod === "TRANSFER") {
+        await tx.bankTransaction.create({
+          data: {
+            bankId: validated.bankId,
+            type: "DEBIT", // Salida de dinero
+            amount: new Decimal(total),
+            description: `Compra #${newPurchase.purchaseNumber}${validated.invoiceNo ? ` - ${validated.invoiceNo}` : ""}`,
+            reference: validated.reference || null,
+            transactionDate: new Date(),
+            purchaseId: newPurchase.id,
+            createdById: session.user.id,
           },
         });
       }
@@ -272,7 +323,7 @@ export async function createPurchase(
  * Note: This will also delete associated stock movements via cascade
  */
 export async function deletePurchase(
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> {
   try {
     await requireAuth();
@@ -289,8 +340,8 @@ export async function deletePurchase(
     console.error("Error deleting purchase:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Error al eliminar compra",
+      error:
+        error instanceof Error ? error.message : "Error al eliminar compra",
     };
   }
 }
-

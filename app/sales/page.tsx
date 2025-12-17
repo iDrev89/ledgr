@@ -23,7 +23,9 @@ export default function SalesPage() {
   const t = useTranslations("Sales");
   const locale = useLocale();
   const router = useRouter();
-  const [selectedSale, setSelectedSale] = useState<SaleWithDetails | null>(null);
+  const [selectedSale, setSelectedSale] = useState<SaleWithDetails | null>(
+    null,
+  );
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const { data, isLoading, error } = useSales();
@@ -57,9 +59,7 @@ export default function SalesPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>{t("salesHistory")}</CardTitle>
-              <CardDescription>
-                {t("salesHistoryDescription")}
-              </CardDescription>
+              <CardDescription>{t("salesHistoryDescription")}</CardDescription>
             </div>
             {data && (
               <div className="text-sm text-muted-foreground">

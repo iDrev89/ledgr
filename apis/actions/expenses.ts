@@ -55,7 +55,9 @@ export const getExpenses = async (params?: {
   endDate?: string;
   limit?: number;
   offset?: number;
-}): Promise<ActionResponse<{ expenses: ExpenseWithDetails[]; total: number }>> => {
+}): Promise<
+  ActionResponse<{ expenses: ExpenseWithDetails[]; total: number }>
+> => {
   const t = await getTranslations("Expenses.errors");
 
   try {
@@ -77,7 +79,11 @@ export const getExpenses = async (params?: {
       where.OR = [
         { description: { contains: search, mode: "insensitive" as const } },
         { invoiceNo: { contains: search, mode: "insensitive" as const } },
-        { supplier: { name: { contains: search, mode: "insensitive" as const } } },
+        {
+          supplier: {
+            name: { contains: search, mode: "insensitive" as const },
+          },
+        },
       ];
     }
 
@@ -135,7 +141,7 @@ export const getExpenses = async (params?: {
 };
 
 export const getExpense = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<ExpenseWithDetails>> => {
   const t = await getTranslations("Expenses.errors");
 
@@ -178,7 +184,7 @@ export const getExpense = async (
 };
 
 export const createExpense = async (
-  input: CreateExpenseInput
+  input: CreateExpenseInput,
 ): Promise<ActionResponse<ExpenseWithDetails>> => {
   const t = await getTranslations("Expenses.errors");
 
@@ -214,9 +220,10 @@ export const createExpense = async (
     }
 
     const amount = new Decimal(validated.amount);
-    const incurredAt = typeof validated.incurredAt === "string" 
-      ? new Date(validated.incurredAt) 
-      : validated.incurredAt;
+    const incurredAt =
+      typeof validated.incurredAt === "string"
+        ? new Date(validated.incurredAt)
+        : validated.incurredAt;
 
     const result = await prisma.$transaction(async (tx) => {
       const expense = await tx.expense.create({
@@ -281,7 +288,7 @@ export const createExpense = async (
 };
 
 export const updateExpense = async (
-  input: UpdateExpenseInput
+  input: UpdateExpenseInput,
 ): Promise<ActionResponse<ExpenseWithDetails>> => {
   const t = await getTranslations("Expenses.errors");
 
@@ -326,9 +333,10 @@ export const updateExpense = async (
     }
 
     const amount = new Decimal(validated.amount);
-    const incurredAt = typeof validated.incurredAt === "string" 
-      ? new Date(validated.incurredAt) 
-      : validated.incurredAt;
+    const incurredAt =
+      typeof validated.incurredAt === "string"
+        ? new Date(validated.incurredAt)
+        : validated.incurredAt;
 
     const expense = await prisma.expense.update({
       where: { id: validated.id },
@@ -373,7 +381,7 @@ export const updateExpense = async (
 };
 
 export const deleteExpense = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Expenses.errors");
 
@@ -407,4 +415,3 @@ export const deleteExpense = async (
     };
   }
 };
-

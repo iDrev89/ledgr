@@ -7,4 +7,3 @@ export type ProductCategoryWithRelations = ProductCategory & {
     products: number;
   };
 };
-

@@ -1,4 +1,13 @@
-import { BankTransaction, Bank, User, SalePayment, AccountsReceivablePayment, Sale, AccountsReceivable, Expense } from "@/prisma/prisma-client";
+import {
+  BankTransaction,
+  Bank,
+  User,
+  SalePayment,
+  AccountsReceivablePayment,
+  Sale,
+  AccountsReceivable,
+  Expense,
+} from "@/prisma/prisma-client";
 
 export type { BankTransaction };
 
@@ -22,4 +31,3 @@ export type BankWithBalance = Bank & {
   currentBalance?: number;
   transactionCount?: number;
 };
-

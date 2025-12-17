@@ -22,11 +22,31 @@ export const TopProductsCard = () => {
   };
 
   const rankColors = [
-    { bg: "bg-yellow-500/20 dark:bg-yellow-500/30", text: "text-yellow-600 dark:text-yellow-400", icon: "🥇" },
-    { bg: "bg-slate-400/20 dark:bg-slate-400/30", text: "text-slate-600 dark:text-slate-300", icon: "🥈" },
-    { bg: "bg-orange-600/20 dark:bg-orange-600/30", text: "text-orange-700 dark:text-orange-400", icon: "🥉" },
-    { bg: "bg-blue-500/10 dark:bg-blue-500/20", text: "text-blue-600 dark:text-blue-400", icon: "🏅" },
-    { bg: "bg-purple-500/10 dark:bg-purple-500/20", text: "text-purple-600 dark:text-purple-400", icon: "🏅" },
+    {
+      bg: "bg-yellow-500/20 dark:bg-yellow-500/30",
+      text: "text-yellow-600 dark:text-yellow-400",
+      icon: "🥇",
+    },
+    {
+      bg: "bg-slate-400/20 dark:bg-slate-400/30",
+      text: "text-slate-600 dark:text-slate-300",
+      icon: "🥈",
+    },
+    {
+      bg: "bg-orange-600/20 dark:bg-orange-600/30",
+      text: "text-orange-700 dark:text-orange-400",
+      icon: "🥉",
+    },
+    {
+      bg: "bg-blue-500/10 dark:bg-blue-500/20",
+      text: "text-blue-600 dark:text-blue-400",
+      icon: "🏅",
+    },
+    {
+      bg: "bg-purple-500/10 dark:bg-purple-500/20",
+      text: "text-purple-600 dark:text-purple-400",
+      icon: "🏅",
+    },
   ];
 
   return (
@@ -62,14 +82,18 @@ export const TopProductsCard = () => {
                   className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "flex h-10 w-10 items-center justify-center rounded-full text-xl",
-                      rank.bg
-                    )}>
+                    <div
+                      className={cn(
+                        "flex h-10 w-10 items-center justify-center rounded-full text-xl",
+                        rank.bg,
+                      )}
+                    >
                       {rank.icon}
                     </div>
                     <div>
-                      <p className="font-medium line-clamp-1">{product.productName}</p>
+                      <p className="font-medium line-clamp-1">
+                        {product.productName}
+                      </p>
                       <div className="flex items-center gap-2 mt-1">
                         <Package className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
@@ -97,4 +121,3 @@ export const TopProductsCard = () => {
     </Card>
   );
 };
-

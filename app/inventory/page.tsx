@@ -26,11 +26,13 @@ export default function InventoryPage() {
   const { hasPermission } = usePermissions();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | undefined>();
+  const [selectedProductId, setSelectedProductId] = useState<
+    string | undefined
+  >();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { data, isLoading, error } = useInventorySummary();
-  
+
   // Check permissions
   const canCreate = hasPermission("inventory", "create");
   const canUpdate = hasPermission("inventory", "update");
@@ -65,7 +67,9 @@ export default function InventoryPage() {
   // Calculate statistics
   const stats = {
     totalProducts: data?.length || 0,
-    lowStock: data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10).length || 0,
+    lowStock:
+      data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10)
+        .length || 0,
     outOfStock: data?.filter((item) => item.currentStock === 0).length || 0,
     inStock: data?.filter((item) => item.currentStock > 10).length || 0,
   };
@@ -112,7 +116,9 @@ export default function InventoryPage() {
                 <p className="text-xs font-medium text-muted-foreground mb-1">
                   {t("inStock")}
                 </p>
-                <p className="text-2xl font-bold text-green-600">{stats.inStock}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.inStock}
+                </p>
               </div>
               <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
                 <div className="h-5 w-5 rounded-full bg-green-600" />
@@ -128,7 +134,9 @@ export default function InventoryPage() {
                 <p className="text-xs font-medium text-muted-foreground mb-1">
                   {t("lowStock")}
                 </p>
-                <p className="text-2xl font-bold text-orange-600">{stats.lowStock}</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.lowStock}
+                </p>
               </div>
               <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
                 <AlertCircle className="h-5 w-5 text-orange-600" />
@@ -144,7 +152,9 @@ export default function InventoryPage() {
                 <p className="text-xs font-medium text-muted-foreground mb-1">
                   {t("outOfStock")}
                 </p>
-                <p className="text-2xl font-bold text-destructive">{stats.outOfStock}</p>
+                <p className="text-2xl font-bold text-destructive">
+                  {stats.outOfStock}
+                </p>
               </div>
               <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
                 <AlertCircle className="h-5 w-5 text-destructive" />
@@ -204,4 +214,3 @@ export default function InventoryPage() {
     </div>
   );
 }
-

@@ -13,7 +13,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Package, TrendingUp, TrendingDown, Settings } from "lucide-react";
+import {
+  AlertCircle,
+  Package,
+  TrendingUp,
+  TrendingDown,
+  Settings,
+} from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useProductStock } from "@/hooks/use-inventory";
 import { StockMoveType } from "@/prisma/prisma-client";
@@ -77,7 +83,8 @@ export function StockMovementHistory({
 
   const formatDate = (date: Date) => {
     const now = new Date();
-    const diffInMinutes = (now.getTime() - new Date(date).getTime()) / (1000 * 60);
+    const diffInMinutes =
+      (now.getTime() - new Date(date).getTime()) / (1000 * 60);
     const diffInHours = diffInMinutes / 60;
 
     if (diffInMinutes < 1) {
@@ -110,7 +117,9 @@ export function StockMovementHistory({
           <DialogDescription>
             {product && (
               <>
-                <span className="font-medium text-foreground">{product.name}</span>
+                <span className="font-medium text-foreground">
+                  {product.name}
+                </span>
                 {product.sku && (
                   <span className="text-muted-foreground ml-2">
                     SKU: {product.sku}
@@ -150,7 +159,8 @@ export function StockMovementHistory({
               {data.movements.map((movement, index) => {
                 const isPositive =
                   movement.moveType === StockMoveType.PURCHASE ||
-                  (movement.moveType === StockMoveType.ADJUSTMENT && movement.quantity > 0);
+                  (movement.moveType === StockMoveType.ADJUSTMENT &&
+                    movement.quantity > 0);
 
                 return (
                   <div
@@ -159,7 +169,7 @@ export function StockMovementHistory({
                   >
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${getMoveTypeColor(
-                        movement.moveType
+                        movement.moveType,
                       )}`}
                     >
                       {getMoveTypeIcon(movement.moveType)}
@@ -168,7 +178,9 @@ export function StockMovementHistory({
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">
-                          {t(`move${movement.moveType.charAt(0) + movement.moveType.slice(1).toLowerCase()}`)}
+                          {t(
+                            `move${movement.moveType.charAt(0) + movement.moveType.slice(1).toLowerCase()}`,
+                          )}
                         </span>
                       </div>
 
@@ -180,12 +192,14 @@ export function StockMovementHistory({
 
                       {movement.refType && movement.refId && (
                         <div className="text-xs text-muted-foreground">
-                          {t("reference")}: 
-                          {movement.refType === "Purchase" && movement.refData?.purchaseNumber
+                          {t("reference")}:
+                          {movement.refType === "Purchase" &&
+                          movement.refData?.purchaseNumber
                             ? ` Compra #${String(movement.refData.purchaseNumber).padStart(4, "0")}`
-                            : movement.refType === "Sale" && movement.refData?.saleNumber
-                            ? ` Venta #${String(movement.refData.saleNumber).padStart(4, "0")}`
-                            : ` ${movement.refType}-${movement.refId.substring(0, 8)}`}
+                            : movement.refType === "Sale" &&
+                                movement.refData?.saleNumber
+                              ? ` Venta #${String(movement.refData.saleNumber).padStart(4, "0")}`
+                              : ` ${movement.refType}-${movement.refId.substring(0, 8)}`}
                         </div>
                       )}
 
@@ -200,7 +214,10 @@ export function StockMovementHistory({
                         </span>
                         {movement.unitCost && (
                           <span className="text-muted-foreground">
-                            @ ${parseFloat(movement.unitCost.toString()).toFixed(2)}
+                            @ $
+                            {parseFloat(movement.unitCost.toString()).toFixed(
+                              2,
+                            )}
                           </span>
                         )}
                       </div>
@@ -211,10 +228,13 @@ export function StockMovementHistory({
                         {formatDate(movement.createdAt)}
                       </span>
                       <Badge variant="secondary" className="text-xs">
-                        {t("balance")}: {data.currentStock - (data.movements.slice(0, index).reduce((acc, m) => {
-                          if (m.moveType === StockMoveType.SALE) return acc - Math.abs(m.quantity);
-                          return acc + m.quantity;
-                        }, 0))}
+                        {t("balance")}:{" "}
+                        {data.currentStock -
+                          data.movements.slice(0, index).reduce((acc, m) => {
+                            if (m.moveType === StockMoveType.SALE)
+                              return acc - Math.abs(m.quantity);
+                            return acc + m.quantity;
+                          }, 0)}
                       </Badge>
                     </div>
                   </div>
@@ -234,7 +254,9 @@ export function StockMovementHistory({
               <span className="text-sm text-muted-foreground">
                 {t("currentStock")}:
               </span>
-              <span className="ml-2 text-lg font-bold">{data.currentStock}</span>
+              <span className="ml-2 text-lg font-bold">
+                {data.currentStock}
+              </span>
             </div>
             <div className="text-sm text-muted-foreground">
               {t("totalMovements", { count: data.movements.length })}
@@ -245,4 +267,3 @@ export function StockMovementHistory({
     </Dialog>
   );
 }
-

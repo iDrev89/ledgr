@@ -83,7 +83,7 @@ export function useUpdateProductCategory() {
     onSuccess: (updatedCategory) => {
       queryClient.setQueryData(
         productCategoryKeys.detail(updatedCategory.id),
-        updatedCategory
+        updatedCategory,
       );
       queryClient.invalidateQueries({
         queryKey: productCategoryKeys.lists(),
@@ -112,4 +112,3 @@ export function useDeleteProductCategory() {
     },
   });
 }
-

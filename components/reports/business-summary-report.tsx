@@ -116,7 +116,9 @@ export function BusinessSummaryReport({
           value={formatCurrency(data.profit.net)}
           subtitle={`${t("netMargin")}: ${formatPercent(data.profit.netMargin)}`}
           icon={<DollarSign />}
-          className={data.profit.net < 0 ? "border-red-200" : "border-green-200"}
+          className={
+            data.profit.net < 0 ? "border-red-200" : "border-green-200"
+          }
         />
       </div>
 
@@ -131,7 +133,9 @@ export function BusinessSummaryReport({
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
             <div>
-              <p className="text-sm text-muted-foreground">{t("cashReceived")}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("cashReceived")}
+              </p>
               <p className="text-2xl font-bold text-green-600">
                 {formatCurrency(data.cashFlow.cashReceived)}
               </p>
@@ -187,7 +191,9 @@ export function BusinessSummaryReport({
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">{formatCurrency(product.revenue)}</p>
+                      <p className="font-bold">
+                        {formatCurrency(product.revenue)}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -209,7 +215,10 @@ export function BusinessSummaryReport({
             ) : (
               <div className="space-y-4">
                 {data.expenses.byCategory.map((category) => (
-                  <div key={category.categoryId || "uncategorized"} className="space-y-2">
+                  <div
+                    key={category.categoryId || "uncategorized"}
+                    className="space-y-2"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
                         {category.categoryName}
@@ -302,4 +311,3 @@ export function BusinessSummaryReport({
     </div>
   );
 }
-

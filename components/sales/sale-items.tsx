@@ -40,11 +40,7 @@ interface SaleItemsProps {
   disabled?: boolean;
 }
 
-export function SaleItems({
-  items,
-  onItemsChange,
-  disabled,
-}: SaleItemsProps) {
+export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
   const t = useTranslations("Sales");
   const [openProductSheet, setOpenProductSheet] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -116,17 +112,21 @@ export function SaleItems({
     setOpenProductSheet(open);
   };
 
-  const handleUpdateItem = (itemId: string, field: keyof SaleItemRow, value: any) => {
+  const handleUpdateItem = (
+    itemId: string,
+    field: keyof SaleItemRow,
+    value: any,
+  ) => {
     const updatedItems = items.map((item) => {
       if (item.id === itemId) {
         const updated = { ...item, [field]: value };
-        
+
         // Recalculate lineTotal
         const unitPrice = parseFloat(updated.unitPrice || "0");
         const quantity = updated.quantity;
         const discount = parseFloat(updated.discount || "0");
         updated.lineTotal = unitPrice * quantity - discount;
-        
+
         return updated;
       }
       return item;
@@ -146,11 +146,11 @@ export function SaleItems({
   const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
   const subtotal = items.reduce(
     (sum, item) => sum + parseFloat(item.unitPrice || "0") * item.quantity,
-    0
+    0,
   );
   const totalDiscount = items.reduce(
     (sum, item) => sum + parseFloat(item.discount || "0"),
-    0
+    0,
   );
 
   return (
@@ -188,7 +188,10 @@ export function SaleItems({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {items.map((item, index) => (
-            <Card key={item.id} className="relative border-2 hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
+            <Card
+              key={item.id}
+              className="relative border-2 hover:border-primary/50 transition-colors shadow-sm hover:shadow-md"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -247,7 +250,9 @@ export function SaleItems({
                                     <Card
                                       key={product.id}
                                       className="cursor-pointer hover:bg-accent transition-colors"
-                                      onClick={() => handleSelectProduct(product)}
+                                      onClick={() =>
+                                        handleSelectProduct(product)
+                                      }
                                     >
                                       <CardContent className="p-4">
                                         <div className="flex items-start justify-between gap-3">
@@ -260,14 +265,21 @@ export function SaleItems({
                                                 SKU: {product.sku}
                                               </p>
                                             )}
-                                            <Badge variant="secondary" className="mt-2">
+                                            <Badge
+                                              variant="secondary"
+                                              className="mt-2"
+                                            >
                                               {product.type === "PRODUCT"
                                                 ? t("productTypeProduct")
                                                 : t("productTypeService")}
                                             </Badge>
                                           </div>
                                           <p className="text-base font-bold shrink-0">
-                                            {formatCurrency(parseFloat(product.price.toString()))}
+                                            {formatCurrency(
+                                              parseFloat(
+                                                product.price.toString(),
+                                              ),
+                                            )}
                                           </p>
                                         </div>
                                       </CardContent>
@@ -297,7 +309,7 @@ export function SaleItems({
               {item.productId && (
                 <CardContent className="space-y-3 pt-0">
                   <Separator />
-                  
+
                   {/* Quantity */}
                   <div className="space-y-1.5">
                     <Label htmlFor={`quantity-${item.id}`} className="text-xs">
@@ -312,7 +324,7 @@ export function SaleItems({
                         handleUpdateItem(
                           item.id,
                           "quantity",
-                          parseInt(e.target.value) || 1
+                          parseInt(e.target.value) || 1,
                         )
                       }
                       disabled={disabled}
@@ -381,12 +393,16 @@ export function SaleItems({
         <Card className="bg-primary/5 border-primary/20 border-2 shadow-md">
           <CardContent className="p-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground font-medium">{t("subtotal")}</span>
+              <span className="text-muted-foreground font-medium">
+                {t("subtotal")}
+              </span>
               <span className="font-semibold">{formatCurrency(subtotal)}</span>
             </div>
             {totalDiscount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground font-medium">{t("discountTotal")}</span>
+                <span className="text-muted-foreground font-medium">
+                  {t("discountTotal")}
+                </span>
                 <span className="font-semibold text-destructive">
                   -{formatCurrency(totalDiscount)}
                 </span>
@@ -395,7 +411,9 @@ export function SaleItems({
             <Separator className="bg-primary/20" />
             <div className="flex justify-between pt-1">
               <span className="text-base font-bold">{t("total")}</span>
-              <span className="text-2xl font-bold text-primary">{formatCurrency(total)}</span>
+              <span className="text-2xl font-bold text-primary">
+                {formatCurrency(total)}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -403,15 +421,17 @@ export function SaleItems({
 
       {/* Product Selection Sheet */}
       <Sheet
-        open={openProductSheet && editingItemId !== null && items.find(i => i.id === editingItemId)?.productId === ""}
+        open={
+          openProductSheet &&
+          editingItemId !== null &&
+          items.find((i) => i.id === editingItemId)?.productId === ""
+        }
         onOpenChange={handleCloseSheet}
       >
         <SheetContent side="bottom" className="h-[85vh]">
           <SheetHeader>
             <SheetTitle>{t("selectProduct")}</SheetTitle>
-            <SheetDescription>
-              {t("selectProductDescription")}
-            </SheetDescription>
+            <SheetDescription>{t("selectProductDescription")}</SheetDescription>
           </SheetHeader>
           <div className="mt-4 space-y-4">
             <Input
@@ -453,7 +473,9 @@ export function SaleItems({
                             </Badge>
                           </div>
                           <p className="text-base font-bold shrink-0">
-                            {formatCurrency(parseFloat(product.price.toString()))}
+                            {formatCurrency(
+                              parseFloat(product.price.toString()),
+                            )}
                           </p>
                         </div>
                       </CardContent>
@@ -468,4 +490,3 @@ export function SaleItems({
     </div>
   );
 }
-

@@ -46,7 +46,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
   const t = useTranslations("Users");
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
-  
+
   const deleteUserMutation = useDeleteUser();
   const toggleBanMutation = useToggleUserBan();
 
@@ -69,7 +69,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
         banned: !user.banned,
       });
       toast.success(
-        user.banned ? t("userUnbannedSuccess") : t("userBannedSuccess")
+        user.banned ? t("userUnbannedSuccess") : t("userBannedSuccess"),
       );
     } catch (error: any) {
       toast.error(error.message || t("updateUserStatusError"));
@@ -131,7 +131,9 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                     {user.image && (
                       <AvatarImage src={user.image} alt={user.name} />
                     )}
-                    <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getUserInitials(user.name)}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="font-medium">{user.name}</div>
@@ -153,9 +155,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">
-                    {user.role || "user"}
-                  </Badge>
+                  <Badge variant="outline">{user.role || "user"}</Badge>
                 </TableCell>
                 <TableCell>
                   {user.banned ? (
@@ -220,7 +220,9 @@ export function UsersList({ users, isLoading }: UsersListProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteConfirmDescription", { name: (deleteUser?.name ?? "") as string })}
+              {t("deleteConfirmDescription", {
+                name: (deleteUser?.name ?? "") as string,
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

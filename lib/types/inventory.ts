@@ -11,4 +11,3 @@ export type ProductStock = {
   currentStock: number;
   lastMovement?: StockMovement;
 };
-

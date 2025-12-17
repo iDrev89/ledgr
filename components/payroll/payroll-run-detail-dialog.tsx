@@ -66,22 +66,18 @@ export function PayrollRunDetailDialog({
     return labels[status];
   };
 
-  const totalCommissions = run.items?.reduce(
-    (sum, item) => sum + parseFloat(item.commissionsTotal),
-    0
-  ) || 0;
-  const totalPayable = run.items?.reduce(
-    (sum, item) => sum + parseFloat(item.payableTotal),
-    0
-  ) || 0;
-  const totalPaid = run.items?.reduce(
-    (sum, item) => sum + parseFloat(item.paidAmount),
-    0
-  ) || 0;
-  const totalBalance = run.items?.reduce(
-    (sum, item) => sum + parseFloat(item.balance),
-    0
-  ) || 0;
+  const totalCommissions =
+    run.items?.reduce(
+      (sum, item) => sum + parseFloat(item.commissionsTotal),
+      0,
+    ) || 0;
+  const totalPayable =
+    run.items?.reduce((sum, item) => sum + parseFloat(item.payableTotal), 0) ||
+    0;
+  const totalPaid =
+    run.items?.reduce((sum, item) => sum + parseFloat(item.paidAmount), 0) || 0;
+  const totalBalance =
+    run.items?.reduce((sum, item) => sum + parseFloat(item.balance), 0) || 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,8 +106,8 @@ export function PayrollRunDetailDialog({
                   {run.periodType === "DAILY"
                     ? t("periodTypeDaily")
                     : run.periodType === "BIWEEKLY"
-                    ? t("periodTypeBiweekly")
-                    : t("periodTypeCustom")}
+                      ? t("periodTypeBiweekly")
+                      : t("periodTypeCustom")}
                 </p>
               </div>
             </div>
@@ -127,13 +123,17 @@ export function PayrollRunDetailDialog({
                 <p className="text-xs text-muted-foreground mb-1">
                   {t("commissionsTotal")}
                 </p>
-                <p className="text-lg font-bold">{formatCurrency(totalCommissions)}</p>
+                <p className="text-lg font-bold">
+                  {formatCurrency(totalCommissions)}
+                </p>
               </div>
               <div className="bg-muted/50 rounded-lg p-4">
                 <p className="text-xs text-muted-foreground mb-1">
                   {t("payableTotal")}
                 </p>
-                <p className="text-lg font-bold">{formatCurrency(totalPayable)}</p>
+                <p className="text-lg font-bold">
+                  {formatCurrency(totalPayable)}
+                </p>
               </div>
               <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-4">
                 <p className="text-xs text-muted-foreground mb-1">
@@ -144,7 +144,9 @@ export function PayrollRunDetailDialog({
                 </p>
               </div>
               <div className="bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4">
-                <p className="text-xs text-muted-foreground mb-1">{t("balance")}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  {t("balance")}
+                </p>
                 <p className="text-lg font-bold text-amber-700 dark:text-amber-400">
                   {formatCurrency(totalBalance)}
                 </p>
@@ -239,11 +241,17 @@ export function PayrollRunDetailDialog({
                 <span className="text-muted-foreground">
                   {t("commissionsTotal")}
                 </span>
-                <span className="font-medium">{formatCurrency(totalCommissions)}</span>
+                <span className="font-medium">
+                  {formatCurrency(totalCommissions)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t("payableTotal")}</span>
-                <span className="font-medium">{formatCurrency(totalPayable)}</span>
+                <span className="text-muted-foreground">
+                  {t("payableTotal")}
+                </span>
+                <span className="font-medium">
+                  {formatCurrency(totalPayable)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("paidAmount")}</span>
@@ -265,4 +273,3 @@ export function PayrollRunDetailDialog({
     </Dialog>
   );
 }
-

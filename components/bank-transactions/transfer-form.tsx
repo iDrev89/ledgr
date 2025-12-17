@@ -34,10 +34,7 @@ interface TransferFormProps {
   isSubmitting: boolean;
 }
 
-export const TransferForm = ({
-  onSubmit,
-  isSubmitting,
-}: TransferFormProps) => {
+export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
   const t = useTranslations("BankTransactions");
   const { data } = useBanks();
   const banks = data?.banks || [];
@@ -220,4 +217,3 @@ export const TransferForm = ({
     </Form>
   );
 };
-

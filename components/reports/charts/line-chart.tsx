@@ -69,10 +69,7 @@ export function LineChart({
               labelStyle={{ color: "hsl(var(--foreground))" }}
             />
             {showLegend && (
-              <Legend
-                wrapperStyle={{ paddingTop: "20px" }}
-                iconType="line"
-              />
+              <Legend wrapperStyle={{ paddingTop: "20px" }} iconType="line" />
             )}
             <Line
               type="monotone"
@@ -98,4 +95,3 @@ export function LineChart({
     </Card>
   );
 }
-

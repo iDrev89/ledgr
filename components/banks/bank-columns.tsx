@@ -37,11 +37,7 @@ export const getBankColumns = ({
     header: t("accountNo"),
     cell: ({ row }) => {
       const accountNo = row.original.accountNo;
-      return (
-        <div className="text-muted-foreground">
-          {accountNo || "-"}
-        </div>
-      );
+      return <div className="text-muted-foreground">{accountNo || "-"}</div>;
     },
   },
   {
@@ -57,11 +53,7 @@ export const getBankColumns = ({
           minimumFractionDigits: 0,
         }).format(amount);
       };
-      return (
-        <div className="font-semibold">
-          {formatCurrency(balance)}
-        </div>
-      );
+      return <div className="font-semibold">{formatCurrency(balance)}</div>;
     },
   },
   {
@@ -118,4 +110,3 @@ export const getBankColumns = ({
     },
   },
 ];
-

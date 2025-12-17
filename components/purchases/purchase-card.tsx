@@ -15,7 +15,11 @@ interface PurchaseCardProps {
   onDelete: (id: string) => void;
 }
 
-export function PurchaseCard({ purchase, onView, onDelete }: PurchaseCardProps) {
+export function PurchaseCard({
+  purchase,
+  onView,
+  onDelete,
+}: PurchaseCardProps) {
   const { hasPermission } = usePermissions();
   const canDelete = hasPermission("purchases", "delete");
 
@@ -46,11 +50,15 @@ export function PurchaseCard({ purchase, onView, onDelete }: PurchaseCardProps) 
             <div className="flex items-center gap-2 mt-1">
               <Calendar className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">
-                {format(new Date(purchase.createdAt), "dd MMM yyyy", { locale: es })}
+                {format(new Date(purchase.createdAt), "dd MMM yyyy", {
+                  locale: es,
+                })}
               </span>
             </div>
           </div>
-          <Badge variant={purchase.status === "APPROVED" ? "default" : "secondary"}>
+          <Badge
+            variant={purchase.status === "APPROVED" ? "default" : "secondary"}
+          >
             {purchase.status === "APPROVED" ? "Aprobado" : purchase.status}
           </Badge>
         </div>
@@ -75,7 +83,8 @@ export function PurchaseCard({ purchase, onView, onDelete }: PurchaseCardProps) 
         <div className="flex items-center gap-2">
           <Package className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm">
-            {purchase.items?.length || 0} {(purchase.items?.length || 0) === 1 ? "item" : "items"}
+            {purchase.items?.length || 0}{" "}
+            {(purchase.items?.length || 0) === 1 ? "item" : "items"}
           </span>
         </div>
 
@@ -114,4 +123,3 @@ export function PurchaseCard({ purchase, onView, onDelete }: PurchaseCardProps) 
     </Card>
   );
 }
-

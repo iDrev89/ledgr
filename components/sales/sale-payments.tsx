@@ -67,8 +67,13 @@ export function SalePayments({
   const handleCloseSheet = (open: boolean) => {
     if (!open && editingPaymentId) {
       // Si se cierra el sheet sin haber agregado un monto, eliminar el pago vacío
-      const editingPayment = payments.find((p) => p.tempId === editingPaymentId);
-      if (editingPayment && (!editingPayment.amount || editingPayment.amount.trim() === "")) {
+      const editingPayment = payments.find(
+        (p) => p.tempId === editingPaymentId,
+      );
+      if (
+        editingPayment &&
+        (!editingPayment.amount || editingPayment.amount.trim() === "")
+      ) {
         handleRemovePayment(editingPaymentId);
       }
       setEditingPaymentId(null);
@@ -85,7 +90,7 @@ export function SalePayments({
   const handlePaymentChange = (
     tempId: string,
     field: keyof SalePaymentRow,
-    value: string
+    value: string,
   ) => {
     onPaymentsChange(
       payments.map((p) => {
@@ -99,7 +104,7 @@ export function SalePayments({
           return updated;
         }
         return p;
-      })
+      }),
     );
   };
 
@@ -214,23 +219,37 @@ export function SalePayments({
       )}
 
       {/* Summary */}
-      <Card className={`border-2 shadow-md ${
-        balance > 0 
-          ? "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800" 
-          : balance < 0 
-          ? "bg-destructive/5 border-destructive/20" 
-          : "bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-800"
-      }`}>
+      <Card
+        className={`border-2 shadow-md ${
+          balance > 0
+            ? "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800"
+            : balance < 0
+              ? "bg-destructive/5 border-destructive/20"
+              : "bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-800"
+        }`}
+      >
         <CardContent className="p-4 space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground font-medium">{t("totalSale")}</span>
+            <span className="text-muted-foreground font-medium">
+              {t("totalSale")}
+            </span>
             <span className="font-semibold">{formatCurrency(total)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground font-medium">{t("totalPaid")}</span>
+            <span className="text-muted-foreground font-medium">
+              {t("totalPaid")}
+            </span>
             <span className="font-semibold">{formatCurrency(totalPaid)}</span>
           </div>
-          <Separator className={balance > 0 ? "bg-amber-200 dark:bg-amber-800" : balance < 0 ? "bg-destructive/20" : "bg-green-200 dark:bg-green-800"} />
+          <Separator
+            className={
+              balance > 0
+                ? "bg-amber-200 dark:bg-amber-800"
+                : balance < 0
+                  ? "bg-destructive/20"
+                  : "bg-green-200 dark:bg-green-800"
+            }
+          />
           <div className="flex justify-between pt-1">
             <span className="text-base font-bold">{t("balance")}</span>
             <span
@@ -238,8 +257,8 @@ export function SalePayments({
                 balance > 0
                   ? "text-amber-600 dark:text-amber-400"
                   : balance < 0
-                  ? "text-destructive"
-                  : "text-green-600 dark:text-green-400"
+                    ? "text-destructive"
+                    : "text-green-600 dark:text-green-400"
               }`}
             >
               {formatCurrency(balance)}
@@ -254,30 +273,32 @@ export function SalePayments({
       </Card>
 
       {/* Edit Payment Sheet */}
-      <Sheet
-        open={editingPaymentId !== null}
-        onOpenChange={handleCloseSheet}
-      >
+      <Sheet open={editingPaymentId !== null} onOpenChange={handleCloseSheet}>
         <SheetContent side="bottom" className="h-[85vh]">
           <SheetHeader>
             <SheetTitle>{t("paymentDetails")}</SheetTitle>
-            <SheetDescription>
-              {t("editPaymentDescription")}
-            </SheetDescription>
+            <SheetDescription>{t("editPaymentDescription")}</SheetDescription>
           </SheetHeader>
-          
+
           {editingPayment && (
             <ScrollArea className="h-[calc(85vh-140px)] mt-6">
               <div className="space-y-4 pr-4">
                 {/* Payment Method */}
                 <div className="space-y-2">
-                  <Label htmlFor="payment-method" className="text-sm font-medium">
+                  <Label
+                    htmlFor="payment-method"
+                    className="text-sm font-medium"
+                  >
                     {t("paymentMethod")}
                   </Label>
                   <Select
                     value={editingPayment.method}
                     onValueChange={(value) =>
-                      handlePaymentChange(editingPayment.tempId, "method", value)
+                      handlePaymentChange(
+                        editingPayment.tempId,
+                        "method",
+                        value,
+                      )
                     }
                     disabled={disabled}
                   >
@@ -306,7 +327,10 @@ export function SalePayments({
 
                 {/* Amount */}
                 <div className="space-y-2">
-                  <Label htmlFor="payment-amount" className="text-sm font-medium">
+                  <Label
+                    htmlFor="payment-amount"
+                    className="text-sm font-medium"
+                  >
                     {t("paymentAmount")} *
                   </Label>
                   <Input
@@ -319,19 +343,21 @@ export function SalePayments({
                       handlePaymentChange(
                         editingPayment.tempId,
                         "amount",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                     placeholder={t("paymentAmountPlaceholder")}
                     disabled={disabled}
                     required
                     className={`h-12 text-base ${
-                      !editingPayment.amount || editingPayment.amount.trim() === ""
+                      !editingPayment.amount ||
+                      editingPayment.amount.trim() === ""
                         ? "border-destructive"
                         : ""
                     }`}
                   />
-                  {(!editingPayment.amount || editingPayment.amount.trim() === "") && (
+                  {(!editingPayment.amount ||
+                    editingPayment.amount.trim() === "") && (
                     <p className="text-xs text-destructive">
                       {t("validation.paymentAmountRequired")}
                     </p>
@@ -341,13 +367,20 @@ export function SalePayments({
                 {/* Bank (only for transfers) */}
                 {editingPayment.method === PaymentMethod.TRANSFER && (
                   <div className="space-y-2">
-                    <Label htmlFor="payment-bank" className="text-sm font-medium">
+                    <Label
+                      htmlFor="payment-bank"
+                      className="text-sm font-medium"
+                    >
                       {t("paymentBank")}
                     </Label>
                     <Select
                       value={editingPayment.bankId || ""}
                       onValueChange={(value) =>
-                        handlePaymentChange(editingPayment.tempId, "bankId", value)
+                        handlePaymentChange(
+                          editingPayment.tempId,
+                          "bankId",
+                          value,
+                        )
                       }
                       disabled={disabled}
                     >
@@ -368,7 +401,10 @@ export function SalePayments({
 
                 {/* Reference */}
                 <div className="space-y-2">
-                  <Label htmlFor="payment-reference" className="text-sm font-medium">
+                  <Label
+                    htmlFor="payment-reference"
+                    className="text-sm font-medium"
+                  >
                     {t("paymentReference")}
                   </Label>
                   <Input
@@ -378,7 +414,7 @@ export function SalePayments({
                       handlePaymentChange(
                         editingPayment.tempId,
                         "reference",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                     placeholder={t("paymentReferencePlaceholder")}
@@ -399,7 +435,7 @@ export function SalePayments({
                         handlePaymentChange(
                           editingPayment.tempId,
                           "attachmentUrl",
-                          url
+                          url,
                         )
                       }
                       disabled={disabled}
@@ -436,4 +472,3 @@ export function SalePayments({
     </div>
   );
 }
-

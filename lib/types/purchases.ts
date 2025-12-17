@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import type { PurchaseStatus } from "@/prisma/prisma-client";
+import type { PurchaseStatus, PaymentMethod } from "@/prisma/prisma-client";
 
 // Purchase Item
 export interface PurchaseItem {
@@ -24,6 +24,16 @@ export interface PurchaseWithDetails {
   invoiceNo: string | null;
   status: PurchaseStatus;
   note: string | null;
+
+  // Campos de pago
+  paymentMethod: PaymentMethod;
+  bankId: string | null;
+  bank: {
+    id: string;
+    name: string;
+  } | null;
+  reference: string | null;
+
   subtotal: Decimal;
   taxTotal: Decimal;
   total: Decimal;
@@ -53,6 +63,11 @@ export interface CreatePurchaseInput {
   note?: string | null;
   items: PurchaseItem[];
   taxTotal?: number;
+
+  // Campos de pago
+  paymentMethod: PaymentMethod;
+  bankId?: string | null;
+  reference?: string | null;
 }
 
 // Serialized Purchase (for client)
@@ -68,6 +83,16 @@ export interface SerializedPurchase {
   invoiceNo: string | null;
   status: PurchaseStatus;
   note: string | null;
+
+  // Campos de pago
+  paymentMethod: PaymentMethod;
+  bankId: string | null;
+  bank: {
+    id: string;
+    name: string;
+  } | null;
+  reference: string | null;
+
   subtotal: string;
   taxTotal: string;
   total: string;
@@ -89,4 +114,3 @@ export interface SerializedPurchase {
     lineTotal: string;
   }[];
 }
-

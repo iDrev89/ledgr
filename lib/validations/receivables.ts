@@ -13,25 +13,21 @@ const createReceivableSchemas = (messages?: {
     amount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-        message: messages?.amountInvalid || "Payment amount must be a valid positive number",
+        message:
+          messages?.amountInvalid ||
+          "Payment amount must be a valid positive number",
       }),
     method: z.nativeEnum(PaymentMethod, {
       message: messages?.paymentMethodRequired || "Payment method is required",
     }),
-    bankId: z
-      .string()
-      .optional()
-      .or(z.literal("")),
-    note: z
-      .string()
-      .max(500)
-      .trim()
-      .optional()
-      .or(z.literal("")),
+    bankId: z.string().optional().or(z.literal("")),
+    note: z.string().max(500).trim().optional().or(z.literal("")),
   });
 
   const createReceivablePaymentSchema = receivablePaymentSchema.extend({
-    receivableId: z.string().min(1, messages?.idRequired || "Receivable ID is required"),
+    receivableId: z
+      .string()
+      .min(1, messages?.idRequired || "Receivable ID is required"),
   });
 
   return { receivablePaymentSchema, createReceivablePaymentSchema };
@@ -55,5 +51,6 @@ const { receivablePaymentSchema, createReceivablePaymentSchema } =
 export { receivablePaymentSchema, createReceivablePaymentSchema };
 
 export type ReceivablePaymentInput = z.infer<typeof receivablePaymentSchema>;
-export type CreateReceivablePaymentInput = z.infer<typeof createReceivablePaymentSchema>;
-
+export type CreateReceivablePaymentInput = z.infer<
+  typeof createReceivablePaymentSchema
+>;

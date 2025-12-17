@@ -31,36 +31,50 @@ const createProductSchemas = (messages?: {
       .trim(),
     description: z
       .string()
-      .max(1000, messages?.descriptionMax || "Description must be less than 1000 characters")
+      .max(
+        1000,
+        messages?.descriptionMax ||
+          "Description must be less than 1000 characters",
+      )
       .trim()
       .optional()
       .or(z.literal("")),
     price: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
-        message: messages?.priceInvalid || "Price must be a valid positive number",
+        message:
+          messages?.priceInvalid || "Price must be a valid positive number",
       }),
     cost: z
       .string()
       .refine(
         (val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0),
         {
-          message: messages?.costInvalid || "Cost must be a valid positive number",
-        }
+          message:
+            messages?.costInvalid || "Cost must be a valid positive number",
+        },
       )
       .optional()
       .or(z.literal("")),
     commissionPercent: z
       .string()
       .refine(
-        (val) => !val || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0 && parseFloat(val) <= 100),
+        (val) =>
+          !val ||
+          (!isNaN(parseFloat(val)) &&
+            parseFloat(val) >= 0 &&
+            parseFloat(val) <= 100),
         {
-          message: messages?.commissionPercentInvalid || "Commission percent must be between 0 and 100",
-        }
+          message:
+            messages?.commissionPercentInvalid ||
+            "Commission percent must be between 0 and 100",
+        },
       )
       .optional()
       .or(z.literal("")),
-    categoryId: z.string().min(1, messages?.categoryIdRequired || "Category is required"),
+    categoryId: z
+      .string()
+      .min(1, messages?.categoryIdRequired || "Category is required"),
     active: z.boolean(),
   });
 
@@ -96,4 +110,3 @@ export { createProductSchema, updateProductSchema };
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
-

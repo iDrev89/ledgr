@@ -29,17 +29,30 @@ export default function ExpensesPage() {
   const tCategories = useTranslations("ExpenseCategories");
   const locale = useLocale();
 
-  const [selectedExpense, setSelectedExpense] = useState<ExpenseWithDetails | null>(null);
+  const [selectedExpense, setSelectedExpense] =
+    useState<ExpenseWithDetails | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  
+
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
-  const [expenseToEdit, setExpenseToEdit] = useState<ExpenseWithDetails | undefined>(undefined);
+  const [expenseToEdit, setExpenseToEdit] = useState<
+    ExpenseWithDetails | undefined
+  >(undefined);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<ExpenseCategoryWithRelations | undefined>(undefined);
+  const [categoryToEdit, setCategoryToEdit] = useState<
+    ExpenseCategoryWithRelations | undefined
+  >(undefined);
 
-  const { data: expensesData, isLoading: expensesLoading, error: expensesError } = useExpenses();
-  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useExpenseCategories();
+  const {
+    data: expensesData,
+    isLoading: expensesLoading,
+    error: expensesError,
+  } = useExpenses();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useExpenseCategories();
 
   const handleCreateExpense = () => {
     setExpenseToEdit(undefined);
@@ -221,4 +234,3 @@ export default function ExpensesPage() {
     </div>
   );
 }
-

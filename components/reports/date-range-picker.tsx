@@ -58,7 +58,10 @@ export function DateRangePicker({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-2">
       {/* Preset Tabs */}
-      <Tabs value={preset} onValueChange={(v) => handlePresetChange(v as DatePreset)}>
+      <Tabs
+        value={preset}
+        onValueChange={(v) => handlePresetChange(v as DatePreset)}
+      >
         <TabsList className="grid w-full grid-cols-5 md:w-auto">
           <TabsTrigger value="today">{t("today")}</TabsTrigger>
           <TabsTrigger value="week">{t("week")}</TabsTrigger>
@@ -106,4 +109,3 @@ export function DateRangePicker({
     </div>
   );
 }
-

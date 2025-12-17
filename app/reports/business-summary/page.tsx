@@ -43,7 +43,11 @@ export default function BusinessSummaryPage() {
   const [salesModalOpen, setSalesModalOpen] = useState(false);
   const [expensesModalOpen, setExpensesModalOpen] = useState(false);
 
-  const { data: reportData, isLoading, error } = useQuery({
+  const {
+    data: reportData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["business-summary-enhanced", dateRange],
     queryFn: async () => {
       const response = await getBusinessSummaryEnhanced({
@@ -69,7 +73,10 @@ export default function BusinessSummaryPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-6">
-        <PageHeader pageTitle={t("businessSummaryTitle")} pageDes={t("description")} />
+        <PageHeader
+          pageTitle={t("businessSummaryTitle")}
+          pageDes={t("description")}
+        />
         <div className="space-y-4">
           <Skeleton className="h-20" />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -86,7 +93,10 @@ export default function BusinessSummaryPage() {
   if (error) {
     return (
       <div className="flex flex-col gap-6">
-        <PageHeader pageTitle={t("businessSummaryTitle")} pageDes={t("description")} />
+        <PageHeader
+          pageTitle={t("businessSummaryTitle")}
+          pageDes={t("description")}
+        />
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -99,18 +109,29 @@ export default function BusinessSummaryPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader pageTitle={t("businessSummaryTitle")} pageDes={t("description")} />
+      <PageHeader
+        pageTitle={t("businessSummaryTitle")}
+        pageDes={t("description")}
+      />
 
       {/* Controls */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Card className="flex-1">
           <CardContent className="pt-6">
-            <DateRangePicker value={dateRange} onChange={setDateRange} locale={locale} />
+            <DateRangePicker
+              value={dateRange}
+              onChange={setDateRange}
+              locale={locale}
+            />
           </CardContent>
         </Card>
         <div className="flex gap-2">
           <ViewToggle view={viewMode} onChange={setViewMode} />
-          <ExportButton type="business" data={reportData || null} dateRange={dateRange} />
+          <ExportButton
+            type="business"
+            data={reportData || null}
+            dateRange={dateRange}
+          />
         </div>
       </div>
 
@@ -158,7 +179,11 @@ export default function BusinessSummaryPage() {
               value={formatCurrency(reportData.metrics.profit.current.net)}
               subtitle={`${t("netMargin")}: ${formatPercent(reportData.metrics.profit.current.netMargin)}`}
               icon={<DollarSign />}
-              className={reportData.metrics.profit.current.net < 0 ? "border-red-200" : "border-green-200"}
+              className={
+                reportData.metrics.profit.current.net < 0
+                  ? "border-red-200"
+                  : "border-green-200"
+              }
               trend={{
                 value: reportData.metrics.profit.change.net,
                 isPositive: reportData.metrics.profit.change.net >= 0,
@@ -175,19 +200,25 @@ export default function BusinessSummaryPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <p className="text-sm text-muted-foreground">{t("cashReceived")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("cashReceived")}
+                  </p>
                   <p className="text-2xl font-bold text-green-600">
                     {formatCurrency(reportData.cashFlow.cashReceived)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{t("cashSpent")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("cashSpent")}
+                  </p>
                   <p className="text-2xl font-bold text-red-600">
                     {formatCurrency(reportData.cashFlow.cashSpent)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{t("netCash")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("netCash")}
+                  </p>
                   <p
                     className={`text-2xl font-bold ${reportData.cashFlow.netCash >= 0 ? "text-green-600" : "text-red-600"}`}
                   >
@@ -263,4 +294,3 @@ export default function BusinessSummaryPage() {
     </div>
   );
 }
-

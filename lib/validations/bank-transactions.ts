@@ -27,27 +27,38 @@ const createBankTransactionSchemas = (messages?: {
     amount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) !== 0, {
-        message: messages?.amountInvalid || "Amount must be a valid non-zero number",
+        message:
+          messages?.amountInvalid || "Amount must be a valid non-zero number",
       }),
     description: z
       .string()
-      .max(500, messages?.descriptionMax || "Description must be less than 500 characters")
+      .max(
+        500,
+        messages?.descriptionMax ||
+          "Description must be less than 500 characters",
+      )
       .optional()
       .or(z.literal("")),
     reference: z
       .string()
-      .max(100, messages?.referenceMax || "Reference must be less than 100 characters")
+      .max(
+        100,
+        messages?.referenceMax || "Reference must be less than 100 characters",
+      )
       .optional()
       .or(z.literal("")),
     transactionDate: z
       .string()
       .or(z.date())
-      .refine((val) => {
-        const date = typeof val === "string" ? new Date(val) : val;
-        return !isNaN(date.getTime());
-      }, {
-        message: messages?.transactionDateInvalid || "Invalid date",
-      }),
+      .refine(
+        (val) => {
+          const date = typeof val === "string" ? new Date(val) : val;
+          return !isNaN(date.getTime());
+        },
+        {
+          message: messages?.transactionDateInvalid || "Invalid date",
+        },
+      ),
   });
 
   const createTransactionSchema = baseTransactionSchema;
@@ -56,39 +67,64 @@ const createBankTransactionSchemas = (messages?: {
     id: z.string().min(1, messages?.idRequired || "Transaction ID is required"),
   });
 
-  const createTransferSchema = z.object({
-    fromBankId: z.string().min(1, messages?.bankIdRequired || "Source bank is required"),
-    toBankId: z.string().min(1, messages?.relatedBankIdRequired || "Destination bank is required"),
-    amount: z
-      .string()
-      .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-        message: messages?.amountInvalid || "Amount must be a valid positive number",
-      }),
-    description: z
-      .string()
-      .max(500, messages?.descriptionMax || "Description must be less than 500 characters")
-      .optional()
-      .or(z.literal("")),
-    reference: z
-      .string()
-      .max(100, messages?.referenceMax || "Reference must be less than 100 characters")
-      .optional()
-      .or(z.literal("")),
-    transactionDate: z
-      .string()
-      .or(z.date())
-      .refine((val) => {
-        const date = typeof val === "string" ? new Date(val) : val;
-        return !isNaN(date.getTime());
-      }, {
-        message: messages?.transactionDateInvalid || "Invalid date",
-      }),
-  }).refine((data) => data.fromBankId !== data.toBankId, {
-    message: "Source and destination banks must be different",
-    path: ["toBankId"],
-  });
+  const createTransferSchema = z
+    .object({
+      fromBankId: z
+        .string()
+        .min(1, messages?.bankIdRequired || "Source bank is required"),
+      toBankId: z
+        .string()
+        .min(
+          1,
+          messages?.relatedBankIdRequired || "Destination bank is required",
+        ),
+      amount: z
+        .string()
+        .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
+          message:
+            messages?.amountInvalid || "Amount must be a valid positive number",
+        }),
+      description: z
+        .string()
+        .max(
+          500,
+          messages?.descriptionMax ||
+            "Description must be less than 500 characters",
+        )
+        .optional()
+        .or(z.literal("")),
+      reference: z
+        .string()
+        .max(
+          100,
+          messages?.referenceMax ||
+            "Reference must be less than 100 characters",
+        )
+        .optional()
+        .or(z.literal("")),
+      transactionDate: z
+        .string()
+        .or(z.date())
+        .refine(
+          (val) => {
+            const date = typeof val === "string" ? new Date(val) : val;
+            return !isNaN(date.getTime());
+          },
+          {
+            message: messages?.transactionDateInvalid || "Invalid date",
+          },
+        ),
+    })
+    .refine((data) => data.fromBankId !== data.toBankId, {
+      message: "Source and destination banks must be different",
+      path: ["toBankId"],
+    });
 
-  return { createTransactionSchema, updateTransactionSchema, createTransferSchema };
+  return {
+    createTransactionSchema,
+    updateTransactionSchema,
+    createTransferSchema,
+  };
 };
 
 // For client-side with i18n
@@ -107,12 +143,18 @@ export const getBankTransactionSchemas = (t: (key: string) => string) => {
 };
 
 // For server-side (English fallback)
-const { createTransactionSchema, updateTransactionSchema, createTransferSchema } =
-  createBankTransactionSchemas();
+const {
+  createTransactionSchema,
+  updateTransactionSchema,
+  createTransferSchema,
+} = createBankTransactionSchemas();
 
-export { createTransactionSchema, updateTransactionSchema, createTransferSchema };
+export {
+  createTransactionSchema,
+  updateTransactionSchema,
+  createTransferSchema,
+};
 
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
 export type CreateTransferInput = z.infer<typeof createTransferSchema>;
-

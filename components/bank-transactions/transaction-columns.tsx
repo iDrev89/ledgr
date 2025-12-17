@@ -56,11 +56,7 @@ export const createTransactionColumns = ({
     header: t("bank"),
     cell: ({ row }) => {
       const bank = row.original.bank;
-      return (
-        <div className="text-sm font-medium">
-          {bank?.name || "-"}
-        </div>
-      );
+      return <div className="text-sm font-medium">{bank?.name || "-"}</div>;
     },
   },
   {
@@ -119,7 +115,9 @@ export const createTransactionColumns = ({
     header: t("reference"),
     cell: ({ row }) => {
       const reference = row.getValue("reference") as string | null;
-      return <div className="text-sm text-muted-foreground">{reference || "-"}</div>;
+      return (
+        <div className="text-sm text-muted-foreground">{reference || "-"}</div>
+      );
     },
   },
   {
@@ -140,4 +138,3 @@ export const createTransactionColumns = ({
     },
   },
 ];
-

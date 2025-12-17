@@ -18,8 +18,9 @@ export function MetricCard({
     <Card
       className={cn(
         "",
-        isClickable && "cursor-pointer transition-all hover:shadow-md hover:border-primary/50",
-        className
+        isClickable &&
+          "cursor-pointer transition-all hover:shadow-md hover:border-primary/50",
+        className,
       )}
       onClick={onClick}
     >
@@ -49,7 +50,7 @@ export function MetricCard({
                 "text-xs font-medium",
                 trend.isPositive
                   ? "text-green-600 dark:text-green-500"
-                  : "text-red-600 dark:text-red-500"
+                  : "text-red-600 dark:text-red-500",
               )}
             >
               {Math.abs(trend.value).toFixed(1)}%
@@ -63,4 +64,3 @@ export function MetricCard({
     </Card>
   );
 }
-

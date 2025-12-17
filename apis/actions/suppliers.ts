@@ -62,7 +62,8 @@ export async function getSuppliers(params?: {
     console.error("Error fetching suppliers:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch suppliers",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch suppliers",
     };
   }
 }
@@ -71,7 +72,7 @@ export async function getSuppliers(params?: {
  * Get supplier by ID
  */
 export async function getSupplier(
-  id: string
+  id: string,
 ): Promise<ActionResponse<Supplier>> {
   try {
     await requireAuth();
@@ -92,7 +93,8 @@ export async function getSupplier(
     console.error("Error fetching supplier:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch supplier",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch supplier",
     };
   }
 }
@@ -125,7 +127,8 @@ export async function createSupplier(input: {
     console.error("Error creating supplier:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create supplier",
+      error:
+        error instanceof Error ? error.message : "Failed to create supplier",
     };
   }
 }
@@ -160,7 +163,8 @@ export async function updateSupplier(input: {
     console.error("Error updating supplier:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update supplier",
+      error:
+        error instanceof Error ? error.message : "Failed to update supplier",
     };
   }
 }
@@ -169,7 +173,7 @@ export async function updateSupplier(input: {
  * Delete supplier
  */
 export async function deleteSupplier(
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> {
   try {
     await requireAuth();
@@ -183,8 +187,8 @@ export async function deleteSupplier(
     console.error("Error deleting supplier:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete supplier",
+      error:
+        error instanceof Error ? error.message : "Failed to delete supplier",
     };
   }
 }
-

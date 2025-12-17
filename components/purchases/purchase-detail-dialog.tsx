@@ -85,15 +85,54 @@ export function PurchaseDetailDialog({
         <div className="flex-1">
           <h3 className="text-sm font-semibold mb-2">{t("status")}</h3>
           <div className="bg-muted rounded-lg p-4">
-            <Badge variant={purchase.status === "APPROVED" ? "default" : "secondary"}>
-              {purchase.status === "APPROVED" ? "Aprobado" : 
-               purchase.status === "DRAFT" ? "Borrador" :
-               purchase.status === "RECEIVED" ? "Recibido" :
-               purchase.status === "CLOSED" ? "Cerrado" :
-               purchase.status === "CANCELED" ? "Cancelado" : purchase.status}
+            <Badge
+              variant={purchase.status === "APPROVED" ? "default" : "secondary"}
+            >
+              {purchase.status === "APPROVED"
+                ? "Aprobado"
+                : purchase.status === "DRAFT"
+                  ? "Borrador"
+                  : purchase.status === "RECEIVED"
+                    ? "Recibido"
+                    : purchase.status === "CLOSED"
+                      ? "Cerrado"
+                      : purchase.status === "CANCELED"
+                        ? "Cancelado"
+                        : purchase.status}
             </Badge>
           </div>
         </div>
+      </div>
+
+      <Separator />
+
+      {/* Payment Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 className="text-sm font-semibold mb-2">{t("paymentMethod")}</h3>
+          <div className="bg-muted rounded-lg p-4">
+            <Badge>
+              {purchase.paymentMethod === "CASH" && t("paymentCash")}
+              {purchase.paymentMethod === "TRANSFER" && t("paymentTransfer")}
+              {purchase.paymentMethod === "CARD" && t("paymentCard")}
+              {purchase.paymentMethod === "DIGITAL" && t("paymentDigital")}
+            </Badge>
+          </div>
+        </div>
+
+        {purchase.bank && (
+          <div>
+            <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
+            <div className="bg-muted rounded-lg p-4">
+              <p className="font-medium">{purchase.bank.name}</p>
+              {purchase.reference && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {t("reference")}: {purchase.reference}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <Separator />
@@ -118,7 +157,9 @@ export function PurchaseDetailDialog({
                     </div>
                     <div>
                       <p className="text-muted-foreground">{t("unitCost")}</p>
-                      <p className="font-medium">{formatCurrency(item.unitCost)}</p>
+                      <p className="font-medium">
+                        {formatCurrency(item.unitCost)}
+                      </p>
                     </div>
                   </div>
                   <Separator />
@@ -150,7 +191,9 @@ export function PurchaseDetailDialog({
                     <TableCell>
                       <span className="font-medium">{item.product.name}</span>
                     </TableCell>
-                    <TableCell className="text-right">{item.quantity}</TableCell>
+                    <TableCell className="text-right">
+                      {item.quantity}
+                    </TableCell>
                     <TableCell className="text-right">
                       {formatCurrency(item.unitCost)}
                     </TableCell>
@@ -208,8 +251,10 @@ export function PurchaseDetailDialog({
     <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
-      title={`${t("purchaseDetail")}${purchase.purchaseNumber ? ` #${String(purchase.purchaseNumber).padStart(4, "0")}` : ''}`}
-      description={format(new Date(purchase.createdAt), "PPP p", { locale: es })}
+      title={`${t("purchaseDetail")}${purchase.purchaseNumber ? ` #${String(purchase.purchaseNumber).padStart(4, "0")}` : ""}`}
+      description={format(new Date(purchase.createdAt), "PPP p", {
+        locale: es,
+      })}
       size="lg"
       mobileHeight="90vh"
     >
@@ -217,4 +262,3 @@ export function PurchaseDetailDialog({
     </ResponsiveDialog>
   );
 }
-

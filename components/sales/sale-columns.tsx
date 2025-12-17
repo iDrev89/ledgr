@@ -34,8 +34,14 @@ const formatCurrency = (value: string | number) => {
   }).format(numValue);
 };
 
-const getPaymentMethodBadge = (method: PaymentMethod, t: (key: string) => string) => {
-  const variants: Record<PaymentMethod, { label: string; variant: "default" | "secondary" | "outline" }> = {
+const getPaymentMethodBadge = (
+  method: PaymentMethod,
+  t: (key: string) => string,
+) => {
+  const variants: Record<
+    PaymentMethod,
+    { label: string; variant: "default" | "secondary" | "outline" }
+  > = {
     [PaymentMethod.CASH]: {
       label: t("paymentCash"),
       variant: "default",
@@ -94,7 +100,9 @@ export const createSaleColumns = ({
         <div className="flex flex-col">
           <span className="font-medium">{customerName}</span>
           {customerEmail && (
-            <span className="text-xs text-muted-foreground">{customerEmail}</span>
+            <span className="text-xs text-muted-foreground">
+              {customerEmail}
+            </span>
           )}
         </div>
       );
@@ -107,9 +115,14 @@ export const createSaleColumns = ({
       const items = row.original.items;
       return (
         <div className="flex flex-col">
-          <span className="font-medium">{items.length} {t("itemsCount")}</span>
+          <span className="font-medium">
+            {items.length} {t("itemsCount")}
+          </span>
           <span className="text-xs text-muted-foreground">
-            {items.slice(0, 2).map((item) => item.product.name).join(", ")}
+            {items
+              .slice(0, 2)
+              .map((item) => item.product.name)
+              .join(", ")}
             {items.length > 2 && `, +${items.length - 2}`}
           </span>
         </div>
@@ -122,8 +135,9 @@ export const createSaleColumns = ({
     cell: ({ row }) => {
       const sale = row.original;
       const payments = sale.payments || [];
-      const hasReceivable = sale.receivable && parseFloat(sale.receivable.balance) > 0;
-      
+      const hasReceivable =
+        sale.receivable && parseFloat(sale.receivable.balance) > 0;
+
       if (payments.length === 0) {
         return (
           <Badge variant="outline" className="font-normal">
@@ -131,14 +145,17 @@ export const createSaleColumns = ({
           </Badge>
         );
       }
-      
+
       if (payments.length === 1 && !hasReceivable) {
         return getPaymentMethodBadge(payments[0].method, t);
       }
-      
+
       return (
         <div className="flex flex-col gap-1">
-          <Badge variant={hasReceivable ? "secondary" : "default"} className="font-normal w-fit">
+          <Badge
+            variant={hasReceivable ? "secondary" : "default"}
+            className="font-normal w-fit"
+          >
             {payments.length} {t("payments")}
           </Badge>
           {hasReceivable && sale.receivable && (
@@ -214,4 +231,3 @@ export const createSaleColumns = ({
     },
   },
 ];
-

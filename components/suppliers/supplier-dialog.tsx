@@ -92,8 +92,8 @@ export function SupplierDialog({
         error instanceof Error
           ? error.message
           : isEditing
-          ? t("updateError")
-          : t("createError")
+            ? t("updateError")
+            : t("createError"),
       );
     }
   };
@@ -229,4 +229,3 @@ export function SupplierDialog({
     </Dialog>
   );
 }
-

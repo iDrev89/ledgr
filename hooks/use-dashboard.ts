@@ -61,4 +61,3 @@ export const useLowStockAlerts = () => {
     refetchInterval: 60000,
   });
 };
-

@@ -50,7 +50,8 @@ export function BarChart({
   // Truncate long names for better display
   const formattedData = data.map((item) => ({
     ...item,
-    displayName: item.name.length > 25 ? item.name.substring(0, 22) + "..." : item.name,
+    displayName:
+      item.name.length > 25 ? item.name.substring(0, 22) + "..." : item.name,
   }));
 
   if (layout === "vertical") {
@@ -60,7 +61,10 @@ export function BarChart({
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={Math.max(300, data.length * 40)}>
+          <ResponsiveContainer
+            width="100%"
+            height={Math.max(300, data.length * 40)}
+          >
             <RechartsBarChart
               data={formattedData}
               layout="vertical"
@@ -91,7 +95,9 @@ export function BarChart({
                   props.payload.name,
                 ]}
                 labelFormatter={(label, payload) => {
-                  return payload && payload[0] ? payload[0].payload.name : label;
+                  return payload && payload[0]
+                    ? payload[0].payload.name
+                    : label;
                 }}
                 labelStyle={{ color: "hsl(var(--foreground))" }}
               />
@@ -161,4 +167,3 @@ export function BarChart({
     </Card>
   );
 }
-

@@ -1,8 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBanks, getBank, createBank, updateBank, deleteBank } from "@/apis/actions/banks";
+import {
+  getBanks,
+  getBank,
+  createBank,
+  updateBank,
+  deleteBank,
+} from "@/apis/actions/banks";
 import type { CreateBankInput, UpdateBankInput } from "@/lib/validations/bank";
 
-export const useBanks = (params?: { search?: string; activeOnly?: boolean }) => {
+export const useBanks = (params?: {
+  search?: string;
+  activeOnly?: boolean;
+}) => {
   return useQuery({
     queryKey: ["banks", params],
     queryFn: async () => {
@@ -80,4 +89,3 @@ export const useDeleteBank = () => {
     },
   });
 };
-

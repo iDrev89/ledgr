@@ -217,7 +217,10 @@ export default function LoginPage() {
           </Button>
 
           {error && (
-            <Alert variant="destructive" className="bg-red-900/50 border-red-700 text-red-100">
+            <Alert
+              variant="destructive"
+              className="bg-red-900/50 border-red-700 text-red-100"
+            >
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>

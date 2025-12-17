@@ -38,4 +38,3 @@ export function useBusinessSummary(filters: BusinessSummaryFilters) {
     enabled: !!filters.startDate && !!filters.endDate,
   });
 }
-

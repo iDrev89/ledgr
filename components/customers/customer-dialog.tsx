@@ -37,7 +37,7 @@ export function CustomerDialog({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = async (
-    data: CreateCustomerInput | UpdateCustomerInput
+    data: CreateCustomerInput | UpdateCustomerInput,
   ) => {
     try {
       let result: Customer;
@@ -53,12 +53,9 @@ export function CustomerDialog({
         onSuccess(result);
       }
     } catch (error) {
-      toast.error(
-        customer ? t("updateError") : t("createError"),
-        {
-          description: error instanceof Error ? error.message : "Unknown error",
-        }
-      );
+      toast.error(customer ? t("updateError") : t("createError"), {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 

@@ -26,7 +26,9 @@ interface SupplierTableProps {
 
 export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
   const t = useTranslations("Suppliers");
-  const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(null);
+  const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(
+    null,
+  );
 
   const deleteMutation = useDeleteSupplier();
 
@@ -42,9 +44,7 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
       toast.success(t("deleteSuccess"));
       setSupplierToDelete(null);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t("deleteError")
-      );
+      toast.error(error instanceof Error ? error.message : t("deleteError"));
     }
   };
 
@@ -96,4 +96,3 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
     </>
   );
 }
-

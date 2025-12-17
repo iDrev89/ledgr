@@ -15,7 +15,11 @@ export function ViewToggle({ view, onChange, className }: ViewToggleProps) {
   const t = useTranslations("Reports");
 
   return (
-    <Tabs value={view} onValueChange={(v) => onChange(v as ViewMode)} className={className}>
+    <Tabs
+      value={view}
+      onValueChange={(v) => onChange(v as ViewMode)}
+      className={className}
+    >
       <TabsList>
         <TabsTrigger value="summary" className="gap-2">
           <LayoutGrid className="h-4 w-4" />
@@ -29,4 +33,3 @@ export function ViewToggle({ view, onChange, className }: ViewToggleProps) {
     </Tabs>
   );
 }
-

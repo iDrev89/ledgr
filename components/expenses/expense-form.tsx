@@ -57,7 +57,7 @@ export function ExpenseForm({
   const t = useTranslations("Expenses");
   const { data } = useBanks();
   const banks = data?.banks || [];
-  
+
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
   const form = useForm<CreateExpenseInput>({
@@ -202,11 +202,21 @@ export function ExpenseForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={PaymentMethod.CASH}>{t("paymentCash")}</SelectItem>
-                  <SelectItem value={PaymentMethod.CARD}>{t("paymentCard")}</SelectItem>
-                  <SelectItem value={PaymentMethod.TRANSFER}>{t("paymentTransfer")}</SelectItem>
-                  <SelectItem value={PaymentMethod.DIGITAL}>{t("paymentDigital")}</SelectItem>
-                  <SelectItem value={PaymentMethod.OTHER}>{t("paymentOther")}</SelectItem>
+                  <SelectItem value={PaymentMethod.CASH}>
+                    {t("paymentCash")}
+                  </SelectItem>
+                  <SelectItem value={PaymentMethod.CARD}>
+                    {t("paymentCard")}
+                  </SelectItem>
+                  <SelectItem value={PaymentMethod.TRANSFER}>
+                    {t("paymentTransfer")}
+                  </SelectItem>
+                  <SelectItem value={PaymentMethod.DIGITAL}>
+                    {t("paymentDigital")}
+                  </SelectItem>
+                  <SelectItem value={PaymentMethod.OTHER}>
+                    {t("paymentOther")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -309,4 +319,3 @@ export function ExpenseForm({
     </Form>
   );
 }
-

@@ -4,11 +4,7 @@ import {
   PayrollRunItem,
 } from "@/prisma/prisma-client";
 
-export type {
-  PayrollEntry,
-  PayrollRun,
-  PayrollRunItem,
-};
+export type { PayrollEntry, PayrollRun, PayrollRunItem };
 
 export type PayrollEntryWithDetails = Omit<PayrollEntry, "amount"> & {
   amount: string;
@@ -71,4 +67,3 @@ export type PayrollRunSummary = {
   createdAt: Date;
   updatedAt: Date;
 };
-

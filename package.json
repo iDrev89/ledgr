@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.908.0",
@@ -60,6 +61,7 @@
     "next": "16.0.10",
     "next-intl": "^4.6.1",
     "next-themes": "^0.4.6",
+    "prettier": "^3.7.4",
     "prisma": "^6.16.2",
     "react": "19.2.3",
     "react-day-picker": "9.11.0",

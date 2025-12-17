@@ -23,20 +23,20 @@ interface ResponsiveDialogProps {
   // Control de visibilidad
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  
+
   // Contenido del header
   title: React.ReactNode;
   description?: React.ReactNode;
-  
+
   // Tamaño (solo afecta Dialog en desktop)
   size?: "sm" | "md" | "lg" | "xl" | "full";
-  
+
   // Altura del Sheet en mobile (opcional)
   mobileHeight?: string;
-  
+
   // Contenido
   children: React.ReactNode;
-  
+
   // Clases adicionales
   className?: string;
   contentClassName?: string;
@@ -44,10 +44,10 @@ interface ResponsiveDialogProps {
 
 /**
  * ResponsiveDialog - Componente genérico que adapta automáticamente entre Dialog y Sheet
- * 
+ *
  * En mobile: Renderiza un Sheet (bottom drawer) con ScrollArea
  * En desktop: Renderiza un Dialog tradicional con tamaño configurable
- * 
+ *
  * @example
  * ```tsx
  * <ResponsiveDialog
@@ -60,7 +60,7 @@ interface ResponsiveDialogProps {
  *   <div>Tu contenido aquí...</div>
  * </ResponsiveDialog>
  * ```
- * 
+ *
  * Para migrar un Dialog existente:
  * 1. Cambiar import: import { ResponsiveDialog } from "@/components/ui/responsive-dialog"
  * 2. Reemplazar Dialog por ResponsiveDialog con props: open, onOpenChange, title, description, size
@@ -94,8 +94,8 @@ export function ResponsiveDialog({
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent 
-          side="bottom" 
+        <SheetContent
+          side="bottom"
           className={cn("p-0", className)}
           style={{ height: mobileHeight }}
         >
@@ -118,22 +118,19 @@ export function ResponsiveDialog({
   // Renderizar Dialog en desktop
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className={cn(
           sizeClasses[size],
           "max-h-[90vh] overflow-y-auto",
-          contentClassName
+          contentClassName,
         )}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {children}
       </DialogContent>
     </Dialog>
   );
 }
-

@@ -46,14 +46,11 @@ export function ExportButton({
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       if (type === "purchases") {
-        exportPurchasesToExcel(
-          data as PurchaseReportDataEnhanced,
-          dateRange
-        );
+        exportPurchasesToExcel(data as PurchaseReportDataEnhanced, dateRange);
       } else {
         exportBusinessSummaryToExcel(
           data as BusinessSummaryDataEnhanced,
-          dateRange
+          dateRange,
         );
       }
 
@@ -81,4 +78,3 @@ export function ExportButton({
     </Button>
   );
 }
-

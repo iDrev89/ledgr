@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { SupplierTable } from "@/components/suppliers/supplier-table";
 import { SupplierDialog } from "@/components/suppliers/supplier-dialog";
 import { useSuppliers } from "@/hooks/use-suppliers";
@@ -15,7 +21,9 @@ import type { Supplier } from "@/prisma/prisma-client";
 export default function SuppliersPage() {
   const t = useTranslations("Suppliers");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | undefined>();
+  const [selectedSupplier, setSelectedSupplier] = useState<
+    Supplier | undefined
+  >();
 
   const { data, isLoading, error } = useSuppliers();
 
@@ -91,4 +99,3 @@ export default function SuppliersPage() {
     </div>
   );
 }
-

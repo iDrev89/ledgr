@@ -1,9 +1,17 @@
-import { AccountsReceivable, AccountsReceivablePayment, Customer, Bank } from "@/prisma/prisma-client";
+import {
+  AccountsReceivable,
+  AccountsReceivablePayment,
+  Customer,
+  Bank,
+} from "@/prisma/prisma-client";
 
 export type { AccountsReceivable, AccountsReceivablePayment };
 
 // Serialized version for client (Decimal fields converted to strings)
-export type ReceivableWithDetails = Omit<AccountsReceivable, "total" | "balance"> & {
+export type ReceivableWithDetails = Omit<
+  AccountsReceivable,
+  "total" | "balance"
+> & {
   total: string;
   balance: string;
   customer: Customer;
@@ -21,4 +29,3 @@ export type ReceivableWithDetails = Omit<AccountsReceivable, "total" | "balance"
     payments: number;
   };
 };
-

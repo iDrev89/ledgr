@@ -171,7 +171,7 @@ export const getPayrollRuns = async (params?: {
 };
 
 export const getPayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -221,7 +221,7 @@ export const getPayrollRun = async (
 };
 
 export const createPayrollRun = async (
-  input: CreatePayrollRunInput & { userIds?: string[] }
+  input: CreatePayrollRunInput & { userIds?: string[] },
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -496,7 +496,7 @@ export const createPayrollRun = async (
 };
 
 export const finalizePayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -588,7 +588,7 @@ export const finalizePayrollRun = async (
 
 export const payPayrollRun = async (
   id: string,
-  payments: { userId: string; amount: string }[]
+  payments: { userId: string; amount: string }[],
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -704,7 +704,7 @@ export const payPayrollRun = async (
 };
 
 export const deletePayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -829,7 +829,7 @@ export const getPayrollEntries = async (params?: {
 };
 
 export const createPayrollEntry = async (
-  input: CreatePayrollEntryInput
+  input: CreatePayrollEntryInput,
 ): Promise<ActionResponse<PayrollEntryWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -871,7 +871,7 @@ export const createPayrollEntry = async (
 };
 
 export const deletePayrollEntry = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Payroll.errors");
 

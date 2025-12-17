@@ -106,4 +106,3 @@ export const CategoryTable = ({ categories, onEdit }: CategoryTableProps) => {
     </>
   );
 };
-

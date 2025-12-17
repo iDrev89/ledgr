@@ -37,7 +37,7 @@ const toNumber = (value: any): number => {
  */
 export function exportPurchasesToExcel(
   data: PurchaseReportDataEnhanced,
-  dateRange: DateRange
+  dateRange: DateRange,
 ) {
   // Create workbook
   const wb = utils.book_new();
@@ -45,7 +45,10 @@ export function exportPurchasesToExcel(
   // Sheet 1: Summary with metrics
   const summaryData = [
     ["REPORTE DE COMPRAS"],
-    ["Periodo:", `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`],
+    [
+      "Periodo:",
+      `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`,
+    ],
     [""],
     ["MÉTRICAS ACTUALES"],
     ["Total Compras", formatCurrency(data.metrics.current.totalPurchases)],
@@ -55,11 +58,31 @@ export function exportPurchasesToExcel(
     ["Compra Promedio", formatCurrency(data.metrics.current.average)],
     [""],
     ["COMPARATIVA PERIODO ANTERIOR"],
-    ["Total Compras", formatCurrency(data.metrics.previous.totalPurchases), `${data.metrics.change.totalPurchases.toFixed(1)}%`],
-    ["Total Pagado", formatCurrency(data.metrics.previous.totalPaid), `${data.metrics.change.totalPaid.toFixed(1)}%`],
-    ["Saldo Pendiente", formatCurrency(data.metrics.previous.balance), `${data.metrics.change.balance.toFixed(1)}%`],
-    ["Número de Compras", data.metrics.previous.count, `${data.metrics.change.count.toFixed(1)}%`],
-    ["Compra Promedio", formatCurrency(data.metrics.previous.average), `${data.metrics.change.average.toFixed(1)}%`],
+    [
+      "Total Compras",
+      formatCurrency(data.metrics.previous.totalPurchases),
+      `${data.metrics.change.totalPurchases.toFixed(1)}%`,
+    ],
+    [
+      "Total Pagado",
+      formatCurrency(data.metrics.previous.totalPaid),
+      `${data.metrics.change.totalPaid.toFixed(1)}%`,
+    ],
+    [
+      "Saldo Pendiente",
+      formatCurrency(data.metrics.previous.balance),
+      `${data.metrics.change.balance.toFixed(1)}%`,
+    ],
+    [
+      "Número de Compras",
+      data.metrics.previous.count,
+      `${data.metrics.change.count.toFixed(1)}%`,
+    ],
+    [
+      "Compra Promedio",
+      formatCurrency(data.metrics.previous.average),
+      `${data.metrics.change.average.toFixed(1)}%`,
+    ],
   ];
 
   const wsSummary = utils.aoa_to_sheet(summaryData);
@@ -67,7 +90,17 @@ export function exportPurchasesToExcel(
 
   // Sheet 2: Detailed purchases
   const purchasesData = [
-    ["Fecha", "N° Factura", "Proveedor", "Estado", "Subtotal", "Impuestos", "Total", "Pagado", "Saldo"],
+    [
+      "Fecha",
+      "N° Factura",
+      "Proveedor",
+      "Estado",
+      "Subtotal",
+      "Impuestos",
+      "Total",
+      "Pagado",
+      "Saldo",
+    ],
     ...data.purchases.map((p) => [
       formatDate(p.createdAt),
       p.invoiceNo || "-",
@@ -112,7 +145,7 @@ export function exportPurchasesToExcel(
  */
 export function exportBusinessSummaryToExcel(
   data: BusinessSummaryDataEnhanced,
-  dateRange: DateRange
+  dateRange: DateRange,
 ) {
   // Create workbook
   const wb = utils.book_new();
@@ -120,28 +153,76 @@ export function exportBusinessSummaryToExcel(
   // Sheet 1: Summary with all metrics
   const summaryData = [
     ["RESUMEN DE NEGOCIO"],
-    ["Periodo:", `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`],
+    [
+      "Periodo:",
+      `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`,
+    ],
     [""],
     ["INGRESOS"],
     ["", "Actual", "Anterior", "Cambio %"],
-    ["Total Ventas", formatCurrency(data.metrics.revenue.current.total), formatCurrency(data.metrics.revenue.previous.total), `${data.metrics.revenue.change.total.toFixed(1)}%`],
-    ["Número de Ventas", data.metrics.revenue.current.count, data.metrics.revenue.previous.count, `${data.metrics.revenue.change.count.toFixed(1)}%`],
-    ["Ticket Promedio", formatCurrency(data.metrics.revenue.current.average), formatCurrency(data.metrics.revenue.previous.average), `${data.metrics.revenue.change.average.toFixed(1)}%`],
+    [
+      "Total Ventas",
+      formatCurrency(data.metrics.revenue.current.total),
+      formatCurrency(data.metrics.revenue.previous.total),
+      `${data.metrics.revenue.change.total.toFixed(1)}%`,
+    ],
+    [
+      "Número de Ventas",
+      data.metrics.revenue.current.count,
+      data.metrics.revenue.previous.count,
+      `${data.metrics.revenue.change.count.toFixed(1)}%`,
+    ],
+    [
+      "Ticket Promedio",
+      formatCurrency(data.metrics.revenue.current.average),
+      formatCurrency(data.metrics.revenue.previous.average),
+      `${data.metrics.revenue.change.average.toFixed(1)}%`,
+    ],
     [""],
     ["COSTOS"],
     ["", "Actual", "Anterior", "Cambio %"],
-    ["Costo de Ventas", formatCurrency(data.metrics.costs.current.total), formatCurrency(data.metrics.costs.previous.total), `${data.metrics.costs.change.total.toFixed(1)}%`],
-    ["Margen Bruto", formatCurrency(data.metrics.costs.current.grossProfit), formatCurrency(data.metrics.costs.previous.grossProfit), `${data.metrics.costs.change.grossProfit.toFixed(1)}%`],
-    ["% Margen Bruto", `${data.metrics.costs.current.grossMargin.toFixed(1)}%`, `${data.metrics.costs.previous.grossMargin.toFixed(1)}%`, `${data.metrics.costs.change.grossMargin.toFixed(1)}%`],
+    [
+      "Costo de Ventas",
+      formatCurrency(data.metrics.costs.current.total),
+      formatCurrency(data.metrics.costs.previous.total),
+      `${data.metrics.costs.change.total.toFixed(1)}%`,
+    ],
+    [
+      "Margen Bruto",
+      formatCurrency(data.metrics.costs.current.grossProfit),
+      formatCurrency(data.metrics.costs.previous.grossProfit),
+      `${data.metrics.costs.change.grossProfit.toFixed(1)}%`,
+    ],
+    [
+      "% Margen Bruto",
+      `${data.metrics.costs.current.grossMargin.toFixed(1)}%`,
+      `${data.metrics.costs.previous.grossMargin.toFixed(1)}%`,
+      `${data.metrics.costs.change.grossMargin.toFixed(1)}%`,
+    ],
     [""],
     ["GASTOS"],
     ["", "Actual", "Anterior", "Cambio %"],
-    ["Total Gastos", formatCurrency(data.metrics.expenses.current.total), formatCurrency(data.metrics.expenses.previous.total), `${data.metrics.expenses.change.total.toFixed(1)}%`],
+    [
+      "Total Gastos",
+      formatCurrency(data.metrics.expenses.current.total),
+      formatCurrency(data.metrics.expenses.previous.total),
+      `${data.metrics.expenses.change.total.toFixed(1)}%`,
+    ],
     [""],
     ["UTILIDAD"],
     ["", "Actual", "Anterior", "Cambio %"],
-    ["Utilidad Neta", formatCurrency(data.metrics.profit.current.net), formatCurrency(data.metrics.profit.previous.net), `${data.metrics.profit.change.net.toFixed(1)}%`],
-    ["% Margen Neto", `${data.metrics.profit.current.netMargin.toFixed(1)}%`, `${data.metrics.profit.previous.netMargin.toFixed(1)}%`, `${data.metrics.profit.change.netMargin.toFixed(1)}%`],
+    [
+      "Utilidad Neta",
+      formatCurrency(data.metrics.profit.current.net),
+      formatCurrency(data.metrics.profit.previous.net),
+      `${data.metrics.profit.change.net.toFixed(1)}%`,
+    ],
+    [
+      "% Margen Neto",
+      `${data.metrics.profit.current.netMargin.toFixed(1)}%`,
+      `${data.metrics.profit.previous.netMargin.toFixed(1)}%`,
+      `${data.metrics.profit.change.netMargin.toFixed(1)}%`,
+    ],
     [""],
     ["FLUJO DE EFECTIVO"],
     ["Efectivo Recibido", formatCurrency(data.cashFlow.cashReceived)],
@@ -154,7 +235,14 @@ export function exportBusinessSummaryToExcel(
 
   // Sheet 2: Top Products
   const productsData = [
-    ["Producto", "Cantidad Vendida", "Ingresos", "Costo", "Utilidad", "% Margen"],
+    [
+      "Producto",
+      "Cantidad Vendida",
+      "Ingresos",
+      "Costo",
+      "Utilidad",
+      "% Margen",
+    ],
     ...data.productPerformance.map((p) => [
       p.productName,
       p.quantitySold,
@@ -229,4 +317,3 @@ export function exportBusinessSummaryToExcel(
   const fileName = `resumen_negocio_${format(new Date(), "yyyy-MM-dd_HHmmss")}.xlsx`;
   writeFile(wb, fileName);
 }
-

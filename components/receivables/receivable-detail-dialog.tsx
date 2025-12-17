@@ -13,7 +13,10 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
-import { AccountsReceivableStatus, PaymentMethod } from "@/prisma/prisma-client";
+import {
+  AccountsReceivableStatus,
+  PaymentMethod,
+} from "@/prisma/prisma-client";
 
 interface ReceivableDetailDialogProps {
   open: boolean;
@@ -85,10 +88,13 @@ export function ReceivableDetailDialog({
         <DialogHeader>
           <DialogTitle>
             {t("receivableDetail")}
-            {receivable.sale && ` - Venta #${String(receivable.sale.saleNumber).padStart(4, "0")}`}
+            {receivable.sale &&
+              ` - Venta #${String(receivable.sale.saleNumber).padStart(4, "0")}`}
           </DialogTitle>
           <DialogDescription>
-            {format(new Date(receivable.createdAt), "PPP p", { locale: dateLocale })}
+            {format(new Date(receivable.createdAt), "PPP p", {
+              locale: dateLocale,
+            })}
           </DialogDescription>
         </DialogHeader>
 
@@ -119,7 +125,9 @@ export function ReceivableDetailDialog({
             </div>
             <div>
               <h3 className="text-sm font-semibold mb-2">{t("total")}</h3>
-              <p className="text-xl font-bold">{formatCurrency(receivable.total)}</p>
+              <p className="text-xl font-bold">
+                {formatCurrency(receivable.total)}
+              </p>
             </div>
             <div>
               <h3 className="text-sm font-semibold mb-2">{t("balance")}</h3>
@@ -148,13 +156,16 @@ export function ReceivableDetailDialog({
                             {getPaymentMethodLabel(payment.method)}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(payment.paidAt), "PPP p", { locale: dateLocale })}
+                            {format(new Date(payment.paidAt), "PPP p", {
+                              locale: dateLocale,
+                            })}
                           </span>
                         </div>
                         {payment.bank && (
                           <span className="text-xs text-muted-foreground">
                             {payment.bank.name}
-                            {payment.bank.accountNo && ` - ${payment.bank.accountNo}`}
+                            {payment.bank.accountNo &&
+                              ` - ${payment.bank.accountNo}`}
                           </span>
                         )}
                         {payment.note && (
@@ -176,7 +187,8 @@ export function ReceivableDetailDialog({
                   <span className="text-sm font-medium">{t("totalPaid")}:</span>
                   <span className="text-lg font-semibold">
                     {formatCurrency(
-                      parseFloat(receivable.total) - parseFloat(receivable.balance)
+                      parseFloat(receivable.total) -
+                        parseFloat(receivable.balance),
                     )}
                   </span>
                 </div>
@@ -188,4 +200,3 @@ export function ReceivableDetailDialog({
     </Dialog>
   );
 }
-

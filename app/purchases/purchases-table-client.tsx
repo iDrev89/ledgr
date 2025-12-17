@@ -27,4 +27,3 @@ export function PurchasesTableClient() {
 
   return <PurchaseTable purchases={data?.purchases || []} />;
 }
-

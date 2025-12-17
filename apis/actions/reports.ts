@@ -72,7 +72,7 @@ const toNumber = (value: Decimal | null | undefined): number => {
  * Get Purchase Report Data
  */
 export async function getPurchaseReport(
-  filters: PurchaseReportFilters
+  filters: PurchaseReportFilters,
 ): Promise<ActionResponse<PurchaseReportData>> {
   const t = await getTranslations("Reports");
 
@@ -85,7 +85,10 @@ export async function getPurchaseReport(
           gte: startOfDay(filters.startDate),
           lte: endOfDay(filters.endDate),
         },
-        status: filters.status && filters.status.length > 0 ? { in: filters.status } : undefined,
+        status:
+          filters.status && filters.status.length > 0
+            ? { in: filters.status }
+            : undefined,
         supplierId: filters.supplierId || undefined,
       },
       include: {
@@ -95,11 +98,6 @@ export async function getPurchaseReport(
             name: true,
           },
         },
-        payments: {
-          select: {
-            amount: true,
-          },
-        },
       },
       orderBy: {
         createdAt: "desc",
@@ -107,12 +105,10 @@ export async function getPurchaseReport(
     });
 
     // Transform and calculate
+    // Las compras APPROVED están pagadas completamente
     const items: PurchaseReportItem[] = purchases.map((purchase) => {
-      const totalPaid = purchase.payments.reduce(
-        (sum, payment) => sum + toNumber(payment.amount),
-        0
-      );
       const total = toNumber(purchase.total);
+      const totalPaid = purchase.status === "APPROVED" ? total : 0;
       const balance = total - totalPaid;
 
       return {
@@ -123,7 +119,7 @@ export async function getPurchaseReport(
         status: purchase.status,
         subtotal: toNumber(purchase.subtotal),
         taxTotal: toNumber(purchase.taxTotal),
-        total: toNumber(purchase.total),
+        total: total,
         totalPaid: totalPaid,
         balance: balance,
       };
@@ -161,7 +157,7 @@ export async function getPurchaseReport(
  * Get Enhanced Purchase Report Data with Comparatives
  */
 export async function getPurchaseReportEnhanced(
-  filters: PurchaseReportFilters
+  filters: PurchaseReportFilters,
 ): Promise<ActionResponse<PurchaseReportDataEnhanced>> {
   const t = await getTranslations("Reports");
 
@@ -185,7 +181,10 @@ export async function getPurchaseReportEnhanced(
           gte: startDate,
           lte: endDate,
         },
-        status: filters.status && filters.status.length > 0 ? { in: filters.status } : undefined,
+        status:
+          filters.status && filters.status.length > 0
+            ? { in: filters.status }
+            : undefined,
         supplierId: filters.supplierId || undefined,
       },
       include: {
@@ -205,7 +204,6 @@ export async function getPurchaseReportEnhanced(
             },
           },
         },
-        payments: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -219,59 +217,60 @@ export async function getPurchaseReportEnhanced(
           gte: previousStartDate,
           lte: previousEndDate,
         },
-        status: filters.status && filters.status.length > 0 ? { in: filters.status } : undefined,
+        status:
+          filters.status && filters.status.length > 0
+            ? { in: filters.status }
+            : undefined,
         supplierId: filters.supplierId || undefined,
-      },
-      include: {
-        payments: {
-          select: {
-            amount: true,
-          },
-        },
       },
     });
 
     // Transform current period purchases with details
-    const detailedItems: PurchaseReportItemDetailed[] = purchases.map((purchase) => {
-      const totalPaid = purchase.payments.reduce(
-        (sum, payment) => sum + toNumber(payment.amount),
-        0
-      );
-      const total = toNumber(purchase.total);
-      const balance = total - totalPaid;
+    const detailedItems: PurchaseReportItemDetailed[] = purchases.map(
+      (purchase) => {
+        const total = toNumber(purchase.total);
+        const totalPaid = purchase.status === "APPROVED" ? total : 0;
+        const balance = total - totalPaid;
 
-      const items: PurchaseItemDetail[] = purchase.items.map((item) => ({
-        id: item.id,
-        productId: item.productId,
-        productName: item.product.name,
-        quantity: item.quantity,
-        unitCost: toNumber(item.unitCost),
-        lineTotal: toNumber(item.lineTotal),
-      }));
+        const items: PurchaseItemDetail[] = purchase.items.map((item) => ({
+          id: item.id,
+          productId: item.productId,
+          productName: item.product.name,
+          quantity: item.quantity,
+          unitCost: toNumber(item.unitCost),
+          lineTotal: toNumber(item.lineTotal),
+        }));
 
-      const payments: PurchasePaymentDetail[] = purchase.payments.map((payment) => ({
-        id: payment.id,
-        amount: toNumber(payment.amount),
-        method: payment.method,
-        paidAt: payment.paidAt,
-        notes: payment.reference || null,
-      }));
+        // Las compras ahora tienen un solo pago integrado
+        const payments: PurchasePaymentDetail[] =
+          purchase.status === "APPROVED"
+            ? [
+                {
+                  id: purchase.id,
+                  amount: total,
+                  method: purchase.paymentMethod,
+                  paidAt: purchase.createdAt,
+                  notes: purchase.reference || null,
+                },
+              ]
+            : [];
 
-      return {
-        id: purchase.id,
-        createdAt: purchase.createdAt,
-        invoiceNo: purchase.invoiceNo,
-        supplier: purchase.supplier,
-        status: purchase.status,
-        subtotal: toNumber(purchase.subtotal),
-        taxTotal: toNumber(purchase.taxTotal),
-        total: toNumber(purchase.total),
-        totalPaid: totalPaid,
-        balance: balance,
-        items,
-        payments,
-      };
-    });
+        return {
+          id: purchase.id,
+          createdAt: purchase.createdAt,
+          invoiceNo: purchase.invoiceNo,
+          supplier: purchase.supplier,
+          status: purchase.status,
+          subtotal: toNumber(purchase.subtotal),
+          taxTotal: toNumber(purchase.taxTotal),
+          total: total,
+          totalPaid: totalPaid,
+          balance: balance,
+          items,
+          payments,
+        };
+      },
+    );
 
     // Calculate current period metrics
     const currentMetrics: PurchaseReportMetrics = {
@@ -281,40 +280,66 @@ export async function getPurchaseReportEnhanced(
       count: detailedItems.length,
       average: 0,
     };
-    currentMetrics.balance = currentMetrics.totalPurchases - currentMetrics.totalPaid;
-    currentMetrics.average = currentMetrics.count > 0 ? currentMetrics.totalPurchases / currentMetrics.count : 0;
+    currentMetrics.balance =
+      currentMetrics.totalPurchases - currentMetrics.totalPaid;
+    currentMetrics.average =
+      currentMetrics.count > 0
+        ? currentMetrics.totalPurchases / currentMetrics.count
+        : 0;
 
     // Calculate previous period metrics
     const previousMetrics: PurchaseReportMetrics = {
-      totalPurchases: previousPurchases.reduce((sum, p) => sum + toNumber(p.total), 0),
+      totalPurchases: previousPurchases.reduce(
+        (sum, p) => sum + toNumber(p.total),
+        0,
+      ),
       totalPaid: previousPurchases.reduce(
-        (sum, p) => sum + p.payments.reduce((s, pay) => s + toNumber(pay.amount), 0),
-        0
+        (sum, p) => sum + (p.status === "APPROVED" ? toNumber(p.total) : 0),
+        0,
       ),
       balance: 0,
       count: previousPurchases.length,
       average: 0,
     };
-    previousMetrics.balance = previousMetrics.totalPurchases - previousMetrics.totalPaid;
-    previousMetrics.average = previousMetrics.count > 0 ? previousMetrics.totalPurchases / previousMetrics.count : 0;
+    previousMetrics.balance =
+      previousMetrics.totalPurchases - previousMetrics.totalPaid;
+    previousMetrics.average =
+      previousMetrics.count > 0
+        ? previousMetrics.totalPurchases / previousMetrics.count
+        : 0;
 
     // Calculate percentage changes
     const change: Record<keyof PurchaseReportMetrics, number> = {
-      totalPurchases: previousMetrics.totalPurchases > 0
-        ? ((currentMetrics.totalPurchases - previousMetrics.totalPurchases) / previousMetrics.totalPurchases) * 100
-        : 0,
-      totalPaid: previousMetrics.totalPaid > 0
-        ? ((currentMetrics.totalPaid - previousMetrics.totalPaid) / previousMetrics.totalPaid) * 100
-        : 0,
-      balance: previousMetrics.balance > 0
-        ? ((currentMetrics.balance - previousMetrics.balance) / previousMetrics.balance) * 100
-        : 0,
-      count: previousMetrics.count > 0
-        ? ((currentMetrics.count - previousMetrics.count) / previousMetrics.count) * 100
-        : 0,
-      average: previousMetrics.average > 0
-        ? ((currentMetrics.average - previousMetrics.average) / previousMetrics.average) * 100
-        : 0,
+      totalPurchases:
+        previousMetrics.totalPurchases > 0
+          ? ((currentMetrics.totalPurchases - previousMetrics.totalPurchases) /
+              previousMetrics.totalPurchases) *
+            100
+          : 0,
+      totalPaid:
+        previousMetrics.totalPaid > 0
+          ? ((currentMetrics.totalPaid - previousMetrics.totalPaid) /
+              previousMetrics.totalPaid) *
+            100
+          : 0,
+      balance:
+        previousMetrics.balance > 0
+          ? ((currentMetrics.balance - previousMetrics.balance) /
+              previousMetrics.balance) *
+            100
+          : 0,
+      count:
+        previousMetrics.count > 0
+          ? ((currentMetrics.count - previousMetrics.count) /
+              previousMetrics.count) *
+            100
+          : 0,
+      average:
+        previousMetrics.average > 0
+          ? ((currentMetrics.average - previousMetrics.average) /
+              previousMetrics.average) *
+            100
+          : 0,
     };
 
     const data: PurchaseReportDataEnhanced = {
@@ -341,7 +366,7 @@ export async function getPurchaseReportEnhanced(
  * Get Business Summary Data
  */
 export async function getBusinessSummary(
-  filters: BusinessSummaryFilters
+  filters: BusinessSummaryFilters,
 ): Promise<ActionResponse<BusinessSummaryData>> {
   const t = await getTranslations("Reports");
 
@@ -452,10 +477,12 @@ export async function getBusinessSummary(
     });
 
     // Calculate percentages
-    const expensesByCategoryArray = Array.from(expensesByCategory.values()).map((cat) => ({
-      ...cat,
-      percentage: totalExpenses > 0 ? (cat.total / totalExpenses) * 100 : 0,
-    }));
+    const expensesByCategoryArray = Array.from(expensesByCategory.values()).map(
+      (cat) => ({
+        ...cat,
+        percentage: totalExpenses > 0 ? (cat.total / totalExpenses) * 100 : 0,
+      }),
+    );
 
     // Sort by total descending and take top 5
     expensesByCategoryArray.sort((a, b) => b.total - a.total);
@@ -554,7 +581,7 @@ export async function getBusinessSummary(
  * Get Enhanced Business Summary Data with Comparatives and Drill-down
  */
 export async function getBusinessSummaryEnhanced(
-  filters: BusinessSummaryFilters
+  filters: BusinessSummaryFilters,
 ): Promise<ActionResponse<BusinessSummaryDataEnhanced>> {
   const t = await getTranslations("Reports");
 
@@ -703,7 +730,10 @@ export async function getBusinessSummaryEnhanced(
     });
 
     // Calculate current period revenue metrics
-    const currentRevenue = sales.reduce((sum, sale) => sum + toNumber(sale.total), 0);
+    const currentRevenue = sales.reduce(
+      (sum, sale) => sum + toNumber(sale.total),
+      0,
+    );
     const currentRevenueMetrics: RevenueMetrics = {
       total: currentRevenue,
       count: sales.length,
@@ -711,53 +741,75 @@ export async function getBusinessSummaryEnhanced(
     };
 
     // Calculate previous period revenue metrics
-    const previousRevenue = previousSales.reduce((sum, sale) => sum + toNumber(sale.total), 0);
+    const previousRevenue = previousSales.reduce(
+      (sum, sale) => sum + toNumber(sale.total),
+      0,
+    );
     const previousRevenueMetrics: RevenueMetrics = {
       total: previousRevenue,
       count: previousSales.length,
-      average: previousSales.length > 0 ? previousRevenue / previousSales.length : 0,
+      average:
+        previousSales.length > 0 ? previousRevenue / previousSales.length : 0,
     };
 
     // Calculate COGS (current and previous)
     const currentCogs = stockMovements.reduce(
       (sum, m) => sum + m.quantity * toNumber(m.unitCost),
-      0
+      0,
     );
     const previousCogs = previousStockMovements.reduce(
       (sum, m) => sum + m.quantity * toNumber(m.unitCost),
-      0
+      0,
     );
 
     const currentCostMetrics: CostMetrics = {
       total: currentCogs,
       grossProfit: currentRevenue - currentCogs,
-      grossMargin: currentRevenue > 0 ? ((currentRevenue - currentCogs) / currentRevenue) * 100 : 0,
+      grossMargin:
+        currentRevenue > 0
+          ? ((currentRevenue - currentCogs) / currentRevenue) * 100
+          : 0,
     };
 
     const previousCostMetrics: CostMetrics = {
       total: previousCogs,
       grossProfit: previousRevenue - previousCogs,
-      grossMargin: previousRevenue > 0 ? ((previousRevenue - previousCogs) / previousRevenue) * 100 : 0,
+      grossMargin:
+        previousRevenue > 0
+          ? ((previousRevenue - previousCogs) / previousRevenue) * 100
+          : 0,
     };
 
     // Calculate expenses (current)
-    const currentTotalExpenses = expenses.reduce((sum, e) => sum + toNumber(e.amount), 0);
-    const expensesByCategory: Map<string, { name: string; total: number }> = new Map();
+    const currentTotalExpenses = expenses.reduce(
+      (sum, e) => sum + toNumber(e.amount),
+      0,
+    );
+    const expensesByCategory: Map<string, { name: string; total: number }> =
+      new Map();
     expenses.forEach((expense) => {
       const categoryId = expense.category?.id || "uncategorized";
       const categoryName = expense.category?.name || t("uncategorized");
       if (expensesByCategory.has(categoryId)) {
         expensesByCategory.get(categoryId)!.total += toNumber(expense.amount);
       } else {
-        expensesByCategory.set(categoryId, { name: categoryName, total: toNumber(expense.amount) });
+        expensesByCategory.set(categoryId, {
+          name: categoryName,
+          total: toNumber(expense.amount),
+        });
       }
     });
 
-    const expensesByCategoryArray: PieChartData[] = Array.from(expensesByCategory.entries())
+    const expensesByCategoryArray: PieChartData[] = Array.from(
+      expensesByCategory.entries(),
+    )
       .map(([id, data]) => ({
         name: data.name,
         value: data.total,
-        percentage: currentTotalExpenses > 0 ? (data.total / currentTotalExpenses) * 100 : 0,
+        percentage:
+          currentTotalExpenses > 0
+            ? (data.total / currentTotalExpenses) * 100
+            : 0,
       }))
       .sort((a, b) => b.value - a.value);
 
@@ -772,79 +824,126 @@ export async function getBusinessSummaryEnhanced(
     };
 
     // Calculate expenses (previous)
-    const previousTotalExpenses = previousExpenses.reduce((sum, e) => sum + toNumber(e.amount), 0);
-    const previousExpensesByCategory: Map<string, { total: number }> = new Map();
+    const previousTotalExpenses = previousExpenses.reduce(
+      (sum, e) => sum + toNumber(e.amount),
+      0,
+    );
+    const previousExpensesByCategory: Map<string, { total: number }> =
+      new Map();
     previousExpenses.forEach((expense) => {
       const categoryName = expense.category?.name || t("uncategorized");
       if (previousExpensesByCategory.has(categoryName)) {
-        previousExpensesByCategory.get(categoryName)!.total += toNumber(expense.amount);
+        previousExpensesByCategory.get(categoryName)!.total += toNumber(
+          expense.amount,
+        );
       } else {
-        previousExpensesByCategory.set(categoryName, { total: toNumber(expense.amount) });
+        previousExpensesByCategory.set(categoryName, {
+          total: toNumber(expense.amount),
+        });
       }
     });
 
     const previousExpenseMetrics: ExpenseMetrics = {
       total: previousTotalExpenses,
-      byCategory: Array.from(previousExpensesByCategory.entries()).map(([name, data]) => ({
-        categoryId: null,
-        categoryName: name,
-        total: data.total,
-        percentage: previousTotalExpenses > 0 ? (data.total / previousTotalExpenses) * 100 : 0,
-      })),
+      byCategory: Array.from(previousExpensesByCategory.entries()).map(
+        ([name, data]) => ({
+          categoryId: null,
+          categoryName: name,
+          total: data.total,
+          percentage:
+            previousTotalExpenses > 0
+              ? (data.total / previousTotalExpenses) * 100
+              : 0,
+        }),
+      ),
     };
 
     // Calculate profit metrics
-    const currentNetProfit = currentCostMetrics.grossProfit - currentTotalExpenses;
+    const currentNetProfit =
+      currentCostMetrics.grossProfit - currentTotalExpenses;
     const currentProfitMetrics: ProfitMetrics = {
       net: currentNetProfit,
-      netMargin: currentRevenue > 0 ? (currentNetProfit / currentRevenue) * 100 : 0,
+      netMargin:
+        currentRevenue > 0 ? (currentNetProfit / currentRevenue) * 100 : 0,
     };
 
-    const previousNetProfit = previousCostMetrics.grossProfit - previousTotalExpenses;
+    const previousNetProfit =
+      previousCostMetrics.grossProfit - previousTotalExpenses;
     const previousProfitMetrics: ProfitMetrics = {
       net: previousNetProfit,
-      netMargin: previousRevenue > 0 ? (previousNetProfit / previousRevenue) * 100 : 0,
+      netMargin:
+        previousRevenue > 0 ? (previousNetProfit / previousRevenue) * 100 : 0,
     };
 
     // Calculate changes
     const revenueChange = {
-      total: previousRevenueMetrics.total > 0
-        ? ((currentRevenueMetrics.total - previousRevenueMetrics.total) / previousRevenueMetrics.total) * 100
-        : 0,
-      count: previousRevenueMetrics.count > 0
-        ? ((currentRevenueMetrics.count - previousRevenueMetrics.count) / previousRevenueMetrics.count) * 100
-        : 0,
-      average: previousRevenueMetrics.average > 0
-        ? ((currentRevenueMetrics.average - previousRevenueMetrics.average) / previousRevenueMetrics.average) * 100
-        : 0,
+      total:
+        previousRevenueMetrics.total > 0
+          ? ((currentRevenueMetrics.total - previousRevenueMetrics.total) /
+              previousRevenueMetrics.total) *
+            100
+          : 0,
+      count:
+        previousRevenueMetrics.count > 0
+          ? ((currentRevenueMetrics.count - previousRevenueMetrics.count) /
+              previousRevenueMetrics.count) *
+            100
+          : 0,
+      average:
+        previousRevenueMetrics.average > 0
+          ? ((currentRevenueMetrics.average - previousRevenueMetrics.average) /
+              previousRevenueMetrics.average) *
+            100
+          : 0,
     };
 
     const costChange = {
-      total: previousCostMetrics.total > 0
-        ? ((currentCostMetrics.total - previousCostMetrics.total) / previousCostMetrics.total) * 100
-        : 0,
-      grossProfit: previousCostMetrics.grossProfit > 0
-        ? ((currentCostMetrics.grossProfit - previousCostMetrics.grossProfit) / previousCostMetrics.grossProfit) * 100
-        : 0,
-      grossMargin: previousCostMetrics.grossMargin > 0
-        ? ((currentCostMetrics.grossMargin - previousCostMetrics.grossMargin) / previousCostMetrics.grossMargin) * 100
-        : 0,
+      total:
+        previousCostMetrics.total > 0
+          ? ((currentCostMetrics.total - previousCostMetrics.total) /
+              previousCostMetrics.total) *
+            100
+          : 0,
+      grossProfit:
+        previousCostMetrics.grossProfit > 0
+          ? ((currentCostMetrics.grossProfit -
+              previousCostMetrics.grossProfit) /
+              previousCostMetrics.grossProfit) *
+            100
+          : 0,
+      grossMargin:
+        previousCostMetrics.grossMargin > 0
+          ? ((currentCostMetrics.grossMargin -
+              previousCostMetrics.grossMargin) /
+              previousCostMetrics.grossMargin) *
+            100
+          : 0,
     };
 
     const expenseChange = {
-      total: previousExpenseMetrics.total > 0
-        ? ((currentExpenseMetrics.total - previousExpenseMetrics.total) / previousExpenseMetrics.total) * 100
-        : 0,
+      total:
+        previousExpenseMetrics.total > 0
+          ? ((currentExpenseMetrics.total - previousExpenseMetrics.total) /
+              previousExpenseMetrics.total) *
+            100
+          : 0,
       byCategory: [] as any,
     };
 
     const profitChange = {
-      net: previousProfitMetrics.net !== 0
-        ? ((currentProfitMetrics.net - previousProfitMetrics.net) / Math.abs(previousProfitMetrics.net)) * 100
-        : 0,
-      netMargin: previousProfitMetrics.netMargin > 0
-        ? ((currentProfitMetrics.netMargin - previousProfitMetrics.netMargin) / previousProfitMetrics.netMargin) * 100
-        : 0,
+      net:
+        previousProfitMetrics.net !== 0
+          ? ((currentProfitMetrics.net - previousProfitMetrics.net) /
+              Math.abs(previousProfitMetrics.net)) *
+            100
+          : 0,
+      netMargin:
+        previousProfitMetrics.netMargin > 0
+          ? ((currentProfitMetrics.netMargin -
+              previousProfitMetrics.netMargin) /
+              previousProfitMetrics.netMargin) *
+            100
+          : 0,
     };
 
     // Top products with performance
@@ -921,7 +1020,7 @@ export async function getBusinessSummaryEnhanced(
         sale.payments
           .filter((p) => p.method === PaymentMethod.CASH)
           .reduce((s, p) => s + toNumber(p.amount), 0),
-      0
+      0,
     );
 
     const cashSpent = expenses
@@ -949,17 +1048,21 @@ export async function getBusinessSummaryEnhanced(
     }));
 
     // Chart data
-    const topProductsChart: BarChartData[] = productPerformance.slice(0, 10).map((p) => ({
-      name: p.productName,
-      value: p.revenue,
-      label: `${p.quantitySold} uds`,
-    }));
+    const topProductsChart: BarChartData[] = productPerformance
+      .slice(0, 10)
+      .map((p) => ({
+        name: p.productName,
+        value: p.revenue,
+        label: `${p.quantitySold} uds`,
+      }));
 
-    const topCustomersChart: BarChartData[] = topCustomers.slice(0, 10).map((c) => ({
-      name: c.customerName,
-      value: c.totalSpent,
-      label: `${c.orderCount} compras`,
-    }));
+    const topCustomersChart: BarChartData[] = topCustomers
+      .slice(0, 10)
+      .map((c) => ({
+        name: c.customerName,
+        value: c.totalSpent,
+        label: `${c.orderCount} compras`,
+      }));
 
     const timeline = generateTimeline(sales, expenses, startDate, endDate);
 
@@ -1022,7 +1125,7 @@ function generateTimeline(
   sales: any[],
   expenses: any[],
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): TimelineDataPoint[] {
   const daysDiff = differenceInDays(endDate, startDate);
 
@@ -1054,16 +1157,19 @@ function generateTimeline(
     }
 
     const salesInPeriod = sales.filter(
-      (s) => s.createdAt >= date && s.createdAt < nextDate
+      (s) => s.createdAt >= date && s.createdAt < nextDate,
     );
     const expensesInPeriod = expenses.filter(
-      (e) => e.incurredAt >= date && e.incurredAt < nextDate
+      (e) => e.incurredAt >= date && e.incurredAt < nextDate,
     );
 
-    const salesTotal = salesInPeriod.reduce((sum, s) => sum + toNumber(s.total), 0);
+    const salesTotal = salesInPeriod.reduce(
+      (sum, s) => sum + toNumber(s.total),
+      0,
+    );
     const expensesTotal = expensesInPeriod.reduce(
       (sum, e) => sum + toNumber(e.amount),
-      0
+      0,
     );
 
     return {
@@ -1073,4 +1179,3 @@ function generateTimeline(
     };
   });
 }
-

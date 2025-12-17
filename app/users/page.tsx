@@ -58,7 +58,9 @@ export default function UsersPage() {
           />
         </div>
         <div className="text-sm text-muted-foreground">
-          {usersData ? t("totalUsers", { count: usersData.total }) : tCommon("loading")}
+          {usersData
+            ? t("totalUsers", { count: usersData.total })
+            : tCommon("loading")}
         </div>
       </div>
 
@@ -68,10 +70,7 @@ export default function UsersPage() {
           <CardDescription>{t("allUsersDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <UsersList 
-            users={usersData?.users || []} 
-            isLoading={isLoading}
-          />
+          <UsersList users={usersData?.users || []} isLoading={isLoading} />
         </CardContent>
       </Card>
 

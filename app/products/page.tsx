@@ -26,15 +26,21 @@ import type { ProductCategoryWithRelations } from "@/lib/types/product-categorie
 export default function ProductsPage() {
   const t = useTranslations("Products");
   const tCategories = useTranslations("ProductCategories");
-  
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<ProductCategoryWithRelations | undefined>(undefined);
+  const [categoryToEdit, setCategoryToEdit] = useState<
+    ProductCategoryWithRelations | undefined
+  >(undefined);
 
   const { data, isLoading, error } = useProducts();
-  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useProductCategories();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useProductCategories();
 
   const handleCreate = () => {
     setSelectedProduct(undefined);
@@ -99,7 +105,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>{t("productList")}</CardTitle>
-                  <CardDescription>{t("productListDescription")}</CardDescription>
+                  <CardDescription>
+                    {t("productListDescription")}
+                  </CardDescription>
                 </div>
                 {data && (
                   <div className="text-sm text-muted-foreground">
@@ -196,4 +204,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-

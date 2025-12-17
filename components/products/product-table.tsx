@@ -103,4 +103,3 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
     </>
   );
 }
-

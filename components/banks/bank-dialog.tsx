@@ -50,9 +50,7 @@ export function BankDialog({ open, onOpenChange, bank }: BankDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {bank ? t("editBank") : t("createBank")}
-          </DialogTitle>
+          <DialogTitle>{bank ? t("editBank") : t("createBank")}</DialogTitle>
           <DialogDescription>
             {bank ? t("editBankDescription") : t("createBankDescription")}
           </DialogDescription>
@@ -67,4 +65,3 @@ export function BankDialog({ open, onOpenChange, bank }: BankDialogProps) {
     </Dialog>
   );
 }
-

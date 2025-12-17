@@ -40,9 +40,7 @@ const getStatusBadge = (status: PayrollRunStatus) => {
     [PayrollRunStatus.PAID]: "Pagado",
   };
 
-  return (
-    <Badge variant={variants[status] as any}>{labels[status]}</Badge>
-  );
+  return <Badge variant={variants[status] as any}>{labels[status]}</Badge>;
 };
 
 export const getPayrollRunColumns = (
@@ -50,7 +48,7 @@ export const getPayrollRunColumns = (
   onView: (run: PayrollRunWithDetails) => void,
   onFinalize: (run: PayrollRunWithDetails) => void,
   onPay: (run: PayrollRunWithDetails) => void,
-  onDelete: (run: PayrollRunWithDetails) => void
+  onDelete: (run: PayrollRunWithDetails) => void,
 ): ColumnDef<PayrollRunWithDetails>[] => [
   {
     accessorKey: "periodLabel",
@@ -100,7 +98,7 @@ export const getPayrollRunColumns = (
       const total =
         row.original.items?.reduce(
           (sum, item) => sum + parseFloat(item.payableTotal),
-          0
+          0,
         ) || 0;
       return formatCurrency(total);
     },
@@ -159,4 +157,3 @@ export const getPayrollRunColumns = (
     },
   },
 ];
-

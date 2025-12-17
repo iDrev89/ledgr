@@ -26,6 +26,8 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { PurchaseItems } from "./purchase-items";
 import { useSuppliers } from "@/hooks/use-suppliers";
+import { useBanks } from "@/hooks/use-banks";
+import { PaymentMethod } from "@/prisma/prisma-client";
 import type { PurchaseItem, CreatePurchaseInput } from "@/lib/types/purchases";
 
 interface PurchaseFormProps {
@@ -48,14 +50,22 @@ export function PurchaseForm({
   });
   const suppliers = suppliersData?.suppliers || [];
 
-  const form = useForm({
+  const { data: banksData } = useBanks();
+  const banks = banksData?.banks || [];
+
+  const form = useForm<any>({
     mode: "onChange",
     defaultValues: {
       supplierId: "",
       invoiceNo: "",
       note: "",
+      paymentMethod: "CASH" as PaymentMethod,
+      bankId: "",
+      reference: "",
     },
   });
+
+  const paymentMethod = form.watch("paymentMethod") as PaymentMethod;
 
   // Calculate totals
   const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0);
@@ -86,6 +96,11 @@ export function PurchaseForm({
         lineTotal: item.lineTotal,
       })),
       taxTotal,
+
+      // Campos de pago
+      paymentMethod: data.paymentMethod,
+      bankId: data.bankId || undefined,
+      reference: data.reference || undefined,
     };
 
     await onSubmit(purchaseData);
@@ -102,7 +117,10 @@ export function PurchaseForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-6"
+      >
         {/* General Information */}
         <div className="space-y-4">
           {/* Supplier */}
@@ -189,6 +207,107 @@ export function PurchaseForm({
 
         <Separator />
 
+        {/* Payment Information */}
+        <div className="space-y-4">
+          <h3 className="font-semibold">{t("paymentInformation")}</h3>
+
+          {/* Payment Method */}
+          <FormField
+            control={form.control}
+            name="paymentMethod"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("paymentMethod")}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={t("paymentMethodPlaceholder")}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={PaymentMethod.CASH}>
+                      {t("paymentCash")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.TRANSFER}>
+                      {t("paymentTransfer")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.CARD}>
+                      {t("paymentCard")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.DIGITAL}>
+                      {t("paymentDigital")}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Bank (only for TRANSFER) */}
+          {paymentMethod === "TRANSFER" && (
+            <FormField
+              control={form.control}
+              name="bankId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("bank")} <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || undefined}
+                    disabled={isLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("bankPlaceholder")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {banks.map((bank) => (
+                        <SelectItem key={bank.id} value={bank.id}>
+                          {bank.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          {/* Reference (only for TRANSFER) */}
+          {paymentMethod === "TRANSFER" && (
+            <FormField
+              control={form.control}
+              name="reference"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("reference")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder={t("referencePlaceholder")}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+
+        <Separator />
+
         {/* Totals */}
         <div className="space-y-4">
           {/* Subtotal */}
@@ -207,9 +326,7 @@ export function PurchaseForm({
               min="0"
               step="0.01"
               value={taxTotal}
-              onChange={(e) =>
-                setTaxTotal(parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => setTaxTotal(parseFloat(e.target.value) || 0)}
               placeholder="0"
               disabled={isLoading}
             />
@@ -242,9 +359,7 @@ export function PurchaseForm({
             disabled={isLoading || items.length === 0}
             className="flex-1"
           >
-            {isLoading && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("createPurchase")}
           </Button>
         </div>
@@ -252,4 +367,3 @@ export function PurchaseForm({
     </Form>
   );
 }
-

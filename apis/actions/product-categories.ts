@@ -73,7 +73,7 @@ export const getProductCategories = async (params?: {
 };
 
 export const getProductCategory = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<ProductCategoryWithRelations>> => {
   const t = await getTranslations("ProductCategories.errors");
 
@@ -106,7 +106,7 @@ export const getProductCategory = async (
 };
 
 export const createProductCategory = async (
-  input: CreateProductCategoryInput
+  input: CreateProductCategoryInput,
 ): Promise<ActionResponse<ProductCategoryWithRelations>> => {
   const t = await getTranslations("ProductCategories.errors");
 
@@ -151,7 +151,7 @@ export const createProductCategory = async (
 };
 
 export const updateProductCategory = async (
-  input: UpdateProductCategoryInput
+  input: UpdateProductCategoryInput,
 ): Promise<ActionResponse<ProductCategoryWithRelations>> => {
   const t = await getTranslations("ProductCategories.errors");
 
@@ -209,7 +209,7 @@ export const updateProductCategory = async (
 };
 
 export const deleteProductCategory = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("ProductCategories.errors");
 
@@ -250,4 +250,3 @@ export const deleteProductCategory = async (
     };
   }
 };
-

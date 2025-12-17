@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   Table,
@@ -67,8 +67,8 @@ export function ExpandableTable<TData extends { id: string }>({
           {data.map((item) => {
             const isExpanded = expandedRows.has(item.id);
             return (
-              <>
-                <TableRow key={item.id} className={cn(isExpanded && "border-b-0")}>
+              <Fragment key={item.id}>
+                <TableRow className={cn(isExpanded && "border-b-0")}>
                   {expandable && renderExpandedContent && (
                     <TableCell>
                       <Button
@@ -92,13 +92,16 @@ export function ExpandableTable<TData extends { id: string }>({
                   ))}
                 </TableRow>
                 {expandable && renderExpandedContent && isExpanded && (
-                  <TableRow key={`${item.id}-expanded`}>
-                    <TableCell colSpan={columns.length + 1} className="bg-muted/50 p-4">
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length + 1}
+                      className="bg-muted/50 p-4"
+                    >
                       {renderExpandedContent(item)}
                     </TableCell>
                   </TableRow>
                 )}
-              </>
+              </Fragment>
             );
           })}
         </TableBody>
@@ -106,4 +109,3 @@ export function ExpandableTable<TData extends { id: string }>({
     </div>
   );
 }
-

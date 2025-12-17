@@ -11,10 +11,21 @@ import {
   type CreateSaleInput,
   type UpdateSaleInput,
 } from "@/lib/validations/sales";
-import type { Sale, SaleItem, SalePayment, Customer, Product, Bank } from "@/prisma/prisma-client";
+import type {
+  Sale,
+  SaleItem,
+  SalePayment,
+  Customer,
+  Product,
+  Bank,
+} from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { SaleWithDetails } from "@/lib/types/sales";
-import { StockMoveType, AccountsReceivableStatus, ProductType } from "@/prisma/prisma-client";
+import {
+  StockMoveType,
+  AccountsReceivableStatus,
+  ProductType,
+} from "@/prisma/prisma-client";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -53,9 +64,7 @@ const serializeSale = (sale: any): SaleWithDetails => {
             ? {
                 ...item.product,
                 price: item.product.price.toString(),
-                cost: item.product.cost
-                  ? item.product.cost.toString()
-                  : null,
+                cost: item.product.cost ? item.product.cost.toString() : null,
                 commissionPercent: item.product.commissionPercent
                   ? item.product.commissionPercent.toString()
                   : null,
@@ -112,19 +121,22 @@ export const getSales = async (params?: {
   try {
     await requireAuth();
 
-    const {
-      search = "",
-      customerId,
-      limit = 50,
-      offset = 0,
-    } = params || {};
+    const { search = "", customerId, limit = 50, offset = 0 } = params || {};
 
     const where: any = {};
 
     if (search) {
       where.OR = [
-        { customer: { name: { contains: search, mode: "insensitive" as const } } },
-        { customer: { email: { contains: search, mode: "insensitive" as const } } },
+        {
+          customer: {
+            name: { contains: search, mode: "insensitive" as const },
+          },
+        },
+        {
+          customer: {
+            email: { contains: search, mode: "insensitive" as const },
+          },
+        },
         { note: { contains: search, mode: "insensitive" as const } },
       ];
     }
@@ -191,7 +203,7 @@ export const getSales = async (params?: {
 };
 
 export const getSale = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -252,7 +264,7 @@ export const getSale = async (
 };
 
 export const createSale = async (
-  input: CreateSaleInput
+  input: CreateSaleInput,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -303,9 +315,7 @@ export const createSale = async (
 
       const unitPrice = new Decimal(item.unitPrice);
       const discount = new Decimal(item.discount);
-      const lineTotal = unitPrice
-        .times(item.quantity)
-        .minus(discount);
+      const lineTotal = unitPrice.times(item.quantity).minus(discount);
 
       subtotal = subtotal.plus(unitPrice.times(item.quantity));
       discountTotal = discountTotal.plus(discount);
@@ -416,10 +426,9 @@ export const createSale = async (
             currency: "COP",
             total,
             balance,
-            status:
-              totalPaid.gt(0)
-                ? AccountsReceivableStatus.PARTIAL
-                : AccountsReceivableStatus.OPEN,
+            status: totalPaid.gt(0)
+              ? AccountsReceivableStatus.PARTIAL
+              : AccountsReceivableStatus.OPEN,
           },
           select: {
             id: true,
@@ -483,7 +492,7 @@ export const createSale = async (
 };
 
 export const updateSale = async (
-  input: UpdateSaleInput
+  input: UpdateSaleInput,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -544,9 +553,7 @@ export const updateSale = async (
 
       const unitPrice = new Decimal(item.unitPrice);
       const discount = new Decimal(item.discount);
-      const lineTotal = unitPrice
-        .times(item.quantity)
-        .minus(discount);
+      const lineTotal = unitPrice.times(item.quantity).minus(discount);
 
       subtotal = subtotal.plus(unitPrice.times(item.quantity));
       discountTotal = discountTotal.plus(discount);
@@ -630,7 +637,9 @@ export const updateSale = async (
         await tx.stockMovement.deleteMany({
           where: {
             moveType: StockMoveType.SALE,
-            note: { contains: `Venta #${String(currentSale.saleNumber).padStart(4, "0")}` },
+            note: {
+              contains: `Venta #${String(currentSale.saleNumber).padStart(4, "0")}`,
+            },
           },
         });
       }
@@ -684,10 +693,9 @@ export const updateSale = async (
             currency: "COP",
             total,
             balance,
-            status:
-              totalPaid.gt(0)
-                ? AccountsReceivableStatus.PARTIAL
-                : AccountsReceivableStatus.OPEN,
+            status: totalPaid.gt(0)
+              ? AccountsReceivableStatus.PARTIAL
+              : AccountsReceivableStatus.OPEN,
           },
           select: {
             id: true,
@@ -732,9 +740,7 @@ export const updateSale = async (
   }
 };
 
-export const deleteSale = async (
-  id: string
-): Promise<ActionResponse<void>> => {
+export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Sales.errors");
 
   try {
@@ -764,7 +770,9 @@ export const deleteSale = async (
       await tx.stockMovement.deleteMany({
         where: {
           moveType: StockMoveType.SALE,
-          note: { contains: `Venta #${String(sale.saleNumber).padStart(4, "0")}` },
+          note: {
+            contains: `Venta #${String(sale.saleNumber).padStart(4, "0")}`,
+          },
         },
       });
 
@@ -790,4 +798,3 @@ export const deleteSale = async (
     };
   }
 };
-

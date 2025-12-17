@@ -7,7 +7,13 @@ import { es, enUS } from "date-fns/locale";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Package, DollarSign, Receipt, ShoppingCart } from "lucide-react";
+import {
+  AlertCircle,
+  Package,
+  DollarSign,
+  Receipt,
+  ShoppingCart,
+} from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { DateRangePicker } from "@/components/reports/date-range-picker";
 import { ViewToggle } from "@/components/reports/view-toggle";
@@ -16,7 +22,11 @@ import { MetricCard } from "@/components/reports/metric-card";
 import { ExpandableTable } from "@/components/reports/expandable-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
-import type { DateRange, ViewMode, PurchaseReportItemDetailed } from "@/lib/types/reports";
+import type {
+  DateRange,
+  ViewMode,
+  PurchaseReportItemDetailed,
+} from "@/lib/types/reports";
 import type { PurchaseStatus } from "@/prisma/prisma-client";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
@@ -33,7 +43,11 @@ export default function PurchasesReportPage() {
   });
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
 
-  const { data: reportData, isLoading, error } = useQuery({
+  const {
+    data: reportData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["purchase-report-enhanced", dateRange],
     queryFn: async () => {
       const response = await getPurchaseReportEnhanced({
@@ -58,7 +72,10 @@ export default function PurchasesReportPage() {
   const getStatusBadge = (status: PurchaseStatus) => {
     const variants: Record<
       PurchaseStatus,
-      { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+      {
+        label: string;
+        variant: "default" | "secondary" | "destructive" | "outline";
+      }
     > = {
       DRAFT: { label: t("statusDraft"), variant: "secondary" },
       APPROVED: { label: t("statusApproved"), variant: "default" },
@@ -75,7 +92,10 @@ export default function PurchasesReportPage() {
       {
         accessorKey: "createdAt",
         header: t("purchaseDate"),
-        cell: ({ row }) => format(new Date(row.original.createdAt), "PPP", { locale: dateLocale }),
+        cell: ({ row }) =>
+          format(new Date(row.original.createdAt), "PPP", {
+            locale: dateLocale,
+          }),
       },
       {
         accessorKey: "invoiceNo",
@@ -105,7 +125,7 @@ export default function PurchasesReportPage() {
         },
       },
     ],
-    [t, dateLocale]
+    [t, dateLocale],
   );
 
   const detailedColumns = useMemo(
@@ -121,15 +141,18 @@ export default function PurchasesReportPage() {
       },
       {
         header: t("supplier"),
-        accessor: (item: PurchaseReportItemDetailed) => item.supplier?.name || "-",
+        accessor: (item: PurchaseReportItemDetailed) =>
+          item.supplier?.name || "-",
       },
       {
         header: t("status"),
-        accessor: (item: PurchaseReportItemDetailed) => getStatusBadge(item.status),
+        accessor: (item: PurchaseReportItemDetailed) =>
+          getStatusBadge(item.status),
       },
       {
         header: t("total"),
-        accessor: (item: PurchaseReportItemDetailed) => formatCurrency(item.total.toString()),
+        accessor: (item: PurchaseReportItemDetailed) =>
+          formatCurrency(item.total.toString()),
         className: "text-right",
       },
       {
@@ -145,7 +168,7 @@ export default function PurchasesReportPage() {
         className: "text-right",
       },
     ],
-    [t, dateLocale]
+    [t, dateLocale],
   );
 
   const renderExpandedContent = (item: PurchaseReportItemDetailed) => (
@@ -153,7 +176,7 @@ export default function PurchasesReportPage() {
       {/* Items */}
       {item.items.length > 0 && (
         <div>
-          <h4 className="font-medium mb-2">{t("item")}s</h4>
+          <h4 className="font-medium mb-2">{t("items")}</h4>
           <div className="grid gap-2">
             {item.items.map((pItem) => (
               <div
@@ -162,8 +185,8 @@ export default function PurchasesReportPage() {
               >
                 <span>{pItem.productName}</span>
                 <span className="text-muted-foreground">
-                  {pItem.quantity} x {formatCurrency(pItem.unitCost.toString())} ={" "}
-                  {formatCurrency(pItem.lineTotal.toString())}
+                  {pItem.quantity} x {formatCurrency(pItem.unitCost.toString())}{" "}
+                  = {formatCurrency(pItem.lineTotal.toString())}
                 </span>
               </div>
             ))}
@@ -182,9 +205,15 @@ export default function PurchasesReportPage() {
                 className="flex justify-between items-center text-sm bg-background p-2 rounded"
               >
                 <div>
-                  <span className="font-medium">{formatCurrency(payment.amount.toString())}</span>
+                  <span className="font-medium">
+                    {formatCurrency(payment.amount.toString())}
+                  </span>
                   <span className="text-muted-foreground ml-2">
-                    ({format(new Date(payment.paidAt), "PPP", { locale: dateLocale })})
+                    (
+                    {format(new Date(payment.paidAt), "PPP", {
+                      locale: dateLocale,
+                    })}
+                    )
                   </span>
                 </div>
                 <Badge variant="outline">{payment.method}</Badge>
@@ -199,7 +228,10 @@ export default function PurchasesReportPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-6">
-        <PageHeader pageTitle={t("purchasesTitle")} pageDes={t("description")} />
+        <PageHeader
+          pageTitle={t("purchasesTitle")}
+          pageDes={t("description")}
+        />
         <div className="space-y-4">
           <Skeleton className="h-20" />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
@@ -216,7 +248,10 @@ export default function PurchasesReportPage() {
   if (error) {
     return (
       <div className="flex flex-col gap-6">
-        <PageHeader pageTitle={t("purchasesTitle")} pageDes={t("description")} />
+        <PageHeader
+          pageTitle={t("purchasesTitle")}
+          pageDes={t("description")}
+        />
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -235,12 +270,20 @@ export default function PurchasesReportPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Card className="flex-1">
           <CardContent className="pt-6">
-            <DateRangePicker value={dateRange} onChange={setDateRange} locale={locale} />
+            <DateRangePicker
+              value={dateRange}
+              onChange={setDateRange}
+              locale={locale}
+            />
           </CardContent>
         </Card>
         <div className="flex gap-2">
           <ViewToggle view={viewMode} onChange={setViewMode} />
-          <ExportButton type="purchases" data={reportData || null} dateRange={dateRange} />
+          <ExportButton
+            type="purchases"
+            data={reportData || null}
+            dateRange={dateRange}
+          />
         </div>
       </div>
 
@@ -270,7 +313,9 @@ export default function PurchasesReportPage() {
               title={t("pendingBalance")}
               value={formatCurrency(reportData.metrics.current.balance)}
               icon={<Receipt />}
-              className={reportData.metrics.current.balance > 0 ? "border-amber-200" : ""}
+              className={
+                reportData.metrics.current.balance > 0 ? "border-amber-200" : ""
+              }
               trend={{
                 value: reportData.metrics.change.balance,
                 isPositive: reportData.metrics.change.balance <= 0, // Less balance is positive
@@ -299,7 +344,9 @@ export default function PurchasesReportPage() {
           {viewMode === "summary" ? (
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold mb-4">{t("purchaseReport")}</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  {t("purchaseReport")}
+                </h3>
                 <DataTable
                   columns={summaryColumns}
                   data={reportData.purchases}
@@ -311,7 +358,9 @@ export default function PurchasesReportPage() {
           ) : (
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold mb-4">{t("transactionDetails")}</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  {t("transactionDetails")}
+                </h3>
                 <ExpandableTable
                   data={reportData.purchases}
                   columns={detailedColumns}
@@ -325,4 +374,3 @@ export default function PurchasesReportPage() {
     </div>
   );
 }
-

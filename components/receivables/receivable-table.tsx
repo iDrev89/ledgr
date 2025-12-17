@@ -21,7 +21,13 @@ export function ReceivableTable({
   t,
   locale,
 }: ReceivableTableProps) {
-  const columns = createReceivableColumns({ onView, onPayment, onCancel, t, locale });
+  const columns = createReceivableColumns({
+    onView,
+    onPayment,
+    onCancel,
+    t,
+    locale,
+  });
 
   return (
     <DataTable
@@ -34,4 +40,3 @@ export function ReceivableTable({
     />
   );
 }
-

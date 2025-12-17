@@ -1,7 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { AlertCircle, Package, DollarSign, Receipt, ShoppingCart } from "lucide-react";
+import {
+  AlertCircle,
+  Package,
+  DollarSign,
+  Receipt,
+  ShoppingCart,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,7 +26,10 @@ interface PurchaseReportProps {
   locale?: string;
 }
 
-export function PurchaseReport({ dateRange, locale = "es" }: PurchaseReportProps) {
+export function PurchaseReport({
+  dateRange,
+  locale = "es",
+}: PurchaseReportProps) {
   const t = useTranslations("Reports");
   const dateLocale = locale === "es" ? es : enUS;
 
@@ -42,7 +51,10 @@ export function PurchaseReport({ dateRange, locale = "es" }: PurchaseReportProps
   const getStatusBadge = (status: PurchaseStatus) => {
     const variants: Record<
       PurchaseStatus,
-      { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+      {
+        label: string;
+        variant: "default" | "secondary" | "destructive" | "outline";
+      }
     > = {
       DRAFT: { label: t("statusDraft"), variant: "secondary" },
       APPROVED: { label: t("statusApproved"), variant: "default" },
@@ -60,7 +72,9 @@ export function PurchaseReport({ dateRange, locale = "es" }: PurchaseReportProps
       accessorKey: "createdAt",
       header: t("purchaseDate"),
       cell: ({ row }) => {
-        return format(new Date(row.original.createdAt), "PPP", { locale: dateLocale });
+        return format(new Date(row.original.createdAt), "PPP", {
+          locale: dateLocale,
+        });
       },
     },
     {
@@ -215,4 +229,3 @@ export function PurchaseReport({ dateRange, locale = "es" }: PurchaseReportProps
     </div>
   );
 }
-

@@ -89,7 +89,7 @@ export const getBanks = async (params?: {
 };
 
 export const getBank = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<BankWithRelations>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -124,7 +124,7 @@ export const getBank = async (
 };
 
 export const createBank = async (
-  input: CreateBankInput
+  input: CreateBankInput,
 ): Promise<ActionResponse<Bank>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -164,7 +164,7 @@ export const createBank = async (
 };
 
 export const updateBank = async (
-  input: UpdateBankInput
+  input: UpdateBankInput,
 ): Promise<ActionResponse<Bank>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -215,9 +215,7 @@ export const updateBank = async (
   }
 };
 
-export const deleteBank = async (
-  id: string
-): Promise<ActionResponse<void>> => {
+export const deleteBank = async (id: string): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Banks.errors");
 
   try {
@@ -267,4 +265,3 @@ export const deleteBank = async (
     };
   }
 };
-

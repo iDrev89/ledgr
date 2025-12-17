@@ -9,7 +9,7 @@ interface ConditionalLayoutProps {
 
 export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const pathname = usePathname();
-  
+
   // Pages that should not show the dashboard shell
   const authPages = ["/login", "/register"];
   const isAuthPage = authPages.includes(pathname);

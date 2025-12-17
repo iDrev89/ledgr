@@ -35,8 +35,17 @@ const formatCurrency = (value: string | number) => {
   }).format(numValue);
 };
 
-const getStatusBadge = (status: AccountsReceivableStatus, t: (key: string) => string) => {
-  const variants: Record<AccountsReceivableStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const getStatusBadge = (
+  status: AccountsReceivableStatus,
+  t: (key: string) => string,
+) => {
+  const variants: Record<
+    AccountsReceivableStatus,
+    {
+      label: string;
+      variant: "default" | "secondary" | "destructive" | "outline";
+    }
+  > = {
     [AccountsReceivableStatus.OPEN]: {
       label: t("statusOpen"),
       variant: "destructive",
@@ -92,7 +101,9 @@ export const createReceivableColumns = ({
         <div className="flex flex-col">
           <span className="font-medium">{customer.name}</span>
           {customer.email && (
-            <span className="text-xs text-muted-foreground">{customer.email}</span>
+            <span className="text-xs text-muted-foreground">
+              {customer.email}
+            </span>
           )}
         </div>
       );
@@ -146,11 +157,13 @@ export const createReceivableColumns = ({
     header: () => <div className="text-right">{t("actions")}</div>,
     cell: ({ row }) => {
       const receivable = row.original;
-      const canPay = receivable.status !== AccountsReceivableStatus.PAID && 
-                     receivable.status !== AccountsReceivableStatus.CANCELED;
-      const canCancel = receivable.status !== AccountsReceivableStatus.PAID && 
-                        receivable.status !== AccountsReceivableStatus.CANCELED &&
-                        (receivable.payments?.length || 0) === 0;
+      const canPay =
+        receivable.status !== AccountsReceivableStatus.PAID &&
+        receivable.status !== AccountsReceivableStatus.CANCELED;
+      const canCancel =
+        receivable.status !== AccountsReceivableStatus.PAID &&
+        receivable.status !== AccountsReceivableStatus.CANCELED &&
+        (receivable.payments?.length || 0) === 0;
 
       return (
         <div className="flex justify-end">
@@ -193,4 +206,3 @@ export const createReceivableColumns = ({
     },
   },
 ];
-

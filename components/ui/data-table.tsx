@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -72,13 +72,15 @@ export function DataTable<TData, TValue>({
     (row: any, columnId: string, filterValue: string) => {
       if (!filterValue) return true;
       if (!searchKey || !Array.isArray(searchKey)) return true;
-      
+
       const searchLower = String(filterValue).toLowerCase();
-      
+
       return searchKey.some((key) => {
         try {
           // Manejar keys anidadas como "customer.name"
-          const value = key.split('.').reduce((obj: any, k: string) => obj?.[k], row.original);
+          const value = key
+            .split(".")
+            .reduce((obj: any, k: string) => obj?.[k], row.original);
           if (value === null || value === undefined) return false;
           return String(value).toLowerCase().includes(searchLower);
         } catch {
@@ -86,7 +88,7 @@ export function DataTable<TData, TValue>({
         }
       });
     },
-    [searchKey]
+    [searchKey],
   );
 
   const table = useReactTable({
@@ -136,7 +138,9 @@ export function DataTable<TData, TValue>({
                 if (Array.isArray(searchKey)) {
                   setGlobalFilter(event.target.value);
                 } else {
-                  table.getColumn(searchKey)?.setFilterValue(event.target.value);
+                  table
+                    .getColumn(searchKey)
+                    ?.setFilterValue(event.target.value);
                 }
               }}
               className="max-w-sm"
@@ -186,7 +190,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -205,7 +209,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

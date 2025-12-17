@@ -2,7 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import PageHeader from "@/components/shared/PageHeader";
 import { ShoppingCart, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,10 +37,7 @@ export default function ReportsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        pageTitle={t("title")}
-        pageDes={t("reportsOverview")}
-      />
+      <PageHeader pageTitle={t("title")} pageDes={t("reportsOverview")} />
 
       <div className="grid gap-6 md:grid-cols-2">
         {reports.map((report) => {
@@ -53,7 +56,11 @@ export default function ReportsPage() {
                   <CardDescription>{report.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="ghost" className="w-full justify-start" asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    asChild
+                  >
                     <span>
                       {t("drillDown")}
                       <ArrowRight className="ml-auto h-4 w-4" />
@@ -68,4 +75,3 @@ export default function ReportsPage() {
     </div>
   );
 }
-

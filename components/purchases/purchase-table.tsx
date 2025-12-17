@@ -48,9 +48,7 @@ export function PurchaseTable({ purchases }: PurchaseTableProps) {
       toast.success(t("deleteSuccess"));
       setPurchaseToDelete(null);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t("deleteError")
-      );
+      toast.error(error instanceof Error ? error.message : t("deleteError"));
     }
   };
 
@@ -107,4 +105,3 @@ export function PurchaseTable({ purchases }: PurchaseTableProps) {
     </>
   );
 }
-

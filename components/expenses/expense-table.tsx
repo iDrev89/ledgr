@@ -26,7 +26,12 @@ interface ExpenseTableProps {
   locale?: string;
 }
 
-export function ExpenseTable({ expenses, onView, onEdit, locale }: ExpenseTableProps) {
+export function ExpenseTable({
+  expenses,
+  onView,
+  onEdit,
+  locale,
+}: ExpenseTableProps) {
   const t = useTranslations("Expenses");
   const [expenseToDelete, setExpenseToDelete] =
     useState<ExpenseWithDetails | null>(null);
@@ -110,4 +115,3 @@ export function ExpenseTable({ expenses, onView, onEdit, locale }: ExpenseTableP
     </>
   );
 }
-

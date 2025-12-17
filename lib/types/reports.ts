@@ -253,4 +253,3 @@ export interface MetricCardProps {
   className?: string;
   onClick?: () => void; // for drill-down
 }
-

@@ -83,7 +83,7 @@ export function useUpdateExpenseCategory() {
     onSuccess: (updatedCategory) => {
       queryClient.setQueryData(
         expenseCategoryKeys.detail(updatedCategory.id),
-        updatedCategory
+        updatedCategory,
       );
       queryClient.invalidateQueries({
         queryKey: expenseCategoryKeys.lists(),
@@ -112,4 +112,3 @@ export function useDeleteExpenseCategory() {
     },
   });
 }
-

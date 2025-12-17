@@ -67,7 +67,7 @@ export const useCreatePayrollRun = () => {
 
   return useMutation({
     mutationFn: async (
-      input: CreatePayrollRunInput & { userIds?: string[] }
+      input: CreatePayrollRunInput & { userIds?: string[] },
     ) => {
       const result = await createPayrollRun(input);
       if (!result.success) {

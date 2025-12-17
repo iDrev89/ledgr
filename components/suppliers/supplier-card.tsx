@@ -11,7 +11,11 @@ interface SupplierCardProps {
   onDelete: (supplier: Supplier) => void;
 }
 
-export function SupplierCard({ supplier, onEdit, onDelete }: SupplierCardProps) {
+export function SupplierCard({
+  supplier,
+  onEdit,
+  onDelete,
+}: SupplierCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="pt-6 space-y-3">
@@ -21,7 +25,9 @@ export function SupplierCard({ supplier, onEdit, onDelete }: SupplierCardProps) 
           {supplier.taxId && (
             <div className="flex items-center gap-2 mt-1">
               <FileText className="h-3 w-3 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{supplier.taxId}</span>
+              <span className="text-sm text-muted-foreground">
+                {supplier.taxId}
+              </span>
             </div>
           )}
         </div>
@@ -73,4 +79,3 @@ export function SupplierCard({ supplier, onEdit, onDelete }: SupplierCardProps) 
     </Card>
   );
 }
-

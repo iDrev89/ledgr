@@ -90,7 +90,10 @@ export function useUpdateExpense() {
       return result.data;
     },
     onSuccess: (updatedExpense) => {
-      queryClient.setQueryData(expenseKeys.detail(updatedExpense.id), updatedExpense);
+      queryClient.setQueryData(
+        expenseKeys.detail(updatedExpense.id),
+        updatedExpense,
+      );
       queryClient.invalidateQueries({
         queryKey: expenseKeys.lists(),
       });
@@ -126,4 +129,3 @@ export function useDeleteExpense() {
     },
   });
 }
-

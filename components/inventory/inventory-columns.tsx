@@ -33,7 +33,7 @@ const formatNumber = (value: number) => {
 };
 
 export const createInventoryColumns = (
-  actions: InventoryColumnActions
+  actions: InventoryColumnActions,
 ): ColumnDef<ProductStock>[] => [
   {
     id: "productName",
@@ -91,17 +91,23 @@ export const createInventoryColumns = (
           {stock > 10 ? (
             <>
               <TrendingUp className="h-4 w-4 text-green-600" />
-              <span className="text-green-600 font-medium">{actions.t("inStock")}</span>
+              <span className="text-green-600 font-medium">
+                {actions.t("inStock")}
+              </span>
             </>
           ) : stock > 0 ? (
             <>
               <AlertTriangle className="h-4 w-4 text-orange-600" />
-              <span className="text-orange-600 font-medium">{actions.t("lowStock")}</span>
+              <span className="text-orange-600 font-medium">
+                {actions.t("lowStock")}
+              </span>
             </>
           ) : (
             <>
               <TrendingDown className="h-4 w-4 text-destructive" />
-              <span className="text-destructive font-medium">{actions.t("outOfStock")}</span>
+              <span className="text-destructive font-medium">
+                {actions.t("outOfStock")}
+              </span>
             </>
           )}
         </div>
@@ -140,4 +146,3 @@ export const createInventoryColumns = (
     },
   },
 ];
-

@@ -1,4 +1,9 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3Client = new S3Client({
@@ -31,12 +36,12 @@ export interface PresignedUrlResult {
 export const generatePresignedUploadUrl = async (
   fileName: string,
   contentType: string,
-  folder: string = "payments"
+  folder: string = "payments",
 ): Promise<PresignedUrlResult> => {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(2, 8);
   const extension = fileName.split(".").pop()?.toLowerCase() || "jpg";
-  
+
   // Generar key único: folder/YYYY/MM/uniqueid_timestamp.ext
   const date = new Date();
   const year = date.getFullYear();
@@ -70,7 +75,7 @@ export const generatePresignedUploadUrl = async (
  */
 export const generatePresignedReadUrl = async (
   key: string,
-  expiresIn: number = 600 // 10 minutos
+  expiresIn: number = 600, // 10 minutos
 ): Promise<string> => {
   const command = new GetObjectCommand({
     Bucket: BUCKET_NAME,
@@ -109,4 +114,3 @@ export const extractS3KeyFromUrl = (url: string): string | null => {
     return null;
   }
 };
-

@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { PayrollPeriodType, PayrollEntryKind, PaymentMethod } from "@/prisma/prisma-client";
+import {
+  PayrollPeriodType,
+  PayrollEntryKind,
+  PaymentMethod,
+} from "@/prisma/prisma-client";
 
 // Helper to create schemas with custom messages
 const createPayrollSchemas = (messages?: {
@@ -28,17 +32,23 @@ const createPayrollSchemas = (messages?: {
       periodLabel: z
         .string()
         .min(1, messages?.periodLabelRequired || "Period label is required")
-        .max(100, messages?.periodLabelMax || "Period label must be less than 100 characters")
+        .max(
+          100,
+          messages?.periodLabelMax ||
+            "Period label must be less than 100 characters",
+        )
         .trim(),
-      startDate: z.string().min(1, messages?.startDateRequired || "Start date is required"),
-      endDate: z.string().min(1, messages?.endDateRequired || "End date is required"),
-      userIds: z
-        .array(z.string())
-        .optional()
-        .or(z.literal(undefined)),
+      startDate: z
+        .string()
+        .min(1, messages?.startDateRequired || "Start date is required"),
+      endDate: z
+        .string()
+        .min(1, messages?.endDateRequired || "End date is required"),
+      userIds: z.array(z.string()).optional().or(z.literal(undefined)),
     })
     .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
-      message: messages?.endDateAfterStart || "End date must be after start date",
+      message:
+        messages?.endDateAfterStart || "End date must be after start date",
       path: ["endDate"],
     });
 
@@ -47,37 +57,46 @@ const createPayrollSchemas = (messages?: {
   });
 
   const createPayrollPaymentSchema = z.object({
-    runId: z.string().min(1, messages?.runIdRequired || "Payroll run ID is required"),
-    userId: z.string().min(1, messages?.userIdRequired || "User ID is required"),
+    runId: z
+      .string()
+      .min(1, messages?.runIdRequired || "Payroll run ID is required"),
+    userId: z
+      .string()
+      .min(1, messages?.userIdRequired || "User ID is required"),
     amount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-        message: messages?.amountInvalid || "Amount must be a valid positive number",
+        message:
+          messages?.amountInvalid || "Amount must be a valid positive number",
       }),
     method: z.nativeEnum(PaymentMethod, {
       message: messages?.paymentMethodRequired || "Payment method is required",
     }),
-    bankId: z
-      .string()
-      .optional()
-      .or(z.literal("")),
+    bankId: z.string().optional().or(z.literal("")),
     description: z
       .string()
-      .max(500, messages?.descriptionMax || "Description must be less than 500 characters")
+      .max(
+        500,
+        messages?.descriptionMax ||
+          "Description must be less than 500 characters",
+      )
       .trim()
       .optional()
       .or(z.literal("")),
   });
 
   const createPayrollEntrySchema = z.object({
-    userId: z.string().min(1, messages?.userIdRequired || "User ID is required"),
+    userId: z
+      .string()
+      .min(1, messages?.userIdRequired || "User ID is required"),
     kind: z.nativeEnum(PayrollEntryKind, {
       message: messages?.kindRequired || "Entry kind is required",
     }),
     amount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) !== 0, {
-        message: messages?.amountInvalid || "Amount must be a valid non-zero number",
+        message:
+          messages?.amountInvalid || "Amount must be a valid non-zero number",
       }),
     period: z
       .string()
@@ -86,7 +105,11 @@ const createPayrollSchemas = (messages?: {
       .trim(),
     description: z
       .string()
-      .max(500, messages?.descriptionMax || "Description must be less than 500 characters")
+      .max(
+        500,
+        messages?.descriptionMax ||
+          "Description must be less than 500 characters",
+      )
       .trim()
       .optional()
       .or(z.literal("")),
@@ -139,6 +162,7 @@ export {
 
 export type CreatePayrollRunInput = z.infer<typeof createPayrollRunSchema>;
 export type FinalizePayrollRunInput = z.infer<typeof finalizePayrollRunSchema>;
-export type CreatePayrollPaymentInput = z.infer<typeof createPayrollPaymentSchema>;
+export type CreatePayrollPaymentInput = z.infer<
+  typeof createPayrollPaymentSchema
+>;
 export type CreatePayrollEntryInput = z.infer<typeof createPayrollEntrySchema>;
-

@@ -61,112 +61,113 @@ export function ExpenseDetailDialog({
         {/* Amount */}
         <div className="bg-primary/5 rounded-lg p-4 text-center">
           <p className="text-sm text-muted-foreground mb-1">{t("amount")}</p>
-          <p className="text-3xl font-bold">{formatCurrency(parseFloat(expense.amount.toString()))}</p>
+          <p className="text-3xl font-bold">
+            {formatCurrency(parseFloat(expense.amount.toString()))}
+          </p>
         </div>
 
-          {/* Date and Invoice */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-semibold mb-2">{t("date")}</h3>
-              <p className="text-sm">{formatDate(expense.incurredAt)}</p>
-            </div>
-            {expense.invoiceNo && (
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("invoiceNo")}</h3>
-                <p className="text-sm">{expense.invoiceNo}</p>
-              </div>
-            )}
+        {/* Date and Invoice */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">{t("date")}</h3>
+            <p className="text-sm">{formatDate(expense.incurredAt)}</p>
           </div>
-
-          <Separator />
-
-          {/* Payment Method */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {expense.invoiceNo && (
             <div>
-              <h3 className="text-sm font-semibold mb-2">{t("paymentMethod")}</h3>
-              <Badge variant="outline">
-                {methodLabels[expense.paymentMethod] || expense.paymentMethod}
-              </Badge>
-            </div>
-            {expense.paymentMethod === "TRANSFER" && expense.bank && (
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
-                <p className="text-sm">{expense.bank.name}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Reference (for transfers) */}
-          {expense.paymentMethod === "TRANSFER" && expense.reference && (
-            <div>
-              <h3 className="text-sm font-semibold mb-2">{t("reference")}</h3>
-              <p className="text-sm text-muted-foreground">{expense.reference}</p>
+              <h3 className="text-sm font-semibold mb-2">{t("invoiceNo")}</h3>
+              <p className="text-sm">{expense.invoiceNo}</p>
             </div>
           )}
+        </div>
 
-          <Separator />
+        <Separator />
 
-          {/* Category and Supplier */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {expense.category && (
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("category")}</h3>
-                <Badge variant="outline">{expense.category.name}</Badge>
-              </div>
-            )}
-            {expense.supplier && (
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("supplier")}</h3>
-                <div className="bg-muted rounded-lg p-3">
-                  <p className="font-medium">{expense.supplier.name}</p>
-                  {expense.supplier.email && (
-                    <p className="text-xs text-muted-foreground">
-                      {expense.supplier.email}
-                    </p>
-                  )}
-                  {expense.supplier.phone && (
-                    <p className="text-xs text-muted-foreground">
-                      {expense.supplier.phone}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
+        {/* Payment Method */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">{t("paymentMethod")}</h3>
+            <Badge variant="outline">
+              {methodLabels[expense.paymentMethod] || expense.paymentMethod}
+            </Badge>
           </div>
+          {expense.paymentMethod === "TRANSFER" && expense.bank && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
+              <p className="text-sm">{expense.bank.name}</p>
+            </div>
+          )}
+        </div>
 
-          {/* Description */}
-          {expense.description && (
-            <>
-              <Separator />
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("description")}</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {expense.description}
+        {/* Reference (for transfers) */}
+        {expense.paymentMethod === "TRANSFER" && expense.reference && (
+          <div>
+            <h3 className="text-sm font-semibold mb-2">{t("reference")}</h3>
+            <p className="text-sm text-muted-foreground">{expense.reference}</p>
+          </div>
+        )}
+
+        <Separator />
+
+        {/* Category and Supplier */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {expense.category && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("category")}</h3>
+              <Badge variant="outline">{expense.category.name}</Badge>
+            </div>
+          )}
+          {expense.supplier && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("supplier")}</h3>
+              <div className="bg-muted rounded-lg p-3">
+                <p className="font-medium">{expense.supplier.name}</p>
+                {expense.supplier.email && (
+                  <p className="text-xs text-muted-foreground">
+                    {expense.supplier.email}
+                  </p>
+                )}
+                {expense.supplier.phone && (
+                  <p className="text-xs text-muted-foreground">
+                    {expense.supplier.phone}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        {expense.description && (
+          <>
+            <Separator />
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("description")}</h3>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {expense.description}
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* Created By */}
+        {expense.createdBy && (
+          <>
+            <Separator />
+            <div>
+              <h3 className="text-sm font-semibold mb-2">{t("createdBy")}</h3>
+              <div className="bg-muted rounded-lg p-3">
+                <p className="font-medium">{expense.createdBy.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {expense.createdBy.email}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {formatDate(expense.createdAt)}
                 </p>
               </div>
-            </>
-          )}
-
-          {/* Created By */}
-          {expense.createdBy && (
-            <>
-              <Separator />
-              <div>
-                <h3 className="text-sm font-semibold mb-2">{t("createdBy")}</h3>
-                <div className="bg-muted rounded-lg p-3">
-                  <p className="font-medium">{expense.createdBy.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {expense.createdBy.email}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatDate(expense.createdAt)}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
       </div>
     </ResponsiveDialog>
   );
 }
-

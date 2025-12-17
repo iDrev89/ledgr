@@ -19,15 +19,18 @@ import { usePermissions } from "@/hooks/use-permissions";
 
 export const createPurchaseColumns = (
   onView: (purchase: SerializedPurchase) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
 ): ColumnDef<SerializedPurchase>[] => {
   return [
     {
       accessorKey: "purchaseNumber",
       header: "N° Compra",
       cell: ({ row }) => {
-        const purchaseNumber = row.getValue("purchaseNumber") as number | undefined;
-        if (!purchaseNumber) return <span className="text-muted-foreground">-</span>;
+        const purchaseNumber = row.getValue("purchaseNumber") as
+          | number
+          | undefined;
+        if (!purchaseNumber)
+          return <span className="text-muted-foreground">-</span>;
         return (
           <span className="font-mono font-semibold">
             #{String(purchaseNumber).padStart(4, "0")}
@@ -143,4 +146,3 @@ export const createPurchaseColumns = (
     },
   ];
 };
-

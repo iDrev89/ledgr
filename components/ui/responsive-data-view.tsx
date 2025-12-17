@@ -18,31 +18,31 @@ export interface CardActions {
 interface ResponsiveDataViewProps<TData> {
   // Configuración de tabla (desktop)
   columns: ColumnDef<TData>[];
-  
+
   // Configuración de cards (mobile)
   renderCard: (item: TData, actions: CardActions) => React.ReactNode;
   cardGridCols?: string;
-  
+
   // Datos
   data: TData[];
-  
+
   // Búsqueda y filtrado
   searchKey?: string | string[];
   searchPlaceholder?: string;
-  
+
   // Paginación
   pageSize?: number;
   showPagination?: boolean;
-  
+
   // Estados
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
-  
+
   // Callbacks para mobile
   onView?: (item: TData) => void;
   onEdit?: (item: TData) => void;
   onDelete?: (item: TData) => void;
-  
+
   // Otros
   locale?: string;
 }
@@ -78,7 +78,7 @@ export function ResponsiveDataView<TData>({
       return keys.some((key) => {
         try {
           // Manejar keys anidadas como "customer.name"
-          const value = key.split('.').reduce((obj, k) => obj?.[k], item);
+          const value = key.split(".").reduce((obj, k) => obj?.[k], item);
           if (value === null || value === undefined) return false;
           return String(value).toLowerCase().includes(searchLower);
         } catch {
@@ -92,7 +92,7 @@ export function ResponsiveDataView<TData>({
   const totalPages = Math.ceil(filteredData.length / pageSize);
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedData = showPagination 
+  const paginatedData = showPagination
     ? filteredData.slice(startIndex, endIndex)
     : filteredData;
 
@@ -147,9 +147,7 @@ export function ResponsiveDataView<TData>({
       ) : (
         <div className={`grid ${cardGridCols} gap-3`}>
           {paginatedData.map((item, index) => (
-            <div key={index}>
-              {renderCard(item, cardActions)}
-            </div>
+            <div key={index}>{renderCard(item, cardActions)}</div>
           ))}
         </div>
       )}
@@ -166,15 +164,17 @@ export function ResponsiveDataView<TData>({
             <ChevronLeft className="h-4 w-4 mr-1" />
             Anterior
           </Button>
-          
+
           <span className="text-sm text-muted-foreground">
             Página {currentPage + 1} de {totalPages}
           </span>
-          
+
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+            }
             disabled={currentPage === totalPages - 1}
           >
             Siguiente
@@ -186,11 +186,10 @@ export function ResponsiveDataView<TData>({
       {/* Info total de resultados */}
       {searchValue && (
         <div className="text-xs text-center text-muted-foreground">
-          {filteredData.length} resultado{filteredData.length !== 1 ? 's' : ''} encontrado{filteredData.length !== 1 ? 's' : ''}
+          {filteredData.length} resultado{filteredData.length !== 1 ? "s" : ""}{" "}
+          encontrado{filteredData.length !== 1 ? "s" : ""}
         </div>
       )}
     </div>
   );
 }
-
-

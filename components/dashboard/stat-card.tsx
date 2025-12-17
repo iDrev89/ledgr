@@ -54,10 +54,17 @@ export const StatCard = ({
   return (
     <Card className="relative overflow-hidden transition-all hover:shadow-md">
       {/* Decorative background element */}
-      <div className={cn("absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full opacity-20", colors.bg)} />
-      
+      <div
+        className={cn(
+          "absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full opacity-20",
+          colors.bg,
+        )}
+      />
+
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
         <div className={cn("p-2 rounded-lg", colors.bg)}>
           <Icon className={cn("h-5 w-5", colors.icon)} />
         </div>
@@ -70,7 +77,9 @@ export const StatCard = ({
           </div>
         ) : (
           <>
-            <div className={cn("text-3xl font-bold tracking-tight", colors.text)}>
+            <div
+              className={cn("text-3xl font-bold tracking-tight", colors.text)}
+            >
               {value}
             </div>
             {hasChange && (
@@ -86,11 +95,15 @@ export const StatCard = ({
                   )}
                   <span className="font-semibold">{Math.abs(change)}%</span>
                 </Badge>
-                <span className="text-xs text-muted-foreground">{description}</span>
+                <span className="text-xs text-muted-foreground">
+                  {description}
+                </span>
               </div>
             )}
             {!hasChange && description && (
-              <p className="text-xs text-muted-foreground mt-2">{description}</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {description}
+              </p>
             )}
           </>
         )}
@@ -98,4 +111,3 @@ export const StatCard = ({
     </Card>
   );
 };
-
