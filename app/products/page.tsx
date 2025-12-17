@@ -26,15 +26,21 @@ import type { ProductCategoryWithRelations } from "@/lib/types/product-categorie
 export default function ProductsPage() {
   const t = useTranslations("Products");
   const tCategories = useTranslations("ProductCategories");
-  
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<ProductCategoryWithRelations | undefined>(undefined);
+  const [categoryToEdit, setCategoryToEdit] = useState<
+    ProductCategoryWithRelations | undefined
+  >(undefined);
 
   const { data, isLoading, error } = useProducts();
-  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useProductCategories();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useProductCategories();
 
   const handleCreate = () => {
     setSelectedProduct(undefined);
@@ -70,14 +76,14 @@ export default function ProductsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("title")}
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <Button onClick={handleCreate}>
+        <Button onClick={handleCreate} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           {t("createProduct")}
         </Button>
@@ -99,7 +105,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>{t("productList")}</CardTitle>
-                  <CardDescription>{t("productListDescription")}</CardDescription>
+                  <CardDescription>
+                    {t("productListDescription")}
+                  </CardDescription>
                 </div>
                 {data && (
                   <div className="text-sm text-muted-foreground">
@@ -140,14 +148,14 @@ export default function ProductsPage() {
         <TabsContent value="categories">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <CardTitle>{tCategories("categoryList")}</CardTitle>
                   <CardDescription>
                     {tCategories("categoryListDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateCategory} size="sm">
+                <Button onClick={handleCreateCategory} size="sm" className="w-full sm:w-auto">
                   <Plus className="mr-2 h-4 w-4" />
                   {tCategories("createCategory")}
                 </Button>
@@ -196,4 +204,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-

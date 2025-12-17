@@ -115,7 +115,9 @@ export function ReceivablePaymentDialog({
           </div>
           <div className="flex justify-between text-sm">
             <span>{t("total")}:</span>
-            <span className="font-medium">{formatCurrency(receivable.total)}</span>
+            <span className="font-medium">
+              {formatCurrency(receivable.total)}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span>{t("balance")}:</span>
@@ -126,7 +128,10 @@ export function ReceivablePaymentDialog({
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="amount"
@@ -223,7 +228,9 @@ export function ReceivablePaymentDialog({
               name="note"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("note")} ({t("optional")})</FormLabel>
+                  <FormLabel>
+                    {t("note")} ({t("optional")})
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder={t("notePlaceholder")}
@@ -246,7 +253,9 @@ export function ReceivablePaymentDialog({
                 {t("cancel")}
               </Button>
               <Button type="submit" disabled={createPaymentMutation.isPending}>
-                {createPaymentMutation.isPending ? t("saving") : t("registerPayment")}
+                {createPaymentMutation.isPending
+                  ? t("saving")
+                  : t("registerPayment")}
               </Button>
             </div>
           </form>
@@ -255,4 +264,3 @@ export function ReceivablePaymentDialog({
     </Dialog>
   );
 }
-

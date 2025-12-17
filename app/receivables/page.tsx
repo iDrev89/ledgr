@@ -36,7 +36,8 @@ type FilterType = "all" | "pending";
 export default function ReceivablesPage() {
   const t = useTranslations("Receivables");
   const locale = useLocale();
-  const [selectedReceivable, setSelectedReceivable] = useState<ReceivableWithDetails | null>(null);
+  const [selectedReceivable, setSelectedReceivable] =
+    useState<ReceivableWithDetails | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -48,13 +49,13 @@ export default function ReceivablesPage() {
   // Filter receivables based on selected filter
   const filteredReceivables = useMemo(() => {
     if (!data?.receivables) return [];
-    
+
     if (filter === "pending") {
       return data.receivables.filter(
-        (r) => r.status === "OPEN" || r.status === "PARTIAL"
+        (r) => r.status === "OPEN" || r.status === "PARTIAL",
       );
     }
-    
+
     return data.receivables;
   }, [data?.receivables, filter]);
 
@@ -96,19 +97,19 @@ export default function ReceivablesPage() {
     }).format(parseFloat(value));
   };
 
-  const totalBalance = data?.receivables.reduce((sum, r) => sum + parseFloat(r.balance), 0) || 0;
+  const totalBalance =
+    data?.receivables.reduce((sum, r) => sum + parseFloat(r.balance), 0) || 0;
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        pageTitle={t("title")}
-        pageDes={t("description")}
-      />
+      <PageHeader pageTitle={t("title")} pageDes={t("description")} />
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("totalReceivables")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("totalReceivables")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data?.total || 0}</div>
@@ -116,7 +117,9 @@ export default function ReceivablesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("totalBalance")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("totalBalance")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
@@ -126,11 +129,15 @@ export default function ReceivablesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("openReceivables")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("openReceivables")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data?.receivables.filter(r => r.status === "OPEN" || r.status === "PARTIAL").length || 0}
+              {data?.receivables.filter(
+                (r) => r.status === "OPEN" || r.status === "PARTIAL",
+              ).length || 0}
             </div>
           </CardContent>
         </Card>
@@ -141,16 +148,17 @@ export default function ReceivablesPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <CardTitle>{t("receivablesList")}</CardTitle>
-              <CardDescription>{t("receivablesListDescription")}</CardDescription>
+              <CardDescription>
+                {t("receivablesListDescription")}
+              </CardDescription>
             </div>
-            <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterType)}>
+            <Tabs
+              value={filter}
+              onValueChange={(v) => setFilter(v as FilterType)}
+            >
               <TabsList>
-                <TabsTrigger value="all">
-                  {t("filterAll")}
-                </TabsTrigger>
-                <TabsTrigger value="pending">
-                  {t("filterPending")}
-                </TabsTrigger>
+                <TabsTrigger value="all">{t("filterAll")}</TabsTrigger>
+                <TabsTrigger value="pending">{t("filterPending")}</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -219,4 +227,3 @@ export default function ReceivablesPage() {
     </div>
   );
 }
-

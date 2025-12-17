@@ -28,7 +28,6 @@ model User {
   sales              Sale[]
   expenses           Expense[]
   purchases          Purchase[]
-  purchasePayments   PurchasePayment[]
   performedSaleItems SaleItem[]        @relation("ServicePerformer")
   payrollEntries     PayrollEntry[]
   payrollRunItems    PayrollRunItem[]
@@ -174,7 +173,7 @@ model Bank {
 
   salePayments        SalePayment[]
   receivablePayments  AccountsReceivablePayment[]
-  purchasePayments    PurchasePayment[]
+  purchases           Purchase[]
   expenses            Expense[]
   transactions        BankTransaction[]         @relation("BankMovements")
   transfersReceived   BankTransaction[]         @relation("TransferDestination")
@@ -369,26 +368,35 @@ model ExpenseItem {
 }
 
 model Purchase {
-  id          String         @id @default(cuid())
-  supplierId  String?
-  supplier    Supplier?      @relation(fields: [supplierId], references: [id])
-  currency    String         @default("COP")
-  invoiceNo   String?
-  status      PurchaseStatus @default(DRAFT)
-  note        String?
-  subtotal    Decimal        @db.Decimal(12, 2)
-  taxTotal    Decimal        @db.Decimal(12, 2) @default(0)
-  total       Decimal        @db.Decimal(12, 2)
-  createdById String?
-  createdBy   User?          @relation(fields: [createdById], references: [id])
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  purchaseNumber Int            @unique @default(autoincrement())
+  supplierId     String?
+  supplier       Supplier?      @relation(fields: [supplierId], references: [id])
+  currency       String         @default("COP")
+  invoiceNo      String?
+  status         PurchaseStatus @default(DRAFT)
+  note           String?
+  
+  // Campos de pago
+  paymentMethod  PaymentMethod  @default(CASH)
+  bankId         String?
+  bank           Bank?          @relation(fields: [bankId], references: [id])
+  reference      String?
+  
+  subtotal       Decimal        @db.Decimal(12, 2)
+  taxTotal       Decimal        @db.Decimal(12, 2) @default(0)
+  total          Decimal        @db.Decimal(12, 2)
+  createdById    String?
+  createdBy      User?          @relation(fields: [createdById], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
-  items    PurchaseItem[]
-  payments PurchasePayment[]
+  items           PurchaseItem[]
+  bankTransaction BankTransaction? @relation("FromPurchase")
 
   @@index([supplierId, invoiceNo])
   @@index([status, createdAt])
+  @@index([bankId])
   @@map("purchase")
 }
 
@@ -408,24 +416,6 @@ model PurchaseItem {
   @@map("purchase_item")
 }
 
-model PurchasePayment {
-  id          String        @id @default(cuid())
-  purchaseId  String
-  amount      Decimal       @db.Decimal(12, 2)
-  paidAt      DateTime      @default(now())
-  method      PaymentMethod
-  reference   String?
-  bankId      String?
-  bank        Bank?         @relation(fields: [bankId], references: [id])
-  createdById String?
-  createdBy   User?         @relation(fields: [createdById], references: [id])
-
-  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
-
-  @@index([purchaseId, paidAt])
-  @@index([bankId])
-  @@map("purchase_payment")
-}
 
 model StockMovement {
   id        String        @id @default(cuid())
@@ -560,6 +550,8 @@ model BankTransaction {
   receivablePayment   AccountsReceivablePayment?   @relation("FromReceivablePayment", fields: [receivablePaymentId], references: [id])
   expenseId           String?                      @unique
   expense             Expense?                     @relation("FromExpense", fields: [expenseId], references: [id])
+  purchaseId          String?                      @unique
+  purchase            Purchase?                    @relation("FromPurchase", fields: [purchaseId], references: [id])
   relatedBankId       String?
   relatedBank         Bank?                        @relation("TransferDestination", fields: [relatedBankId], references: [id])
   transferPairId      String?                      @unique

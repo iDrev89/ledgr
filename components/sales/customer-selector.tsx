@@ -45,7 +45,7 @@ export function CustomerSelector({
   const customers = data?.customers || [];
 
   const selectedCustomer = customers.find((c) => c.id === value);
-  
+
   // Update last known name when customer is found
   useEffect(() => {
     if (selectedCustomer?.name) {
@@ -86,7 +86,9 @@ export function CustomerSelector({
           >
             {value ? (
               <span className="truncate">
-                {selectedCustomer?.name || lastCustomerName || t("selectCustomer")}
+                {selectedCustomer?.name ||
+                  lastCustomerName ||
+                  t("selectCustomer")}
               </span>
             ) : (
               <span className="text-muted-foreground">
@@ -98,9 +100,7 @@ export function CustomerSelector({
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
           <Command shouldFilter={true}>
-            <CommandInput
-              placeholder={t("searchCustomer")}
-            />
+            <CommandInput placeholder={t("searchCustomer")} />
             <CommandList>
               {/* Fixed Create Button - Always visible at the top */}
               <CommandGroup>
@@ -114,10 +114,10 @@ export function CustomerSelector({
                   </span>
                 </CommandItem>
               </CommandGroup>
-              
+
               {/* Separator */}
               <div className="border-b" />
-              
+
               {/* Filterable Customers List */}
               <CommandEmpty>
                 <div className="flex flex-col items-center justify-center gap-2 py-6">
@@ -127,7 +127,9 @@ export function CustomerSelector({
                   </p>
                 </div>
               </CommandEmpty>
-              <CommandGroup heading={customers.length > 0 ? t("customers") : undefined}>
+              <CommandGroup
+                heading={customers.length > 0 ? t("customers") : undefined}
+              >
                 {customers.map((customer) => (
                   <CommandItem
                     key={customer.id}
@@ -142,7 +144,7 @@ export function CustomerSelector({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === customer.id ? "opacity-100" : "opacity-0"
+                        value === customer.id ? "opacity-100" : "opacity-0",
                       )}
                     />
                     <div className="flex flex-col">
@@ -169,4 +171,3 @@ export function CustomerSelector({
     </>
   );
 }
-

@@ -59,4 +59,3 @@ export const TransferDialog = ({
     </Dialog>
   );
 };
-

@@ -74,7 +74,7 @@ export const getExpenseCategories = async (params?: {
 };
 
 export const getExpenseCategory = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<ExpenseCategoryWithRelations>> => {
   const t = await getTranslations("ExpenseCategories.errors");
 
@@ -108,7 +108,7 @@ export const getExpenseCategory = async (
 };
 
 export const createExpenseCategory = async (
-  input: CreateExpenseCategoryInput
+  input: CreateExpenseCategoryInput,
 ): Promise<ActionResponse<ExpenseCategoryWithRelations>> => {
   const t = await getTranslations("ExpenseCategories.errors");
 
@@ -155,7 +155,7 @@ export const createExpenseCategory = async (
 };
 
 export const updateExpenseCategory = async (
-  input: UpdateExpenseCategoryInput
+  input: UpdateExpenseCategoryInput,
 ): Promise<ActionResponse<ExpenseCategoryWithRelations>> => {
   const t = await getTranslations("ExpenseCategories.errors");
 
@@ -215,7 +215,7 @@ export const updateExpenseCategory = async (
 };
 
 export const deleteExpenseCategory = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("ExpenseCategories.errors");
 
@@ -258,4 +258,3 @@ export const deleteExpenseCategory = async (
     };
   }
 };
-

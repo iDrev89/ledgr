@@ -13,7 +13,10 @@ import {
   type UpdateTransactionInput,
   type CreateTransferInput,
 } from "@/lib/validations/bank-transactions";
-import type { BankTransactionWithRelations, BankWithBalance } from "@/lib/types/bank-transactions";
+import type {
+  BankTransactionWithRelations,
+  BankWithBalance,
+} from "@/lib/types/bank-transactions";
 import { Decimal } from "@prisma/client/runtime/library";
 
 // Definir el enum localmente
@@ -54,7 +57,8 @@ const serializeTransaction = (transaction: any): any => {
             ? {
                 ...transaction.salePayment.sale,
                 subtotal: transaction.salePayment.sale.subtotal?.toString(),
-                discountTotal: transaction.salePayment.sale.discountTotal?.toString(),
+                discountTotal:
+                  transaction.salePayment.sale.discountTotal?.toString(),
                 taxTotal: transaction.salePayment.sale.taxTotal?.toString(),
                 total: transaction.salePayment.sale.total?.toString(),
               }
@@ -68,8 +72,10 @@ const serializeTransaction = (transaction: any): any => {
           receivable: transaction.receivablePayment.receivable
             ? {
                 ...transaction.receivablePayment.receivable,
-                total: transaction.receivablePayment.receivable.total?.toString(),
-                balance: transaction.receivablePayment.receivable.balance?.toString(),
+                total:
+                  transaction.receivablePayment.receivable.total?.toString(),
+                balance:
+                  transaction.receivablePayment.receivable.balance?.toString(),
               }
             : undefined,
         }
@@ -90,7 +96,12 @@ export const getBankTransactions = async (params?: {
   endDate?: Date;
   limit?: number;
   offset?: number;
-}): Promise<ActionResponse<{ transactions: BankTransactionWithRelations[]; total: number }>> => {
+}): Promise<
+  ActionResponse<{
+    transactions: BankTransactionWithRelations[];
+    total: number;
+  }>
+> => {
   const t = await getTranslations("BankTransactions.errors");
 
   try {
@@ -153,7 +164,10 @@ export const getBankTransactions = async (params?: {
 
     const serializedTransactions = transactions.map(serializeTransaction);
 
-    return { success: true, data: { transactions: serializedTransactions, total } };
+    return {
+      success: true,
+      data: { transactions: serializedTransactions, total },
+    };
   } catch (error) {
     console.error("Error fetching bank transactions:", error);
     return {
@@ -164,7 +178,7 @@ export const getBankTransactions = async (params?: {
 };
 
 export const getBankTransaction = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<BankTransactionWithRelations>> => {
   const t = await getTranslations("BankTransactions.errors");
 
@@ -198,7 +212,7 @@ export const getBankTransaction = async (
 };
 
 export const createBankTransaction = async (
-  input: CreateTransactionInput
+  input: CreateTransactionInput,
 ): Promise<ActionResponse<BankTransactionWithRelations>> => {
   const t = await getTranslations("BankTransactions.errors");
 
@@ -245,8 +259,13 @@ export const createBankTransaction = async (
 };
 
 export const createBankTransfer = async (
-  input: CreateTransferInput
-): Promise<ActionResponse<{ from: BankTransactionWithRelations; to: BankTransactionWithRelations }>> => {
+  input: CreateTransferInput,
+): Promise<
+  ActionResponse<{
+    from: BankTransactionWithRelations;
+    to: BankTransactionWithRelations;
+  }>
+> => {
   const t = await getTranslations("BankTransactions.errors");
 
   try {
@@ -275,7 +294,8 @@ export const createBankTransfer = async (
           bankId: validated.fromBankId,
           type: BankTransactionType.TRANSFER_OUT,
           amount: new Decimal(validated.amount).negated(),
-          description: validated.description || `Transferencia a ${toBank.name}`,
+          description:
+            validated.description || `Transferencia a ${toBank.name}`,
           reference: validated.reference || null,
           transactionDate: validated.transactionDate,
           relatedBankId: validated.toBankId,
@@ -294,7 +314,8 @@ export const createBankTransfer = async (
           bankId: validated.toBankId,
           type: BankTransactionType.TRANSFER_IN,
           amount: new Decimal(validated.amount),
-          description: validated.description || `Transferencia desde ${fromBank.name}`,
+          description:
+            validated.description || `Transferencia desde ${fromBank.name}`,
           reference: validated.reference || null,
           transactionDate: validated.transactionDate,
           relatedBankId: validated.fromBankId,
@@ -332,7 +353,7 @@ export const createBankTransfer = async (
 };
 
 export const updateBankTransaction = async (
-  input: UpdateTransactionInput
+  input: UpdateTransactionInput,
 ): Promise<ActionResponse<BankTransactionWithRelations>> => {
   const t = await getTranslations("BankTransactions.errors");
 
@@ -349,13 +370,19 @@ export const updateBankTransaction = async (
     }
 
     // No permitir editar transferencias (tienen pares)
-    if (existing.type === BankTransactionType.TRANSFER_IN || 
-        existing.type === BankTransactionType.TRANSFER_OUT) {
+    if (
+      existing.type === BankTransactionType.TRANSFER_IN ||
+      existing.type === BankTransactionType.TRANSFER_OUT
+    ) {
       return { success: false, error: t("cannotEditTransfer") };
     }
 
     // No permitir editar transacciones vinculadas a pagos o gastos
-    if (existing.salePaymentId || existing.receivablePaymentId || existing.expenseId) {
+    if (
+      existing.salePaymentId ||
+      existing.receivablePaymentId ||
+      existing.expenseId
+    ) {
       return { success: false, error: t("cannotEditLinked") };
     }
 
@@ -388,7 +415,7 @@ export const updateBankTransaction = async (
 };
 
 export const deleteBankTransaction = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("BankTransactions.errors");
 
@@ -404,13 +431,19 @@ export const deleteBankTransaction = async (
     }
 
     // No permitir eliminar transferencias (tienen pares)
-    if (transaction.type === BankTransactionType.TRANSFER_IN || 
-        transaction.type === BankTransactionType.TRANSFER_OUT) {
+    if (
+      transaction.type === BankTransactionType.TRANSFER_IN ||
+      transaction.type === BankTransactionType.TRANSFER_OUT
+    ) {
       return { success: false, error: t("cannotDeleteTransfer") };
     }
 
     // No permitir eliminar transacciones vinculadas a pagos o gastos
-    if (transaction.salePaymentId || transaction.receivablePaymentId || transaction.expenseId) {
+    if (
+      transaction.salePaymentId ||
+      transaction.receivablePaymentId ||
+      transaction.expenseId
+    ) {
       return { success: false, error: t("cannotDeleteLinked") };
     }
 
@@ -431,7 +464,9 @@ export const deleteBankTransaction = async (
   }
 };
 
-export const getBanksWithBalance = async (): Promise<ActionResponse<BankWithBalance[]>> => {
+export const getBanksWithBalance = async (): Promise<
+  ActionResponse<BankWithBalance[]>
+> => {
   const t = await getTranslations("BankTransactions.errors");
 
   try {
@@ -461,7 +496,7 @@ export const getBanksWithBalance = async (): Promise<ActionResponse<BankWithBala
         const transactionsTotal = result._sum.amount
           ? parseFloat(result._sum.amount.toString())
           : 0;
-        
+
         const currentBalance = transactionsTotal;
 
         return {
@@ -474,7 +509,7 @@ export const getBanksWithBalance = async (): Promise<ActionResponse<BankWithBala
           currentBalance,
           transactionCount: bank._count.transactions,
         };
-      })
+      }),
     );
 
     return { success: true, data: banksWithBalance as any };
@@ -486,4 +521,3 @@ export const getBanksWithBalance = async (): Promise<ActionResponse<BankWithBala
     };
   }
 };
-

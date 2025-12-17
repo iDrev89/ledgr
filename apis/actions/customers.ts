@@ -64,13 +64,14 @@ export const getCustomers = async (params?: {
     console.error("Error fetching customers:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch customers",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch customers",
     };
   }
 };
 
 export const getCustomer = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -88,13 +89,14 @@ export const getCustomer = async (
     console.error("Error fetching customer:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch customer",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch customer",
     };
   }
 };
 
 export const createCustomer = async (
-  input: CreateCustomerInput
+  input: CreateCustomerInput,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -118,17 +120,21 @@ export const createCustomer = async (
   } catch (error) {
     console.error("Error creating customer:", error);
     if (error instanceof Error && error.message.includes("Unique constraint")) {
-      return { success: false, error: "A customer with this email already exists" };
+      return {
+        success: false,
+        error: "A customer with this email already exists",
+      };
     }
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create customer",
+      error:
+        error instanceof Error ? error.message : "Failed to create customer",
     };
   }
 };
 
 export const updateCustomer = async (
-  input: UpdateCustomerInput
+  input: UpdateCustomerInput,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -154,17 +160,21 @@ export const updateCustomer = async (
   } catch (error) {
     console.error("Error updating customer:", error);
     if (error instanceof Error && error.message.includes("Unique constraint")) {
-      return { success: false, error: "A customer with this email already exists" };
+      return {
+        success: false,
+        error: "A customer with this email already exists",
+      };
     }
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update customer",
+      error:
+        error instanceof Error ? error.message : "Failed to update customer",
     };
   }
 };
 
 export const deleteCustomer = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   try {
     await requireAuth();
@@ -203,7 +213,8 @@ export const deleteCustomer = async (
     console.error("Error deleting customer:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete customer",
+      error:
+        error instanceof Error ? error.message : "Failed to delete customer",
     };
   }
 };

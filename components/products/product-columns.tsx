@@ -39,7 +39,7 @@ const formatCurrency = (value: number | string) => {
 };
 
 export const createProductColumns = (
-  actions: ProductColumnActions
+  actions: ProductColumnActions,
 ): ColumnDef<Product>[] => [
   {
     accessorKey: "name",
@@ -96,7 +96,7 @@ export const createProductColumns = (
       return (
         <Badge variant={type === ProductType.PRODUCT ? "default" : "secondary"}>
           {actions.t(
-            type === ProductType.PRODUCT ? "typeProduct" : "typeService"
+            type === ProductType.PRODUCT ? "typeProduct" : "typeService",
           )}
         </Badge>
       );

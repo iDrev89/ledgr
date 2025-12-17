@@ -74,7 +74,7 @@ interface PayrollRunDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (
-    data: CreatePayrollRunInput & { userIds?: string[] }
+    data: CreatePayrollRunInput & { userIds?: string[] },
   ) => Promise<void>;
   isLoading?: boolean;
 }
@@ -97,13 +97,13 @@ export function PayrollRunDialog({
   const [userSearchOpen, setUserSearchOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingData, setPendingData] = useState<CreatePayrollRunInput | null>(
-    null
+    null,
   );
 
   const { data: usersData } = useUsers();
   // Filtrar solo usuarios con rol "user" (empleados)
   const users = (usersData?.users || []).filter(
-    (user: any) => user.role === "user"
+    (user: any) => user.role === "user",
   );
 
   const form = useForm<CreatePayrollRunInput>({
@@ -144,7 +144,7 @@ export function PayrollRunDialog({
       form.setValue("endDate", endOfDay.toISOString());
       form.setValue(
         "periodLabel",
-        format(selectedDate, "dd MMMM yyyy", { locale: es })
+        format(selectedDate, "dd MMMM yyyy", { locale: es }),
       );
     } else if (periodType === PayrollPeriodType.BIWEEKLY) {
       const year = selectedMonth.getFullYear();
@@ -201,7 +201,7 @@ export function PayrollRunDialog({
     setSelectedUserIds((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+        : [...prev, userId],
     );
   };
 
@@ -269,7 +269,7 @@ export function PayrollRunDialog({
                       variant="outline"
                       className={cn(
                         "w-full justify-between font-normal",
-                        !selectedDate && "text-muted-foreground"
+                        !selectedDate && "text-muted-foreground",
                       )}
                       disabled={isLoading}
                     >
@@ -375,7 +375,7 @@ export function PayrollRunDialog({
                     role="combobox"
                     className={cn(
                       "w-full justify-between font-normal",
-                      selectedUserIds.length === 0 && "text-muted-foreground"
+                      selectedUserIds.length === 0 && "text-muted-foreground",
                     )}
                     disabled={isLoading}
                   >
@@ -398,7 +398,7 @@ export function PayrollRunDialog({
                             "mr-2 h-4 w-4",
                             selectedUserIds.length === 0
                               ? "opacity-100"
-                              : "opacity-0"
+                              : "opacity-0",
                           )}
                         />
                         {t("allUsers")}
@@ -413,7 +413,7 @@ export function PayrollRunDialog({
                               "mr-2 h-4 w-4",
                               selectedUserIds.includes(user.id)
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           <div className="flex flex-col">
@@ -475,9 +475,7 @@ export function PayrollRunDialog({
             <div className="text-sm text-muted-foreground">
               {pendingData && (
                 <div className="space-y-3">
-                  <div className="font-medium">
-                    {t("confirmDescription")}
-                  </div>
+                  <div className="font-medium">{t("confirmDescription")}</div>
                   <ul className="list-disc list-inside space-y-1">
                     <li>
                       <strong>{t("confirmPeriodLabel")}</strong>{" "}
@@ -494,9 +492,7 @@ export function PayrollRunDialog({
                       {getSelectedUsersLabel()}
                     </li>
                   </ul>
-                  <div className="text-xs">
-                    {t("confirmAutoCalculate")}
-                  </div>
+                  <div className="text-xs">{t("confirmAutoCalculate")}</div>
                 </div>
               )}
             </div>

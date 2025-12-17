@@ -29,17 +29,30 @@ export default function ExpensesPage() {
   const tCategories = useTranslations("ExpenseCategories");
   const locale = useLocale();
 
-  const [selectedExpense, setSelectedExpense] = useState<ExpenseWithDetails | null>(null);
+  const [selectedExpense, setSelectedExpense] =
+    useState<ExpenseWithDetails | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  
+
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
-  const [expenseToEdit, setExpenseToEdit] = useState<ExpenseWithDetails | undefined>(undefined);
+  const [expenseToEdit, setExpenseToEdit] = useState<
+    ExpenseWithDetails | undefined
+  >(undefined);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<ExpenseCategoryWithRelations | undefined>(undefined);
+  const [categoryToEdit, setCategoryToEdit] = useState<
+    ExpenseCategoryWithRelations | undefined
+  >(undefined);
 
-  const { data: expensesData, isLoading: expensesLoading, error: expensesError } = useExpenses();
-  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useExpenseCategories();
+  const {
+    data: expensesData,
+    isLoading: expensesLoading,
+    error: expensesError,
+  } = useExpenses();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useExpenseCategories();
 
   const handleCreateExpense = () => {
     setExpenseToEdit(undefined);
@@ -82,14 +95,14 @@ export default function ExpensesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("title")}
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <Button onClick={handleCreateExpense}>
+        <Button onClick={handleCreateExpense} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           {t("createExpense")}
         </Button>
@@ -158,14 +171,14 @@ export default function ExpensesPage() {
         <TabsContent value="categories">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <CardTitle>{tCategories("categoryList")}</CardTitle>
                   <CardDescription>
                     {tCategories("categoryListDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateCategory} size="sm">
+                <Button onClick={handleCreateCategory} size="sm" className="w-full sm:w-auto">
                   <Plus className="mr-2 h-4 w-4" />
                   {tCategories("createCategory")}
                 </Button>
@@ -221,4 +234,3 @@ export default function ExpensesPage() {
     </div>
   );
 }
-

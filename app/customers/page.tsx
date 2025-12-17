@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CustomerTable } from "@/components/customers/customer-table";
 import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
@@ -15,7 +21,9 @@ import type { Customer } from "@/lib/types/customer";
 export default function CustomersPage() {
   const t = useTranslations("Customers");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>();
+  const [selectedCustomer, setSelectedCustomer] = useState<
+    Customer | undefined
+  >();
 
   const { data, isLoading, error } = useCustomers();
 
@@ -36,14 +44,14 @@ export default function CustomersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("title")}
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <Button onClick={handleCreate}>
+        <Button onClick={handleCreate} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           {t("createCustomer")}
         </Button>

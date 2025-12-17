@@ -1,6 +1,7 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ReceivableCard } from "./receivable-card";
 import { createReceivableColumns } from "./receivable-columns";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 
@@ -21,17 +22,34 @@ export function ReceivableTable({
   t,
   locale,
 }: ReceivableTableProps) {
-  const columns = createReceivableColumns({ onView, onPayment, onCancel, t, locale });
+  const columns = createReceivableColumns({
+    onView,
+    onPayment,
+    onCancel,
+    t,
+    locale,
+  });
 
   return (
-    <DataTable
+    <ResponsiveDataView
       columns={columns}
+      renderCard={(receivable) => (
+        <ReceivableCard
+          receivable={receivable}
+          onView={() => onView(receivable)}
+          onPayment={() => onPayment(receivable)}
+          onCancel={() => onCancel(receivable)}
+          locale={locale}
+        />
+      )}
       data={receivables}
       searchKey={["customer.name", "sale.saleNumber"]}
       searchPlaceholder={t("searchPlaceholder")}
       showPagination={true}
       pageSize={10}
+      emptyMessage={t("noReceivables")}
+      onView={onView}
+      locale={locale}
     />
   );
 }
-

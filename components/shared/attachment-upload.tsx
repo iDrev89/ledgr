@@ -62,7 +62,9 @@ export function AttachmentUpload({
 
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {
-          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          const percentComplete = Math.round(
+            (event.loaded / event.total) * 100,
+          );
           setUploadState((prev) => ({ ...prev, progress: percentComplete }));
         }
       });
@@ -136,7 +138,7 @@ export function AttachmentUpload({
 
       // Notificar éxito
       toast.success("Comprobante subido exitosamente");
-      
+
       // Retornar la URL final
       onUploadComplete(result.data.url);
 
@@ -152,7 +154,7 @@ export function AttachmentUpload({
         {
           position: "bottom-right",
           duration: 5000,
-        }
+        },
       );
       resetFile();
     }
@@ -170,7 +172,12 @@ export function AttachmentUpload({
   };
 
   const resetFile = () => {
-    setUploadState({ file: null, preview: null, progress: 0, uploading: false });
+    setUploadState({
+      file: null,
+      preview: null,
+      progress: 0,
+      uploading: false,
+    });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -207,7 +214,9 @@ export function AttachmentUpload({
                 <label
                   htmlFor="attachment-upload"
                   className={`relative font-medium text-primary ${
-                    disabled ? "cursor-not-allowed" : "cursor-pointer hover:underline"
+                    disabled
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer hover:underline"
                   }`}
                 >
                   <span>Seleccionar archivo</span>
@@ -260,7 +269,10 @@ export function AttachmentUpload({
             {file && (
               <div className="flex items-center space-x-2.5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background shadow-sm ring-1 ring-inset ring-border">
-                  <Image className="h-5 w-5 text-foreground" aria-hidden={true} />
+                  <Image
+                    className="h-5 w-5 text-foreground"
+                    aria-hidden={true}
+                  />
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium text-foreground truncate">
@@ -277,7 +289,9 @@ export function AttachmentUpload({
             {uploading && (
               <div className="flex items-center space-x-3">
                 <Progress value={progress} className="h-1.5" />
-                <span className="text-xs text-muted-foreground">{progress}%</span>
+                <span className="text-xs text-muted-foreground">
+                  {progress}%
+                </span>
               </div>
             )}
 
@@ -293,4 +307,3 @@ export function AttachmentUpload({
     </div>
   );
 }
-

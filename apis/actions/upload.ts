@@ -1,7 +1,11 @@
 "use server";
 
 import { auth } from "@/auth/auth";
-import { generatePresignedUploadUrl, generatePresignedReadUrl, extractS3KeyFromUrl } from "@/lib/s3";
+import {
+  generatePresignedUploadUrl,
+  generatePresignedReadUrl,
+  extractS3KeyFromUrl,
+} from "@/lib/s3";
 import { headers } from "next/headers";
 
 const ALLOWED_IMAGE_TYPES = [
@@ -42,7 +46,7 @@ const requireAuth = async () => {
 };
 
 export const generateUploadPresignedUrl = async (
-  input: PresignedUrlInput
+  input: PresignedUrlInput,
 ): Promise<PresignedUrlResponse> => {
   try {
     await requireAuth();
@@ -75,7 +79,7 @@ export const generateUploadPresignedUrl = async (
     const result = await generatePresignedUploadUrl(
       fileName,
       contentType,
-      folder
+      folder,
     );
 
     return {
@@ -100,7 +104,7 @@ export const generateUploadPresignedUrl = async (
  * @returns Promise con la URL firmada temporal
  */
 export const getPresignedReadUrl = async (
-  url: string
+  url: string,
 ): Promise<{ success: boolean; url?: string; error?: string }> => {
   try {
     await requireAuth();

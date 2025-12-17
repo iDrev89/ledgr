@@ -116,7 +116,7 @@ export function useUpdateBankTransaction() {
     onSuccess: (updatedTransaction) => {
       queryClient.setQueryData(
         bankTransactionKeys.detail(updatedTransaction.id),
-        updatedTransaction
+        updatedTransaction,
       );
       queryClient.invalidateQueries({
         queryKey: bankTransactionKeys.lists(),
@@ -164,4 +164,3 @@ export function useBanksWithBalance() {
     },
   });
 }
-

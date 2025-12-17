@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteProduct } from "@/hooks/use-products";
 import type { Product } from "@/lib/types/product";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ProductCard } from "./product-card";
 import { createProductColumns } from "./product-columns";
 
 interface ProductTableProps {
@@ -49,23 +50,25 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
     t,
   });
 
-  if (products.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noProducts")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(product) => (
+          <ProductCard
+            product={product}
+            onEdit={() => onEdit(product)}
+            onDelete={() => setProductToDelete(product)}
+          />
+        )}
         data={products}
         searchKey={["name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noProducts")}
+        onEdit={onEdit}
+        onDelete={setProductToDelete}
       />
 
       <AlertDialog
@@ -103,4 +106,3 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
     </>
   );
 }
-

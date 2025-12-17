@@ -28,8 +28,14 @@ const formatCurrency = (value: string | number) => {
   }).format(numValue);
 };
 
-const getPaymentMethodBadge = (method: PaymentMethod, t: (key: string) => string) => {
-  const variants: Record<PaymentMethod, { label: string; variant: "default" | "secondary" | "outline" }> = {
+const getPaymentMethodBadge = (
+  method: PaymentMethod,
+  t: (key: string) => string,
+) => {
+  const variants: Record<
+    PaymentMethod,
+    { label: string; variant: "default" | "secondary" | "outline" }
+  > = {
     [PaymentMethod.CASH]: {
       label: t("paymentCash"),
       variant: "default",
@@ -60,17 +66,24 @@ const getPaymentMethodBadge = (method: PaymentMethod, t: (key: string) => string
   );
 };
 
-export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProps) {
+export function SaleCard({
+  sale,
+  onView,
+  onDelete,
+  locale = "es",
+}: SaleCardProps) {
   const t = useTranslations("Sales");
   const dateLocale = locale === "es" ? es : enUS;
-  const hasReceivable = sale.receivable && parseFloat(sale.receivable.balance) > 0;
+  const hasReceivable =
+    sale.receivable && parseFloat(sale.receivable.balance) > 0;
 
   // Obtener método de pago principal
-  const primaryPayment = sale.payments && sale.payments.length > 0 ? sale.payments[0] : null;
+  const primaryPayment =
+    sale.payments && sale.payments.length > 0 ? sale.payments[0] : null;
   const hasMultiplePayments = sale.payments && sale.payments.length > 1;
 
   return (
-    <Card 
+    <Card
       className="border-2 hover:border-primary/50 transition-all shadow-sm hover:shadow-md cursor-pointer"
       onClick={onView}
     >
@@ -83,9 +96,9 @@ export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProp
                 #{String(sale.saleNumber).padStart(4, "0")}
               </span>
               <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(sale.createdAt), { 
-                  addSuffix: true, 
-                  locale: dateLocale 
+                {formatDistanceToNow(new Date(sale.createdAt), {
+                  addSuffix: true,
+                  locale: dateLocale,
                 })}
               </span>
             </div>
@@ -124,10 +137,14 @@ export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProp
           <Package className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium">
-              {sale.items.length} {sale.items.length === 1 ? t("item") : t("items")}
+              {sale.items.length}{" "}
+              {sale.items.length === 1 ? t("item") : t("items")}
             </p>
             <p className="text-xs text-muted-foreground truncate">
-              {sale.items.slice(0, 2).map((item) => item.product.name).join(", ")}
+              {sale.items
+                .slice(0, 2)
+                .map((item) => item.product.name)
+                .join(", ")}
               {sale.items.length > 2 && ` +${sale.items.length - 2}`}
             </p>
           </div>
@@ -138,7 +155,9 @@ export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProp
           <CreditCard className="h-4 w-4 text-muted-foreground shrink-0" />
           {sale.payments && sale.payments.length > 0 ? (
             <div className="flex items-center gap-2 flex-wrap">
-              {primaryPayment && !hasMultiplePayments && getPaymentMethodBadge(primaryPayment.method, t)}
+              {primaryPayment &&
+                !hasMultiplePayments &&
+                getPaymentMethodBadge(primaryPayment.method, t)}
               {hasMultiplePayments && (
                 <Badge variant="secondary" className="font-normal">
                   {sale.payments.length} {t("payments")}
@@ -184,5 +203,3 @@ export function SaleCard({ sale, onView, onDelete, locale = "es" }: SaleCardProp
     </Card>
   );
 }
-
-

@@ -9,29 +9,34 @@ This document outlines the complete implementation plan for Ledgr, a comprehensi
 ## Database Schema Summary
 
 ### Core Models
+
 - **User** - Authentication and user management (with Better Auth)
 - **Customer** - Customer catalog
 - **Supplier** - Supplier catalog
 - **Product** - Products and Services (with ProductType enum)
 
 ### Sales Module
+
 - **Sale** - Sales records linked to User and Customer
 - **SaleItem** - Line items for each sale
 - **AccountsReceivable** - Accounts receivable (debtors)
 - **AccountsReceivablePayment** - Payments towards receivables
 
 ### Expense Module
+
 - **Expense** - Expense records
 - **ExpenseItem** - Expense line items
 - **ExpenseCategory** - Hierarchical expense categories
 
 ### Inventory & Purchasing
+
 - **Purchase** - Purchase orders
 - **PurchaseItem** - Purchase line items
 - **PurchasePayment** - Payments for purchases
 - **StockMovement** - Inventory movement log
 
 ### Payroll
+
 - **PayrollEntry** - Commissions, salaries, advances, adjustments
 
 ---
@@ -39,9 +44,11 @@ This document outlines the complete implementation plan for Ledgr, a comprehensi
 ## Phase 1 - Daily Operations (MVP)
 
 ### Goal
+
 Enable daily sales and expense tracking with basic reporting dashboard.
 
 ### Models Used
+
 - User (existing)
 - Customer
 - Product
@@ -52,13 +59,16 @@ Enable daily sales and expense tracking with basic reporting dashboard.
 ### Features to Implement
 
 #### 1.1 Customer Management
+
 **Frontend Components:**
+
 - `app/customers/page.tsx` - Customer list with search and filters
 - `components/customers/customer-form.tsx` - Create/edit customer form
 - `components/customers/customer-table.tsx` - Data table with actions
 - `components/customers/customer-details.tsx` - Customer detail view
 
 **Backend API Routes:**
+
 - `POST /api/customers` - Create customer
 - `GET /api/customers` - List customers (with pagination, search)
 - `GET /api/customers/[id]` - Get customer details
@@ -66,6 +76,7 @@ Enable daily sales and expense tracking with basic reporting dashboard.
 - `DELETE /api/customers/[id]` - Delete customer (soft delete if has sales)
 
 **Validations:**
+
 ```typescript
 // lib/validations/customer.ts
 customerSchema = {
@@ -78,7 +89,9 @@ customerSchema = {
 ```
 
 #### 1.2 Product/Service Catalog
+
 **Frontend Components:**
+
 - `app/products/page.tsx` - Product list with type filter (PRODUCT/SERVICE)
 - `components/products/product-form.tsx` - Create/edit product form
 - `components/products/product-table.tsx` - Data table with stock indicator
@@ -86,6 +99,7 @@ customerSchema = {
 - `components/products/product-type-toggle.tsx` - Toggle PRODUCT/SERVICE
 
 **Backend API Routes:**
+
 - `POST /api/products` - Create product
 - `GET /api/products` - List products (filter by type, active status)
 - `GET /api/products/[id]` - Get product details
@@ -93,6 +107,7 @@ customerSchema = {
 - `PATCH /api/products/[id]/toggle` - Toggle active status
 
 **Validations:**
+
 ```typescript
 // lib/validations/product.ts
 productSchema = {
@@ -107,7 +122,9 @@ productSchema = {
 ```
 
 #### 1.3 Sales Module
+
 **Frontend Components:**
+
 - `app/sales/page.tsx` - Sales list and overview
 - `app/sales/new/page.tsx` - Create new sale
 - `app/sales/[id]/page.tsx` - Sale detail view
@@ -118,6 +135,7 @@ productSchema = {
 - `components/sales/payment-method-select.tsx` - Payment method selector
 
 **Backend API Routes:**
+
 - `POST /api/sales` - Create sale (with items)
 - `GET /api/sales` - List sales (filter by date, customer, user)
 - `GET /api/sales/[id]` - Get sale details with items
@@ -125,6 +143,7 @@ productSchema = {
 - `DELETE /api/sales/[id]` - Cancel sale (admin only)
 
 **Business Logic:**
+
 ```typescript
 // Sale creation flow:
 1. Validate customer exists
@@ -140,6 +159,7 @@ productSchema = {
 ```
 
 **Validations:**
+
 ```typescript
 // lib/validations/sale.ts
 saleSchema = {
@@ -156,7 +176,9 @@ saleSchema = {
 ```
 
 #### 1.4 Expense Management
+
 **Frontend Components:**
+
 - `app/expenses/page.tsx` - Expense list and overview
 - `app/expenses/new/page.tsx` - Create new expense
 - `app/expenses/[id]/page.tsx` - Expense detail view
@@ -166,6 +188,7 @@ saleSchema = {
 - `components/expenses/supplier-select.tsx` - Supplier dropdown with create
 
 **Backend API Routes:**
+
 - `POST /api/expenses` - Create expense
 - `GET /api/expenses` - List expenses (filter by date, category, supplier)
 - `GET /api/expenses/[id]` - Get expense details
@@ -176,6 +199,7 @@ saleSchema = {
 - `GET /api/suppliers` - List suppliers
 
 **Validations:**
+
 ```typescript
 // lib/validations/expense.ts
 expenseSchema = {
@@ -197,7 +221,9 @@ expenseSchema = {
 ```
 
 #### 1.5 Dashboard
+
 **Frontend Components:**
+
 - `app/dashboard/page.tsx` - Main dashboard (role-specific views)
 - `components/dashboard/revenue-card.tsx` - Total revenue metric
 - `components/dashboard/expense-card.tsx` - Total expenses metric
@@ -209,6 +235,7 @@ expenseSchema = {
 - `components/dashboard/user-activity.tsx` - Activity by collaborator (admin only)
 
 **Backend API Routes:**
+
 - `GET /api/dashboard/metrics` - Key metrics (revenue, expenses, profit)
 - `GET /api/dashboard/sales-trend` - Sales data for charts (daily/weekly/monthly)
 - `GET /api/dashboard/expense-breakdown` - Expenses by category
@@ -216,6 +243,7 @@ expenseSchema = {
 - `GET /api/dashboard/user-activity` - Sales/expenses by user (admin only)
 
 **Metrics Calculations:**
+
 ```typescript
 // Period-based metrics (today, week, month, custom range)
 - Total Revenue: SUM(Sale.total) WHERE createdAt IN period
@@ -228,6 +256,7 @@ expenseSchema = {
 ```
 
 ### i18n Keys Required
+
 ```json
 // messages/en.json & es.json
 {
@@ -279,6 +308,7 @@ expenseSchema = {
 ```
 
 ### Testing Checklist
+
 - [ ] Customer CRUD operations
 - [ ] Product CRUD with type filter
 - [ ] Sale creation with multiple items
@@ -294,39 +324,47 @@ expenseSchema = {
 ## Phase 2 - Payroll & Financial Reports
 
 ### Goal
+
 Automate commission and salary calculations, generate period-based financial reports.
 
 ### Models Used
+
 - PayrollEntry
 - All Phase 1 models
 
 ### Features to Implement
 
 #### 2.1 Commission Rules Configuration
+
 **Frontend Components:**
+
 - `app/settings/commissions/page.tsx` - Commission rules setup
 - `components/payroll/commission-rule-form.tsx` - Rule configuration form
 - `components/payroll/commission-preview.tsx` - Preview commission calculation
 
 **Backend API Routes:**
+
 - `POST /api/payroll/commission-rules` - Create commission rule
 - `GET /api/payroll/commission-rules` - List rules
 - `PUT /api/payroll/commission-rules/[id]` - Update rule
 
 **Commission Rule Structure:**
+
 ```typescript
 // Stored as JSON configuration
 type CommissionRule = {
-  userId?: string // null = applies to all
-  productType?: ProductType // null = all types
-  percentage: number // 0-100
-  minAmount?: number // minimum sale amount to apply
-  priority: number // rule priority
-}
+  userId?: string; // null = applies to all
+  productType?: ProductType; // null = all types
+  percentage: number; // 0-100
+  minAmount?: number; // minimum sale amount to apply
+  priority: number; // rule priority
+};
 ```
 
 #### 2.2 Payroll Management
+
 **Frontend Components:**
+
 - `app/payroll/page.tsx` - Payroll overview by period
 - `app/payroll/[period]/page.tsx` - Period detail view
 - `components/payroll/payroll-summary.tsx` - Period summary by user
@@ -335,6 +373,7 @@ type CommissionRule = {
 - `components/payroll/payroll-export.tsx` - Export to Excel
 
 **Backend API Routes:**
+
 - `POST /api/payroll/calculate` - Calculate commissions for period
 - `GET /api/payroll` - List periods
 - `GET /api/payroll/[period]` - Get period details
@@ -342,6 +381,7 @@ type CommissionRule = {
 - `GET /api/payroll/user/[userId]` - User payroll history
 
 **Business Logic:**
+
 ```typescript
 // Commission calculation for period (e.g., "2025-10" or "2025-W40")
 1. Get all sales for period WHERE createdById = userId
@@ -359,43 +399,48 @@ type CommissionRule = {
 ```
 
 #### 2.3 Income Statement (Estado de Resultados)
+
 **Frontend Components:**
+
 - `app/reports/income-statement/page.tsx` - Income statement report
 - `components/reports/income-statement-table.tsx` - Formatted report table
 - `components/reports/period-selector.tsx` - Date range selector
 - `components/reports/comparison-view.tsx` - Period comparison
 
 **Backend API Routes:**
+
 - `GET /api/reports/income-statement` - Generate income statement
 
 **Report Structure:**
+
 ```typescript
 type IncomeStatement = {
-  period: { start: Date, end: Date }
+  period: { start: Date; end: Date };
   revenue: {
-    totalSales: number
-    salesByType: { product: number, service: number }
-  }
+    totalSales: number;
+    salesByType: { product: number; service: number };
+  };
   costOfGoodsSold: {
-    totalCost: number // sum of product costs from sales
-    grossProfit: number // revenue - COGS
-    grossMargin: number // (grossProfit / revenue) * 100
-  }
+    totalCost: number; // sum of product costs from sales
+    grossProfit: number; // revenue - COGS
+    grossMargin: number; // (grossProfit / revenue) * 100
+  };
   operatingExpenses: {
-    byCategory: { categoryName: string, amount: number }[]
-    total: number
-  }
+    byCategory: { categoryName: string; amount: number }[];
+    total: number;
+  };
   payroll: {
-    commissions: number
-    salaries: number
-    total: number
-  }
-  netIncome: number // revenue - COGS - expenses - payroll
-  netMargin: number // (netIncome / revenue) * 100
-}
+    commissions: number;
+    salaries: number;
+    total: number;
+  };
+  netIncome: number; // revenue - COGS - expenses - payroll
+  netMargin: number; // (netIncome / revenue) * 100
+};
 ```
 
 ### i18n Keys Required
+
 ```json
 {
   "payroll": {
@@ -420,6 +465,7 @@ type IncomeStatement = {
 ```
 
 ### Testing Checklist
+
 - [ ] Commission calculation accuracy
 - [ ] Manual payroll entries (salary, advance, adjustment)
 - [ ] Period-based payroll summary
@@ -432,9 +478,11 @@ type IncomeStatement = {
 ## Phase 3 - Inventory & Accounts Receivable
 
 ### Goal
+
 Implement stock control with alerts and manage customer debts with payment tracking.
 
 ### Models Used
+
 - StockMovement
 - AccountsReceivable
 - AccountsReceivablePayment
@@ -443,7 +491,9 @@ Implement stock control with alerts and manage customer debts with payment track
 ### Features to Implement
 
 #### 3.1 Inventory Management
+
 **Frontend Components:**
+
 - `app/inventory/page.tsx` - Inventory overview with stock levels
 - `app/inventory/movements/page.tsx` - Movement history
 - `app/inventory/adjustments/page.tsx` - Manual adjustments
@@ -453,12 +503,14 @@ Implement stock control with alerts and manage customer debts with payment track
 - `components/inventory/adjustment-form.tsx` - Manual adjustment form
 
 **Backend API Routes:**
+
 - `GET /api/inventory` - Current stock levels (calculated from movements)
 - `GET /api/inventory/movements` - Movement history
 - `POST /api/inventory/adjustments` - Create manual adjustment
 - `GET /api/inventory/alerts` - Products with low stock
 
 **Business Logic:**
+
 ```typescript
 // Current stock calculation (per product)
 1. Get all StockMovement WHERE productId = id
@@ -476,6 +528,7 @@ Implement stock control with alerts and manage customer debts with payment track
 ```
 
 **Product Model Update:**
+
 ```typescript
 // Add to Product model
 model Product {
@@ -486,7 +539,9 @@ model Product {
 ```
 
 #### 3.2 Purchase Orders
+
 **Frontend Components:**
+
 - `app/purchases/page.tsx` - Purchase order list
 - `app/purchases/new/page.tsx` - Create purchase order
 - `app/purchases/[id]/page.tsx` - Purchase detail with payment history
@@ -496,6 +551,7 @@ model Product {
 - `components/purchases/receive-form.tsx` - Receive items form
 
 **Backend API Routes:**
+
 - `POST /api/purchases` - Create purchase order (status = DRAFT)
 - `GET /api/purchases` - List purchases (filter by status, supplier)
 - `GET /api/purchases/[id]` - Get purchase details
@@ -504,6 +560,7 @@ model Product {
 - `POST /api/purchases/[id]/payments` - Record payment
 
 **Purchase Flow:**
+
 ```typescript
 // Purchase lifecycle
 1. DRAFT: Initial creation, can be edited
@@ -524,7 +581,9 @@ model Product {
 ```
 
 #### 3.3 Accounts Receivable (AR)
+
 **Frontend Components:**
+
 - `app/receivables/page.tsx` - Receivables overview
 - `app/receivables/[id]/page.tsx` - Receivable detail with payment history
 - `components/receivables/receivable-table.tsx` - Receivables data table
@@ -533,6 +592,7 @@ model Product {
 - `components/receivables/aging-report.tsx` - Aging analysis (30/60/90 days)
 
 **Backend API Routes:**
+
 - `POST /api/receivables` - Create receivable (manual or from sale)
 - `GET /api/receivables` - List receivables (filter by status, customer)
 - `GET /api/receivables/[id]` - Get receivable details
@@ -540,6 +600,7 @@ model Product {
 - `GET /api/receivables/aging` - Aging report
 
 **Business Logic:**
+
 ```typescript
 // Create receivable from sale (during sale creation)
 - If paymentMethod = "OTHER" or customer requests credit:
@@ -569,6 +630,7 @@ model Product {
 ```
 
 ### i18n Keys Required
+
 ```json
 {
   "inventory": {
@@ -604,6 +666,7 @@ model Product {
 ```
 
 ### Testing Checklist
+
 - [ ] Stock calculation accuracy
 - [ ] Stock movements on purchase receive
 - [ ] Low stock alerts
@@ -618,89 +681,102 @@ model Product {
 ## Phase 4 - Advanced Financial Reports
 
 ### Goal
+
 Generate comprehensive financial reports with export capabilities (PDF/Excel).
 
 ### Features to Implement
 
 #### 4.1 Cash Flow Statement
+
 **Frontend Components:**
+
 - `app/reports/cash-flow/page.tsx` - Cash flow statement
 - `components/reports/cash-flow-table.tsx` - Formatted report
 
 **Backend API Routes:**
+
 - `GET /api/reports/cash-flow` - Generate cash flow statement
 
 **Report Structure:**
+
 ```typescript
 type CashFlowStatement = {
-  period: { start: Date, end: Date }
+  period: { start: Date; end: Date };
   operatingActivities: {
-    cashFromSales: number
-    cashFromReceivables: number // payments received
-    cashPaidToSuppliers: number // purchase payments
-    cashPaidForExpenses: number
-    cashPaidForPayroll: number
-    netOperatingCash: number
-  }
+    cashFromSales: number;
+    cashFromReceivables: number; // payments received
+    cashPaidToSuppliers: number; // purchase payments
+    cashPaidForExpenses: number;
+    cashPaidForPayroll: number;
+    netOperatingCash: number;
+  };
   investingActivities: {
     // Future: equipment purchases, etc.
-    netInvestingCash: number
-  }
+    netInvestingCash: number;
+  };
   financingActivities: {
     // Future: loans, equity, etc.
-    netFinancingCash: number
-  }
-  netCashFlow: number
-  openingBalance: number
-  closingBalance: number
-}
+    netFinancingCash: number;
+  };
+  netCashFlow: number;
+  openingBalance: number;
+  closingBalance: number;
+};
 ```
 
 #### 4.2 Balance Sheet
+
 **Frontend Components:**
+
 - `app/reports/balance-sheet/page.tsx` - Balance sheet report
 - `components/reports/balance-sheet-table.tsx` - Formatted report
 
 **Backend API Routes:**
+
 - `GET /api/reports/balance-sheet` - Generate balance sheet
 
 **Report Structure:**
+
 ```typescript
 type BalanceSheet = {
-  asOfDate: Date
+  asOfDate: Date;
   assets: {
     currentAssets: {
-      cash: number // from cash flow
-      accountsReceivable: number // total AR balance
-      inventory: number // sum of (stock * cost)
-      total: number
-    }
-    total: number
-  }
+      cash: number; // from cash flow
+      accountsReceivable: number; // total AR balance
+      inventory: number; // sum of (stock * cost)
+      total: number;
+    };
+    total: number;
+  };
   liabilities: {
     currentLiabilities: {
-      accountsPayable: number // unpaid purchases
-      total: number
-    }
-    total: number
-  }
+      accountsPayable: number; // unpaid purchases
+      total: number;
+    };
+    total: number;
+  };
   equity: {
-    retainedEarnings: number // cumulative net income
-    currentPeriodIncome: number
-    total: number
-  }
-  totalLiabilitiesAndEquity: number
-}
+    retainedEarnings: number; // cumulative net income
+    currentPeriodIncome: number;
+    total: number;
+  };
+  totalLiabilitiesAndEquity: number;
+};
 ```
 
 #### 4.3 Report Export
+
 **Frontend Components:**
+
 - `components/reports/export-button.tsx` - Export dropdown (PDF/Excel)
 
 **Backend API Routes:**
+
 - `GET /api/reports/export/[type]` - Export report to PDF or Excel
 
 **Implementation:**
+
 ```typescript
 // Libraries to use:
 - PDF: jsPDF or Puppeteer (server-side)
@@ -713,12 +789,15 @@ type BalanceSheet = {
 ```
 
 #### 4.4 Custom Reports
+
 **Frontend Components:**
+
 - `app/reports/custom/page.tsx` - Custom report builder
 - `components/reports/report-builder.tsx` - Drag-and-drop report builder
 - `components/reports/saved-reports.tsx` - Saved custom reports
 
 **Features:**
+
 - Date range selection
 - Metric selection (revenue, expenses, profit, etc.)
 - Grouping (by customer, product, category, user)
@@ -726,6 +805,7 @@ type BalanceSheet = {
 - Save and schedule reports
 
 ### i18n Keys Required
+
 ```json
 {
   "reports": {
@@ -746,6 +826,7 @@ type BalanceSheet = {
 ```
 
 ### Testing Checklist
+
 - [ ] Cash flow statement accuracy
 - [ ] Balance sheet accuracy
 - [ ] PDF export
@@ -758,17 +839,21 @@ type BalanceSheet = {
 ## Phase 5 - Scaling & Integrations (Optional)
 
 ### Goal
+
 Scale the platform with mobile app, POS integration, and third-party services.
 
 ### Features to Implement
 
 #### 5.1 Mobile App
+
 **Tech Stack:**
+
 - React Native or Flutter
 - Same API endpoints
 - Offline-first with sync
 
 **Features:**
+
 - Quick sale entry
 - Expense recording
 - Photo upload (receipts, invoices)
@@ -776,42 +861,52 @@ Scale the platform with mobile app, POS integration, and third-party services.
 - Barcode scanning
 
 #### 5.2 POS Integration
+
 **Frontend Components:**
+
 - `app/pos/page.tsx` - POS interface
 - `components/pos/cash-register.tsx` - Cash register UI
 - `components/pos/receipt-printer.tsx` - Receipt printing
 - `components/pos/barcode-scanner.tsx` - Barcode scanner integration
 
 **Features:**
+
 - Barcode/QR code scanning
 - Receipt printing
 - Cash drawer integration
 - Payment terminal integration
 
 #### 5.3 Notifications
+
 **Frontend Components:**
+
 - `app/settings/notifications/page.tsx` - Notification preferences
 - `components/notifications/notification-center.tsx` - In-app notifications
 
 **Backend:**
+
 - Email notifications (Resend, SendGrid)
 - SMS notifications (Twilio)
 - Push notifications (Firebase)
 
 **Notification Types:**
+
 - Low stock alerts
 - Payment reminders
 - Report ready
 - New sale (for admin)
 
 #### 5.4 Payment Gateway Integration
+
 **Supported Gateways:**
+
 - Stripe
 - Nequi (Colombia)
 - MercadoPago (Latin America)
 - Wompi (Colombia)
 
 **Implementation:**
+
 ```typescript
 // Payment flow:
 1. User selects payment gateway
@@ -823,19 +918,24 @@ Scale the platform with mobile app, POS integration, and third-party services.
 ```
 
 #### 5.5 Accounting Software Integration
+
 **Integrations:**
+
 - QuickBooks
 - Xero
 - Alegra (Colombia)
 
 **Sync Features:**
+
 - Export sales as invoices
 - Export expenses
 - Import chart of accounts
 - Sync customers and suppliers
 
 #### 5.6 Multi-Company Support
+
 **Database Changes:**
+
 ```typescript
 // Add Company/Tenant model
 model Company {
@@ -845,7 +945,7 @@ model Company {
   plan        String   // free, basic, pro, enterprise
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
-  
+
   users       User[]
   customers   Customer[]
   products    Product[]
@@ -862,12 +962,14 @@ model User {
 ```
 
 **Implementation:**
+
 - Row-level security (RLS) by companyId
 - Company selection on login
 - Separate data per company
 - Consolidated reporting across companies (enterprise plan)
 
 ### i18n Keys Required
+
 ```json
 {
   "mobile": {
@@ -896,6 +998,7 @@ model User {
 ```
 
 ### Testing Checklist
+
 - [ ] Mobile app sync
 - [ ] Barcode scanning
 - [ ] Receipt printing
@@ -910,6 +1013,7 @@ model User {
 ## Technical Implementation Guidelines
 
 ### API Structure
+
 ```
 app/api/
 ├── auth/
@@ -939,60 +1043,65 @@ app/api/
 ```
 
 ### State Management
+
 - React Query for server state
 - Zustand for client state (optional)
 - Form state with React Hook Form
 
 ### Validation
+
 - Zod schemas for all forms
 - Server-side validation on all endpoints
 - Client-side validation for UX
 
 ### Error Handling
+
 ```typescript
 // Standard error response
 type ErrorResponse = {
-  error: string
-  message: string
-  details?: Record<string, string[]>
-}
+  error: string;
+  message: string;
+  details?: Record<string, string[]>;
+};
 
 // Usage
 if (!customer) {
   return NextResponse.json(
     { error: "NOT_FOUND", message: "Customer not found" },
-    { status: 404 }
-  )
+    { status: 404 },
+  );
 }
 ```
 
 ### Authentication & Authorization
+
 ```typescript
 // Protect API routes
-import { auth } from "@/auth/auth"
+import { auth } from "@/auth/auth";
 
 export async function GET(req: Request) {
-  const session = await auth()
+  const session = await auth();
   if (!session) {
     return NextResponse.json(
       { error: "UNAUTHORIZED", message: "Authentication required" },
-      { status: 401 }
-    )
+      { status: 401 },
+    );
   }
-  
+
   // Check permissions
   if (!hasPermission(session.user, "sales.read")) {
     return NextResponse.json(
       { error: "FORBIDDEN", message: "Insufficient permissions" },
-      { status: 403 }
-    )
+      { status: 403 },
+    );
   }
-  
+
   // Continue with logic...
 }
 ```
 
 ### Performance Optimization
+
 - Implement pagination on all list endpoints
 - Add database indexes (already in schema)
 - Cache dashboard metrics (Redis or similar)
@@ -1001,6 +1110,7 @@ export async function GET(req: Request) {
 - Debounce search inputs
 
 ### Testing Strategy
+
 ```typescript
 // Unit tests: Business logic
 // Integration tests: API routes
@@ -1011,17 +1121,17 @@ describe("Sales API", () => {
   describe("POST /api/sales", () => {
     it("creates sale with items and stock movements", async () => {
       // Test implementation
-    })
-    
+    });
+
     it("returns 400 if invalid data", async () => {
       // Test implementation
-    })
-    
+    });
+
     it("returns 403 if user lacks permission", async () => {
       // Test implementation
-    })
-  })
-})
+    });
+  });
+});
 ```
 
 ---
@@ -1029,6 +1139,7 @@ describe("Sales API", () => {
 ## Deployment Strategy
 
 ### Infrastructure
+
 - **Frontend**: Vercel
 - **Database**: Supabase or AWS RDS PostgreSQL
 - **File Storage**: S3 or Cloudflare R2
@@ -1036,6 +1147,7 @@ describe("Sales API", () => {
 - **CDN**: Cloudflare
 
 ### Environment Variables
+
 ```bash
 # Database
 DATABASE_URL=
@@ -1064,6 +1176,7 @@ ENABLE_INTEGRATIONS=false
 ```
 
 ### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/main.yml
 name: CI/CD
@@ -1084,7 +1197,7 @@ jobs:
       - run: npm run lint
       - run: npm run type-check
       - run: npm run test
-      
+
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main'
@@ -1101,6 +1214,7 @@ jobs:
 ## Migration Strategy
 
 ### From Excel to Ledgr
+
 1. **Data Export**: Export current Excel data to CSV
 2. **Data Mapping**: Map Excel columns to Ledgr models
 3. **Import Script**: Create seeding script for initial data
@@ -1110,18 +1224,19 @@ jobs:
 7. **Full Migration**: Switch to Ledgr completely
 
 ### Import Script Example
+
 ```typescript
 // scripts/import-from-excel.ts
-import { PrismaClient } from "@prisma/client"
-import { parse } from "csv-parse/sync"
-import fs from "fs"
+import { PrismaClient } from "@prisma/client";
+import { parse } from "csv-parse/sync";
+import fs from "fs";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function importCustomers() {
-  const csvData = fs.readFileSync("./data/customers.csv", "utf-8")
-  const records = parse(csvData, { columns: true })
-  
+  const csvData = fs.readFileSync("./data/customers.csv", "utf-8");
+  const records = parse(csvData, { columns: true });
+
   for (const record of records) {
     await prisma.customer.create({
       data: {
@@ -1129,8 +1244,8 @@ async function importCustomers() {
         email: record.email,
         phone: record.phone,
         docId: record.docId,
-      }
-    })
+      },
+    });
   }
 }
 
@@ -1142,25 +1257,30 @@ async function importCustomers() {
 ## Success Metrics
 
 ### Phase 1 KPIs
+
 - Time to record a sale: < 2 minutes
 - Daily active users
 - Number of sales recorded
 - Dashboard load time: < 2 seconds
 
 ### Phase 2 KPIs
+
 - Payroll calculation accuracy: 100%
 - Time to generate income statement: < 5 seconds
 
 ### Phase 3 KPIs
+
 - Inventory accuracy: > 98%
 - AR collection rate improvement
 - Stock-out incidents reduction
 
 ### Phase 4 KPIs
+
 - Report generation time: < 10 seconds
 - Export success rate: > 99%
 
 ### Phase 5 KPIs
+
 - Mobile app adoption rate
 - Integration sync success rate
 - Multi-company system performance
@@ -1172,6 +1292,7 @@ async function importCustomers() {
 This implementation plan provides a comprehensive roadmap for building Ledgr from MVP to a full-featured business management SaaS platform. Each phase builds upon the previous one, allowing for iterative development and continuous value delivery.
 
 **Next Steps:**
+
 1. Set up development environment
 2. Run database migrations
 3. Start Phase 1 implementation with Customer Management

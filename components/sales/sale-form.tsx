@@ -23,10 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2, RotateCcw } from "lucide-react";
-import type {
-  CreateSaleInput,
-  UpdateSaleInput,
-} from "@/lib/validations/sales";
+import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
 import { SaleItems, type SaleItemRow } from "./sale-items";
 import { SalePayments, type SalePaymentRow } from "./sale-payments";
@@ -132,7 +129,7 @@ export function SaleForm({
       // Validate payments - all payments must have an amount
       if (payments.length > 0) {
         const hasEmptyPayments = payments.some(
-          (payment) => !payment.amount || payment.amount.trim() === ""
+          (payment) => !payment.amount || payment.amount.trim() === "",
         );
         if (hasEmptyPayments) {
           toast.error(t("validation.paymentAmountRequired"));
@@ -229,21 +226,20 @@ export function SaleForm({
               </FormItem>
             )}
           />
-
         </div>
 
         <SaleItems
-              items={items}
-              onItemsChange={setItems}
-              disabled={isLoading}
-            />
+          items={items}
+          onItemsChange={setItems}
+          disabled={isLoading}
+        />
 
         <SalePayments
-              payments={payments}
-              onPaymentsChange={setPayments}
-              total={total}
-              disabled={isLoading}
-            />
+          payments={payments}
+          onPaymentsChange={setPayments}
+          total={total}
+          disabled={isLoading}
+        />
 
         <FormField
           control={form.control}
@@ -269,33 +265,34 @@ export function SaleForm({
 
         <div className="flex flex-col gap-4">
           {/* Validation hints - show each error independently based on what was touched */}
-          {attempted && !isFormValid && 
-            ((touchedCustomer && !customerId) || 
-             (touchedItems && (!hasItems || !allItemsHaveProducts))) && (
-            <div className="text-sm space-y-1 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-              <p className="font-medium text-amber-900 dark:text-amber-100 mb-2">
-                {t("validation.requiredFields")}:
-              </p>
-              {/* Only show customer error if user tried to submit and customer is still empty */}
-              {touchedCustomer && !customerId && (
-                <p className="text-amber-700 dark:text-amber-300">
-                  • {t("validation.customerIdRequired")}
+          {attempted &&
+            !isFormValid &&
+            ((touchedCustomer && !customerId) ||
+              (touchedItems && (!hasItems || !allItemsHaveProducts))) && (
+              <div className="text-sm space-y-1 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+                <p className="font-medium text-amber-900 dark:text-amber-100 mb-2">
+                  {t("validation.requiredFields")}:
                 </p>
-              )}
-              {/* Only show items error if user tried to submit and there are no items */}
-              {touchedItems && !hasItems && (
-                <p className="text-amber-700 dark:text-amber-300">
-                  • {t("validation.itemsMin")}
-                </p>
-              )}
-              {/* Only show product error if user tried to submit and items exist but some don't have products */}
-              {touchedItems && hasItems && !allItemsHaveProducts && (
-                <p className="text-amber-700 dark:text-amber-300">
-                  • {t("validation.productIdRequired")}
-                </p>
-              )}
-            </div>
-          )}
+                {/* Only show customer error if user tried to submit and customer is still empty */}
+                {touchedCustomer && !customerId && (
+                  <p className="text-amber-700 dark:text-amber-300">
+                    • {t("validation.customerIdRequired")}
+                  </p>
+                )}
+                {/* Only show items error if user tried to submit and there are no items */}
+                {touchedItems && !hasItems && (
+                  <p className="text-amber-700 dark:text-amber-300">
+                    • {t("validation.itemsMin")}
+                  </p>
+                )}
+                {/* Only show product error if user tried to submit and items exist but some don't have products */}
+                {touchedItems && hasItems && !allItemsHaveProducts && (
+                  <p className="text-amber-700 dark:text-amber-300">
+                    • {t("validation.productIdRequired")}
+                  </p>
+                )}
+              </div>
+            )}
 
           <div className="flex justify-end gap-3">
             {!sale && (
@@ -333,4 +330,3 @@ export function SaleForm({
     </Form>
   );
 }
-

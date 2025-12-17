@@ -35,7 +35,7 @@ export function ExpenseDialog({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = async (
-    data: CreateExpenseInput | UpdateExpenseInput
+    data: CreateExpenseInput | UpdateExpenseInput,
   ) => {
     try {
       if (expense) {

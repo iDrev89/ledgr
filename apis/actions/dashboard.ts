@@ -154,14 +154,12 @@ export const getSalesChartData = async (): Promise<
 
     // Get current date and time in UTC
     const now = new Date();
-    
+
     // Get today at start of day (UTC)
-    const today = new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate()
-    ));
-    
+    const today = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    );
+
     // Calculate start date (6 days ago from today)
     const startDate = new Date(today);
     startDate.setUTCDate(today.getUTCDate() - 6);
@@ -389,7 +387,9 @@ export const getLowStockAlerts = async (): Promise<
 
     return {
       success: true,
-      data: lowStockProducts.sort((a, b) => a.currentStock - b.currentStock).slice(0, 5),
+      data: lowStockProducts
+        .sort((a, b) => a.currentStock - b.currentStock)
+        .slice(0, 5),
     };
   } catch (error) {
     console.error("Error fetching low stock alerts:", error);
@@ -399,4 +399,3 @@ export const getLowStockAlerts = async (): Promise<
     };
   }
 };
-

@@ -21,7 +21,7 @@ type BankWithRelations = Bank & {
   _count?: {
     salePayments: number;
     receivablePayments: number;
-    purchasePayments: number;
+    purchases: number;
   };
 };
 
@@ -70,7 +70,7 @@ export const getBanks = async (params?: {
             select: {
               salePayments: true,
               receivablePayments: true,
-              purchasePayments: true,
+              purchases: true,
             },
           },
         },
@@ -89,7 +89,7 @@ export const getBanks = async (params?: {
 };
 
 export const getBank = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<BankWithRelations>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -103,7 +103,7 @@ export const getBank = async (
           select: {
             salePayments: true,
             receivablePayments: true,
-            purchasePayments: true,
+            purchases: true,
           },
         },
       },
@@ -124,7 +124,7 @@ export const getBank = async (
 };
 
 export const createBank = async (
-  input: CreateBankInput
+  input: CreateBankInput,
 ): Promise<ActionResponse<Bank>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -164,7 +164,7 @@ export const createBank = async (
 };
 
 export const updateBank = async (
-  input: UpdateBankInput
+  input: UpdateBankInput,
 ): Promise<ActionResponse<Bank>> => {
   const t = await getTranslations("Banks.errors");
 
@@ -215,9 +215,7 @@ export const updateBank = async (
   }
 };
 
-export const deleteBank = async (
-  id: string
-): Promise<ActionResponse<void>> => {
+export const deleteBank = async (id: string): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Banks.errors");
 
   try {
@@ -230,7 +228,7 @@ export const deleteBank = async (
           select: {
             salePayments: true,
             receivablePayments: true,
-            purchasePayments: true,
+            purchases: true,
           },
         },
       },
@@ -243,7 +241,7 @@ export const deleteBank = async (
     const totalPayments =
       bank._count.salePayments +
       bank._count.receivablePayments +
-      bank._count.purchasePayments;
+      bank._count.purchases;
 
     if (totalPayments > 0) {
       return {
@@ -267,4 +265,3 @@ export const deleteBank = async (
     };
   }
 };
-

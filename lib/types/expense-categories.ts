@@ -8,4 +8,3 @@ export type ExpenseCategoryWithRelations = ExpenseCategory & {
     expenseItems: number;
   };
 };
-

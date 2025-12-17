@@ -21,4 +21,3 @@ export async function setLocale(locale: Locale): Promise<void> {
     maxAge: 60 * 60 * 24 * 365, // 1 year
   });
 }
-

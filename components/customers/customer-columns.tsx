@@ -28,7 +28,7 @@ export type CustomerColumnActions = {
 };
 
 export const createCustomerColumns = (
-  actions: CustomerColumnActions
+  actions: CustomerColumnActions,
 ): ColumnDef<Customer>[] => [
   {
     accessorKey: "name",

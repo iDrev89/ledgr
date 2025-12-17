@@ -1,7 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { DataTable } from "@/components/ui/data-table";
+import { useTranslations, useLocale } from "next-intl";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { PayrollRunCard } from "./payroll-run-card";
 import { getPayrollRunColumns } from "./payroll-run-columns";
 import type { PayrollRunWithDetails } from "@/lib/types/payroll";
 
@@ -21,18 +22,28 @@ export function PayrollRunTable({
   onDelete,
 }: PayrollRunTableProps) {
   const t = useTranslations("Payroll");
+  const locale = useLocale();
 
   const columns = getPayrollRunColumns(t, onView, onFinalize, onPay, onDelete);
 
   return (
-    <DataTable
+    <ResponsiveDataView
       columns={columns}
+      renderCard={(run) => (
+        <PayrollRunCard
+          run={run}
+          onView={() => onView(run)}
+          locale={locale}
+        />
+      )}
       data={runs}
       searchKey="periodLabel"
       searchPlaceholder={t("searchPlaceholder")}
       showPagination={true}
       pageSize={10}
+      emptyMessage={t("noPayrollRuns")}
+      onView={onView}
+      locale={locale}
     />
   );
 }
-

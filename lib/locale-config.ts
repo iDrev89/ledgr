@@ -11,4 +11,3 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   en: "English",
   es: "Español",
 };
-

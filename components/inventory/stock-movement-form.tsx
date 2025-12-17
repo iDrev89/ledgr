@@ -49,7 +49,7 @@ export function StockMovementForm({
 
   const { createStockMovementSchema } = useMemo(
     () => getStockMovementSchemas(t),
-    [t]
+    [t],
   );
 
   const form = useForm<CreateStockMovementInput>({
@@ -158,7 +158,9 @@ export function StockMovementForm({
                 <Input
                   {...field}
                   type="number"
-                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    field.onChange(parseInt(e.target.value) || 0)
+                  }
                   placeholder={t("quantityPlaceholder")}
                   disabled={isLoading}
                 />
@@ -232,4 +234,3 @@ export function StockMovementForm({
     </Form>
   );
 }
-

@@ -33,7 +33,10 @@ const createCustomerSchemas = (messages?: {
       .or(z.literal("")),
     docId: z
       .string()
-      .max(50, messages?.docIdMax || "Document ID must be less than 50 characters")
+      .max(
+        50,
+        messages?.docIdMax || "Document ID must be less than 50 characters",
+      )
       .trim()
       .optional()
       .or(z.literal("")),
@@ -51,8 +54,10 @@ const createCustomerSchemas = (messages?: {
           return selectedDate < today;
         },
         {
-          message: messages?.birthdateNotToday || "Birthdate cannot be today or in the future",
-        }
+          message:
+            messages?.birthdateNotToday ||
+            "Birthdate cannot be today or in the future",
+        },
       )
       .optional()
       .or(z.literal("")),

@@ -99,7 +99,7 @@ export const getStockMovements = async (params?: {
 };
 
 export const getStockMovement = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<StockMovement & { product: Product }>> => {
   const t = await getTranslations("Inventory.errors");
 
@@ -128,7 +128,7 @@ export const getStockMovement = async (
 };
 
 export const createStockMovement = async (
-  input: CreateStockMovementInput
+  input: CreateStockMovementInput,
 ): Promise<ActionResponse<StockMovement>> => {
   const t = await getTranslations("Inventory.errors");
 
@@ -170,8 +170,8 @@ export const createStockMovement = async (
 };
 
 export const getProductStock = async (
-  productId: string
-): Promise<ActionResponse<{ currentStock: number; movements: StockMovement[] }>> => {
+  productId: string,
+): Promise<ActionResponse<{ currentStock: number; movements: any[] }>> => {
   const t = await getTranslations("Inventory.errors");
 
   try {
@@ -182,10 +182,39 @@ export const getProductStock = async (
       orderBy: { createdAt: "desc" },
     });
 
+    // Fetch related Purchase and Sale data
+    const enrichedMovements = await Promise.all(
+      movements.map(async (movement) => {
+        let refData = null;
+
+        if (movement.refType === "Purchase" && movement.refId) {
+          const purchase = await prisma.purchase.findUnique({
+            where: { id: movement.refId },
+            select: { purchaseNumber: true },
+          });
+          refData = purchase;
+        } else if (movement.refType === "Sale" && movement.refId) {
+          const sale = await prisma.sale.findUnique({
+            where: { id: movement.refId },
+            select: { saleNumber: true },
+          });
+          refData = sale;
+        }
+
+        return {
+          ...movement,
+          refData,
+        };
+      }),
+    );
+
     // Calculate current stock based on movements
     let currentStock = 0;
     movements.forEach((movement) => {
-      if (movement.moveType === StockMoveType.PURCHASE || movement.moveType === StockMoveType.ADJUSTMENT) {
+      if (
+        movement.moveType === StockMoveType.PURCHASE ||
+        movement.moveType === StockMoveType.ADJUSTMENT
+      ) {
         if (movement.quantity > 0) {
           currentStock += movement.quantity;
         } else {
@@ -196,7 +225,10 @@ export const getProductStock = async (
       }
     });
 
-    const serializedMovements = movements.map(serializeStockMovement);
+    const serializedMovements = enrichedMovements.map((movement) => ({
+      ...serializeStockMovement(movement),
+      refData: movement.refData,
+    }));
 
     return {
       success: true,
@@ -241,7 +273,10 @@ export const getInventorySummary = async (): Promise<
 
         let currentStock = 0;
         movements.forEach((movement) => {
-          if (movement.moveType === StockMoveType.PURCHASE || movement.moveType === StockMoveType.ADJUSTMENT) {
+          if (
+            movement.moveType === StockMoveType.PURCHASE ||
+            movement.moveType === StockMoveType.ADJUSTMENT
+          ) {
             currentStock += movement.quantity;
           } else if (movement.moveType === StockMoveType.SALE) {
             currentStock -= Math.abs(movement.quantity);
@@ -259,7 +294,7 @@ export const getInventorySummary = async (): Promise<
             ? serializeStockMovement(movements[0])
             : undefined,
         };
-      })
+      }),
     );
 
     return { success: true, data: inventorySummary };
@@ -271,4 +306,3 @@ export const getInventorySummary = async (): Promise<
     };
   }
 };
-

@@ -1,9 +1,19 @@
-import { Sale, SaleItem, SalePayment, Customer, Product, Bank } from "@/prisma/prisma-client";
+import {
+  Sale,
+  SaleItem,
+  SalePayment,
+  Customer,
+  Product,
+  Bank,
+} from "@/prisma/prisma-client";
 
 export type { Sale, SaleItem, SalePayment };
 
 // Serialized version for client (Decimal fields converted to strings)
-export type SaleWithDetails = Omit<Sale, "subtotal" | "discountTotal" | "taxTotal" | "total"> & {
+export type SaleWithDetails = Omit<
+  Sale,
+  "subtotal" | "discountTotal" | "taxTotal" | "total"
+> & {
   subtotal: string;
   discountTotal: string;
   taxTotal: string;
@@ -14,7 +24,10 @@ export type SaleWithDetails = Omit<Sale, "subtotal" | "discountTotal" | "taxTota
     name: string;
     email: string;
   };
-  items: (Omit<SaleItem, "unitPrice" | "discount" | "lineTotal" | "commissionPercentApplied"> & {
+  items: (Omit<
+    SaleItem,
+    "unitPrice" | "discount" | "lineTotal" | "commissionPercentApplied"
+  > & {
     unitPrice: string;
     discount: string;
     lineTotal: string;
@@ -54,4 +67,3 @@ export type SaleWithStats = Sale & {
     items: number;
   };
 };
-

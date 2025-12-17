@@ -85,7 +85,7 @@ export function useUpdateCustomer() {
     onSuccess: (updatedCustomer) => {
       queryClient.setQueryData(
         customerKeys.detail(updatedCustomer.id),
-        updatedCustomer
+        updatedCustomer,
       );
       queryClient.invalidateQueries({
         queryKey: customerKeys.lists(),

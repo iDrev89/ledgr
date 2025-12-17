@@ -81,8 +81,8 @@ export function CategorySelector({
               {isLoading
                 ? t("loading")
                 : selectedCategory
-                ? selectedCategory.name
-                : lastCategoryName || t("selectCategory")}
+                  ? selectedCategory.name
+                  : lastCategoryName || t("selectCategory")}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -115,7 +115,9 @@ export function CategorySelector({
                   </p>
                 </div>
               </CommandEmpty>
-              <CommandGroup heading={categories.length > 0 ? t("categories") : undefined}>
+              <CommandGroup
+                heading={categories.length > 0 ? t("categories") : undefined}
+              >
                 {categories.map((category) => (
                   <CommandItem
                     key={category.id}
@@ -128,7 +130,7 @@ export function CategorySelector({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === category.id ? "opacity-100" : "opacity-0"
+                        value === category.id ? "opacity-100" : "opacity-0",
                       )}
                     />
                     <span>{category.name}</span>
@@ -140,11 +142,7 @@ export function CategorySelector({
         </PopoverContent>
       </Popover>
 
-      <CategoryDialog
-        open={dialogOpen}
-        onOpenChange={handleDialogClose}
-      />
+      <CategoryDialog open={dialogOpen} onOpenChange={handleDialogClose} />
     </>
   );
 }
-

@@ -50,17 +50,11 @@ export const getProducts = async (params?: {
   offset?: number;
 }): Promise<ActionResponse<{ products: Product[]; total: number }>> => {
   const t = await getTranslations("Products.errors");
-  
+
   try {
     await requireAuth();
 
-    const {
-      search = "",
-      type,
-      active,
-      limit = 50,
-      offset = 0,
-    } = params || {};
+    const { search = "", type, active, limit = 50, offset = 0 } = params || {};
 
     const where: any = {};
 
@@ -104,17 +98,17 @@ export const getProducts = async (params?: {
 };
 
 export const getProduct = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<Product>> => {
   const t = await getTranslations("Products.errors");
-  
+
   try {
     await requireAuth();
 
     const product = await prisma.product.findUnique({
       where: { id },
     });
-    
+
     if (!product) {
       return { success: false, error: t("notFound") };
     }
@@ -130,10 +124,10 @@ export const getProduct = async (
 };
 
 export const createProduct = async (
-  input: CreateProductInput
+  input: CreateProductInput,
 ): Promise<ActionResponse<Product>> => {
   const t = await getTranslations("Products.errors");
-  
+
   try {
     await requireAuth();
 
@@ -181,10 +175,10 @@ export const createProduct = async (
 };
 
 export const updateProduct = async (
-  input: UpdateProductInput
+  input: UpdateProductInput,
 ): Promise<ActionResponse<Product>> => {
   const t = await getTranslations("Products.errors");
-  
+
   try {
     await requireAuth();
 
@@ -234,10 +228,10 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Products.errors");
-  
+
   try {
     await requireAuth();
 
@@ -284,4 +278,3 @@ export const deleteProduct = async (
     };
   }
 };
-

@@ -13,23 +13,28 @@ export const LowStockCard = () => {
   const { data, isLoading } = useLowStockAlerts();
 
   const getStockLevel = (stock: number) => {
-    if (stock === 0) return { 
-      text: t("outOfStock"), 
-      color: "destructive" as const,
-      icon: "🚫",
-      bgColor: "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900"
-    };
-    if (stock <= 5) return { 
-      text: t("critical"), 
-      color: "destructive" as const,
-      icon: "⚠️",
-      bgColor: "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900"
-    };
-    return { 
-      text: t("low"), 
+    if (stock === 0)
+      return {
+        text: t("outOfStock"),
+        color: "destructive" as const,
+        icon: "🚫",
+        bgColor:
+          "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900",
+      };
+    if (stock <= 5)
+      return {
+        text: t("critical"),
+        color: "destructive" as const,
+        icon: "⚠️",
+        bgColor:
+          "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900",
+      };
+    return {
+      text: t("low"),
       color: "warning" as const,
       icon: "📦",
-      bgColor: "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900"
+      bgColor:
+        "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900",
     };
   };
 
@@ -64,7 +69,7 @@ export const LowStockCard = () => {
                   key={product.productId}
                   className={cn(
                     "flex flex-col gap-2 p-4 rounded-lg border transition-all hover:shadow-sm",
-                    level.bgColor
+                    level.bgColor,
                   )}
                 >
                   <div className="flex items-start justify-between">
@@ -74,7 +79,9 @@ export const LowStockCard = () => {
                     </Badge>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm line-clamp-2">{product.productName}</p>
+                    <p className="font-semibold text-sm line-clamp-2">
+                      {product.productName}
+                    </p>
                     <div className="flex items-center gap-1 mt-1">
                       <Package className="h-3 w-3 text-muted-foreground" />
                       <p className="text-xs font-medium text-muted-foreground">
@@ -98,4 +105,3 @@ export const LowStockCard = () => {
     </Card>
   );
 };
-

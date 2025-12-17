@@ -30,9 +30,11 @@ interface SaleTableProps {
 export function SaleTable({ sales, onView, locale }: SaleTableProps) {
   const t = useTranslations("Sales");
   const { hasPermission } = usePermissions();
-  const [saleToDelete, setSaleToDelete] = useState<SaleWithDetails | null>(null);
+  const [saleToDelete, setSaleToDelete] = useState<SaleWithDetails | null>(
+    null,
+  );
   const deleteMutation = useDeleteSale();
-  
+
   // Check delete permission
   const canDelete = hasPermission("sales", "delete");
 
@@ -119,4 +121,3 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
     </>
   );
 }
-

@@ -39,7 +39,7 @@ export function PayrollRunPaymentDialog({
   isLoading,
 }: PayrollRunPaymentDialogProps) {
   const t = useTranslations("Payroll");
-  
+
   // Estado para los montos de pago de cada empleado
   const [payments, setPayments] = useState<Record<string, string>>({});
 
@@ -88,7 +88,7 @@ export function PayrollRunPaymentDialog({
 
   const totalToPay = Object.values(payments).reduce(
     (sum, amount) => sum + (parseFloat(amount) || 0),
-    0
+    0,
   );
 
   return (
@@ -117,8 +117,12 @@ export function PayrollRunPaymentDialog({
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("employee")}</TableHead>
-                  <TableHead className="text-right">{t("payableTotal")}</TableHead>
-                  <TableHead className="text-right">{t("paidAmount")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("payableTotal")}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t("paidAmount")}
+                  </TableHead>
                   <TableHead className="text-right">{t("balance")}</TableHead>
                   <TableHead className="text-right">Monto a Pagar</TableHead>
                 </TableRow>
@@ -226,4 +230,3 @@ export function PayrollRunPaymentDialog({
     </Dialog>
   );
 }
-

@@ -16,7 +16,11 @@ const createBankSchemas = (messages?: {
       .trim(),
     accountNo: z
       .string()
-      .max(50, messages?.accountNoMax || "Account number must be less than 50 characters")
+      .max(
+        50,
+        messages?.accountNoMax ||
+          "Account number must be less than 50 characters",
+      )
       .trim()
       .optional()
       .or(z.literal("")),
@@ -50,4 +54,3 @@ export { createBankSchema, updateBankSchema };
 
 export type CreateBankInput = z.infer<typeof createBankSchema>;
 export type UpdateBankInput = z.infer<typeof updateBankSchema>;
-

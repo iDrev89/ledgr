@@ -165,7 +165,7 @@ export function CustomerForm({
                       variant="outline"
                       className={cn(
                         "w-full justify-between font-normal",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                       disabled={isLoading}
                     >
@@ -188,7 +188,7 @@ export function CustomerForm({
                     captionLayout="dropdown"
                     onSelect={(date) => {
                       field.onChange(
-                        date ? date.toISOString().split("T")[0] : ""
+                        date ? date.toISOString().split("T")[0] : "",
                       );
                       setCalendarOpen(false);
                     }}

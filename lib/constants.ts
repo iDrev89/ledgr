@@ -20,4 +20,3 @@ export const isValidRole = (role: string): role is UserRoleType => {
 export const getAllRoles = (): UserRoleType[] => {
   return Object.values(UserRole) as UserRoleType[];
 };
-

@@ -231,12 +231,11 @@ export const TransactionForm = ({
                 ? t("updating")
                 : t("update")
               : isSubmitting
-              ? t("creating")
-              : t("create")}
+                ? t("creating")
+                : t("create")}
           </Button>
         </div>
       </form>
     </Form>
   );
 };
-

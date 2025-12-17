@@ -19,6 +19,8 @@ import {
   UserCircle,
   Building2,
   Receipt,
+  ShoppingBag,
+  Truck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -96,6 +98,18 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/products"],
         },
         {
+          titleKey: "suppliers",
+          icon: Truck,
+          href: "/suppliers",
+          requiredPermission: ROUTE_PERMISSIONS["/suppliers"],
+        },
+        {
+          titleKey: "purchases",
+          icon: ShoppingBag,
+          href: "/purchases",
+          requiredPermission: ROUTE_PERMISSIONS["/purchases"],
+        },
+        {
           titleKey: "inventoryMenu",
           icon: Warehouse,
           href: "/inventory",
@@ -145,7 +159,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           icon: Users,
           href: "/users",
           requiredPermission: ROUTE_PERMISSIONS["/users"],
-        },       
+        },
       ],
     },
   ];
@@ -154,7 +168,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
     <div
       className={cn(
         "fixed inset-y-0 z-50 flex w-64 flex-col border-r bg-background transition-transform duration-300 ease-in-out",
-        open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
       )}
     >
       <div className="flex justify-between items-center border-b px-4">
@@ -205,7 +219,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
 
               const result = hasPermission(
                 item.requiredPermission.statement,
-                item.requiredPermission.action
+                item.requiredPermission.action,
               );
 
               return result;
@@ -228,7 +242,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
                         "flex items-center gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
                         pathname === item.href
                           ? "bg-accent text-accent-foreground"
-                          : "text-foreground"
+                          : "text-foreground",
                       )}
                       onClick={toggleSidebar}
                     >

@@ -1,4 +1,10 @@
-import { Expense, ExpenseItem, ExpenseCategory, Supplier, Bank } from "@/prisma/prisma-client";
+import {
+  Expense,
+  ExpenseItem,
+  ExpenseCategory,
+  Supplier,
+  Bank,
+} from "@/prisma/prisma-client";
 
 export type { Expense, ExpenseItem };
 
@@ -26,4 +32,3 @@ export type ExpenseWithStats = Expense & {
     items: number;
   };
 };
-

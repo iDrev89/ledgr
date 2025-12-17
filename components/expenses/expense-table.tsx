@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteExpense } from "@/hooks/use-expenses";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ExpenseCard } from "./expense-card";
 import { createExpenseColumns } from "./expense-columns";
 
 interface ExpenseTableProps {
@@ -26,7 +27,12 @@ interface ExpenseTableProps {
   locale?: string;
 }
 
-export function ExpenseTable({ expenses, onView, onEdit, locale }: ExpenseTableProps) {
+export function ExpenseTable({
+  expenses,
+  onView,
+  onEdit,
+  locale,
+}: ExpenseTableProps) {
   const t = useTranslations("Expenses");
   const [expenseToDelete, setExpenseToDelete] =
     useState<ExpenseWithDetails | null>(null);
@@ -54,23 +60,29 @@ export function ExpenseTable({ expenses, onView, onEdit, locale }: ExpenseTableP
     locale,
   });
 
-  if (expenses.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noExpenses")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(expense) => (
+          <ExpenseCard
+            expense={expense}
+            onView={() => onView(expense)}
+            onEdit={() => onEdit(expense)}
+            onDelete={() => setExpenseToDelete(expense)}
+            locale={locale}
+          />
+        )}
         data={expenses}
         searchKey={["description"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noExpenses")}
+        onView={onView}
+        onEdit={onEdit}
+        onDelete={setExpenseToDelete}
+        locale={locale}
       />
 
       <AlertDialog
@@ -110,4 +122,3 @@ export function ExpenseTable({ expenses, onView, onEdit, locale }: ExpenseTableP
     </>
   );
 }
-

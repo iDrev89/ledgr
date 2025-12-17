@@ -30,18 +30,19 @@ const createSaleSchemas = (messages?: {
     unitPrice: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
-        message: messages?.unitPriceInvalid || "Unit price must be a valid positive number",
+        message:
+          messages?.unitPriceInvalid ||
+          "Unit price must be a valid positive number",
       }),
     discount: z
       .string()
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
-        message: messages?.discountInvalid || "Discount must be a valid positive number",
+        message:
+          messages?.discountInvalid ||
+          "Discount must be a valid positive number",
       })
       .default("0"),
-    performedById: z
-      .string()
-      .optional()
-      .or(z.literal("")),
+    performedById: z.string().optional().or(z.literal("")),
   });
 
   const salePaymentSchema = z.object({
@@ -49,24 +50,16 @@ const createSaleSchemas = (messages?: {
       .string()
       .min(1, messages?.paymentAmountInvalid || "Payment amount is required")
       .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-        message: messages?.paymentAmountInvalid || "Payment amount must be a valid positive number",
+        message:
+          messages?.paymentAmountInvalid ||
+          "Payment amount must be a valid positive number",
       }),
     method: z.nativeEnum(PaymentMethod, {
       message: messages?.paymentMethodRequired || "Payment method is required",
     }),
-    bankId: z
-      .string()
-      .optional()
-      .or(z.literal("")),
-    reference: z
-      .string()
-      .max(100)
-      .trim()
-      .optional()
-      .or(z.literal("")),
-    attachmentUrl: z.url()
-      .optional()
-      .or(z.literal("")),
+    bankId: z.string().optional().or(z.literal("")),
+    reference: z.string().max(100).trim().optional().or(z.literal("")),
+    attachmentUrl: z.url().optional().or(z.literal("")),
   });
 
   const baseSaleSchema = z.object({
@@ -76,10 +69,7 @@ const createSaleSchemas = (messages?: {
     items: z
       .array(saleItemSchema)
       .min(1, messages?.itemsMin || "At least one item is required"),
-    payments: z
-      .array(salePaymentSchema)
-      .optional()
-      .default([]),
+    payments: z.array(salePaymentSchema).optional().default([]),
     note: z
       .string()
       .max(500, messages?.noteMax || "Note must be less than 500 characters")
@@ -94,7 +84,12 @@ const createSaleSchemas = (messages?: {
     id: z.string().min(1, messages?.idRequired || "Sale ID is required"),
   });
 
-  return { createSaleSchema, updateSaleSchema, saleItemSchema, salePaymentSchema };
+  return {
+    createSaleSchema,
+    updateSaleSchema,
+    saleItemSchema,
+    salePaymentSchema,
+  };
 };
 
 // For client-side with i18n
@@ -119,13 +114,21 @@ export const getSaleSchemas = (t: (key: string) => string) => {
 };
 
 // For server-side (English fallback)
-const { createSaleSchema, updateSaleSchema, saleItemSchema, salePaymentSchema } =
-  createSaleSchemas();
+const {
+  createSaleSchema,
+  updateSaleSchema,
+  saleItemSchema,
+  salePaymentSchema,
+} = createSaleSchemas();
 
-export { createSaleSchema, updateSaleSchema, saleItemSchema, salePaymentSchema };
+export {
+  createSaleSchema,
+  updateSaleSchema,
+  saleItemSchema,
+  salePaymentSchema,
+};
 
 export type SaleItemInput = z.infer<typeof saleItemSchema>;
 export type SalePaymentInput = z.infer<typeof salePaymentSchema>;
 export type CreateSaleInput = z.infer<typeof createSaleSchema>;
 export type UpdateSaleInput = z.infer<typeof updateSaleSchema>;
-

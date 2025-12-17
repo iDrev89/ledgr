@@ -51,7 +51,9 @@ export const useCreateReceivablePayment = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["receivables"] });
-      queryClient.invalidateQueries({ queryKey: ["receivables", variables.receivableId] });
+      queryClient.invalidateQueries({
+        queryKey: ["receivables", variables.receivableId],
+      });
       // Invalidate banks since payment may include bank transfer
       queryClient.invalidateQueries({ queryKey: ["banks"] });
       // Invalidate dashboard for updated stats
@@ -78,4 +80,3 @@ export const useCancelReceivable = () => {
     },
   });
 };
-

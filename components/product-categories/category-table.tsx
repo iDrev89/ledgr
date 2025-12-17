@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteProductCategory } from "@/hooks/use-product-categories";
 import type { ProductCategoryWithRelations } from "@/lib/types/product-categories";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { CategoryCard } from "./category-card";
 import { createCategoryColumns } from "./category-columns";
 
 interface CategoryTableProps {
@@ -50,23 +51,25 @@ export const CategoryTable = ({ categories, onEdit }: CategoryTableProps) => {
     t,
   });
 
-  if (categories.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noCategories")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(category) => (
+          <CategoryCard
+            category={category}
+            onEdit={() => onEdit(category)}
+            onDelete={() => setCategoryToDelete(category)}
+          />
+        )}
         data={categories}
         searchKey={["name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noCategories")}
+        onEdit={onEdit}
+        onDelete={setCategoryToDelete}
       />
 
       <AlertDialog
@@ -106,4 +109,3 @@ export const CategoryTable = ({ categories, onEdit }: CategoryTableProps) => {
     </>
   );
 };
-

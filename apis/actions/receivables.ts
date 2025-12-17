@@ -125,7 +125,10 @@ export const getReceivables = async (params?: {
 
     const serializedReceivables = receivables.map(serializeReceivable);
 
-    return { success: true, data: { receivables: serializedReceivables, total } };
+    return {
+      success: true,
+      data: { receivables: serializedReceivables, total },
+    };
   } catch (error) {
     console.error("Error fetching receivables:", error);
     return {
@@ -136,7 +139,7 @@ export const getReceivables = async (params?: {
 };
 
 export const getReceivable = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<any>> => {
   const t = await getTranslations("Receivables.errors");
 
@@ -181,7 +184,7 @@ export const getReceivable = async (
 };
 
 export const createReceivablePayment = async (
-  input: CreateReceivablePaymentInput
+  input: CreateReceivablePaymentInput,
 ): Promise<ActionResponse<any>> => {
   const t = await getTranslations("Receivables.errors");
 
@@ -296,7 +299,7 @@ export const createReceivablePayment = async (
 };
 
 export const cancelReceivable = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Receivables.errors");
 
@@ -340,4 +343,3 @@ export const cancelReceivable = async (
     };
   }
 };
-

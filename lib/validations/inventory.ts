@@ -27,7 +27,7 @@ const createStockMovementSchemas = (messages?: {
           message:
             messages?.unitCostInvalid ||
             "Unit cost must be a valid positive number",
-        }
+        },
       )
       .optional()
       .or(z.literal("")),

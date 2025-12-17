@@ -78,7 +78,7 @@ export const createExpenseColumns = ({
     cell: ({ row }) => {
       const paymentMethod = row.original.paymentMethod;
       const bank = row.original.bank;
-      
+
       const methodLabels: Record<string, string> = {
         CASH: t("paymentCash"),
         CARD: t("paymentCard"),
@@ -103,9 +103,7 @@ export const createExpenseColumns = ({
     cell: ({ row }) => {
       const invoiceNo = row.getValue("invoiceNo") as string | null;
       return (
-        <div className="text-sm text-muted-foreground">
-          {invoiceNo || "-"}
-        </div>
+        <div className="text-sm text-muted-foreground">{invoiceNo || "-"}</div>
       );
     },
   },
@@ -162,4 +160,3 @@ export const createExpenseColumns = ({
     },
   },
 ];
-

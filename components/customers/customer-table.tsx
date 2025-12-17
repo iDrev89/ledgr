@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteCustomer } from "@/hooks/use-customers";
 import type { Customer } from "@/lib/types/customer";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { CustomerCard } from "./customer-card";
 import { createCustomerColumns } from "./customer-columns";
 
 interface CustomerTableProps {
@@ -27,7 +28,7 @@ interface CustomerTableProps {
 export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
   const t = useTranslations("Customers");
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
-    null
+    null,
   );
   const deleteMutation = useDeleteCustomer();
 
@@ -51,23 +52,25 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
     t,
   });
 
-  if (customers.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noCustomers")}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <DataTable
+      <ResponsiveDataView
         columns={columns}
+        renderCard={(customer) => (
+          <CustomerCard
+            customer={customer}
+            onEdit={() => onEdit(customer)}
+            onDelete={() => setCustomerToDelete(customer)}
+          />
+        )}
         data={customers}
         searchKey={["name"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}
+        emptyMessage={t("noCustomers")}
+        onEdit={onEdit}
+        onDelete={setCustomerToDelete}
       />
 
       <AlertDialog

@@ -26,11 +26,13 @@ export default function InventoryPage() {
   const { hasPermission } = usePermissions();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | undefined>();
+  const [selectedProductId, setSelectedProductId] = useState<
+    string | undefined
+  >();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { data, isLoading, error } = useInventorySummary();
-  
+
   // Check permissions
   const canCreate = hasPermission("inventory", "create");
   const canUpdate = hasPermission("inventory", "update");
@@ -65,14 +67,16 @@ export default function InventoryPage() {
   // Calculate statistics
   const stats = {
     totalProducts: data?.length || 0,
-    lowStock: data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10).length || 0,
+    lowStock:
+      data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10)
+        .length || 0,
     outOfStock: data?.filter((item) => item.currentStock === 0).length || 0,
     inStock: data?.filter((item) => item.currentStock > 10).length || 0,
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("title")}
@@ -80,65 +84,81 @@ export default function InventoryPage() {
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
         {canCreate && (
-          <Button onClick={handleAddMovement}>
+          <Button onClick={handleAddMovement} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             {t("addMovement")}
           </Button>
         )}
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("totalProducts")}
-            </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("inStock")}
-            </CardTitle>
-            <div className="h-4 w-4 rounded-full bg-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {stats.inStock}
+      {/* Stats Cards - Compact Design */}
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+        <Card className="border-l-4 border-l-muted-foreground/30">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("totalProducts")}
+                </p>
+                <p className="text-2xl font-bold">{stats.totalProducts}</p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center">
+                <Package className="h-5 w-5 text-muted-foreground" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("lowStock")}
-            </CardTitle>
-            <div className="h-4 w-4 rounded-full bg-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {stats.lowStock}
+        <Card className="border-l-4 border-l-green-600">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("inStock")}
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.inStock}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                <div className="h-5 w-5 rounded-full bg-green-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("outOfStock")}
-            </CardTitle>
-            <div className="h-4 w-4 rounded-full bg-destructive" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {stats.outOfStock}
+        <Card className="border-l-4 border-l-orange-600">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("lowStock")}
+                </p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.lowStock}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-orange-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-destructive">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("outOfStock")}
+                </p>
+                <p className="text-2xl font-bold text-destructive">
+                  {stats.outOfStock}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-destructive" />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -194,4 +214,3 @@ export default function InventoryPage() {
     </div>
   );
 }
-

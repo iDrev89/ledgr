@@ -3,19 +3,34 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, AlertCircle, ArrowLeftRight, Activity, Wallet } from "lucide-react";
+import {
+  Plus,
+  AlertCircle,
+  ArrowLeftRight,
+  Activity,
+  Wallet,
+} from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { BankTable } from "@/components/banks/bank-table";
 import { BankDialog } from "@/components/banks/bank-dialog";
 import { TransactionTable } from "@/components/bank-transactions/transaction-table";
 import { TransferDialog } from "@/components/bank-transactions/transfer-dialog";
 import { useBanks, useDeleteBank } from "@/hooks/use-banks";
-import { useBankTransactions, useBanksWithBalance } from "@/hooks/use-bank-transactions";
+import {
+  useBankTransactions,
+  useBanksWithBalance,
+} from "@/hooks/use-bank-transactions";
 import type { BankWithRelations } from "@/lib/types/bank";
 import {
   AlertDialog,
@@ -31,16 +46,25 @@ import {
 export default function BanksPage() {
   const t = useTranslations("Banks");
   const tTransactions = useTranslations("BankTransactions");
-  
-  const [selectedBank, setSelectedBank] = useState<BankWithRelations | null>(null);
+
+  const [selectedBank, setSelectedBank] = useState<BankWithRelations | null>(
+    null,
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [bankToDelete, setBankToDelete] = useState<BankWithRelations | null>(null);
+  const [bankToDelete, setBankToDelete] = useState<BankWithRelations | null>(
+    null,
+  );
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
 
   const { data, isLoading, error } = useBanks();
-  const { data: banksWithBalance, isLoading: loadingBalance } = useBanksWithBalance();
-  const { data: transactionsData, isLoading: loadingTransactions, error: transactionsError } = useBankTransactions();
+  const { data: banksWithBalance, isLoading: loadingBalance } =
+    useBanksWithBalance();
+  const {
+    data: transactionsData,
+    isLoading: loadingTransactions,
+    error: transactionsError,
+  } = useBankTransactions();
   const deleteMutation = useDeleteBank();
 
   const handleCreate = () => {
@@ -85,23 +109,27 @@ export default function BanksPage() {
     }).format(amount);
   };
 
-  const totalBalance = banksWithBalance?.reduce((sum, bank) => sum + (bank.currentBalance || 0), 0) || 0;
+  const totalBalance =
+    banksWithBalance?.reduce(
+      (sum, bank) => sum + (bank.currentBalance || 0),
+      0,
+    ) || 0;
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("title")}
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={handleCreateTransfer} variant="outline">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button onClick={handleCreateTransfer} variant="outline" className="w-full sm:w-auto">
             <ArrowLeftRight className="mr-2 h-4 w-4" />
             {t("createTransfer")}
           </Button>
-          <Button onClick={handleCreate}>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             {t("createBank")}
           </Button>
@@ -112,11 +140,15 @@ export default function BanksPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("totalBalance")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("totalBalance")}
+            </CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalBalance)}</div>
+            <div className="text-2xl font-bold">
+              {formatCurrency(totalBalance)}
+            </div>
             <p className="text-xs text-muted-foreground">
               {t("acrossAllBanks")}
             </p>
@@ -124,11 +156,15 @@ export default function BanksPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("activeBanks")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("activeBanks")}
+            </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{banksWithBalance?.length || 0}</div>
+            <div className="text-2xl font-bold">
+              {banksWithBalance?.length || 0}
+            </div>
             <p className="text-xs text-muted-foreground">
               {t("banksConfigured")}
             </p>
@@ -136,11 +172,15 @@ export default function BanksPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("recentActivity")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("recentActivity")}
+            </CardTitle>
             <ArrowLeftRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{transactionsData?.total || 0}</div>
+            <div className="text-2xl font-bold">
+              {transactionsData?.total || 0}
+            </div>
             <p className="text-xs text-muted-foreground">
               {t("totalTransactions")}
             </p>
@@ -258,7 +298,9 @@ export default function BanksPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteConfirmDescription", { name: bankToDelete?.name || "" })}
+              {t("deleteConfirmDescription", {
+                name: bankToDelete?.name || "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -275,4 +317,3 @@ export default function BanksPage() {
     </div>
   );
 }
-

@@ -92,7 +92,7 @@ export function useUpdateProduct() {
     onSuccess: (updatedProduct) => {
       queryClient.setQueryData(
         productKeys.detail(updatedProduct.id),
-        updatedProduct
+        updatedProduct,
       );
       queryClient.invalidateQueries({
         queryKey: productKeys.lists(),
@@ -125,4 +125,3 @@ export function useDeleteProduct() {
     },
   });
 }
-

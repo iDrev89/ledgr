@@ -6,10 +6,7 @@ import {
   updateSale,
   deleteSale,
 } from "@/apis/actions/sales";
-import type {
-  CreateSaleInput,
-  UpdateSaleInput,
-} from "@/lib/validations/sales";
+import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { inventoryKeys } from "./use-inventory";
 
 export const saleKeys = {
@@ -170,4 +167,3 @@ export function useDeleteSale() {
     },
   });
 }
-

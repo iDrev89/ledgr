@@ -11,10 +11,11 @@ export { UserRole };
 
 // Query Keys
 export const userKeys = {
-  all: ['admin-users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
-  list: (filters?: Record<string, any>) => [...userKeys.lists(), filters] as const,
-  detail: (id: string) => [...userKeys.all, 'detail', id] as const,
+  all: ["admin-users"] as const,
+  lists: () => [...userKeys.all, "list"] as const,
+  list: (filters?: Record<string, any>) =>
+    [...userKeys.lists(), filters] as const,
+  detail: (id: string) => [...userKeys.all, "detail", id] as const,
 } as const;
 
 // User API functions using adminClient
@@ -68,12 +69,15 @@ const userApi = {
     return result.data.user;
   },
 
-  async update(id: string, data: {
-    name?: string;
-    email?: string;
-    role?: UserRoleType;
-    banned?: boolean;
-  }): Promise<UserWithRole> {
+  async update(
+    id: string,
+    data: {
+      name?: string;
+      email?: string;
+      role?: UserRoleType;
+      banned?: boolean;
+    },
+  ): Promise<UserWithRole> {
     const result = await admin.updateUser({
       userId: id,
       data: data, // Must be wrapped in 'data' property as per Better Auth docs
@@ -100,7 +104,7 @@ const userApi = {
     id: string,
     banned: boolean,
     banReason?: string,
-    banExpiresIn?: number
+    banExpiresIn?: number,
   ): Promise<void> {
     if (banned) {
       // Use banUser method as per Better Auth docs
@@ -160,14 +164,14 @@ export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, ...data }: { id: string } & Parameters<typeof userApi.update>[1]) =>
+    mutationFn: ({
+      id,
+      ...data
+    }: { id: string } & Parameters<typeof userApi.update>[1]) =>
       userApi.update(id, data),
     onSuccess: (updatedUser) => {
       // Update the specific user in cache
-      queryClient.setQueryData(
-        userKeys.detail(updatedUser.id),
-        updatedUser
-      );
+      queryClient.setQueryData(userKeys.detail(updatedUser.id), updatedUser);
       // Invalidate lists to ensure consistency
       queryClient.invalidateQueries({
         queryKey: userKeys.lists(),

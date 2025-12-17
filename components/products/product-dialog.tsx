@@ -35,7 +35,7 @@ export function ProductDialog({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = async (
-    data: CreateProductInput | UpdateProductInput
+    data: CreateProductInput | UpdateProductInput,
   ) => {
     try {
       if (product) {
@@ -74,4 +74,3 @@ export function ProductDialog({
     </Dialog>
   );
 }
-

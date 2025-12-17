@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import type { ProductStock } from "@/lib/types/inventory";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { InventoryCard } from "./inventory-card";
 import { createInventoryColumns } from "./inventory-columns";
 
 interface InventoryTableProps {
@@ -12,7 +13,12 @@ interface InventoryTableProps {
   canAdjust?: boolean;
 }
 
-export function InventoryTable({ inventory, onAdjust, onViewHistory, canAdjust = true }: InventoryTableProps) {
+export function InventoryTable({
+  inventory,
+  onAdjust,
+  onViewHistory,
+  canAdjust = true,
+}: InventoryTableProps) {
   const t = useTranslations("Inventory");
 
   const columns = createInventoryColumns({
@@ -22,23 +28,23 @@ export function InventoryTable({ inventory, onAdjust, onViewHistory, canAdjust =
     t,
   });
 
-  if (inventory.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noInventory")}</p>
-      </div>
-    );
-  }
-
   return (
-    <DataTable
+    <ResponsiveDataView
       columns={columns}
+      renderCard={(item) => (
+        <InventoryCard
+          item={item}
+          onAdjust={() => onAdjust(item)}
+          onViewHistory={() => onViewHistory(item)}
+          canAdjust={canAdjust}
+        />
+      )}
       data={inventory}
       searchKey="productName"
       searchPlaceholder={t("searchPlaceholder")}
       showPagination
       pageSize={10}
+      emptyMessage={t("noInventory")}
     />
   );
 }
-

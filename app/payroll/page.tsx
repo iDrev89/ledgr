@@ -35,20 +35,17 @@ export default function PayrollPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [selectedRun, setSelectedRun] = useState<PayrollRunWithDetails | null>(
-    null
+    null,
   );
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [runToDelete, setRunToDelete] = useState<PayrollRunWithDetails | null>(
-    null
+    null,
   );
   const [finalizeConfirmOpen, setFinalizeConfirmOpen] = useState(false);
-  const [runToFinalize, setRunToFinalize] = useState<PayrollRunWithDetails | null>(
-    null
-  );
+  const [runToFinalize, setRunToFinalize] =
+    useState<PayrollRunWithDetails | null>(null);
   const [payDialogOpen, setPayDialogOpen] = useState(false);
-  const [runToPay, setRunToPay] = useState<PayrollRunWithDetails | null>(
-    null
-  );
+  const [runToPay, setRunToPay] = useState<PayrollRunWithDetails | null>(null);
 
   const { data, isLoading } = usePayrollRuns();
   const createMutation = useCreatePayrollRun();
@@ -58,7 +55,9 @@ export default function PayrollPage() {
 
   const runs = data?.runs || [];
 
-  const handleCreate = async (input: CreatePayrollRunInput & { userIds?: string[] }) => {
+  const handleCreate = async (
+    input: CreatePayrollRunInput & { userIds?: string[] },
+  ) => {
     await createMutation.mutateAsync(input);
   };
 
@@ -84,7 +83,9 @@ export default function PayrollPage() {
     setPayDialogOpen(true);
   };
 
-  const handleConfirmPay = async (payments: { userId: string; amount: string }[]) => {
+  const handleConfirmPay = async (
+    payments: { userId: string; amount: string }[],
+  ) => {
     if (!runToPay) return;
     await payMutation.mutateAsync({ id: runToPay.id, payments });
     setPayDialogOpen(false);
@@ -199,4 +200,3 @@ export default function PayrollPage() {
     </div>
   );
 }
-

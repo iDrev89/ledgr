@@ -8,7 +8,7 @@ interface PageHeaderProps {
 
 const PageHeader = ({ pageTitle, pageDes, actions }: PageHeaderProps) => {
   return (
-    <div className="flex flex-wrap gap-3 items-center justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
           {pageTitle}
@@ -16,7 +16,7 @@ const PageHeader = ({ pageTitle, pageDes, actions }: PageHeaderProps) => {
         <p className="text-muted-foreground">{pageDes}</p>
       </div>
 
-      {actions && <div className="flex gap-2">{actions}</div>}
+      {actions && <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto [&>*]:w-full [&>*]:sm:w-auto">{actions}</div>}
     </div>
   );
 };
