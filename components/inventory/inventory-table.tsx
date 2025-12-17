@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import type { ProductStock } from "@/lib/types/inventory";
-import { DataTable } from "@/components/ui/data-table";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { InventoryCard } from "./inventory-card";
 import { createInventoryColumns } from "./inventory-columns";
 
 interface InventoryTableProps {
@@ -27,22 +28,23 @@ export function InventoryTable({
     t,
   });
 
-  if (inventory.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground">{t("noInventory")}</p>
-      </div>
-    );
-  }
-
   return (
-    <DataTable
+    <ResponsiveDataView
       columns={columns}
+      renderCard={(item) => (
+        <InventoryCard
+          item={item}
+          onAdjust={() => onAdjust(item)}
+          onViewHistory={() => onViewHistory(item)}
+          canAdjust={canAdjust}
+        />
+      )}
       data={inventory}
       searchKey="productName"
       searchPlaceholder={t("searchPlaceholder")}
       showPagination
       pageSize={10}
+      emptyMessage={t("noInventory")}
     />
   );
 }

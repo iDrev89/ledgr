@@ -125,7 +125,7 @@ export default function BusinessSummaryPage() {
             />
           </CardContent>
         </Card>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <ViewToggle view={viewMode} onChange={setViewMode} />
           <ExportButton
             type="business"
