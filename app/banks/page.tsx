@@ -136,54 +136,68 @@ export default function BanksPage() {
         </div>
       </div>
 
-      {/* Resumen de saldos */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("totalBalance")}
-            </CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(totalBalance)}
+      {/* Stats Cards - Compact Design */}
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+        <Card className="border-l-4 border-l-green-600">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("totalBalance")}
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {formatCurrency(totalBalance)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("acrossAllBanks")}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                <Wallet className="h-5 w-5 text-green-600" />
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("acrossAllBanks")}
-            </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("activeBanks")}
-            </CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {banksWithBalance?.length || 0}
+
+        <Card className="border-l-4 border-l-blue-600">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("activeBanks")}
+                </p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {banksWithBalance?.length || 0}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("banksConfigured")}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                <Activity className="h-5 w-5 text-blue-600" />
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("banksConfigured")}
-            </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("recentActivity")}
-            </CardTitle>
-            <ArrowLeftRight className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {transactionsData?.total || 0}
+
+        <Card className="border-l-4 border-l-purple-600">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {t("recentActivity")}
+                </p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {transactionsData?.total || 0}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("totalTransactions")}
+                </p>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                <ArrowLeftRight className="h-5 w-5 text-purple-600" />
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("totalTransactions")}
-            </p>
           </CardContent>
         </Card>
       </div>
