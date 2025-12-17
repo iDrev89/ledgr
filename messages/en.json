@@ -802,7 +802,9 @@
   "Receivables": {
     "title": "Accounts Receivable",
     "description": "Manage your customers' pending receivables.",
-    "searchPlaceholder": "Search by customer...",
+    "searchPlaceholder": "Search by customer or sale #...",
+    "filterAll": "All",
+    "filterPending": "Pending",
     "receivablesList": "Receivables List",
     "receivablesListDescription": "View and manage all pending receivables.",
     "totalReceivables": "Total Accounts",

@@ -807,7 +807,9 @@
   "Receivables": {
     "title": "Cuentas por Cobrar",
     "description": "Gestiona las cuentas pendientes de cobro de tus clientes.",
-    "searchPlaceholder": "Buscar por cliente...",
+    "searchPlaceholder": "Buscar por cliente o # de venta...",
+    "filterAll": "Todas",
+    "filterPending": "Pendientes",
     "receivablesList": "Lista de Cuentas por Cobrar",
     "receivablesListDescription": "Ve y administra todas las cuentas pendientes de cobro.",
     "totalReceivables": "Total Cuentas",

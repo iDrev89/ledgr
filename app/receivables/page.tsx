@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/shared/PageHeader";
 import { ReceivableTable } from "@/components/receivables/receivable-table";
@@ -30,6 +31,8 @@ import { ReceivablePaymentDialog } from "@/components/receivables/receivable-pay
 import { useReceivables, useCancelReceivable } from "@/hooks/use-receivables";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 
+type FilterType = "all" | "pending";
+
 export default function ReceivablesPage() {
   const t = useTranslations("Receivables");
   const locale = useLocale();
@@ -37,9 +40,23 @@ export default function ReceivablesPage() {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const { data, isLoading, error } = useReceivables();
   const cancelMutation = useCancelReceivable();
+
+  // Filter receivables based on selected filter
+  const filteredReceivables = useMemo(() => {
+    if (!data?.receivables) return [];
+    
+    if (filter === "pending") {
+      return data.receivables.filter(
+        (r) => r.status === "OPEN" || r.status === "PARTIAL"
+      );
+    }
+    
+    return data.receivables;
+  }, [data?.receivables, filter]);
 
   const handleView = (receivable: ReceivableWithDetails) => {
     setSelectedReceivable(receivable);
@@ -121,8 +138,22 @@ export default function ReceivablesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("receivablesList")}</CardTitle>
-          <CardDescription>{t("receivablesListDescription")}</CardDescription>
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <CardTitle>{t("receivablesList")}</CardTitle>
+              <CardDescription>{t("receivablesListDescription")}</CardDescription>
+            </div>
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterType)}>
+              <TabsList>
+                <TabsTrigger value="all">
+                  {t("filterAll")}
+                </TabsTrigger>
+                <TabsTrigger value="pending">
+                  {t("filterPending")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </CardHeader>
         <CardContent>
           {error && (
@@ -142,7 +173,7 @@ export default function ReceivablesPage() {
             </div>
           ) : (
             <ReceivableTable
-              receivables={data?.receivables || []}
+              receivables={filteredReceivables}
               onView={handleView}
               onPayment={handlePayment}
               onCancel={handleCancel}
