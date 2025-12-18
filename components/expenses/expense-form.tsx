@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { Loader2, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,6 +18,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -32,6 +39,7 @@ import {
 import { CategorySelector } from "./category-selector";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
 import { useBanks } from "@/hooks/use-banks";
+import { cn } from "@/lib/utils";
 
 enum PaymentMethod {
   CASH = "CASH",
@@ -57,6 +65,7 @@ export function ExpenseForm({
   const t = useTranslations("Expenses");
   const { data } = useBanks();
   const banks = data?.banks || [];
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
@@ -72,8 +81,8 @@ export function ExpenseForm({
       bankId: (expense as any)?.bankId || undefined,
       reference: (expense as any)?.reference || "",
       incurredAt: expense?.incurredAt
-        ? new Date(expense.incurredAt).toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0],
+        ? String(expense.incurredAt).split("T")[0]
+        : format(new Date(), "yyyy-MM-dd"),
     },
   });
 
@@ -162,20 +171,42 @@ export function ExpenseForm({
             control={form.control}
             name="incurredAt"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>{t("date")}</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    value={
-                      typeof field.value === "string"
-                        ? field.value.split("T")[0]
-                        : new Date(field.value).toISOString().split("T")[0]
-                    }
-                    disabled={isLoading}
-                  />
-                </FormControl>
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-between font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                        disabled={isLoading}
+                      >
+                        {field.value ? (
+                          format(parseISO(String(field.value)), "dd/MM/yyyy")
+                        ) : (
+                          <span>{t("datePlaceholder")}</span>
+                        )}
+                        <CalendarIcon className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ? parseISO(String(field.value)) : undefined}
+                      onSelect={(date) => {
+                        field.onChange(
+                          date ? format(date, "yyyy-MM-dd") : "",
+                        );
+                        setCalendarOpen(false);
+                      }}
+                      disabled={isLoading}
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}

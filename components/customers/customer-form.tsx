@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +58,7 @@ export function CustomerForm({
       phone: customer?.phone || "",
       docId: customer?.docId || "",
       birthdate: customer?.birthdate
-        ? new Date(customer.birthdate).toISOString().split("T")[0]
+        ? String(customer.birthdate).split("T")[0]
         : "",
       note: customer?.note || "",
     },
@@ -170,7 +170,7 @@ export function CustomerForm({
                       disabled={isLoading}
                     >
                       {field.value ? (
-                        format(new Date(field.value), "dd/MM/yyyy")
+                        format(parseISO(field.value), "dd/MM/yyyy")
                       ) : (
                         <span>{t("birthdatePlaceholder")}</span>
                       )}
@@ -184,11 +184,11 @@ export function CustomerForm({
                 >
                   <Calendar
                     mode="single"
-                    selected={field.value ? new Date(field.value) : undefined}
+                    selected={field.value ? parseISO(field.value) : undefined}
                     captionLayout="dropdown"
                     onSelect={(date) => {
                       field.onChange(
-                        date ? date.toISOString().split("T")[0] : "",
+                        date ? format(date, "yyyy-MM-dd") : "",
                       );
                       setCalendarOpen(false);
                     }}

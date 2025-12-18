@@ -1,12 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { Loader2, ArrowRight } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { Loader2, ArrowRight, ChevronDownIcon, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Form,
   FormControl,
@@ -28,6 +36,7 @@ import {
   type CreateTransferInput,
 } from "@/lib/validations/bank-transactions";
 import { useBanks } from "@/hooks/use-banks";
+import { cn } from "@/lib/utils";
 
 interface TransferFormProps {
   onSubmit: (data: CreateTransferInput) => Promise<void>;
@@ -39,6 +48,7 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
   const { data } = useBanks();
   const banks = data?.banks || [];
   const { createTransferSchema } = getBankTransactionSchemas(t);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const form = useForm<CreateTransferInput>({
     resolver: zodResolver(createTransferSchema),
@@ -48,7 +58,7 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
       amount: "",
       description: "",
       reference: "",
-      transactionDate: new Date(),
+      transactionDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     },
   });
 
@@ -146,21 +156,58 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
           control={form.control}
           name="transactionDate"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>{t("transactionDate")}</FormLabel>
-              <FormControl>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-between font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
+                      disabled={isSubmitting}
+                    >
+                      {field.value ? (
+                        format(parseISO(String(field.value).split("T")[0]), "dd/MM/yyyy")
+                      ) : (
+                        <span>{t("transactionDatePlaceholder")}</span>
+                      )}
+                      <CalendarIcon className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ? parseISO(String(field.value).split("T")[0]) : undefined}
+                    onSelect={(date) => {
+                      if (date) {
+                        const currentTime = field.value 
+                          ? String(field.value).split("T")[1] || "12:00"
+                          : "12:00";
+                        field.onChange(format(date, "yyyy-MM-dd") + "T" + currentTime);
+                      }
+                      setCalendarOpen(false);
+                    }}
+                    disabled={isSubmitting}
+                  />
+                </PopoverContent>
+              </Popover>
+              <div className="mt-2">
                 <Input
-                  {...field}
-                  type="datetime-local"
-                  value={
-                    field.value
-                      ? new Date(field.value).toISOString().slice(0, 16)
-                      : ""
-                  }
-                  onChange={(e) => field.onChange(new Date(e.target.value))}
+                  type="time"
+                  value={field.value ? String(field.value).split("T")[1] || "" : ""}
+                  onChange={(e) => {
+                    const currentDate = field.value
+                      ? String(field.value).split("T")[0]
+                      : format(new Date(), "yyyy-MM-dd");
+                    field.onChange(currentDate + "T" + e.target.value);
+                  }}
                   disabled={isSubmitting}
                 />
-              </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
