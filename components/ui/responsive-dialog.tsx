@@ -94,22 +94,12 @@ export function ResponsiveDialog({
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="bottom"
-          className={cn("p-0", className)}
-          style={{ height: mobileHeight }}
-        >
-          <ScrollArea className="h-full">
-            <div className="p-6">
-              <SheetHeader className="mb-6">
-                <SheetTitle>{title}</SheetTitle>
-                {description && (
-                  <SheetDescription>{description}</SheetDescription>
-                )}
-              </SheetHeader>
-              {children}
-            </div>
-          </ScrollArea>
+        <SheetContent side="bottom">
+          <SheetHeader className="mb-6">
+            <SheetTitle>{title}</SheetTitle>
+            {description && <SheetDescription>{description}</SheetDescription>}
+          </SheetHeader>
+          {children}
         </SheetContent>
       </Sheet>
     );
@@ -122,7 +112,7 @@ export function ResponsiveDialog({
         className={cn(
           sizeClasses[size],
           "max-h-[90vh] overflow-y-auto",
-          contentClassName,
+          contentClassName
         )}
       >
         <DialogHeader>

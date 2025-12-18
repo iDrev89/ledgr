@@ -294,13 +294,14 @@ export function SaleForm({
               </div>
             )}
 
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
             {!sale && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleReset}
                 disabled={isLoading}
+                className="w-full sm:w-auto"
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 {t("reset")}
@@ -312,6 +313,7 @@ export function SaleForm({
                 variant="outline"
                 onClick={onCancel}
                 disabled={isLoading}
+                className="w-full sm:w-auto"
               >
                 {t("cancel")}
               </Button>
@@ -320,6 +322,7 @@ export function SaleForm({
               type="submit"
               disabled={isLoading || !isFormValid}
               size="lg"
+              className="w-full sm:w-auto"
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {sale ? t("updateSale") : t("createSale")}

@@ -63,13 +63,13 @@ export function SaleDetailDialog({
 
   // Contenido compartido entre Dialog y Sheet
   const content = (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Sale Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Customer Information */}
-        <div>
+        <div className="min-w-0">
           <h3 className="text-sm font-semibold mb-2">{t("customerInfo")}</h3>
-          <div className="bg-muted rounded-lg p-4 space-y-1">
+          <div className="bg-muted rounded-lg p-3 space-y-1">
             <p className="font-medium">{sale.customer.name}</p>
             {sale.customer.email && (
               <p className="text-sm text-muted-foreground">
@@ -110,42 +110,42 @@ export function SaleDetailDialog({
               {sale.payments.map((payment) => (
                 <div
                   key={payment.id}
-                  className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/50"
+                  className="flex flex-col gap-3 p-3 rounded-lg bg-muted/50"
                 >
-                  <div className="flex flex-col gap-1 flex-1">
-                    <Badge variant="secondary" className="w-fit">
-                      {getPaymentMethodLabel(payment.method)}
-                    </Badge>
-                    {payment.bank && (
-                      <span className="text-xs text-muted-foreground">
-                        {payment.bank.name}
-                        {payment.bank.accountNo &&
-                          ` - ${payment.bank.accountNo}`}
-                      </span>
-                    )}
-                    {payment.reference && (
-                      <span className="text-xs text-muted-foreground">
-                        Ref: {payment.reference}
-                      </span>
-                    )}
-                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
+                      <Badge variant="secondary" className="w-fit">
+                        {getPaymentMethodLabel(payment.method)}
+                      </Badge>
+                      {payment.bank && (
+                        <span className="text-xs text-muted-foreground truncate">
+                          {payment.bank.name}
+                          {payment.bank.accountNo &&
+                            ` - ${payment.bank.accountNo}`}
+                        </span>
+                      )}
+                      {payment.reference && (
+                        <span className="text-xs text-muted-foreground truncate">
+                          Ref: {payment.reference}
+                        </span>
+                      )}
+                    </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium whitespace-nowrap">
+                    <span className="font-medium whitespace-nowrap text-lg shrink-0">
                       {formatCurrency(payment.amount)}
                     </span>
-
-                    {/* Botón para ver comprobante si existe */}
-                    {payment.attachmentUrl && (
-                      <ImageViewerDialog
-                        imageUrl={payment.attachmentUrl}
-                        title={t("paymentAttachmentTitle")}
-                        buttonText={t("paymentViewAttachment")}
-                        buttonVariant="outline"
-                        buttonSize="sm"
-                      />
-                    )}
                   </div>
+
+                  {/* Botón para ver comprobante si existe */}
+                  {payment.attachmentUrl && (
+                    <ImageViewerDialog
+                      imageUrl={payment.attachmentUrl}
+                      title={t("paymentAttachmentTitle")}
+                      buttonText={t("paymentViewAttachment")}
+                      buttonVariant="outline"
+                      buttonSize="default"
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -181,8 +181,8 @@ export function SaleDetailDialog({
           /* Vista mobile con cards */
           <div className="space-y-3">
             {sale.items.map((item) => (
-              <Card key={item.id} className="border-2">
-                <CardContent className="p-4 space-y-3">
+              <Card key={item.id} className="border">
+                <CardContent className="p-3 space-y-3">
                   <div className="space-y-1">
                     <p className="font-semibold">{item.product.name}</p>
                     {item.product.sku && (
@@ -273,7 +273,7 @@ export function SaleDetailDialog({
 
       {/* Totals */}
       <div className="flex justify-end">
-        <div className="w-64 space-y-2">
+        <div className="w-full sm:w-64 space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("subtotal")}</span>
             <span className="font-medium">{formatCurrency(sale.subtotal)}</span>
@@ -323,7 +323,7 @@ export function SaleDetailDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={`${t("saleDetail")} #${String(sale.saleNumber).padStart(4, "0")}`}
-      description={format(new Date(sale.createdAt), "PPP p", {
+      description={format(new Date(sale.createdAt), "dd/MM/yyyy hh:mm a", {
         locale: dateLocale,
       })}
       size="lg"

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
@@ -91,13 +91,12 @@ export function SaleCard({
         {/* Header: Número de venta + Fecha + Botón eliminar */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono font-bold text-lg">
                 #{String(sale.saleNumber).padStart(4, "0")}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(sale.createdAt), {
-                  addSuffix: true,
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {format(new Date(sale.createdAt), "dd/MM/yyyy hh:mm a", {
                   locale: dateLocale,
                 })}
               </span>
