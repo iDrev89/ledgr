@@ -1,16 +1,18 @@
 import { PrismaClient } from "../prisma/prisma-client";
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 const globalForPrisma = global as unknown as {
   prisma: PrismaClient;
 };
 
-const adapter = new PrismaNeon({
+const adapater = new PrismaPg({
   connectionString: process.env.DATABASE_URL as string,
 });
 const prisma =
   globalForPrisma.prisma ||
-  new PrismaClient({ adapter: adapter }).$extends(withAccelerate());
+  new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    adapter: adapater,
+  });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
