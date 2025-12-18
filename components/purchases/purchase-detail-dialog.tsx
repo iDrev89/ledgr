@@ -43,13 +43,13 @@ export function PurchaseDetailDialog({
   };
 
   const content = (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Purchase Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Supplier Information */}
         <div>
           <h3 className="text-sm font-semibold mb-2">{t("supplier")}</h3>
-          <div className="bg-muted rounded-lg p-4">
+          <div className="bg-muted rounded-lg p-3">
             <p className="font-medium">
               {purchase.supplier ? purchase.supplier.name : t("noSupplier")}
             </p>
@@ -59,7 +59,7 @@ export function PurchaseDetailDialog({
         {/* Created By Information */}
         <div>
           <h3 className="text-sm font-semibold mb-2">{t("createdBy")}</h3>
-          <div className="bg-muted rounded-lg p-4 space-y-1">
+          <div className="bg-muted rounded-lg p-3 space-y-1">
             <p className="font-medium">
               {purchase.createdBy?.name || "Sistema"}
             </p>
@@ -77,14 +77,14 @@ export function PurchaseDetailDialog({
         {purchase.invoiceNo && (
           <div className="flex-1">
             <h3 className="text-sm font-semibold mb-2">{t("invoiceNo")}</h3>
-            <div className="bg-muted rounded-lg p-4">
+            <div className="bg-muted rounded-lg p-3">
               <p className="font-mono font-medium">{purchase.invoiceNo}</p>
             </div>
           </div>
         )}
         <div className="flex-1">
           <h3 className="text-sm font-semibold mb-2">{t("status")}</h3>
-          <div className="bg-muted rounded-lg p-4">
+          <div className="bg-muted rounded-lg p-3">
             <Badge
               variant={purchase.status === "APPROVED" ? "default" : "secondary"}
             >
@@ -110,7 +110,7 @@ export function PurchaseDetailDialog({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <h3 className="text-sm font-semibold mb-2">{t("paymentMethod")}</h3>
-          <div className="bg-muted rounded-lg p-4">
+          <div className="bg-muted rounded-lg p-3">
             <Badge>
               {purchase.paymentMethod === "CASH" && t("paymentCash")}
               {purchase.paymentMethod === "TRANSFER" && t("paymentTransfer")}
@@ -123,7 +123,7 @@ export function PurchaseDetailDialog({
         {purchase.bank && (
           <div>
             <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
-            <div className="bg-muted rounded-lg p-4">
+            <div className="bg-muted rounded-lg p-3">
               <p className="font-medium">{purchase.bank.name}</p>
               {purchase.reference && (
                 <p className="text-sm text-muted-foreground mt-1">
@@ -144,8 +144,8 @@ export function PurchaseDetailDialog({
           /* Vista mobile con cards */
           <div className="space-y-3">
             {purchase.items.map((item) => (
-              <Card key={item.id} className="border-2">
-                <CardContent className="p-4 space-y-3">
+              <Card key={item.id} className="border">
+                <CardContent className="p-3 space-y-3">
                   <div className="space-y-1">
                     <p className="font-semibold">{item.product.name}</p>
                   </div>
@@ -210,7 +210,7 @@ export function PurchaseDetailDialog({
 
       {/* Totals */}
       <div className="flex justify-end">
-        <div className="w-64 space-y-2">
+        <div className="w-full sm:w-64 space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("subtotal")}</span>
             <span className="font-medium">
@@ -239,7 +239,7 @@ export function PurchaseDetailDialog({
       {purchase.note && (
         <div>
           <h3 className="text-sm font-semibold mb-2">{t("notes")}</h3>
-          <div className="bg-muted rounded-lg p-4">
+          <div className="bg-muted rounded-lg p-3">
             <p className="text-sm text-muted-foreground">{purchase.note}</p>
           </div>
         </div>

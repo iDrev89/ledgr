@@ -75,11 +75,11 @@ export function ImageViewerDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh]">
-        <DialogHeader className="pr-10">
+        <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <div className="relative w-full overflow-auto space-y-4">
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
               variant="outline"
               size="sm"
