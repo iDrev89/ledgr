@@ -6,6 +6,6 @@ export type BankWithRelations = Bank & {
   _count?: {
     salePayments: number;
     receivablePayments: number;
-    purchasePayments: number;
+    purchases: number;
   };
 };

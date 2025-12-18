@@ -98,12 +98,13 @@ export function ProductCard({
             </div>
           )}
           
-          {product.category && (
+          {/* Category - Disabled: property not included in fetch */}
+          {/* {product.category && (
             <div className="flex items-center gap-2">
               <Layers className="h-4 w-4 text-muted-foreground shrink-0" />
               <span className="text-sm">{product.category.name}</span>
             </div>
-          )}
+          )} */}
         </div>
 
         <Separator />
@@ -120,14 +121,14 @@ export function ProductCard({
             <div>
               <p className="text-xs text-muted-foreground">{t("price")}</p>
               <p className="text-lg font-bold">
-                {formatCurrency(product.price)}
+                {formatCurrency(parseFloat(product.price.toString()))}
               </p>
             </div>
             {product.cost && (
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">{t("cost")}</p>
                 <p className="text-sm text-muted-foreground">
-                  {formatCurrency(product.cost)}
+                  {formatCurrency(parseFloat(product.cost.toString()))}
                 </p>
               </div>
             )}
@@ -141,12 +142,13 @@ export function ProductCard({
             {product.active ? t("active") : t("inactive")}
           </Badge>
           
-          {product.currentStock !== undefined && isProduct && (
+          {/* Stock - Disabled: property not in schema */}
+          {/* {product.currentStock !== undefined && isProduct && (
             <div className="text-right">
               <p className="text-xs text-muted-foreground">{t("stock")}</p>
               <p className="text-sm font-medium">{product.currentStock}</p>
             </div>
-          )}
+          )} */}
         </div>
       </CardContent>
     </Card>

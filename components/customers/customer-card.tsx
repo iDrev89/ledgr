@@ -103,8 +103,8 @@ export function CustomerCard({
             </div>
           )}
 
-          {/* Total de Ventas (si está disponible) */}
-          {customer.totalSales !== undefined && customer.totalSales > 0 && (
+          {/* Total de Ventas (si está disponible) - Disabled: property not in schema */}
+          {/* {customer.totalSales !== undefined && customer.totalSales > 0 && (
             <div className="flex items-center gap-2">
               <ShoppingCart className="h-4 w-4 text-muted-foreground shrink-0" />
               <div className="flex-1">
@@ -114,7 +114,7 @@ export function CustomerCard({
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Nota (si existe) */}

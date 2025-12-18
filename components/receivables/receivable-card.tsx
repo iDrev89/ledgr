@@ -81,7 +81,7 @@ export function ReceivableCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-mono font-bold text-lg">
-                #{String(receivable.sale.saleNumber).padStart(4, "0")}
+                #{String(receivable.sale?.saleNumber || 0).padStart(4, "0")}
               </span>
               {getStatusBadge(receivable.status, t)}
             </div>

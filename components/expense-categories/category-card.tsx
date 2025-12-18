@@ -74,15 +74,15 @@ export function CategoryCard({
           </div>
         </div>
 
-        {/* Descripción */}
-        {category.description && (
+        {/* Descripción - Disabled: property not in schema */}
+        {/* {category.description && (
           <>
             <Separator />
             <p className="text-sm text-muted-foreground line-clamp-2">
               {category.description}
             </p>
           </>
-        )}
+        )} */}
 
         <Separator />
 
