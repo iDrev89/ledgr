@@ -611,6 +611,12 @@
     "failedToSignInWithGoogle": "Failed to sign in with Google",
     "unexpectedError": "An unexpected error occurred"
   },
+  "TopBar": {
+    "myAccount": "My Account",
+    "loading": "Loading...",
+    "logout": "Log out",
+    "toggleSidebar": "Toggle sidebar"
+  },
   "Common": {
     "loading": "Loading..."
   },
@@ -792,7 +798,6 @@
     "salePayments": "Sale Payments",
     "receivablePayments": "Receivable Payments",
     "purchases": "Purchases",
-    "noBanks": "No banks found.",
     "searchPlaceholder": "Search banks by name...",
     "banksTitle": "Bank Management",
     "banksDescription": "Manage your bank accounts and view their balances.",
