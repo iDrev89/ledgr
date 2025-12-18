@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./theme-toggle";
 import { signOut, useSession } from "@/auth/auth-client";
 import { LanguageSelector } from "./language-selector";
+import { useTranslations } from "next-intl";
 
 interface TopBarProps {
   toggleSidebar: () => void;
@@ -32,6 +33,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
+  const t = useTranslations("TopBar");
   const [notificationCount, setNotificationCount] = useState(3);
   const { data: session, isPending } = useSession();
   const router = useRouter();
@@ -65,7 +67,7 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
           onClick={toggleSidebar}
         >
           <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle sidebar</span>
+          <span className="sr-only">{t("toggleSidebar")}</span>
         </Button>
       </div>
 
@@ -93,8 +95,8 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
               {isPending
-                ? "Loading..."
-                : session?.user?.name || session?.user?.email || "My Account"}
+                ? t("loading")
+                : session?.user?.name || session?.user?.email || t("myAccount")}
             </DropdownMenuLabel>
             {!isPending && session?.user?.email && (
               <div className="px-2 py-1 text-sm text-muted-foreground">
@@ -102,18 +104,10 @@ export function TopBar({ toggleSidebar, sidebarOpen }: TopBarProps) {
               </div>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <User className="h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings className="h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
-              <span>Log out</span>
+              <span>{t("logout")}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -618,6 +618,12 @@
     "failedToSignInWithGoogle": "Error al iniciar sesión con Google",
     "unexpectedError": "Ocurrió un error inesperado"
   },
+  "TopBar": {
+    "myAccount": "Mi Cuenta",
+    "loading": "Cargando...",
+    "logout": "Cerrar Sesión",
+    "toggleSidebar": "Alternar menú"
+  },
   "Common": {
     "loading": "Cargando..."
   },
