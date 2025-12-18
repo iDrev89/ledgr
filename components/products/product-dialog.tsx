@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ProductForm } from "./product-form";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
 import type { Product } from "@/lib/types/product";
@@ -35,7 +36,7 @@ export function ProductDialog({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = async (
-    data: CreateProductInput | UpdateProductInput,
+    data: CreateProductInput | UpdateProductInput
   ) => {
     try {
       if (product) {
@@ -55,21 +56,27 @@ export function ProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>
-            {product ? t("editProduct") : t("createProduct")}
-          </DialogTitle>
-          <DialogDescription>
-            {product ? t("editDescription") : t("createDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <ProductForm
-          product={product}
-          onSubmit={handleSubmit}
-          onCancel={() => onOpenChange(false)}
-          isLoading={isLoading}
-        />
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>
+              {product ? t("editProduct") : t("createProduct")}
+            </DialogTitle>
+            <DialogDescription>
+              {product ? t("editDescription") : t("createDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <ProductForm
+              product={product}
+              onSubmit={handleSubmit}
+              onCancel={() => onOpenChange(false)}
+              isLoading={isLoading}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
