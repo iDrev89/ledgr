@@ -12,9 +12,9 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ledgr – Business Management App",
+  title: "Ledgrly – Business Management App",
   description:
-    "Ledgr is a modern business management application for small businesses. Manage sales, expenses, payroll, inventory, and generate automated financial reports with ease.",
+    "Ledgrly is a modern business management application for small businesses. Manage sales, expenses, payroll, inventory, and generate automated financial reports with ease.",
 };
 
 export default async function RootLayout({

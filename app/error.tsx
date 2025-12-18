@@ -62,7 +62,7 @@ export default function Error({
           </div>
           <div className="text-center pt-2">
             <p className="text-xs text-muted-foreground">
-              Ledgr - Business Management App
+              Ledgrly - Business Management App
             </p>
           </div>
         </CardContent>

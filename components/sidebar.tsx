@@ -174,7 +174,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
       <div className="flex justify-between items-center border-b px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold h-16">
           <Database className="h-6 w-6 text-primary" />
-          <span className="text-xl">Ledgr</span>
+          <span className="text-xl">Ledgrly</span>
         </Link>
 
         <Button

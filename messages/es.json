@@ -602,6 +602,22 @@
     "goToNextPage": "Ir a la siguiente página",
     "goToLastPage": "Ir a la última página"
   },
+  "Auth": {
+    "appName": "Ledgrly",
+    "welcomeBack": "Bienvenido de nuevo",
+    "signInDescription": "Inicia sesión en tu cuenta empresarial",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "Ingresa tu correo",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "signIn": "Iniciar Sesión",
+    "signingIn": "Iniciando sesión...",
+    "orContinueWith": "O continúa con",
+    "continueWithGoogle": "Continuar con Google",
+    "failedToSignIn": "Error al iniciar sesión",
+    "failedToSignInWithGoogle": "Error al iniciar sesión con Google",
+    "unexpectedError": "Ocurrió un error inesperado"
+  },
   "Common": {
     "loading": "Cargando..."
   },

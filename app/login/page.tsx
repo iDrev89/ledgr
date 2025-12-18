@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -18,6 +19,7 @@ import { Database, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import { signIn } from "@/auth/auth-client";
 
 export default function LoginPage() {
+  const t = useTranslations("Auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,12 +40,12 @@ export default function LoginPage() {
       });
 
       if (result.error) {
-        setError(result.error.message || "Failed to sign in");
+        setError(result.error.message || t("failedToSignIn"));
       } else {
         router.push("/sales");
       }
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("unexpectedError"));
     } finally {
       setIsLoading(false);
     }
@@ -60,10 +62,10 @@ export default function LoginPage() {
       });
 
       if (result.error) {
-        setError(result.error.message || "Failed to sign in with Google");
+        setError(result.error.message || t("failedToSignInWithGoogle"));
       }
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("unexpectedError"));
     } finally {
       setIsLoading(false);
     }
@@ -108,28 +110,26 @@ export default function LoginPage() {
           <div className="flex items-center justify-center mb-6">
             <div className="flex items-center gap-2">
               <Database className="h-7 w-7 text-violet-400" />
-              <span className="text-2xl font-bold text-white">Ledgr</span>
+              <span className="text-2xl font-bold text-white">{t("appName")}</span>
             </div>
           </div>
           <CardTitle className="text-3xl font-bold text-white">
-            Welcome back
+            {t("welcomeBack")}
           </CardTitle>
-          <CardDescription className="text-center text-base mt-2 text-gray-100">
-            Sign in to your business account
-          </CardDescription>
+         
         </CardHeader>
         <CardContent className="space-y-4 pb-8">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-100 font-medium">
-                Email
+                {t("email")}
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-4 h-4 w-4 text-gray-400" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-gray-400 focus:ring-0 text-white placeholder:text-gray-400 transition-all duration-200"
@@ -140,14 +140,14 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-gray-100 font-medium">
-                Password
+                {t("password")}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-4 h-4 w-4 text-gray-400" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={t("passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-9 pr-9 h-12 bg-gray-800/50 border-2 border-gray-600 focus:border-gray-400 focus:ring-0 text-white placeholder:text-gray-400 transition-all duration-200"
@@ -174,7 +174,7 @@ export default function LoginPage() {
               className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-colors duration-200"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? t("signingIn") : t("signIn")}
             </Button>
           </form>
 
@@ -184,7 +184,7 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-gray-900/90 px-3 py-1 rounded-full text-gray-200 backdrop-blur-sm border border-gray-700">
-                Or continue with
+                {t("orContinueWith")}
               </span>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            Continue with Google
+            {t("continueWithGoogle")}
           </Button>
 
           {error && (

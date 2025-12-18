@@ -595,6 +595,22 @@
     "goToNextPage": "Go to next page",
     "goToLastPage": "Go to last page"
   },
+  "Auth": {
+    "appName": "Ledgrly",
+    "welcomeBack": "Welcome back",
+    "signInDescription": "Sign in to your business account",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "orContinueWith": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "failedToSignIn": "Failed to sign in",
+    "failedToSignInWithGoogle": "Failed to sign in with Google",
+    "unexpectedError": "An unexpected error occurred"
+  },
   "Common": {
     "loading": "Loading..."
   },
