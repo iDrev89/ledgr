@@ -75,9 +75,11 @@ export function ImageViewerDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh]">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle>{title}</DialogTitle>
+        <DialogHeader className="pr-10">
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <div className="relative w-full overflow-auto space-y-4">
+          <div className="flex justify-end">
             <Button
               variant="outline"
               size="sm"
@@ -88,23 +90,23 @@ export function ImageViewerDialog({
               Descargar
             </Button>
           </div>
-        </DialogHeader>
-        <div className="relative w-full overflow-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : signedUrl ? (
-            <img
-              src={signedUrl}
-              alt={title}
-              className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              Error al cargar la imagen
-            </div>
-          )}
+          <div>
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : signedUrl ? (
+              <img
+                src={signedUrl}
+                alt={title}
+                className="w-full h-auto max-h-[65vh] object-contain rounded-lg"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-64 text-muted-foreground">
+                Error al cargar la imagen
+              </div>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

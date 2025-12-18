@@ -274,7 +274,7 @@ export function SalePayments({
 
       {/* Edit Payment Sheet */}
       <Sheet open={editingPaymentId !== null} onOpenChange={handleCloseSheet}>
-        <SheetContent side="bottom" className="h-[85vh]">
+        <SheetContent side="bottom" className="h-[85vh] px-6 sm:px-8">
           <SheetHeader>
             <SheetTitle>{t("paymentDetails")}</SheetTitle>
             <SheetDescription>{t("editPaymentDescription")}</SheetDescription>
@@ -282,7 +282,7 @@ export function SalePayments({
 
           {editingPayment && (
             <ScrollArea className="h-[calc(85vh-140px)] mt-6">
-              <div className="space-y-4 pr-4">
+              <div className="space-y-4 pb-6 px-1">
                 {/* Payment Method */}
                 <div className="space-y-2">
                   <Label
