@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -93,11 +94,16 @@ export function PayrollRunPaymentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("payRun")}</DialogTitle>
-          <DialogDescription>{t("payDescription")}</DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>{t("payRun")}</DialogTitle>
+            <DialogDescription>{t("payDescription")}</DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
 
         <div className="space-y-4">
           <div className="flex justify-between items-center">
@@ -226,6 +232,8 @@ export function PayrollRunPaymentDialog({
             Registrar Pagos
           </Button>
         </DialogFooter>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

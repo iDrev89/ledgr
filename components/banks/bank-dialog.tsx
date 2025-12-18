@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { BankForm } from "./bank-form";
 import { useCreateBank, useUpdateBank } from "@/hooks/use-banks";
 import type { Bank } from "@/lib/types/bank";
@@ -48,19 +49,25 @@ export function BankDialog({ open, onOpenChange, bank }: BankDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{bank ? t("editBank") : t("createBank")}</DialogTitle>
-          <DialogDescription>
-            {bank ? t("editBankDescription") : t("createBankDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <BankForm
-          bank={bank || undefined}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isLoading={createMutation.isPending || updateMutation.isPending}
-        />
+      <DialogContent className="max-w-md max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>{bank ? t("editBank") : t("createBank")}</DialogTitle>
+            <DialogDescription>
+              {bank ? t("editBankDescription") : t("createBankDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <BankForm
+              bank={bank || undefined}
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+              isLoading={createMutation.isPending || updateMutation.isPending}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

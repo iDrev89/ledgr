@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { TransactionForm } from "./transaction-form";
 import {
   useCreateBankTransaction,
@@ -65,21 +66,27 @@ export const TransactionDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? t("editTransaction") : t("createTransaction")}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit ? t("editDescription") : t("createDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <TransactionForm
-          transaction={transaction}
-          defaultBankId={defaultBankId}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-        />
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>
+              {isEdit ? t("editTransaction") : t("createTransaction")}
+            </DialogTitle>
+            <DialogDescription>
+              {isEdit ? t("editDescription") : t("createDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <TransactionForm
+              transaction={transaction}
+              defaultBankId={defaultBankId}
+              onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

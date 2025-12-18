@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { StockMovementForm } from "./stock-movement-form";
 import { useCreateStockMovement } from "@/hooks/use-inventory";
 import type { CreateStockMovementInput } from "@/lib/validations/inventory";
@@ -43,17 +44,23 @@ export function StockMovementDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>{t("addMovement")}</DialogTitle>
-          <DialogDescription>{t("addMovementDescription")}</DialogDescription>
-        </DialogHeader>
-        <StockMovementForm
-          productId={productId}
-          onSubmit={handleSubmit}
-          onCancel={() => onOpenChange(false)}
-          isLoading={isLoading}
-        />
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>{t("addMovement")}</DialogTitle>
+            <DialogDescription>{t("addMovementDescription")}</DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <StockMovementForm
+              productId={productId}
+              onSubmit={handleSubmit}
+              onCancel={() => onOpenChange(false)}
+              isLoading={isLoading}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

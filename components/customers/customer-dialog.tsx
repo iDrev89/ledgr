@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CustomerForm } from "./customer-form";
 import { useCreateCustomer, useUpdateCustomer } from "@/hooks/use-customers";
 import type { Customer } from "@/lib/types/customer";
@@ -61,21 +62,27 @@ export function CustomerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>
-            {customer ? t("editCustomer") : t("createCustomer")}
-          </DialogTitle>
-          <DialogDescription>
-            {customer ? t("editDescription") : t("createDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <CustomerForm
-          customer={customer}
-          onSubmit={handleSubmit}
-          onCancel={() => onOpenChange(false)}
-          isLoading={isLoading}
-        />
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>
+              {customer ? t("editCustomer") : t("createCustomer")}
+            </DialogTitle>
+            <DialogDescription>
+              {customer ? t("editDescription") : t("createDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <CustomerForm
+              customer={customer}
+              onSubmit={handleSubmit}
+              onCancel={() => onOpenChange(false)}
+              isLoading={isLoading}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

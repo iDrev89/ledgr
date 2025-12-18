@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CategoryForm } from "./category-form";
 import {
   useCreateProductCategory,
@@ -63,20 +64,26 @@ export const CategoryDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? t("editCategory") : t("createCategory")}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit ? t("editDescription") : t("createDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <CategoryForm
-          category={category}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-        />
+      <DialogContent className="max-w-lg max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>
+              {isEdit ? t("editCategory") : t("createCategory")}
+            </DialogTitle>
+            <DialogDescription>
+              {isEdit ? t("editDescription") : t("createDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <CategoryForm
+              category={category}
+              onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

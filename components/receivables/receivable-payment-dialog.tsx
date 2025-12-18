@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Form,
   FormControl,
@@ -100,15 +101,19 @@ export function ReceivablePaymentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("registerPaymentTitle")}</DialogTitle>
-          <DialogDescription>
-            {t("registerPaymentDescription")}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-md max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>{t("registerPaymentTitle")}</DialogTitle>
+            <DialogDescription>
+              {t("registerPaymentDescription")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <div className="mb-4 p-4 bg-muted rounded-lg space-y-2">
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <div className="mt-4 p-4 bg-muted rounded-lg space-y-2">
           <div className="flex justify-between text-sm">
             <span>{t("customer")}:</span>
             <span className="font-medium">{receivable.customer.name}</span>
@@ -260,6 +265,8 @@ export function ReceivablePaymentDialog({
             </div>
           </form>
         </Form>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -32,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Command,
   CommandEmpty,
@@ -218,13 +219,17 @@ export function PayrollRunDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("createRun")}</DialogTitle>
-          <DialogDescription>{t("createDescription")}</DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-md max-h-[90vh] p-0 gap-0">
+        <div className="px-6 pt-6">
+          <DialogHeader>
+            <DialogTitle>{t("createRun")}</DialogTitle>
+            <DialogDescription>{t("createDescription")}</DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <Form {...form}>
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
+          <div className="pb-6">
+            <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
@@ -465,6 +470,8 @@ export function PayrollRunDialog({
             </DialogFooter>
           </form>
         </Form>
+          </div>
+        </ScrollArea>
       </DialogContent>
 
       {/* Confirmation Dialog */}
