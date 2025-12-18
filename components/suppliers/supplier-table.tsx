@@ -79,7 +79,7 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteConfirmMessage", { name: supplierToDelete?.name })}
+              {t("deleteConfirmMessage", { name: supplierToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

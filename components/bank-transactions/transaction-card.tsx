@@ -137,7 +137,7 @@ export function TransactionCard({
         <div className={`${typeConfig.bgColor} rounded-md p-3`}>
           <p className="text-xs text-muted-foreground mb-1">{t("amount")}</p>
           <p className={`text-2xl font-bold ${typeConfig.color}`}>
-            {formatCurrency(transaction.amount)}
+            {formatCurrency(parseFloat(transaction.amount.toString()))}
           </p>
         </div>
 

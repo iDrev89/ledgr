@@ -62,7 +62,7 @@ export function InventoryCard({
   canAdjust = true,
 }: InventoryCardProps) {
   const t = useTranslations("Inventory");
-  const status = getStockStatus(item.currentStock, item.product.minStock, t);
+  const status = getStockStatus(item.currentStock, null, t);
 
   return (
     <Card
@@ -90,15 +90,15 @@ export function InventoryCard({
 
         <Separator />
 
-        {/* Categoría */}
-        {item.product.category && (
+        {/* Categoría - Disabled: property not included in fetch */}
+        {/* {item.product.category && (
           <>
             <div className="text-sm text-muted-foreground">
               {item.product.category.name}
             </div>
             <Separator />
           </>
-        )}
+        )} */}
 
         {/* Stock Actual */}
         <div className="bg-primary/5 rounded-md p-3">
@@ -113,17 +113,18 @@ export function InventoryCard({
 
         {/* Detalles */}
         <div className="grid grid-cols-2 gap-2 text-sm">
-          {item.product.minStock !== null && (
+          {/* minStock - Disabled: property not in schema */}
+          {/* {item.product.minStock !== null && (
             <div>
               <p className="text-xs text-muted-foreground">{t("minStock")}</p>
               <p className="font-medium">{formatNumber(item.product.minStock)}</p>
             </div>
-          )}
+          )} */}
           
           {item.product.cost && (
             <div>
               <p className="text-xs text-muted-foreground">{t("unitCost")}</p>
-              <p className="font-medium">{formatCurrency(item.product.cost)}</p>
+              <p className="font-medium">{formatCurrency(parseFloat(item.product.cost.toString()))}</p>
             </div>
           )}
         </div>
@@ -135,7 +136,7 @@ export function InventoryCard({
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3" />
               <span>
-                {t("lastMovement")}: {new Date(item.lastMovement).toLocaleDateString()}
+                {t("lastMovement")}: {new Date(item.lastMovement.createdAt).toLocaleDateString()}
               </span>
             </div>
           </>

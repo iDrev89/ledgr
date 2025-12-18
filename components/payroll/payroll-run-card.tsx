@@ -104,8 +104,8 @@ export function PayrollRunCard({
 
         <Separator />
 
-        {/* Total a Pagar */}
-        <div className="bg-primary/5 rounded-md p-3">
+        {/* Total a Pagar - Disabled: calculate from payments */}
+        {/* <div className="bg-primary/5 rounded-md p-3">
           <div className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-primary shrink-0" />
             <div className="flex-1">
@@ -115,10 +115,10 @@ export function PayrollRunCard({
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        {/* Balance Pendiente (si existe) */}
-        {parseFloat(run.totalBalance) > 0 && (
+        {/* Balance Pendiente (si existe) - Disabled: calculate from payments */}
+        {/* {parseFloat(run.totalBalance) > 0 && (
           <>
             <Separator />
             <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md p-2">
@@ -127,7 +127,7 @@ export function PayrollRunCard({
               </p>
             </div>
           </>
-        )}
+        )} */}
 
         <Separator />
 

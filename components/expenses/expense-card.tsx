@@ -65,7 +65,7 @@ export function ExpenseCard({
               </span>
             </div>
             <p className="text-2xl font-bold mt-1">
-              {formatCurrency(expense.amount)}
+              {formatCurrency(parseFloat(expense.amount.toString()))}
             </p>
           </div>
           <div className="flex gap-1 shrink-0">
