@@ -41,6 +41,26 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  // Configuración de sesión para extender la duración
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 días en segundos
+    updateAge: 60 * 60 * 24, // Actualizar la sesión cada 24 horas
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 días
+    },
+  },
+  // Secret para firmar las sesiones (importante para seguridad)
+  secret: process.env.BETTER_AUTH_SECRET,
+  // URL base de la aplicación
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXTAUTH_URL,
+  // Configuración avanzada para cookies
+  advanced: {
+    cookiePrefix: "ledgr-auth",
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+  },
   plugins: [
     admin({
       ac: accessControl,
