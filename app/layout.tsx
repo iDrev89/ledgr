@@ -48,7 +48,7 @@ export const viewport: Viewport = {
   userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e293b" },
   ],
 };
 
@@ -68,7 +68,7 @@ export default async function RootLayout({
           <OfflineIndicator />
           <InstallPrompt />
           <QueryProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
               <ConditionalLayout>{children}</ConditionalLayout>
             </ThemeProvider>
           </QueryProvider>

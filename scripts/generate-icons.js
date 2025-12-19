@@ -41,7 +41,7 @@ const generateIcons = async () => {
         bottom: padding,
         left: padding,
         right: padding,
-        background: { r: 168, g: 139, b: 250, alpha: 1 } // #a78bfa theme color
+        background: { r: 30, g: 41, b: 59, alpha: 1 } // #1e293b theme color
       })
       .png()
       .toFile(outputPath);

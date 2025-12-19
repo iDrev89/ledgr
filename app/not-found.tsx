@@ -84,7 +84,7 @@ export default function NotFound() {
 
           <div className="text-center pt-4 border-t">
             <p className="text-xs text-muted-foreground mb-2">
-              Ledgrly - Business Management App
+              Ledgrly
             </p>
             <p className="text-xs text-muted-foreground">
               Need help?{" "}
