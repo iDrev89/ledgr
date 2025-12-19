@@ -3085,6 +3085,7 @@ export namespace Prisma {
     sessions: number
     accounts: number
     sales: number
+    soldSales: number
     expenses: number
     purchases: number
     performedSaleItems: number
@@ -3097,6 +3098,7 @@ export namespace Prisma {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sales?: boolean | UserCountOutputTypeCountSalesArgs
+    soldSales?: boolean | UserCountOutputTypeCountSoldSalesArgs
     expenses?: boolean | UserCountOutputTypeCountExpensesArgs
     purchases?: boolean | UserCountOutputTypeCountPurchasesArgs
     performedSaleItems?: boolean | UserCountOutputTypeCountPerformedSaleItemsArgs
@@ -3134,6 +3136,13 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SaleWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSoldSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SaleWhereInput
   }
 
@@ -3857,6 +3866,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sales?: boolean | User$salesArgs<ExtArgs>
+    soldSales?: boolean | User$soldSalesArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     purchases?: boolean | User$purchasesArgs<ExtArgs>
     performedSaleItems?: boolean | User$performedSaleItemsArgs<ExtArgs>
@@ -3913,6 +3923,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sales?: boolean | User$salesArgs<ExtArgs>
+    soldSales?: boolean | User$soldSalesArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     purchases?: boolean | User$purchasesArgs<ExtArgs>
     performedSaleItems?: boolean | User$performedSaleItemsArgs<ExtArgs>
@@ -3930,6 +3941,7 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sales: Prisma.$SalePayload<ExtArgs>[]
+      soldSales: Prisma.$SalePayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       purchases: Prisma.$PurchasePayload<ExtArgs>[]
       performedSaleItems: Prisma.$SaleItemPayload<ExtArgs>[]
@@ -4346,6 +4358,7 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sales<T extends User$salesArgs<ExtArgs> = {}>(args?: Subset<T, User$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    soldSales<T extends User$soldSalesArgs<ExtArgs> = {}>(args?: Subset<T, User$soldSalesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends User$expensesArgs<ExtArgs> = {}>(args?: Subset<T, User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     purchases<T extends User$purchasesArgs<ExtArgs> = {}>(args?: Subset<T, User$purchasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     performedSaleItems<T extends User$performedSaleItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$performedSaleItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4831,6 +4844,30 @@ export namespace Prisma {
    * User.sales
    */
   export type User$salesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sale
+     */
+    select?: SaleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sale
+     */
+    omit?: SaleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleInclude<ExtArgs> | null
+    where?: SaleWhereInput
+    orderBy?: SaleOrderByWithRelationInput | SaleOrderByWithRelationInput[]
+    cursor?: SaleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SaleScalarFieldEnum | SaleScalarFieldEnum[]
+  }
+
+  /**
+   * User.soldSales
+   */
+  export type User$soldSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Sale
      */
@@ -13046,6 +13083,7 @@ export namespace Prisma {
     id: string | null
     saleNumber: number | null
     createdById: string | null
+    soldById: string | null
     customerId: string | null
     currency: string | null
     subtotal: Decimal | null
@@ -13061,6 +13099,7 @@ export namespace Prisma {
     id: string | null
     saleNumber: number | null
     createdById: string | null
+    soldById: string | null
     customerId: string | null
     currency: string | null
     subtotal: Decimal | null
@@ -13076,6 +13115,7 @@ export namespace Prisma {
     id: number
     saleNumber: number
     createdById: number
+    soldById: number
     customerId: number
     currency: number
     subtotal: number
@@ -13109,6 +13149,7 @@ export namespace Prisma {
     id?: true
     saleNumber?: true
     createdById?: true
+    soldById?: true
     customerId?: true
     currency?: true
     subtotal?: true
@@ -13124,6 +13165,7 @@ export namespace Prisma {
     id?: true
     saleNumber?: true
     createdById?: true
+    soldById?: true
     customerId?: true
     currency?: true
     subtotal?: true
@@ -13139,6 +13181,7 @@ export namespace Prisma {
     id?: true
     saleNumber?: true
     createdById?: true
+    soldById?: true
     customerId?: true
     currency?: true
     subtotal?: true
@@ -13241,6 +13284,7 @@ export namespace Prisma {
     id: string
     saleNumber: number
     createdById: string
+    soldById: string | null
     customerId: string
     currency: string
     subtotal: Decimal
@@ -13275,6 +13319,7 @@ export namespace Prisma {
     id?: boolean
     saleNumber?: boolean
     createdById?: boolean
+    soldById?: boolean
     customerId?: boolean
     currency?: boolean
     subtotal?: boolean
@@ -13285,6 +13330,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     items?: boolean | Sale$itemsArgs<ExtArgs>
     payments?: boolean | Sale$paymentsArgs<ExtArgs>
@@ -13296,6 +13342,7 @@ export namespace Prisma {
     id?: boolean
     saleNumber?: boolean
     createdById?: boolean
+    soldById?: boolean
     customerId?: boolean
     currency?: boolean
     subtotal?: boolean
@@ -13306,6 +13353,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
@@ -13313,6 +13361,7 @@ export namespace Prisma {
     id?: boolean
     saleNumber?: boolean
     createdById?: boolean
+    soldById?: boolean
     customerId?: boolean
     currency?: boolean
     subtotal?: boolean
@@ -13323,6 +13372,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
@@ -13330,6 +13380,7 @@ export namespace Prisma {
     id?: boolean
     saleNumber?: boolean
     createdById?: boolean
+    soldById?: boolean
     customerId?: boolean
     currency?: boolean
     subtotal?: boolean
@@ -13341,9 +13392,10 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "customerId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
+  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "soldById" | "customerId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
   export type SaleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     items?: boolean | Sale$itemsArgs<ExtArgs>
     payments?: boolean | Sale$paymentsArgs<ExtArgs>
@@ -13352,10 +13404,12 @@ export namespace Prisma {
   }
   export type SaleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
   export type SaleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
 
@@ -13363,6 +13417,7 @@ export namespace Prisma {
     name: "Sale"
     objects: {
       createdBy: Prisma.$UserPayload<ExtArgs>
+      soldBy: Prisma.$UserPayload<ExtArgs> | null
       customer: Prisma.$CustomerPayload<ExtArgs>
       items: Prisma.$SaleItemPayload<ExtArgs>[]
       payments: Prisma.$SalePaymentPayload<ExtArgs>[]
@@ -13372,6 +13427,7 @@ export namespace Prisma {
       id: string
       saleNumber: number
       createdById: string
+      soldById: string | null
       customerId: string
       currency: string
       subtotal: Prisma.Decimal
@@ -13776,6 +13832,7 @@ export namespace Prisma {
   export interface Prisma__SaleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    soldBy<T extends Sale$soldByArgs<ExtArgs> = {}>(args?: Subset<T, Sale$soldByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     items<T extends Sale$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Sale$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends Sale$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Sale$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13812,6 +13869,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Sale", 'String'>
     readonly saleNumber: FieldRef<"Sale", 'Int'>
     readonly createdById: FieldRef<"Sale", 'String'>
+    readonly soldById: FieldRef<"Sale", 'String'>
     readonly customerId: FieldRef<"Sale", 'String'>
     readonly currency: FieldRef<"Sale", 'String'>
     readonly subtotal: FieldRef<"Sale", 'Decimal'>
@@ -14214,6 +14272,25 @@ export namespace Prisma {
      * Limit how many Sales to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Sale.soldBy
+   */
+  export type Sale$soldByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -32608,6 +32685,7 @@ export namespace Prisma {
     id: 'id',
     saleNumber: 'saleNumber',
     createdById: 'createdById',
+    soldById: 'soldById',
     customerId: 'customerId',
     currency: 'currency',
     subtotal: 'subtotal',
@@ -33111,6 +33189,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     sales?: SaleListRelationFilter
+    soldSales?: SaleListRelationFilter
     expenses?: ExpenseListRelationFilter
     purchases?: PurchaseListRelationFilter
     performedSaleItems?: SaleItemListRelationFilter
@@ -33134,6 +33213,7 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     sales?: SaleOrderByRelationAggregateInput
+    soldSales?: SaleOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
     purchases?: PurchaseOrderByRelationAggregateInput
     performedSaleItems?: SaleItemOrderByRelationAggregateInput
@@ -33160,6 +33240,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     sales?: SaleListRelationFilter
+    soldSales?: SaleListRelationFilter
     expenses?: ExpenseListRelationFilter
     purchases?: PurchaseListRelationFilter
     performedSaleItems?: SaleItemListRelationFilter
@@ -33745,6 +33826,7 @@ export namespace Prisma {
     id?: StringFilter<"Sale"> | string
     saleNumber?: IntFilter<"Sale"> | number
     createdById?: StringFilter<"Sale"> | string
+    soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -33755,6 +33837,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Sale"> | Date | string
     updatedAt?: DateTimeFilter<"Sale"> | Date | string
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    soldBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     items?: SaleItemListRelationFilter
     payments?: SalePaymentListRelationFilter
@@ -33765,6 +33848,7 @@ export namespace Prisma {
     id?: SortOrder
     saleNumber?: SortOrder
     createdById?: SortOrder
+    soldById?: SortOrderInput | SortOrder
     customerId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
@@ -33775,6 +33859,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdBy?: UserOrderByWithRelationInput
+    soldBy?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     items?: SaleItemOrderByRelationAggregateInput
     payments?: SalePaymentOrderByRelationAggregateInput
@@ -33788,6 +33873,7 @@ export namespace Prisma {
     OR?: SaleWhereInput[]
     NOT?: SaleWhereInput | SaleWhereInput[]
     createdById?: StringFilter<"Sale"> | string
+    soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -33798,6 +33884,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Sale"> | Date | string
     updatedAt?: DateTimeFilter<"Sale"> | Date | string
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    soldBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     items?: SaleItemListRelationFilter
     payments?: SalePaymentListRelationFilter
@@ -33808,6 +33895,7 @@ export namespace Prisma {
     id?: SortOrder
     saleNumber?: SortOrder
     createdById?: SortOrder
+    soldById?: SortOrderInput | SortOrder
     customerId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
@@ -33831,6 +33919,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Sale"> | string
     saleNumber?: IntWithAggregatesFilter<"Sale"> | number
     createdById?: StringWithAggregatesFilter<"Sale"> | string
+    soldById?: StringNullableWithAggregatesFilter<"Sale"> | string | null
     customerId?: StringWithAggregatesFilter<"Sale"> | string
     currency?: StringWithAggregatesFilter<"Sale"> | string
     subtotal?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -35158,6 +35247,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -35181,6 +35271,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -35204,6 +35295,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -35227,6 +35319,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -35901,6 +35994,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSalesInput
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
@@ -35911,6 +36005,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -35936,6 +36031,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
@@ -35946,6 +36042,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -35964,6 +36061,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -35991,6 +36089,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -38046,6 +38145,11 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type CustomerScalarRelationFilter = {
     is?: CustomerWhereInput
     isNot?: CustomerWhereInput
@@ -38060,6 +38164,7 @@ export namespace Prisma {
     id?: SortOrder
     saleNumber?: SortOrder
     createdById?: SortOrder
+    soldById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
@@ -38083,6 +38188,7 @@ export namespace Prisma {
     id?: SortOrder
     saleNumber?: SortOrder
     createdById?: SortOrder
+    soldById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
@@ -38098,6 +38204,7 @@ export namespace Prisma {
     id?: SortOrder
     saleNumber?: SortOrder
     createdById?: SortOrder
+    soldById?: SortOrder
     customerId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
@@ -38141,11 +38248,6 @@ export namespace Prisma {
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
   }
 
   export type SaleItemCountOrderByAggregateInput = {
@@ -39114,6 +39216,13 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
+  export type SaleCreateNestedManyWithoutSoldByInput = {
+    create?: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput> | SaleCreateWithoutSoldByInput[] | SaleUncheckedCreateWithoutSoldByInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutSoldByInput | SaleCreateOrConnectWithoutSoldByInput[]
+    createMany?: SaleCreateManySoldByInputEnvelope
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
   export type ExpenseCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<ExpenseCreateWithoutCreatedByInput, ExpenseUncheckedCreateWithoutCreatedByInput> | ExpenseCreateWithoutCreatedByInput[] | ExpenseUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: ExpenseCreateOrConnectWithoutCreatedByInput | ExpenseCreateOrConnectWithoutCreatedByInput[]
@@ -39174,6 +39283,13 @@ export namespace Prisma {
     create?: XOR<SaleCreateWithoutCreatedByInput, SaleUncheckedCreateWithoutCreatedByInput> | SaleCreateWithoutCreatedByInput[] | SaleUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: SaleCreateOrConnectWithoutCreatedByInput | SaleCreateOrConnectWithoutCreatedByInput[]
     createMany?: SaleCreateManyCreatedByInputEnvelope
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
+  export type SaleUncheckedCreateNestedManyWithoutSoldByInput = {
+    create?: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput> | SaleCreateWithoutSoldByInput[] | SaleUncheckedCreateWithoutSoldByInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutSoldByInput | SaleCreateOrConnectWithoutSoldByInput[]
+    createMany?: SaleCreateManySoldByInputEnvelope
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
@@ -39282,6 +39398,20 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
     update?: SaleUpdateWithWhereUniqueWithoutCreatedByInput | SaleUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: SaleUpdateManyWithWhereWithoutCreatedByInput | SaleUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
+  }
+
+  export type SaleUpdateManyWithoutSoldByNestedInput = {
+    create?: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput> | SaleCreateWithoutSoldByInput[] | SaleUncheckedCreateWithoutSoldByInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutSoldByInput | SaleCreateOrConnectWithoutSoldByInput[]
+    upsert?: SaleUpsertWithWhereUniqueWithoutSoldByInput | SaleUpsertWithWhereUniqueWithoutSoldByInput[]
+    createMany?: SaleCreateManySoldByInputEnvelope
+    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    update?: SaleUpdateWithWhereUniqueWithoutSoldByInput | SaleUpdateWithWhereUniqueWithoutSoldByInput[]
+    updateMany?: SaleUpdateManyWithWhereWithoutSoldByInput | SaleUpdateManyWithWhereWithoutSoldByInput[]
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
@@ -39408,6 +39538,20 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
     update?: SaleUpdateWithWhereUniqueWithoutCreatedByInput | SaleUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: SaleUpdateManyWithWhereWithoutCreatedByInput | SaleUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
+  }
+
+  export type SaleUncheckedUpdateManyWithoutSoldByNestedInput = {
+    create?: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput> | SaleCreateWithoutSoldByInput[] | SaleUncheckedCreateWithoutSoldByInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutSoldByInput | SaleCreateOrConnectWithoutSoldByInput[]
+    upsert?: SaleUpsertWithWhereUniqueWithoutSoldByInput | SaleUpsertWithWhereUniqueWithoutSoldByInput[]
+    createMany?: SaleCreateManySoldByInputEnvelope
+    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    update?: SaleUpdateWithWhereUniqueWithoutSoldByInput | SaleUpdateWithWhereUniqueWithoutSoldByInput[]
+    updateMany?: SaleUpdateManyWithWhereWithoutSoldByInput | SaleUpdateManyWithWhereWithoutSoldByInput[]
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
@@ -40067,6 +40211,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutSoldSalesInput = {
+    create?: XOR<UserCreateWithoutSoldSalesInput, UserUncheckedCreateWithoutSoldSalesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSoldSalesInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type CustomerCreateNestedOneWithoutSalesInput = {
     create?: XOR<CustomerCreateWithoutSalesInput, CustomerUncheckedCreateWithoutSalesInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutSalesInput
@@ -40119,6 +40269,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSalesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSalesInput, UserUpdateWithoutSalesInput>, UserUncheckedUpdateWithoutSalesInput>
+  }
+
+  export type UserUpdateOneWithoutSoldSalesNestedInput = {
+    create?: XOR<UserCreateWithoutSoldSalesInput, UserUncheckedCreateWithoutSoldSalesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSoldSalesInput
+    upsert?: UserUpsertWithoutSoldSalesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSoldSalesInput, UserUpdateWithoutSoldSalesInput>, UserUncheckedUpdateWithoutSoldSalesInput>
   }
 
   export type CustomerUpdateOneRequiredWithoutSalesNestedInput = {
@@ -41772,6 +41932,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
@@ -41781,6 +41942,7 @@ export namespace Prisma {
   export type SaleUncheckedCreateWithoutCreatedByInput = {
     id?: string
     saleNumber?: number
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -41802,6 +41964,52 @@ export namespace Prisma {
 
   export type SaleCreateManyCreatedByInputEnvelope = {
     data: SaleCreateManyCreatedByInput | SaleCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SaleCreateWithoutSoldByInput = {
+    id?: string
+    saleNumber?: number
+    currency?: string
+    subtotal: Decimal | DecimalJsLike | number | string
+    discountTotal?: Decimal | DecimalJsLike | number | string
+    taxTotal?: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutSalesInput
+    customer: CustomerCreateNestedOneWithoutSalesInput
+    items?: SaleItemCreateNestedManyWithoutSaleInput
+    payments?: SalePaymentCreateNestedManyWithoutSaleInput
+    receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
+  }
+
+  export type SaleUncheckedCreateWithoutSoldByInput = {
+    id?: string
+    saleNumber?: number
+    createdById: string
+    customerId: string
+    currency?: string
+    subtotal: Decimal | DecimalJsLike | number | string
+    discountTotal?: Decimal | DecimalJsLike | number | string
+    taxTotal?: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    payments?: SalePaymentUncheckedCreateNestedManyWithoutSaleInput
+    receivable?: AccountsReceivableUncheckedCreateNestedOneWithoutSaleInput
+  }
+
+  export type SaleCreateOrConnectWithoutSoldByInput = {
+    where: SaleWhereUniqueInput
+    create: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput>
+  }
+
+  export type SaleCreateManySoldByInputEnvelope = {
+    data: SaleCreateManySoldByInput | SaleCreateManySoldByInput[]
     skipDuplicates?: boolean
   }
 
@@ -42140,6 +42348,7 @@ export namespace Prisma {
     id?: StringFilter<"Sale"> | string
     saleNumber?: IntFilter<"Sale"> | number
     createdById?: StringFilter<"Sale"> | string
+    soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -42149,6 +42358,22 @@ export namespace Prisma {
     note?: StringNullableFilter<"Sale"> | string | null
     createdAt?: DateTimeFilter<"Sale"> | Date | string
     updatedAt?: DateTimeFilter<"Sale"> | Date | string
+  }
+
+  export type SaleUpsertWithWhereUniqueWithoutSoldByInput = {
+    where: SaleWhereUniqueInput
+    update: XOR<SaleUpdateWithoutSoldByInput, SaleUncheckedUpdateWithoutSoldByInput>
+    create: XOR<SaleCreateWithoutSoldByInput, SaleUncheckedCreateWithoutSoldByInput>
+  }
+
+  export type SaleUpdateWithWhereUniqueWithoutSoldByInput = {
+    where: SaleWhereUniqueInput
+    data: XOR<SaleUpdateWithoutSoldByInput, SaleUncheckedUpdateWithoutSoldByInput>
+  }
+
+  export type SaleUpdateManyWithWhereWithoutSoldByInput = {
+    where: SaleScalarWhereInput
+    data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutSoldByInput>
   }
 
   export type ExpenseUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -42374,6 +42599,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -42396,6 +42622,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -42434,6 +42661,7 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -42456,6 +42684,7 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -42478,6 +42707,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -42500,6 +42730,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -42538,6 +42769,7 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -42560,6 +42792,7 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -42580,6 +42813,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSalesInput
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -42589,6 +42823,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -43373,6 +43608,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -43395,6 +43631,7 @@ export namespace Prisma {
     banExpires?: Date | string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -43406,6 +43643,57 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutSalesInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutSalesInput, UserUncheckedCreateWithoutSalesInput>
+  }
+
+  export type UserCreateWithoutSoldSalesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sales?: SaleCreateNestedManyWithoutCreatedByInput
+    expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
+    purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
+    performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
+    payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
+    payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
+    bankTransactions?: BankTransactionCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSoldSalesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
+    performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
+    payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
+    payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
+    bankTransactions?: BankTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSoldSalesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSoldSalesInput, UserUncheckedCreateWithoutSoldSalesInput>
   }
 
   export type CustomerCreateWithoutSalesInput = {
@@ -43557,6 +43845,7 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -43579,6 +43868,64 @@ export namespace Prisma {
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
+    payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
+    payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
+    bankTransactions?: BankTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutSoldSalesInput = {
+    update: XOR<UserUpdateWithoutSoldSalesInput, UserUncheckedUpdateWithoutSoldSalesInput>
+    create: XOR<UserCreateWithoutSoldSalesInput, UserUncheckedCreateWithoutSoldSalesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSoldSalesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSoldSalesInput, UserUncheckedUpdateWithoutSoldSalesInput>
+  }
+
+  export type UserUpdateWithoutSoldSalesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
+    purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
+    performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
+    payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
+    payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
+    bankTransactions?: BankTransactionUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSoldSalesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -43703,6 +44050,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSalesInput
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -43712,6 +44060,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -43784,6 +44133,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
@@ -43806,6 +44156,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
@@ -43840,6 +44191,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -43849,6 +44201,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -43933,6 +44286,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
@@ -43955,6 +44309,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -44007,6 +44362,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSalesInput
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -44016,6 +44372,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -44136,6 +44493,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -44145,6 +44503,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -44594,6 +44953,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
@@ -44616,6 +44976,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
@@ -44814,6 +45175,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
@@ -44836,6 +45198,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -45242,6 +45605,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
@@ -45264,6 +45628,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
@@ -45443,6 +45808,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
@@ -45465,6 +45831,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -45841,6 +46208,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSalesInput
+    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
@@ -45850,6 +46218,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -45957,6 +46326,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
@@ -45966,6 +46336,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -46234,6 +46605,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -46256,6 +46628,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -46323,6 +46696,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -46345,6 +46719,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -46533,6 +46908,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -46555,6 +46931,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -46628,6 +47005,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -46650,6 +47028,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -46705,6 +47084,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
@@ -46727,6 +47107,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
     performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
@@ -46977,6 +47358,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
@@ -46999,6 +47381,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
     performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
@@ -47237,6 +47620,22 @@ export namespace Prisma {
   export type SaleCreateManyCreatedByInput = {
     id?: string
     saleNumber?: number
+    soldById?: string | null
+    customerId: string
+    currency?: string
+    subtotal: Decimal | DecimalJsLike | number | string
+    discountTotal?: Decimal | DecimalJsLike | number | string
+    taxTotal?: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SaleCreateManySoldByInput = {
+    id?: string
+    saleNumber?: number
+    createdById: string
     customerId: string
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
@@ -47425,6 +47824,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
@@ -47434,6 +47834,7 @@ export namespace Prisma {
   export type SaleUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -47451,6 +47852,57 @@ export namespace Prisma {
   export type SaleUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SaleUpdateWithoutSoldByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
+    items?: SaleItemUpdateManyWithoutSaleNestedInput
+    payments?: SalePaymentUpdateManyWithoutSaleNestedInput
+    receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
+  }
+
+  export type SaleUncheckedUpdateWithoutSoldByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    payments?: SalePaymentUncheckedUpdateManyWithoutSaleNestedInput
+    receivable?: AccountsReceivableUncheckedUpdateOneWithoutSaleNestedInput
+  }
+
+  export type SaleUncheckedUpdateManyWithoutSoldByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleNumber?: IntFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -47740,6 +48192,7 @@ export namespace Prisma {
     id?: string
     saleNumber?: number
     createdById: string
+    soldById?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -47772,6 +48225,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
+    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -47781,6 +48235,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -47798,6 +48253,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     saleNumber?: IntFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
+    soldById?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string

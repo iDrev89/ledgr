@@ -24,6 +24,11 @@ export type SaleWithDetails = Omit<
     name: string;
     email: string;
   };
+  soldBy?: {
+    id: string;
+    name: string;
+    email: string;
+  };
   items: (Omit<
     SaleItem,
     "unitPrice" | "discount" | "lineTotal" | "commissionPercentApplied"
@@ -59,6 +64,11 @@ export type SaleWithDetails = Omit<
 export type SaleWithStats = Sale & {
   customer: Customer;
   createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  soldBy?: {
     id: string;
     name: string;
     email: string;

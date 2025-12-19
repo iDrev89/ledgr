@@ -25,9 +25,11 @@ import {
 import { Loader2, RotateCcw } from "lucide-react";
 import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
+import { UserSelector } from "./user-selector";
 import { SaleItems, type SaleItemRow } from "./sale-items";
 import { SalePayments, type SalePaymentRow } from "./sale-payments";
 import type { SaleWithDetails } from "@/lib/types/sales";
+import { useSession } from "@/auth/auth-client";
 
 interface SaleFormProps {
   sale?: SaleWithDetails;
@@ -43,6 +45,8 @@ export function SaleForm({
   isLoading,
 }: SaleFormProps) {
   const t = useTranslations("Sales");
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
 
   // Initialize items state
   const [items, setItems] = useState<SaleItemRow[]>(() => {
@@ -88,6 +92,7 @@ export function SaleForm({
     mode: "onChange",
     defaultValues: {
       customerId: sale?.customerId || "",
+      soldById: sale?.soldById || "",
       note: sale?.note || "",
     },
   });
@@ -148,6 +153,7 @@ export function SaleForm({
 
       const submitData: CreateSaleInput = {
         customerId: data.customerId,
+        soldById: data.soldById || undefined,
         note: data.note || "",
         items: formattedItems,
         payments: formattedPayments,
@@ -172,6 +178,7 @@ export function SaleForm({
   const handleReset = () => {
     form.reset({
       customerId: "",
+      soldById: "",
       note: "",
     });
     setItems([]);
@@ -226,6 +233,31 @@ export function SaleForm({
               </FormItem>
             )}
           />
+
+          {/* Campo de vendedor - solo visible para admin */}
+          {isAdmin && (
+            <FormField
+              control={form.control}
+              name="soldById"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("soldBy")}</FormLabel>
+                  <FormControl>
+                    <UserSelector
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isLoading}
+                      placeholder={t("selectSeller")}
+                    />
+                  </FormControl>
+                  <FormDescription className="text-xs">
+                    {t("soldByDescription")}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <SaleItems

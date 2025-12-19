@@ -51,6 +51,13 @@ const serializeSale = (sale: any): SaleWithDetails => {
           email: sale.createdBy.email,
         }
       : undefined,
+    soldBy: sale.soldBy
+      ? {
+          id: sale.soldBy.id,
+          name: sale.soldBy.name,
+          email: sale.soldBy.email,
+        }
+      : undefined,
     items: sale.items
       ? sale.items.map((item: any) => ({
           ...item,
@@ -160,6 +167,13 @@ export const getSales = async (params?: {
               email: true,
             },
           },
+          soldBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
           items: {
             include: {
               product: true,
@@ -215,6 +229,13 @@ export const getSale = async (
       include: {
         customer: true,
         createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        soldBy: {
           select: {
             id: true,
             name: true,
@@ -329,7 +350,7 @@ export const createSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: item.performedById || session.user.id, // Default to sale creator
+          performedById: validated.soldById || item.performedById || session.user.id, // Triple OR: soldBy > item.performedById > session
           commissionPercentApplied: commissionPercent,
         };
       } else {
@@ -380,6 +401,7 @@ export const createSale = async (
       const newSale = await tx.sale.create({
         data: {
           createdById: session.user.id,
+          soldById: validated.soldById || null,
           customerId: validated.customerId,
           currency: "COP",
           subtotal,
@@ -396,6 +418,20 @@ export const createSale = async (
         },
         include: {
           customer: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          soldBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
           items: {
             include: {
               product: true,
@@ -567,7 +603,7 @@ export const updateSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: item.performedById, //|| session.user.id, // Default to sale creator
+          performedById: validated.soldById || item.performedById || session.user.id, // Triple OR: soldBy > item.performedById > session
           commissionPercentApplied: commissionPercent,
         };
       } else {
@@ -649,6 +685,7 @@ export const updateSale = async (
         where: { id: validated.id },
         data: {
           customerId: validated.customerId,
+          soldById: validated.soldById || null,
           subtotal,
           discountTotal,
           taxTotal,
@@ -663,6 +700,20 @@ export const updateSale = async (
         },
         include: {
           customer: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          soldBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
           items: {
             include: {
               product: true,
