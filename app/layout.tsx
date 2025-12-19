@@ -14,9 +14,9 @@ import { InstallPrompt } from "@/components/install-prompt";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ledgrly – Business Management App",
+  title: "Ledgrly",
   description:
-    "Ledgrly is a modern business management application for small businesses. Manage sales, expenses, payroll, inventory, and generate automated financial reports with ease.",
+    "Gestiona tus ventas, gastos, inventario, clientes y mucho más con Ledgrly.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
