@@ -101,6 +101,19 @@ export function SaleDetailDialog({
         </div>
       </div>
 
+      {/* Sold By Information - only show if different from createdBy */}
+      {sale.soldBy && sale.soldBy.id !== sale.createdBy.id && (
+        <div>
+          <h3 className="text-sm font-semibold mb-2">{t("soldBy")}</h3>
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-1">
+            <p className="font-medium text-primary">{sale.soldBy.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {sale.soldBy.email}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Payments */}
       {sale.payments && sale.payments.length > 0 && (
         <>

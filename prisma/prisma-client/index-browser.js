@@ -219,6 +219,7 @@ exports.Prisma.SaleScalarFieldEnum = {
   id: 'id',
   saleNumber: 'saleNumber',
   createdById: 'createdById',
+  soldById: 'soldById',
   customerId: 'customerId',
   currency: 'currency',
   subtotal: 'subtotal',

@@ -25,7 +25,8 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  sales              Sale[]
+  sales              Sale[]            @relation("SaleCreator")
+  soldSales          Sale[]            @relation("SaleSeller")
   expenses           Expense[]
   purchases          Purchase[]
   performedSaleItems SaleItem[]        @relation("ServicePerformer")
@@ -224,7 +225,9 @@ model Sale {
   id            String   @id @default(cuid())
   saleNumber    Int      @unique @default(autoincrement())
   createdById   String
-  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdBy     User     @relation("SaleCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  soldById      String?
+  soldBy        User?    @relation("SaleSeller", fields: [soldById], references: [id], onDelete: Restrict)
   customerId    String
   customer      Customer @relation(fields: [customerId], references: [id])
   currency      String   @default("COP")
@@ -241,6 +244,7 @@ model Sale {
   receivable AccountsReceivable?
 
   @@index([createdById, createdAt])
+  @@index([soldById])
   @@index([customerId, createdAt])
   @@index([saleNumber])
   @@map("sale")

@@ -129,6 +129,15 @@ export function SaleCard({
           )}
         </div>
 
+        {/* Vendedor - solo mostrar si es diferente del creador */}
+        {sale.soldBy && sale.soldBy.id !== sale.createdBy.id && (
+          <div className="bg-primary/5 border border-primary/20 rounded-md p-2">
+            <p className="text-xs font-medium text-primary">
+              {t("soldBy")}: {sale.soldBy.name}
+            </p>
+          </div>
+        )}
+
         <Separator />
 
         {/* Items */}
