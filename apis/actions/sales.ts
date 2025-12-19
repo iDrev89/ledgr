@@ -217,7 +217,7 @@ export const getSales = async (params?: {
 };
 
 export const getSale = async (
-  id: string,
+  id: string
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -285,7 +285,7 @@ export const getSale = async (
 };
 
 export const createSale = async (
-  input: CreateSaleInput,
+  input: CreateSaleInput
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -350,7 +350,7 @@ export const createSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: validated.soldById || item.performedById || session.user.id, // Triple OR: soldBy > item.performedById > session
+          performedById: validated.soldById || item.performedById,
           commissionPercentApplied: commissionPercent,
         };
       } else {
@@ -528,7 +528,7 @@ export const createSale = async (
 };
 
 export const updateSale = async (
-  input: UpdateSaleInput,
+  input: UpdateSaleInput
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -603,7 +603,7 @@ export const updateSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: validated.soldById || item.performedById || session.user.id, // Triple OR: soldBy > item.performedById > session
+          performedById: validated.soldById || item.performedById,
           commissionPercentApplied: commissionPercent,
         };
       } else {
