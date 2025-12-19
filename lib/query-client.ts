@@ -14,9 +14,17 @@ export const queryClient = new QueryClient({
         // Retry up to 3 times for other errors
         return failureCount < 3;
       },
+      retryDelay: (attemptIndex) =>
+        Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
+      networkMode: "offlineFirst", // Use cache when offline
     },
     mutations: {
-      retry: false,
+      retry: 1, // Retry mutations once
+      retryDelay: 1000,
+      networkMode: "offlineFirst", // Allow mutations when offline (will be queued)
       onError: (error: unknown) => {
         if (error instanceof Error) {
           toast.error(error.message);
