@@ -16,21 +16,31 @@ const sizes = [72, 96, 128, 144, 152, 192, 384, 512, 1024];
 const generateIcons = async () => {
   console.log('Generating PWA icons...\n');
 
-  // Generate standard icons
+  // Generate standard icons with slight padding for better appearance
   for (const size of sizes) {
+    const iconSize = Math.round(size * 0.9); // 90% of size for better balance
+    const padding = Math.round((size - iconSize) / 2);
+    
     const outputPath = path.join(outputDir, `icon-${size}x${size}.png`);
     await sharp(inputSvg)
-      .resize(size, size)
+      .resize(iconSize, iconSize)
+      .extend({
+        top: padding,
+        bottom: padding,
+        left: padding,
+        right: padding,
+        background: { r: 0, g: 0, b: 0, alpha: 0 } // Transparent background
+      })
       .png()
       .toFile(outputPath);
     console.log(`✓ Generated icon-${size}x${size}.png`);
   }
 
   // Generate maskable icons (with padding for Android safe area)
-  // Maskable icons need 80% safe area, so we resize to 80% and add padding
+  // Maskable icons need 60% safe area (Google recommendation)
   const maskableSizes = [192, 512];
   for (const size of maskableSizes) {
-    const iconSize = Math.round(size * 0.8); // 80% safe area
+    const iconSize = Math.round(size * 0.6); // 60% safe area for proper masking
     const padding = Math.round((size - iconSize) / 2);
     
     const outputPath = path.join(outputDir, `icon-maskable-${size}x${size}.png`);
