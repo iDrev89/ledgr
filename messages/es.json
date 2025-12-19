@@ -1287,8 +1287,8 @@
   },
   "pwa": {
     "offline": "Sin conexión a internet. Trabajando en modo offline.",
-    "offlineDescription": "Los cambios se sincronizarán cuando vuelvas a conectarte",
-    "online": "Conexión restaurada. Sincronizando datos...",
+    "offlineDescription": "Algunas funciones pueden no estar disponibles",
+    "online": "Conexión restaurada",
     "installPrompt": "Instala Ledgrly para acceso rápido",
     "installButton": "Instalar",
     "installDescription": "Instala esta app en tu pantalla de inicio para una mejor experiencia",
@@ -1297,11 +1297,6 @@
     "updateDescription": "Hay una nueva versión de Ledgrly disponible. Actualiza para obtenerla.",
     "installedSuccess": "¡App instalada exitosamente!",
     "installedDescription": "Ahora puedes acceder a Ledgrly desde tu pantalla de inicio",
-    "dismiss": "Cerrar",
-    "syncPending": "Sincronización pendiente: {count} operaciones",
-    "syncInProgress": "Sincronizando...",
-    "syncComplete": "Sincronización completa",
-    "syncFailed": "Error en sincronización. Se reintentará automáticamente.",
-    "retrySync": "Reintentar Sincronización"
+    "dismiss": "Cerrar"
   }
 }
