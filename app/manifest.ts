@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ledgrly - Business Management App",
+    name: "Ledgrly",
     short_name: "Ledgrly",
     description:
-      "Modern business management application for small businesses. Manage sales, expenses, payroll, inventory, and generate automated financial reports with ease.",
+      "Gestiona tus ventas, gastos, inventario, clientes y mucho más con Ledgrly.",
     start_url: "/?source=pwa",
     display: "standalone",
     background_color: "#ffffff",
@@ -116,22 +116,6 @@ export default function manifest(): MetadataRoute.Manifest {
             type: "image/png",
           },
         ],
-      },
-    ],
-    screenshots: [
-      {
-        src: "/screenshots/desktop-dashboard.png",
-        sizes: "1280x720",
-        type: "image/png",
-        form_factor: "wide",
-        label: "Dashboard principal con métricas y gráficos",
-      },
-      {
-        src: "/screenshots/mobile-sales.png",
-        sizes: "750x1334",
-        type: "image/png",
-        form_factor: "narrow",
-        label: "Registro de ventas en dispositivo móvil",
       },
     ],
   };
