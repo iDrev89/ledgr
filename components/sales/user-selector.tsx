@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, ChevronsUpDown, Search, User } from "lucide-react";
+import { Check, ChevronsUpDown, Search, User, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,6 +61,11 @@ export function UserSelector({
     setOpen(false);
   };
 
+  const handleClearClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleClear();
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -81,7 +86,26 @@ export function UserSelector({
               {placeholder || t("selectSeller")}
             </span>
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <div className="flex items-center gap-1">
+            {value && (
+              <span
+                onClick={handleClearClick}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer inline-flex"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleClearClick(e as any);
+                  }
+                }}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">{t("clearSelection")}</span>
+              </span>
+            )}
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+          </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">

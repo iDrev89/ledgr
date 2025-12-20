@@ -16,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SaleTable } from "@/components/sales/sale-table";
 import { SaleDetailDialog } from "@/components/sales/sale-detail-dialog";
+import { SalesFilters } from "@/components/sales/sales-filters";
 import { useSales } from "@/hooks/use-sales";
 import type { SaleWithDetails } from "@/lib/types/sales";
 
@@ -28,7 +29,16 @@ export default function SalesPage() {
   );
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
-  const { data, isLoading, error } = useSales();
+  // Filter states
+  const [sellerId, setSellerId] = useState<string | undefined>(undefined);
+  const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<string | undefined>(undefined);
+
+  const { data, isLoading, error } = useSales({
+    sellerId,
+    dateFrom,
+    dateTo,
+  });
 
   const handleCreate = () => {
     router.push("/sales/new");
@@ -37,6 +47,16 @@ export default function SalesPage() {
   const handleViewSale = (sale: SaleWithDetails) => {
     setSelectedSale(sale);
     setDetailDialogOpen(true);
+  };
+
+  const handleFiltersChange = (filters: {
+    sellerId?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }) => {
+    setSellerId(filters.sellerId);
+    setDateFrom(filters.dateFrom);
+    setDateTo(filters.dateTo);
   };
 
   return (
@@ -69,30 +89,39 @@ export default function SalesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {error instanceof Error ? error.message : t("loadError")}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-            </div>
-          ) : (
-            <SaleTable
-              sales={data?.sales || []}
-              onView={handleViewSale}
-              locale={locale}
+          <div className="space-y-6">
+            <SalesFilters
+              sellerId={sellerId}
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              onFiltersChange={handleFiltersChange}
             />
-          )}
+
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {error instanceof Error ? error.message : t("loadError")}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {isLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ) : (
+              <SaleTable
+                sales={data?.sales || []}
+                onView={handleViewSale}
+                locale={locale}
+              />
+            )}
+          </div>
         </CardContent>
       </Card>
 

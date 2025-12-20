@@ -20,6 +20,9 @@ export const saleKeys = {
 export function useSales(params?: {
   search?: string;
   customerId?: string;
+  sellerId?: string;
+  dateFrom?: string;
+  dateTo?: string;
   paymentMethod?: string;
   limit?: number;
   offset?: number;

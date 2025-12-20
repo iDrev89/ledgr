@@ -498,6 +498,17 @@
     "soldByDescription": "User who made the sale. If not specified, defaults to current user.",
     "searchSeller": "Search seller...",
     "clearSelection": "Clear selection",
+    "filters": "Filters",
+    "filterBySeller": "Filter by seller",
+    "filterByDate": "Filter by date",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "dateRange": "Date range",
+    "selectDate": "Select date",
+    "selectDateRange": "Select date range",
+    "clearFilters": "Clear filters",
+    "clearAllFilters": "Clear all",
+    "allSellers": "All sellers",
     "subtotal": "Subtotal",
     "discountTotal": "Total Discount",
     "taxTotal": "Taxes",
@@ -586,7 +597,9 @@
       "createFailed": "Failed to create sale",
       "updateFailed": "Failed to update sale",
       "deleteFailed": "Failed to delete sale",
-      "cannotDelete": "Cannot delete sale with associated receivables"
+      "cannotDelete": "Cannot delete sale with associated receivables",
+      "cannotDeleteWithActiveReceivable": "Cannot delete sale. The accounts receivable must be canceled before the sale can be deleted",
+      "cannotDeleteWithPayments": "Cannot delete sale because it has registered payments. This would affect accounting and bank transactions"
     }
   },
   "DataTable": {

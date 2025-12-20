@@ -120,17 +120,53 @@ const requireAuth = async () => {
 export const getSales = async (params?: {
   search?: string;
   customerId?: string;
+  sellerId?: string;
+  dateFrom?: string;
+  dateTo?: string;
   limit?: number;
   offset?: number;
 }): Promise<ActionResponse<{ sales: SaleWithDetails[]; total: number }>> => {
   const t = await getTranslations("Sales.errors");
 
   try {
-    await requireAuth();
+    const session = await requireAuth();
 
-    const { search = "", customerId, limit = 50, offset = 0 } = params || {};
+    const {
+      search = "",
+      customerId,
+      sellerId,
+      dateFrom,
+      dateTo,
+      limit = 50,
+      offset = 0,
+    } = params || {};
 
     const where: any = {};
+
+    // Role-based filtering: non-admins can only see their own sales
+    if (session.user.role !== "admin") {
+      where.soldById = session.user.id;
+    } else {
+      // Admin can filter by seller
+      if (sellerId) {
+        where.soldById = sellerId;
+      }
+
+      // Admin can filter by date range
+      if (dateFrom || dateTo) {
+        where.createdAt = {};
+        if (dateFrom) {
+          // Parse the date and set to start of day
+          const startDate = new Date(dateFrom + "T00:00:00");
+          where.createdAt.gte = startDate;
+        }
+        if (dateTo) {
+          // Parse the date and set to end of day
+          const endDate = new Date(dateTo + "T23:59:59.999");
+          where.createdAt.lte = endDate;
+        }
+      }
+    }
 
     if (search) {
       where.OR = [
@@ -802,6 +838,7 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
       include: {
         items: true,
         receivable: true,
+        payments: true,
       },
     });
 
@@ -809,15 +846,25 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
       return { success: false, error: t("notFound") };
     }
 
-    if (sale.receivable) {
+    // Check if sale has an active receivable (not canceled)
+    if (sale.receivable && sale.receivable.status !== AccountsReceivableStatus.CANCELED) {
       return {
         success: false,
-        error: t("cannotDelete"),
+        error: t("cannotDeleteWithActiveReceivable"),
+      };
+    }
+
+    // Check if sale has payments registered
+    if (sale.payments && sale.payments.length > 0) {
+      return {
+        success: false,
+        error: t("cannotDeleteWithPayments"),
       };
     }
 
     // Delete sale and related data in a transaction
     await prisma.$transaction(async (tx) => {
+      // Delete stock movements related to this sale
       await tx.stockMovement.deleteMany({
         where: {
           moveType: StockMoveType.SALE,
@@ -827,10 +874,28 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
         },
       });
 
+      // Delete bank transactions related to sale payments (if any)
+      await tx.bankTransaction.deleteMany({
+        where: {
+          salePaymentId: {
+            in: sale.payments.map(p => p.id),
+          },
+        },
+      });
+
+      // Delete payments
       await tx.salePayment.deleteMany({
         where: { saleId: id },
       });
 
+      // Delete receivable (if exists and is CANCELED)
+      if (sale.receivable) {
+        await tx.accountsReceivable.delete({
+          where: { id: sale.receivable.id },
+        });
+      }
+
+      // Finally, delete the sale
       await tx.sale.delete({
         where: { id },
       });
@@ -839,6 +904,8 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
     revalidatePath("/sales");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/accounts-receivable");
 
     return { success: true, data: undefined };
   } catch (error) {

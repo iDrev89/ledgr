@@ -499,6 +499,17 @@
     "soldByDescription": "Usuario que realizó la venta. Si no se especifica, se asigna al usuario actual.",
     "searchSeller": "Buscar vendedor...",
     "clearSelection": "Limpiar selección",
+    "filters": "Filtros",
+    "filterBySeller": "Filtrar por vendedor",
+    "filterByDate": "Filtrar por fecha",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta",
+    "dateRange": "Rango de fechas",
+    "selectDate": "Seleccionar fecha",
+    "selectDateRange": "Seleccionar rango de fechas",
+    "clearFilters": "Limpiar filtros",
+    "clearAllFilters": "Limpiar todos",
+    "allSellers": "Todos los vendedores",
     "subtotal": "Subtotal",
     "discountTotal": "Descuento Total",
     "taxTotal": "Impuestos",
@@ -593,7 +604,9 @@
       "createFailed": "Error al crear venta",
       "updateFailed": "Error al actualizar venta",
       "deleteFailed": "Error al eliminar venta",
-      "cannotDelete": "No se puede eliminar una venta con cuentas por cobrar asociadas"
+      "cannotDelete": "No se puede eliminar una venta con cuentas por cobrar asociadas",
+      "cannotDeleteWithActiveReceivable": "No se puede eliminar la venta. La cuenta por cobrar debe estar cancelada para poder eliminarla",
+      "cannotDeleteWithPayments": "No se puede eliminar la venta porque tiene pagos registrados. Esto afectaría la contabilidad y las transacciones bancarias"
     }
   },
   "DataTable": {

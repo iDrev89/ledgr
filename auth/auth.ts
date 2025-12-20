@@ -18,7 +18,7 @@ const ALLOWED_EMAILS = process.env.ALLOWED_EMAILS
 // Función para validar si un email está permitido
 export const isEmailAllowed = (email: string): boolean => {
   // Si no hay emails configurados, permitir todos
-  console.log("ALLOWED_EMAILS", ALLOWED_EMAILS);
+  
   if (ALLOWED_EMAILS.length === 0) {
     return true;
   }
