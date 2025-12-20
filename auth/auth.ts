@@ -65,11 +65,11 @@ export const auth = betterAuth({
     admin({
       ac: accessControl,
       roles: { admin: adminRole, user: userRole },
-      adminUserIds: [process.env.ADMIN_USER_ID as string],
+      adminUserIds: process.env.ADMIN_USER_ID?.split(",") as unknown as string[],
     }),
   ],
   hooks: {
-    after: createAuthMiddleware(async (context) => {
+    after: createAuthMiddleware(async (context: any) => {
       const email = context.context?.session?.user.email;
 
       if (email !== undefined) {
