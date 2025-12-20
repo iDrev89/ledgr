@@ -253,3 +253,30 @@ export interface MetricCardProps {
   className?: string;
   onClick?: () => void; // for drill-down
 }
+
+// Daily Sales Report Types
+export interface DailySalesReportFilters {
+  date: Date;
+  sellerId?: string;
+}
+
+export interface DailySaleDetail {
+  id: string;
+  saleNumber: number;
+  createdAt: Date;
+  customerName: string | null;
+  soldByName: string | null;
+  itemCount: number;
+  total: string;
+  paymentStatus: 'paid' | 'partial' | 'pending';
+  paymentMethods: string[];
+}
+
+export interface DailySalesReportData {
+  metrics: {
+    totalSales: number;
+    salesCount: number;
+    averageTicket: number;
+  };
+  sales: DailySaleDetail[];
+}

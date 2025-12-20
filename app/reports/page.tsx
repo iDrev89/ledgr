@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import PageHeader from "@/components/shared/PageHeader";
-import { ShoppingCart, TrendingUp, ArrowRight } from "lucide-react";
+import { ShoppingCart, TrendingUp, ArrowRight, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ReportsPage() {
@@ -24,6 +24,14 @@ export default function ReportsPage() {
       href: "/reports/business-summary",
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950",
+    },
+    {
+      title: t("dailySalesTitle"),
+      description: t("dailySalesDescription"),
+      icon: Receipt,
+      href: "/reports/daily-sales",
+      color: "text-purple-600 dark:text-purple-400",
+      bgColor: "bg-purple-50 dark:bg-purple-950",
     },
     {
       title: t("purchasesTitle"),

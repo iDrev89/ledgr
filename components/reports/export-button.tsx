@@ -9,18 +9,21 @@ import type {
   PurchaseReportDataEnhanced,
   BusinessSummaryDataEnhanced,
   DateRange,
+  DailySalesReportData,
 } from "@/lib/types/reports";
 import {
   exportPurchasesToExcel,
   exportBusinessSummaryToExcel,
+  exportDailySalesToExcel,
 } from "@/lib/excel-export";
 
-type ReportType = "purchases" | "business";
+type ReportType = "purchases" | "business" | "daily-sales";
 
 interface ExportButtonProps {
   type: ReportType;
-  data: PurchaseReportDataEnhanced | BusinessSummaryDataEnhanced | null;
-  dateRange: DateRange;
+  data: PurchaseReportDataEnhanced | BusinessSummaryDataEnhanced | DailySalesReportData | null;
+  dateRange?: DateRange;
+  date?: Date;
   disabled?: boolean;
 }
 
@@ -28,6 +31,7 @@ export function ExportButton({
   type,
   data,
   dateRange,
+  date,
   disabled,
 }: ExportButtonProps) {
   const t = useTranslations("Reports");
@@ -45,13 +49,15 @@ export function ExportButton({
       // Use setTimeout to allow UI to update before heavy operation
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      if (type === "purchases") {
+      if (type === "purchases" && dateRange) {
         exportPurchasesToExcel(data as PurchaseReportDataEnhanced, dateRange);
-      } else {
+      } else if (type === "business" && dateRange) {
         exportBusinessSummaryToExcel(
           data as BusinessSummaryDataEnhanced,
           dateRange,
         );
+      } else if (type === "daily-sales" && date) {
+        exportDailySalesToExcel(data as DailySalesReportData, date);
       }
 
       toast.success(t("exportSuccess"));

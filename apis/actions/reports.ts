@@ -34,6 +34,9 @@ import type {
   CostMetrics,
   ExpenseMetrics,
   ProfitMetrics,
+  DailySalesReportFilters,
+  DailySalesReportData,
+  DailySaleDetail,
 } from "@/lib/types/reports";
 import {
   startOfDay,
@@ -1178,4 +1181,122 @@ function generateTimeline(
       expenses: expensesTotal,
     };
   });
+}
+
+/**
+ * Get Daily Sales Report
+ */
+export async function getDailySalesReport(
+  filters: DailySalesReportFilters,
+): Promise<ActionResponse<DailySalesReportData>> {
+  const t = await getTranslations("Reports");
+
+  try {
+    const session = await requireAuth();
+
+    // Build where clause
+    const where: any = {
+      createdAt: {
+        gte: startOfDay(filters.date),
+        lte: endOfDay(filters.date),
+      },
+    };
+
+    // Filter by seller if provided (only for admins)
+    if (filters.sellerId) {
+      where.soldById = filters.sellerId;
+    } else if (session.user.role !== "admin") {
+      // Non-admin users can only see their own sales
+      where.soldById = session.user.id;
+    }
+
+    // Fetch sales with all related data
+    const sales = await prisma.sale.findMany({
+      where,
+      include: {
+        customer: {
+          select: {
+            name: true,
+          },
+        },
+        soldBy: {
+          select: {
+            name: true,
+          },
+        },
+        items: {
+          select: {
+            id: true,
+          },
+        },
+        receivable: {
+          select: {
+            balance: true,
+            status: true,
+          },
+        },
+        payments: {
+          select: {
+            method: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    // Calculate metrics
+    const totalSales = sales.reduce((sum, sale) => sum + toNumber(sale.total), 0);
+    const salesCount = sales.length;
+    const averageTicket = salesCount > 0 ? totalSales / salesCount : 0;
+
+    // Map sales to detail format
+    const salesDetails: DailySaleDetail[] = sales.map((sale) => {
+      // Determine payment status
+      let paymentStatus: 'paid' | 'partial' | 'pending';
+      if (!sale.receivable) {
+        paymentStatus = 'paid';
+      } else if (sale.receivable.status === 'PAID') {
+        paymentStatus = 'paid';
+      } else if (sale.receivable.status === 'PARTIAL') {
+        paymentStatus = 'partial';
+      } else {
+        paymentStatus = 'pending';
+      }
+
+      // Get unique payment methods
+      const paymentMethods = sale.payments && sale.payments.length > 0
+        ? [...new Set(sale.payments.map((p) => p.method))]
+        : [];
+
+      return {
+        id: sale.id,
+        saleNumber: sale.saleNumber,
+        createdAt: sale.createdAt,
+        customerName: sale.customer?.name || null,
+        soldByName: sale.soldBy?.name || null,
+        itemCount: sale.items.length,
+        total: sale.total.toString(),
+        paymentStatus,
+        paymentMethods,
+      };
+    });
+
+    return {
+      success: true,
+      data: {
+        metrics: {
+          totalSales,
+          salesCount,
+          averageTicket,
+        },
+        sales: salesDetails,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching daily sales report:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("errorLoading"),
+    };
+  }
 }

@@ -3,6 +3,7 @@ import type {
   PurchaseReportDataEnhanced,
   BusinessSummaryDataEnhanced,
   DateRange,
+  DailySalesReportData,
 } from "./types/reports";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -315,5 +316,83 @@ export function exportBusinessSummaryToExcel(
 
   // Generate file
   const fileName = `resumen_negocio_${format(new Date(), "yyyy-MM-dd_HHmmss")}.xlsx`;
+  writeFile(wb, fileName);
+}
+
+/**
+ * Export Daily Sales Report to Excel
+ */
+export function exportDailySalesToExcel(
+  data: DailySalesReportData,
+  date: Date,
+) {
+  // Create workbook
+  const wb = utils.book_new();
+
+  // Sheet 1: Summary with metrics
+  const summaryData = [
+    ["REPORTE DE VENTAS DIARIAS"],
+    ["Fecha:", formatDate(date)],
+    [""],
+    ["MÉTRICAS DEL DÍA"],
+    ["Total Ventas", formatCurrency(data.metrics.totalSales)],
+    ["Número de Ventas", data.metrics.salesCount],
+    ["Ticket Promedio", formatCurrency(data.metrics.averageTicket)],
+  ];
+
+  const wsSummary = utils.aoa_to_sheet(summaryData);
+  utils.book_append_sheet(wb, wsSummary, "Resumen");
+
+  // Sheet 2: Detailed sales
+  const salesData = [
+    [
+      "N° Venta",
+      "Fecha",
+      "Hora",
+      "Cliente",
+      "Vendedor",
+      "Items",
+      "Total",
+      "Métodos de Pago",
+      "Estado de Pago",
+    ],
+    ...data.sales.map((s) => {
+      const paymentStatusLabels = {
+        paid: "Pagado",
+        partial: "Parcial",
+        pending: "Pendiente",
+      };
+
+      const paymentMethodLabels: Record<string, string> = {
+        CASH: "Efectivo",
+        TRANSFER: "Transferencia",
+        CARD: "Tarjeta",
+        CHECK: "Cheque",
+        OTHER: "Otro",
+      };
+
+      const methodsText = s.paymentMethods && s.paymentMethods.length > 0
+        ? s.paymentMethods.map((m) => paymentMethodLabels[m] || m).join(", ")
+        : "-";
+
+      return [
+        String(s.saleNumber).padStart(4, "0"),
+        format(s.createdAt, "dd/MM/yyyy"),
+        format(s.createdAt, "HH:mm"),
+        s.customerName || "-",
+        s.soldByName || "-",
+        s.itemCount,
+        formatCurrency(toNumber(s.total)),
+        methodsText,
+        paymentStatusLabels[s.paymentStatus],
+      ];
+    }),
+  ];
+
+  const wsSales = utils.aoa_to_sheet(salesData);
+  utils.book_append_sheet(wb, wsSales, "Detalle de Ventas");
+
+  // Generate file
+  const fileName = `ventas_diarias_${format(date, "yyyy-MM-dd")}_${format(new Date(), "HHmmss")}.xlsx`;
   writeFile(wb, fileName);
 }
