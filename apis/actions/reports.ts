@@ -1238,6 +1238,7 @@ export async function getDailySalesReport(
         payments: {
           select: {
             method: true,
+            amount: true,
           },
         },
       },
@@ -1248,6 +1249,27 @@ export async function getDailySalesReport(
     const totalSales = sales.reduce((sum, sale) => sum + toNumber(sale.total), 0);
     const salesCount = sales.length;
     const averageTicket = salesCount > 0 ? totalSales / salesCount : 0;
+
+    // Calculate totals by payment method
+    const paymentMethodTotals = new Map<string, number>();
+    
+    sales.forEach((sale) => {
+      if (sale.payments && sale.payments.length > 0) {
+        sale.payments.forEach((payment) => {
+          const method = payment.method;
+          const amount = toNumber(payment.amount);
+          const currentTotal = paymentMethodTotals.get(method) || 0;
+          paymentMethodTotals.set(method, currentTotal + amount);
+        });
+      }
+    });
+
+    const byPaymentMethod = Array.from(paymentMethodTotals.entries()).map(
+      ([method, total]) => ({
+        method,
+        total,
+      })
+    );
 
     // Map sales to detail format
     const salesDetails: DailySaleDetail[] = sales.map((sale) => {
@@ -1288,6 +1310,7 @@ export async function getDailySalesReport(
           totalSales,
           salesCount,
           averageTicket,
+          byPaymentMethod,
         },
         sales: salesDetails,
       },

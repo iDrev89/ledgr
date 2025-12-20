@@ -1319,7 +1319,8 @@
     "paymentMethodCard": "Tarjeta",
     "paymentMethodCheck": "Cheque",
     "paymentMethodOther": "Otro",
-    "noPaymentRecord": "Sin registro"
+    "noPaymentRecord": "Sin registro",
+    "totalByPaymentMethod": "Totales por Método de Pago"
   },
   "pwa": {
     "offline": "Sin conexión a internet. Trabajando en modo offline.",

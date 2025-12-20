@@ -1306,7 +1306,8 @@
     "paymentMethodCard": "Card",
     "paymentMethodCheck": "Check",
     "paymentMethodOther": "Other",
-    "noPaymentRecord": "No record"
+    "noPaymentRecord": "No record",
+    "totalByPaymentMethod": "Totals by Payment Method"
   },
   "pwa": {
     "offline": "No internet connection. Working in offline mode.",

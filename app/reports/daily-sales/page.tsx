@@ -315,6 +315,33 @@ export default function DailySalesReportPage() {
             />
           </div>
 
+          {/* Payment Methods Breakdown */}
+          {reportData.metrics.byPaymentMethod.length > 0 && (
+            <Card>
+              <CardContent className="pt-6">
+                <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-muted-foreground" />
+                  {t("totalByPaymentMethod")}
+                </h3>
+                <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {reportData.metrics.byPaymentMethod.map((pm) => (
+                    <div
+                      key={pm.method}
+                      className="flex flex-col gap-1 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                    >
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {getPaymentMethodLabel(pm.method)}
+                      </span>
+                      <span className="text-2xl font-bold">
+                        {formatCurrency(pm.total)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Sales Table */}
           <Card>
             <CardContent className="pt-6">

@@ -277,6 +277,10 @@ export interface DailySalesReportData {
     totalSales: number;
     salesCount: number;
     averageTicket: number;
+    byPaymentMethod: {
+      method: string;
+      total: number;
+    }[];
   };
   sales: DailySaleDetail[];
 }

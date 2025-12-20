@@ -329,6 +329,15 @@ export function exportDailySalesToExcel(
   // Create workbook
   const wb = utils.book_new();
 
+  // Payment method labels for Excel
+  const paymentMethodLabels: Record<string, string> = {
+    CASH: "Efectivo",
+    TRANSFER: "Transferencia",
+    CARD: "Tarjeta",
+    CHECK: "Cheque",
+    OTHER: "Otro",
+  };
+
   // Sheet 1: Summary with metrics
   const summaryData = [
     ["REPORTE DE VENTAS DIARIAS"],
@@ -337,7 +346,13 @@ export function exportDailySalesToExcel(
     ["MÉTRICAS DEL DÍA"],
     ["Total Ventas", formatCurrency(data.metrics.totalSales)],
     ["Número de Ventas", data.metrics.salesCount],
-    ["Ticket Promedio", formatCurrency(data.metrics.averageTicket)],
+    ["Venta Promedio", formatCurrency(data.metrics.averageTicket)],
+    [""],
+    ["TOTALES POR MÉTODO DE PAGO"],
+    ...data.metrics.byPaymentMethod.map((pm) => [
+      paymentMethodLabels[pm.method] || pm.method,
+      formatCurrency(pm.total),
+    ]),
   ];
 
   const wsSummary = utils.aoa_to_sheet(summaryData);
