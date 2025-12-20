@@ -347,6 +347,8 @@ export function exportDailySalesToExcel(
     ["Total Ventas", formatCurrency(data.metrics.totalSales)],
     ["Número de Ventas", data.metrics.salesCount],
     ["Venta Promedio", formatCurrency(data.metrics.averageTicket)],
+    ["Total Pagado", formatCurrency(data.metrics.totalPaid)],
+    ["Saldo Pendiente", formatCurrency(data.metrics.pendingBalance)],
     [""],
     ["TOTALES POR MÉTODO DE PAGO"],
     ...data.metrics.byPaymentMethod.map((pm) => [

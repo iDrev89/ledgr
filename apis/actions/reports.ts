@@ -1250,14 +1250,16 @@ export async function getDailySalesReport(
     const salesCount = sales.length;
     const averageTicket = salesCount > 0 ? totalSales / salesCount : 0;
 
-    // Calculate totals by payment method
+    // Calculate totals by payment method and total paid
     const paymentMethodTotals = new Map<string, number>();
+    let totalPaid = 0;
     
     sales.forEach((sale) => {
       if (sale.payments && sale.payments.length > 0) {
         sale.payments.forEach((payment) => {
           const method = payment.method;
           const amount = toNumber(payment.amount);
+          totalPaid += amount;
           const currentTotal = paymentMethodTotals.get(method) || 0;
           paymentMethodTotals.set(method, currentTotal + amount);
         });
@@ -1270,6 +1272,9 @@ export async function getDailySalesReport(
         total,
       })
     );
+
+    // Calculate pending balance
+    const pendingBalance = totalSales - totalPaid;
 
     // Map sales to detail format
     const salesDetails: DailySaleDetail[] = sales.map((sale) => {
@@ -1310,6 +1315,8 @@ export async function getDailySalesReport(
           totalSales,
           salesCount,
           averageTicket,
+          totalPaid,
+          pendingBalance,
           byPaymentMethod,
         },
         sales: salesDetails,

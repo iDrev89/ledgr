@@ -277,6 +277,8 @@ export interface DailySalesReportData {
     totalSales: number;
     salesCount: number;
     averageTicket: number;
+    totalPaid: number;
+    pendingBalance: number;
     byPaymentMethod: {
       method: string;
       total: number;
