@@ -123,6 +123,7 @@ export const getSales = async (params?: {
   sellerId?: string;
   dateFrom?: string;
   dateTo?: string;
+  status?: "DRAFT" | "COMPLETED" | "ALL";
   limit?: number;
   offset?: number;
 }): Promise<ActionResponse<{ sales: SaleWithDetails[]; total: number }>> => {
@@ -137,11 +138,17 @@ export const getSales = async (params?: {
       sellerId,
       dateFrom,
       dateTo,
+      status = "COMPLETED",
       limit = 50,
       offset = 0,
     } = params || {};
 
     const where: any = {};
+
+    // Filter by status (default to COMPLETED)
+    if (status !== "ALL") {
+      where.status = status;
+    }
 
     // Role-based filtering: non-admins can only see their own sales
     if (session.user.role !== "admin") {
@@ -321,7 +328,8 @@ export const getSale = async (
 };
 
 export const createSale = async (
-  input: CreateSaleInput
+  input: CreateSaleInput,
+  isDraft: boolean = false
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -431,6 +439,11 @@ export const createSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
+    // Parse custom date if provided
+    const customDate = validated.customDate 
+      ? new Date(validated.customDate + "T00:00:00")
+      : undefined;
+
     // Create sale with items in a transaction
     const sale = await prisma.$transaction(async (tx) => {
       // Create the sale
@@ -444,7 +457,9 @@ export const createSale = async (
           discountTotal,
           taxTotal,
           total,
+          status: isDraft ? "DRAFT" : "COMPLETED",
           note: validated.note || null,
+          ...(customDate && { createdAt: customDate }),
           items: {
             create: itemsWithTotals,
           },
@@ -488,60 +503,63 @@ export const createSale = async (
         },
       });
 
-      // Create AccountsReceivable if there's a balance
+      // Only create AccountsReceivable, stock movements, and bank transactions if not DRAFT
       let receivable = null;
-      if (balance.gt(0)) {
-        receivable = await tx.accountsReceivable.create({
-          data: {
-            customerId: validated.customerId,
-            saleId: newSale.id,
-            currency: "COP",
-            total,
-            balance,
-            status: totalPaid.gt(0)
-              ? AccountsReceivableStatus.PARTIAL
-              : AccountsReceivableStatus.OPEN,
-          },
-          select: {
-            id: true,
-            total: true,
-            balance: true,
-            status: true,
-          },
-        });
-      }
-
-      // Create stock movements for each item (if product type is PRODUCT)
-      for (const item of itemsWithTotals) {
-        const product = products.find((p) => p.id === item.productId);
-        if (product?.type === "PRODUCT") {
-          await tx.stockMovement.create({
+      if (!isDraft) {
+        // Create AccountsReceivable if there's a balance
+        if (balance.gt(0)) {
+          receivable = await tx.accountsReceivable.create({
             data: {
-              productId: item.productId,
-              moveType: StockMoveType.SALE,
-              quantity: item.quantity,
-              unitCost: product.cost,
-              note: `Venta #${String(newSale.saleNumber).padStart(4, "0")}`,
+              customerId: validated.customerId,
+              saleId: newSale.id,
+              currency: "COP",
+              total,
+              balance,
+              status: totalPaid.gt(0)
+                ? AccountsReceivableStatus.PARTIAL
+                : AccountsReceivableStatus.OPEN,
+            },
+            select: {
+              id: true,
+              total: true,
+              balance: true,
+              status: true,
             },
           });
         }
-      }
 
-      // Create bank transactions for payments with bank
-      for (const payment of newSale.payments) {
-        if (payment.bankId) {
-          await tx.bankTransaction.create({
-            data: {
-              bankId: payment.bankId,
-              type: "INCOME" as any,
-              amount: payment.amount,
-              description: `Venta #${String(newSale.saleNumber).padStart(4, "0")}${newSale.customer ? ` - ${newSale.customer.name}` : ""}`,
-              reference: payment.reference || null,
-              transactionDate: payment.paidAt,
-              salePaymentId: payment.id,
-              createdById: session.user.id,
-            },
-          });
+        // Create stock movements for each item (if product type is PRODUCT)
+        for (const item of itemsWithTotals) {
+          const product = products.find((p) => p.id === item.productId);
+          if (product?.type === "PRODUCT") {
+            await tx.stockMovement.create({
+              data: {
+                productId: item.productId,
+                moveType: StockMoveType.SALE,
+                quantity: item.quantity,
+                unitCost: product.cost,
+                note: `Venta #${String(newSale.saleNumber).padStart(4, "0")}`,
+              },
+            });
+          }
+        }
+
+        // Create bank transactions for payments with bank
+        for (const payment of newSale.payments) {
+          if (payment.bankId) {
+            await tx.bankTransaction.create({
+              data: {
+                bankId: payment.bankId,
+                type: "INCOME" as any,
+                amount: payment.amount,
+                description: `Venta #${String(newSale.saleNumber).padStart(4, "0")}${newSale.customer ? ` - ${newSale.customer.name}` : ""}`,
+                reference: payment.reference || null,
+                transactionDate: payment.paidAt,
+                salePaymentId: payment.id,
+                createdById: session.user.id,
+              },
+            });
+          }
         }
       }
 
@@ -563,13 +581,180 @@ export const createSale = async (
   }
 };
 
+export const completeSale = async (
+  saleId: string
+): Promise<ActionResponse<SaleWithDetails>> => {
+  const t = await getTranslations("Sales.errors");
+
+  try {
+    const session = await requireAuth();
+
+    // Get the sale with all related data
+    const existingSale = await prisma.sale.findUnique({
+      where: { id: saleId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+        payments: {
+          include: {
+            bank: true,
+          },
+        },
+        customer: true,
+      },
+    });
+
+    if (!existingSale) {
+      return { success: false, error: t("notFound") };
+    }
+
+    // Verify sale is in DRAFT status
+    if (existingSale.status !== "DRAFT") {
+      return {
+        success: false,
+        error: t("saleAlreadyCompleted"),
+      };
+    }
+
+    // Calculate balance
+    let totalPaid = new Decimal(0);
+    existingSale.payments.forEach((payment) => {
+      totalPaid = totalPaid.plus(payment.amount);
+    });
+
+    const balance = existingSale.total.minus(totalPaid);
+
+    // Complete the sale in a transaction
+    const completedSale = await prisma.$transaction(async (tx) => {
+      // Create AccountsReceivable if there's a balance
+      let receivable = null;
+      if (balance.gt(0)) {
+        receivable = await tx.accountsReceivable.create({
+          data: {
+            customerId: existingSale.customerId,
+            saleId: existingSale.id,
+            currency: existingSale.currency,
+            total: existingSale.total,
+            balance,
+            status: totalPaid.gt(0)
+              ? AccountsReceivableStatus.PARTIAL
+              : AccountsReceivableStatus.OPEN,
+          },
+        });
+      }
+
+      // Create stock movements for each item (if product type is PRODUCT)
+      for (const item of existingSale.items) {
+        if (item.product.type === "PRODUCT") {
+          await tx.stockMovement.create({
+            data: {
+              productId: item.productId,
+              moveType: StockMoveType.SALE,
+              quantity: item.quantity,
+              unitCost: item.product.cost,
+              note: `Venta #${String(existingSale.saleNumber).padStart(4, "0")}`,
+            },
+          });
+        }
+      }
+
+      // Create bank transactions for payments with bank
+      for (const payment of existingSale.payments) {
+        if (payment.bankId) {
+          await tx.bankTransaction.create({
+            data: {
+              bankId: payment.bankId,
+              type: "INCOME" as any,
+              amount: payment.amount,
+              description: `Venta #${String(existingSale.saleNumber).padStart(4, "0")}${existingSale.customer ? ` - ${existingSale.customer.name}` : ""}`,
+              reference: payment.reference || null,
+              transactionDate: payment.paidAt,
+              salePaymentId: payment.id,
+              createdById: session.user.id,
+            },
+          });
+        }
+      }
+
+      // Update sale status to COMPLETED
+      const updatedSale = await tx.sale.update({
+        where: { id: saleId },
+        data: {
+          status: "COMPLETED",
+        },
+        include: {
+          customer: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          soldBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          items: {
+            include: {
+              product: true,
+              performedBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          payments: {
+            include: {
+              bank: true,
+            },
+          },
+          receivable: {
+            select: {
+              id: true,
+              total: true,
+              balance: true,
+              status: true,
+            },
+          },
+        },
+      });
+
+      return updatedSale;
+    });
+
+    revalidatePath("/sales");
+    revalidatePath("/inventory");
+    revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/accounts-receivable");
+
+    return { success: true, data: serializeSale(completedSale) };
+  } catch (error) {
+    console.error("Error completing sale:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("updateFailed"),
+    };
+  }
+};
+
 export const updateSale = async (
   input: UpdateSaleInput
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
   try {
-    await requireAuth();
+    const session = await requireAuth();
 
     const validated = updateSaleSchema.parse(input);
 
@@ -581,6 +766,14 @@ export const updateSale = async (
 
     if (!existingSale) {
       return { success: false, error: t("notFound") };
+    }
+
+    // Permission check: only admin can edit COMPLETED sales
+    if (existingSale.status === "COMPLETED" && session.user.role !== "admin") {
+      return {
+        success: false,
+        error: t("cannotEditCompletedSale"),
+      };
     }
 
     // Verify customer exists
@@ -684,6 +877,11 @@ export const updateSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
+    // Parse custom date if provided
+    const customDate = validated.customDate 
+      ? new Date(validated.customDate + "T00:00:00")
+      : undefined;
+
     // Update sale in a transaction
     const sale = await prisma.$transaction(async (tx) => {
       // Get the current sale to know its saleNumber
@@ -727,6 +925,7 @@ export const updateSale = async (
           taxTotal,
           total,
           note: validated.note || null,
+          ...(customDate && { createdAt: customDate }),
           items: {
             create: itemsWithTotals,
           },
@@ -831,7 +1030,7 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Sales.errors");
 
   try {
-    await requireAuth();
+    const session = await requireAuth();
 
     const sale = await prisma.sale.findUnique({
       where: { id },
@@ -844,6 +1043,14 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
 
     if (!sale) {
       return { success: false, error: t("notFound") };
+    }
+
+    // Permission check: only admin can delete COMPLETED sales
+    if (sale.status === "COMPLETED" && session.user.role !== "admin") {
+      return {
+        success: false,
+        error: t("cannotDeleteCompletedSale"),
+      };
     }
 
     // Check if sale has an active receivable (not canceled)

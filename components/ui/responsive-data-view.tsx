@@ -12,6 +12,9 @@ export interface CardActions {
   onView?: (item: any) => void;
   onEdit?: (item: any) => void;
   onDelete?: (item: any) => void;
+  onCloseSale?: (item: any) => void;
+  isDraftCard?: boolean;
+  isAdmin?: boolean;
   locale?: string;
 }
 
@@ -42,6 +45,9 @@ interface ResponsiveDataViewProps<TData> {
   onView?: (item: TData) => void;
   onEdit?: (item: TData) => void;
   onDelete?: (item: TData) => void;
+  onCloseSale?: (item: TData) => void;
+  isDraftCard?: boolean;
+  isAdmin?: boolean;
 
   // Otros
   locale?: string;
@@ -61,6 +67,9 @@ export function ResponsiveDataView<TData>({
   onView,
   onEdit,
   onDelete,
+  onCloseSale,
+  isDraftCard,
+  isAdmin,
   locale,
 }: ResponsiveDataViewProps<TData>) {
   const isMobile = useIsMobile();
@@ -106,6 +115,9 @@ export function ResponsiveDataView<TData>({
     onView,
     onEdit,
     onDelete,
+    onCloseSale,
+    isDraftCard,
+    isAdmin,
     locale,
   };
 

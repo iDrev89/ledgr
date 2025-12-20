@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, Trash2 } from "lucide-react";
+import { MoreHorizontal, Eye, Trash2, Edit, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,6 +20,10 @@ import { PaymentMethod } from "@/prisma/prisma-client";
 interface CreateSaleColumnsProps {
   onView: (sale: SaleWithDetails) => void;
   onDelete?: (sale: SaleWithDetails) => void;
+  onEdit?: (sale: SaleWithDetails) => void;
+  onCloseSale?: (sale: SaleWithDetails) => void;
+  isDraftTable?: boolean;
+  isAdmin?: boolean;
   t: (key: string) => string;
   locale?: string;
 }
@@ -75,6 +79,10 @@ const getPaymentMethodBadge = (
 export const createSaleColumns = ({
   onView,
   onDelete,
+  onEdit,
+  onCloseSale,
+  isDraftTable = false,
+  isAdmin = false,
   t,
   locale = "es",
 }: CreateSaleColumnsProps): ColumnDef<SaleWithDetails>[] => [
@@ -198,7 +206,31 @@ export const createSaleColumns = ({
       const sale = row.original;
 
       return (
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          {isDraftTable && (
+            <>
+              {onEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(sale)}
+                >
+                  <Edit className="mr-2 h-4 w-4" />
+                  {t("edit")}
+                </Button>
+              )}
+              {onCloseSale && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => onCloseSale(sale)}
+                >
+                  <Check className="mr-2 h-4 w-4" />
+                  {t("closeSale")}
+                </Button>
+              )}
+            </>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -213,7 +245,28 @@ export const createSaleColumns = ({
                 <Eye className="mr-2 h-4 w-4" />
                 {t("view")}
               </DropdownMenuItem>
-              {onDelete && (
+              {!isDraftTable && isAdmin && onEdit && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onEdit(sale)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t("edit")}
+                  </DropdownMenuItem>
+                </>
+              )}
+              {onDelete && !isDraftTable && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => onDelete(sale)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t("delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
+              {onDelete && isDraftTable && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

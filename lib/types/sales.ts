@@ -5,9 +5,10 @@ import {
   Customer,
   Product,
   Bank,
+  SaleStatus,
 } from "@/prisma/prisma-client";
 
-export type { Sale, SaleItem, SalePayment };
+export type { Sale, SaleItem, SalePayment, SaleStatus };
 
 // Serialized version for client (Decimal fields converted to strings)
 export type SaleWithDetails = Omit<

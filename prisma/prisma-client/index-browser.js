@@ -226,6 +226,7 @@ exports.Prisma.SaleScalarFieldEnum = {
   discountTotal: 'discountTotal',
   taxTotal: 'taxTotal',
   total: 'total',
+  status: 'status',
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -439,6 +440,11 @@ exports.Prisma.NullsOrder = {
 exports.ProductType = exports.$Enums.ProductType = {
   PRODUCT: 'PRODUCT',
   SERVICE: 'SERVICE'
+};
+
+exports.SaleStatus = exports.$Enums.SaleStatus = {
+  DRAFT: 'DRAFT',
+  COMPLETED: 'COMPLETED'
 };
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {

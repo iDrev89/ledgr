@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Trash2, Package, CreditCard } from "lucide-react";
+import { Eye, Trash2, Package, CreditCard, Edit, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,10 @@ interface SaleCardProps {
   sale: SaleWithDetails;
   onView: () => void;
   onDelete?: () => void;
+  onEdit?: () => void;
+  onCloseSale?: () => void;
+  isDraftCard?: boolean;
+  isAdmin?: boolean;
   locale?: string;
 }
 
@@ -70,6 +74,10 @@ export function SaleCard({
   sale,
   onView,
   onDelete,
+  onEdit,
+  onCloseSale,
+  isDraftCard = false,
+  isAdmin = false,
   locale = "es",
 }: SaleCardProps) {
   const t = useTranslations("Sales");
@@ -190,22 +198,66 @@ export function SaleCard({
 
         <Separator />
 
-        {/* Footer: Total + Botón Ver */}
+        {/* Footer: Total + Botones */}
         <div className="flex items-center justify-between pt-1">
           <div>
             <p className="text-xs text-muted-foreground">{t("total")}</p>
             <p className="text-xl font-bold">{formatCurrency(sale.total)}</p>
           </div>
-          <Button
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onView();
-            }}
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            {t("view")}
-          </Button>
+          <div className="flex gap-2">
+            {isDraftCard && onEdit && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                {t("edit")}
+              </Button>
+            )}
+            {isDraftCard && onCloseSale && (
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCloseSale();
+                }}
+              >
+                <Check className="h-4 w-4 mr-2" />
+                {t("closeSale")}
+              </Button>
+            )}
+            {!isDraftCard && (
+              <>
+                {isAdmin && onEdit && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    {t("edit")}
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView();
+                  }}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  {t("view")}
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

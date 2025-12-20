@@ -379,13 +379,14 @@ export async function getBusinessSummary(
     const startDate = startOfDay(filters.startDate);
     const endDate = endOfDay(filters.endDate);
 
-    // 1. Get sales
+    // 1. Get sales (only COMPLETED)
     const sales = await prisma.sale.findMany({
       where: {
         createdAt: {
           gte: startDate,
           lte: endDate,
         },
+        status: "COMPLETED",
       },
       include: {
         items: {
@@ -601,13 +602,14 @@ export async function getBusinessSummaryEnhanced(
     const previousEndDate = new Date(startDate);
     previousEndDate.setDate(previousEndDate.getDate() - 1);
 
-    // Fetch current period sales
+    // Fetch current period sales (only COMPLETED)
     const sales = await prisma.sale.findMany({
       where: {
         createdAt: {
           gte: startDate,
           lte: endDate,
         },
+        status: "COMPLETED",
       },
       include: {
         customer: {
@@ -641,13 +643,14 @@ export async function getBusinessSummaryEnhanced(
       },
     });
 
-    // Fetch previous period sales
+    // Fetch previous period sales (only COMPLETED)
     const previousSales = await prisma.sale.findMany({
       where: {
         createdAt: {
           gte: previousStartDate,
           lte: previousEndDate,
         },
+        status: "COMPLETED",
       },
       include: {
         items: {
@@ -1200,6 +1203,7 @@ export async function getDailySalesReport(
         gte: startOfDay(filters.date),
         lte: endOfDay(filters.date),
       },
+      status: "COMPLETED", // Only show completed sales in reports
     };
 
     // Filter by seller if provided (only for admins)

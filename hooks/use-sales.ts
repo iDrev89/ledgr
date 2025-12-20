@@ -5,6 +5,7 @@ import {
   createSale,
   updateSale,
   deleteSale,
+  completeSale,
 } from "@/apis/actions/sales";
 import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { inventoryKeys } from "./use-inventory";
@@ -23,6 +24,7 @@ export function useSales(params?: {
   sellerId?: string;
   dateFrom?: string;
   dateTo?: string;
+  status?: "DRAFT" | "COMPLETED" | "ALL";
   paymentMethod?: string;
   limit?: number;
   offset?: number;
@@ -58,8 +60,8 @@ export function useCreateSale() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateSaleInput) => {
-      const result = await createSale(data);
+    mutationFn: async ({ input, isDraft }: { input: CreateSaleInput; isDraft?: boolean }) => {
+      const result = await createSale(input, isDraft);
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -160,6 +162,45 @@ export function useDeleteSale() {
         queryKey: ["banks"],
       });
       // Invalidate receivables in case sale had a receivable
+      queryClient.invalidateQueries({
+        queryKey: ["receivables"],
+      });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard"],
+      });
+    },
+  });
+}
+
+export function useCompleteSale() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (saleId: string) => {
+      const result = await completeSale(saleId);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data;
+    },
+    onSuccess: (completedSale) => {
+      queryClient.setQueryData(saleKeys.detail(completedSale.id), completedSale);
+      queryClient.invalidateQueries({
+        queryKey: saleKeys.lists(),
+      });
+      // Invalidate inventory queries since stock was updated
+      queryClient.invalidateQueries({
+        queryKey: inventoryKeys.summary(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: inventoryKeys.lists(),
+      });
+      // Invalidate banks since payments may include bank transfers
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate receivables since a receivable may have been created
       queryClient.invalidateQueries({
         queryKey: ["receivables"],
       });

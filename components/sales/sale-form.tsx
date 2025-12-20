@@ -5,7 +5,9 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -22,7 +24,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2, RotateCcw } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Loader2, RotateCcw, AlertCircle, CalendarIcon } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { format, parseISO } from "date-fns";
+import { cn } from "@/lib/utils";
 import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
 import { UserSelector } from "./user-selector";
@@ -33,7 +44,7 @@ import { useSession } from "@/auth/auth-client";
 
 interface SaleFormProps {
   sale?: SaleWithDetails;
-  onSubmit: (data: CreateSaleInput | UpdateSaleInput) => Promise<void>;
+  onSubmit: (data: CreateSaleInput | UpdateSaleInput, isDraft?: boolean) => Promise<void>;
   onCancel?: () => void;
   isLoading?: boolean;
 }
@@ -47,6 +58,14 @@ export function SaleForm({
   const t = useTranslations("Sales");
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "admin";
+  const isEdit = !!sale;
+  const isDraftSale = sale?.status === "DRAFT";
+
+  // State for "leave open" toggle (only for new sales)
+  const [leaveOpen, setLeaveOpen] = useState(false);
+
+  // State for calendar popover
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   // Initialize items state
   const [items, setItems] = useState<SaleItemRow[]>(() => {
@@ -93,6 +112,7 @@ export function SaleForm({
     defaultValues: {
       customerId: sale?.customerId || "",
       soldById: sale?.soldById || "",
+      customDate: sale?.createdAt ? new Date(sale.createdAt).toISOString().split('T')[0] : "",
       note: sale?.note || "",
     },
   });
@@ -154,20 +174,22 @@ export function SaleForm({
       const submitData: CreateSaleInput = {
         customerId: data.customerId,
         soldById: data.soldById || undefined,
+        customDate: data.customDate || undefined,
         note: data.note || "",
         items: formattedItems,
         payments: formattedPayments,
       };
 
       if (sale) {
-        await onSubmit({ ...submitData, id: sale.id } as UpdateSaleInput);
+        await onSubmit({ ...submitData, id: sale.id } as UpdateSaleInput, isDraftSale);
       } else {
-        await onSubmit(submitData);
+        await onSubmit(submitData, leaveOpen);
       }
 
       // Reset form on successful creation (not update)
       if (!sale) {
         handleReset();
+        setLeaveOpen(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -179,6 +201,7 @@ export function SaleForm({
     form.reset({
       customerId: "",
       soldById: "",
+      customDate: "",
       note: "",
     });
     setItems([]);
@@ -258,6 +281,58 @@ export function SaleForm({
               )}
             />
           )}
+
+          {/* Campo de fecha personalizada - solo visible para admin */}
+          {isAdmin && (
+            <FormField
+              control={form.control}
+              name="customDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>{t("saleDate")}</FormLabel>
+                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-between font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                          disabled={isLoading}
+                        >
+                          {field.value ? (
+                            format(parseISO(String(field.value)), "dd/MM/yyyy")
+                          ) : (
+                            <span>{t("saleDatePlaceholder")}</span>
+                          )}
+                          <CalendarIcon className="h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? parseISO(String(field.value)) : undefined}
+                        onSelect={(date) => {
+                          field.onChange(
+                            date ? format(date, "yyyy-MM-dd") : "",
+                          );
+                          setCalendarOpen(false);
+                        }}
+                        disabled={(date) => date > new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription className="text-xs">
+                    {t("saleDateDescription")}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <SaleItems
@@ -272,6 +347,39 @@ export function SaleForm({
           total={total}
           disabled={isLoading}
         />
+
+        {/* Leave Open Toggle - Only for new sales */}
+        {!isEdit && (
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/30">
+            <div className="space-y-0.5">
+              <label
+                htmlFor="leave-open"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {t("leaveOpen")}
+              </label>
+              <p className="text-sm text-muted-foreground">
+                {t("leaveOpenDescription")}
+              </p>
+            </div>
+            <Switch
+              id="leave-open"
+              checked={leaveOpen}
+              onCheckedChange={setLeaveOpen}
+              disabled={isLoading}
+            />
+          </div>
+        )}
+
+        {/* Warning for editing completed sales */}
+        {isEdit && sale?.status === "COMPLETED" && !isAdmin && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {t("errors.cannotEditCompletedSale")}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <FormField
           control={form.control}

@@ -21,9 +21,9 @@ export default function NewSalePage() {
   const router = useRouter();
   const createMutation = useCreateSale();
 
-  const handleCreateSale = async (input: CreateSaleInput) => {
+  const handleCreateSale = async (input: CreateSaleInput, isDraft?: boolean) => {
     try {
-      await createMutation.mutateAsync(input);
+      await createMutation.mutateAsync({ input, isDraft });
       toast.success(t("createSuccess"));
       // Navigate back to sales list after successful creation
       router.push("/sales");

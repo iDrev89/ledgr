@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useSession } from "@/auth/auth-client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,19 +25,31 @@ import { createSaleColumns } from "./sale-columns";
 interface SaleTableProps {
   sales: SaleWithDetails[];
   onView: (sale: SaleWithDetails) => void;
+  onEdit?: (sale: SaleWithDetails) => void;
+  onCloseSale?: (sale: SaleWithDetails) => void;
+  isDraftTable?: boolean;
   locale?: string;
 }
 
-export function SaleTable({ sales, onView, locale }: SaleTableProps) {
+export function SaleTable({ 
+  sales, 
+  onView, 
+  onEdit, 
+  onCloseSale, 
+  isDraftTable = false, 
+  locale 
+}: SaleTableProps) {
   const t = useTranslations("Sales");
+  const { data: session } = useSession();
   const { hasPermission } = usePermissions();
   const [saleToDelete, setSaleToDelete] = useState<SaleWithDetails | null>(
     null,
   );
   const deleteMutation = useDeleteSale();
 
-  // Check delete permission
+  // Check permissions
   const canDelete = hasPermission("sales", "delete");
+  const isAdmin = session?.user?.role === "admin";
 
   const handleDelete = async () => {
     if (!saleToDelete) return;
@@ -55,6 +68,10 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
   const columns = createSaleColumns({
     onView,
     onDelete: canDelete ? setSaleToDelete : undefined,
+    onEdit: isDraftTable ? onEdit : (isAdmin && onEdit ? onEdit : undefined),
+    onCloseSale: isDraftTable ? onCloseSale : undefined,
+    isDraftTable,
+    isAdmin,
     t,
     locale,
   });
@@ -68,6 +85,10 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
             sale={sale}
             onView={() => onView(sale)}
             onDelete={canDelete ? () => setSaleToDelete(sale) : undefined}
+            onEdit={isDraftTable && onEdit ? () => onEdit(sale) : (isAdmin && onEdit ? () => onEdit(sale) : undefined)}
+            onCloseSale={isDraftTable && onCloseSale ? () => onCloseSale(sale) : undefined}
+            isDraftCard={isDraftTable}
+            isAdmin={isAdmin}
             locale={locale}
           />
         )}
@@ -79,6 +100,10 @@ export function SaleTable({ sales, onView, locale }: SaleTableProps) {
         emptyMessage={t("noSales")}
         onView={onView}
         onDelete={canDelete ? setSaleToDelete : undefined}
+        onEdit={isDraftTable ? onEdit : (isAdmin && onEdit ? onEdit : undefined)}
+        onCloseSale={isDraftTable ? onCloseSale : undefined}
+        isDraftCard={isDraftTable}
+        isAdmin={isAdmin}
         locale={locale}
       />
 
