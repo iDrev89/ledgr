@@ -94,12 +94,24 @@ export function ResponsiveDialog({
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom">
-          <SheetHeader className="mb-6">
-            <SheetTitle>{title}</SheetTitle>
-            {description && <SheetDescription>{description}</SheetDescription>}
-          </SheetHeader>
-          {children}
+        <SheetContent 
+          side="bottom" 
+          className={cn("h-[90vh] flex flex-col p-0", className)}
+        >
+          {/* Header fijo */}
+          <div className="flex-shrink-0 px-6 pt-6 pb-4">
+            <SheetHeader>
+              <SheetTitle>{title}</SheetTitle>
+              {description && <SheetDescription>{description}</SheetDescription>}
+            </SheetHeader>
+          </div>
+          
+          {/* Contenido scrollable con ScrollArea */}
+          <ScrollArea className="flex-1 px-6">
+            <div className="pb-6">
+              {children}
+            </div>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
     );
