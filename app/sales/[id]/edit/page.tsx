@@ -17,7 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { SaleForm } from "@/components/sales/sale-form";
 import { useSale, useUpdateSale } from "@/hooks/use-sales";
-import type { UpdateSaleInput } from "@/lib/validations/sales";
+import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 
 export default function EditSalePage() {
   const t = useTranslations("Sales");
@@ -28,9 +28,10 @@ export default function EditSalePage() {
   const { data: sale, isLoading, error } = useSale(saleId);
   const updateMutation = useUpdateSale();
 
-  const handleUpdateSale = async (input: UpdateSaleInput, isDraft?: boolean) => {
+  const handleUpdateSale = async (input: CreateSaleInput | UpdateSaleInput, isDraft?: boolean) => {
     try {
-      await updateMutation.mutateAsync(input);
+      // SaleForm always adds the id when in edit mode, so we can cast here
+      await updateMutation.mutateAsync(input as UpdateSaleInput);
       toast.success(t("updateSuccess"));
       // Navigate back to sales list after successful update
       router.push("/sales");
