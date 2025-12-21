@@ -182,6 +182,7 @@ export default function SalesPage() {
                 <SaleTable
                   sales={completedData?.sales || []}
                   onView={handleViewSale}
+                  onEdit={handleEditCompletedSale}
                   locale={locale}
                 />
               )}
