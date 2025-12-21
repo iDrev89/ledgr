@@ -439,9 +439,12 @@ export const createSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
-    // Parse custom date if provided
+    // Parse custom date if provided (in local timezone)
     const customDate = validated.customDate 
-      ? new Date(validated.customDate + "T00:00:00")
+      ? (() => {
+          const [year, month, day] = validated.customDate.split('-').map(Number);
+          return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
+        })()
       : undefined;
 
     // Create sale with items in a transaction
@@ -877,9 +880,12 @@ export const updateSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
-    // Parse custom date if provided
+    // Parse custom date if provided (in local timezone)
     const customDate = validated.customDate 
-      ? new Date(validated.customDate + "T00:00:00")
+      ? (() => {
+          const [year, month, day] = validated.customDate.split('-').map(Number);
+          return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
+        })()
       : undefined;
 
     // Update sale in a transaction

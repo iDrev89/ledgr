@@ -32,7 +32,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2, RotateCcw, AlertCircle, CalendarIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { format, parseISO } from "date-fns";
+import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { CustomerSelector } from "./customer-selector";
@@ -112,7 +112,7 @@ export function SaleForm({
     defaultValues: {
       customerId: sale?.customerId || "",
       soldById: sale?.soldById || "",
-      customDate: sale?.createdAt ? new Date(sale.createdAt).toISOString().split('T')[0] : "",
+      customDate: sale?.createdAt ? format(new Date(sale.createdAt), "yyyy-MM-dd") : "",
       note: sale?.note || "",
     },
   });
@@ -302,7 +302,7 @@ export function SaleForm({
                           disabled={isLoading}
                         >
                           {field.value ? (
-                            format(parseISO(String(field.value)), "dd/MM/yyyy")
+                            format(parse(String(field.value), "yyyy-MM-dd", new Date()), "dd/MM/yyyy")
                           ) : (
                             <span>{t("saleDatePlaceholder")}</span>
                           )}
@@ -313,7 +313,7 @@ export function SaleForm({
                     <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value ? parseISO(String(field.value)) : undefined}
+                        selected={field.value ? parse(String(field.value), "yyyy-MM-dd", new Date()) : undefined}
                         onSelect={(date) => {
                           field.onChange(
                             date ? format(date, "yyyy-MM-dd") : "",
