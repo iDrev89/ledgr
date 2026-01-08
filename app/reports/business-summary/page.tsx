@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { startOfMonth, endOfMonth } from "date-fns";
+import { startOfMonth, endOfMonth, format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -48,11 +48,18 @@ export default function BusinessSummaryPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["business-summary-enhanced", dateRange],
+    queryKey: [
+      "business-summary-enhanced",
+      format(dateRange.start, "yyyy-MM-dd"),
+      format(dateRange.end, "yyyy-MM-dd"),
+    ],
     queryFn: async () => {
+      // Send dates as ISO strings (YYYY-MM-DD) to avoid timezone issues
+      const startDateString = format(dateRange.start, "yyyy-MM-dd");
+      const endDateString = format(dateRange.end, "yyyy-MM-dd");
       const response = await getBusinessSummaryEnhanced({
-        startDate: dateRange.start,
-        endDate: dateRange.end,
+        startDate: startDateString,
+        endDate: endDateString,
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;

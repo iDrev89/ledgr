@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import type { BankTransactionWithRelations } from "@/lib/types/bank-transactions";
 import { BankTransactionType } from "@/prisma/prisma-client";
 import { useTranslations } from "next-intl";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 
 interface TransactionCardProps {
@@ -83,9 +83,8 @@ export function TransactionCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                {formatDistanceToNow(new Date(transaction.transactionDate), {
-                  addSuffix: true,
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                {format(new Date(transaction.transactionDate), "dd/MM/yyyy hh:mm a", {
                   locale: dateLocale,
                 })}
               </span>

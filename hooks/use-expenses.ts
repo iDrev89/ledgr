@@ -74,6 +74,14 @@ export function useCreateExpense() {
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
       });
+      // Invalidate banks since expense may have bank transaction
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }
@@ -101,6 +109,14 @@ export function useUpdateExpense() {
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
       });
+      // Invalidate banks since expense may have bank transaction
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }
@@ -125,6 +141,14 @@ export function useDeleteExpense() {
       // Invalidate dashboard
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
+      });
+      // Invalidate banks since expense may have bank transaction
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
       });
     },
   });

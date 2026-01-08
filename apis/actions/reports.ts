@@ -82,11 +82,15 @@ export async function getPurchaseReport(
   try {
     await requireAuth();
 
+    // Parse date strings to Date objects
+    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
+    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
+
     const purchases = await prisma.purchase.findMany({
       where: {
         createdAt: {
-          gte: startOfDay(filters.startDate),
-          lte: endOfDay(filters.endDate),
+          gte: startOfDay(startDateObj),
+          lte: endOfDay(endDateObj),
         },
         status:
           filters.status && filters.status.length > 0
@@ -167,8 +171,12 @@ export async function getPurchaseReportEnhanced(
   try {
     await requireAuth();
 
-    const startDate = startOfDay(filters.startDate);
-    const endDate = endOfDay(filters.endDate);
+    // Parse date strings to Date objects
+    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
+    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
+
+    const startDate = startOfDay(startDateObj);
+    const endDate = endOfDay(endDateObj);
 
     // Calculate previous period dates
     const daysDiff = differenceInDays(endDate, startDate);
@@ -376,8 +384,12 @@ export async function getBusinessSummary(
   try {
     await requireAuth();
 
-    const startDate = startOfDay(filters.startDate);
-    const endDate = endOfDay(filters.endDate);
+    // Parse date strings to Date objects
+    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
+    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
+
+    const startDate = startOfDay(startDateObj);
+    const endDate = endOfDay(endDateObj);
 
     // 1. Get sales (only COMPLETED)
     const sales = await prisma.sale.findMany({
@@ -592,8 +604,12 @@ export async function getBusinessSummaryEnhanced(
   try {
     await requireAuth();
 
-    const startDate = startOfDay(filters.startDate);
-    const endDate = endOfDay(filters.endDate);
+    // Parse date strings to Date objects
+    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
+    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
+
+    const startDate = startOfDay(startDateObj);
+    const endDate = endOfDay(endDateObj);
 
     // Calculate previous period dates
     const daysDiff = differenceInDays(endDate, startDate);
@@ -1197,11 +1213,15 @@ export async function getDailySalesReport(
   try {
     const session = await requireAuth();
 
+    // Parse the date string to Date object
+    // filters.date comes as ISO string (YYYY-MM-DD)
+    const dateObj = new Date(filters.date + "T00:00:00.000");
+
     // Build where clause
     const where: any = {
       createdAt: {
-        gte: startOfDay(filters.date),
-        lte: endOfDay(filters.date),
+        gte: startOfDay(dateObj),
+        lte: endOfDay(dateObj),
       },
       status: "COMPLETED", // Only show completed sales in reports
     };

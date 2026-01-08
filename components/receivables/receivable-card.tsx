@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 import { AccountsReceivableStatus } from "@/prisma/prisma-client";
 import { useTranslations } from "next-intl";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 
 interface ReceivableCardProps {
@@ -85,9 +85,8 @@ export function ReceivableCard({
               </span>
               {getStatusBadge(receivable.status, t)}
             </div>
-            <span className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(receivable.createdAt), {
-                addSuffix: true,
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {format(new Date(receivable.createdAt), "dd/MM/yyyy hh:mm a", {
                 locale: dateLocale,
               })}
             </span>

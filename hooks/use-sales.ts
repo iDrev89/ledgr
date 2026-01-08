@@ -90,6 +90,13 @@ export function useCreateSale() {
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
       });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["daily-sales-report"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }
@@ -128,6 +135,13 @@ export function useUpdateSale() {
       // Invalidate dashboard for updated stats
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
+      });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["daily-sales-report"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
       });
     },
   });
@@ -169,6 +183,13 @@ export function useDeleteSale() {
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
       });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["daily-sales-report"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }
@@ -207,6 +228,13 @@ export function useCompleteSale() {
       // Invalidate dashboard for updated stats
       queryClient.invalidateQueries({
         queryKey: ["dashboard"],
+      });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({
+        queryKey: ["daily-sales-report"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
       });
     },
   });

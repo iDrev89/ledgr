@@ -38,6 +38,26 @@ const serializeReceivable = (receivable: any): any => {
       ? {
           ...receivable.sale,
           total: receivable.sale.total.toString(),
+          subtotal: receivable.sale.subtotal?.toString(),
+          discountTotal: receivable.sale.discountTotal?.toString(),
+          taxTotal: receivable.sale.taxTotal?.toString(),
+          items: receivable.sale.items
+            ? receivable.sale.items.map((item: any) => ({
+                ...item,
+                unitPrice: item.unitPrice.toString(),
+                discount: item.discount.toString(),
+                lineTotal: item.lineTotal.toString(),
+                commissionPercentApplied: item.commissionPercentApplied?.toString(),
+                product: item.product
+                  ? {
+                      ...item.product,
+                      price: item.product.price.toString(),
+                      cost: item.product.cost?.toString() || "0",
+                      commissionPercent: item.product.commissionPercent?.toString() || "0",
+                    }
+                  : null,
+              }))
+            : [],
         }
       : null,
     payments: receivable.payments
@@ -103,6 +123,22 @@ export const getReceivables = async (params?: {
               saleNumber: true,
               createdAt: true,
               total: true,
+              subtotal: true,
+              discountTotal: true,
+              taxTotal: true,
+              note: true,
+              items: {
+                include: {
+                  product: true,
+                  performedBy: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                    },
+                  },
+                },
+              },
             },
           },
           payments: {
@@ -156,6 +192,22 @@ export const getReceivable = async (
             saleNumber: true,
             createdAt: true,
             total: true,
+            subtotal: true,
+            discountTotal: true,
+            taxTotal: true,
+            note: true,
+            items: {
+              include: {
+                product: true,
+                performedBy: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
         payments: {
@@ -287,6 +339,7 @@ export const createReceivablePayment = async (
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeReceivable(result) };
   } catch (error) {
@@ -333,6 +386,7 @@ export const cancelReceivable = async (
 
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
+    revalidatePath("/reports");
 
     return { success: true, data: undefined };
   } catch (error) {
