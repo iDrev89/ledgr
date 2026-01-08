@@ -321,7 +321,7 @@ export function SaleForm({
                           setCalendarOpen(false);
                         }}
                         disabled={(date) => date > new Date()}
-                        initialFocus
+                        autoFocus
                       />
                     </PopoverContent>
                   </Popover>
