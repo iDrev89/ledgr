@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
 
 interface CreateExpenseColumnsProps {
@@ -34,13 +36,11 @@ export const createExpenseColumns = ({
     header: t("date"),
     cell: ({ row }) => {
       const date = new Date(row.getValue("incurredAt"));
+      const dateLocale = locale === "es" ? es : enUS;
       return (
-        <div className="whitespace-nowrap">
-          {date.toLocaleDateString(locale, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+        <div className="text-sm text-muted-foreground">
+          <div>{format(date, "dd/MM/yyyy", { locale: dateLocale })}</div>
+          <div className="text-xs">{format(date, "hh:mm a", { locale: dateLocale })}</div>
         </div>
       );
     },

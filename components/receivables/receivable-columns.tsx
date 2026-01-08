@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 import { AccountsReceivableStatus } from "@/prisma/prisma-client";
@@ -146,9 +146,10 @@ export const createReceivableColumns = ({
       const date = new Date(row.getValue("createdAt"));
       const dateLocale = locale === "es" ? es : enUS;
       return (
-        <span className="text-sm text-muted-foreground">
-          {formatDistanceToNow(date, { addSuffix: true, locale: dateLocale })}
-        </span>
+        <div className="text-sm text-muted-foreground">
+          <div>{format(date, "dd/MM/yyyy", { locale: dateLocale })}</div>
+          <div className="text-xs">{format(date, "hh:mm a", { locale: dateLocale })}</div>
+        </div>
       );
     },
   },

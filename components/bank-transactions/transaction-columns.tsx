@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import type { BankTransactionWithRelations } from "@/lib/types/bank-transactions";
 import { BankTransactionType } from "@/prisma/prisma-client";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS } from "date-fns/locale";
 
 interface CreateTransactionColumnsProps {
   t: (key: string) => string;
@@ -44,9 +44,11 @@ export const createTransactionColumns = ({
     header: t("date"),
     cell: ({ row }) => {
       const date = new Date(row.getValue("transactionDate"));
+      const dateLocale = locale === "es" ? es : enUS;
       return (
-        <div className="text-sm">
-          {format(date, "PP", { locale: locale === "es" ? es : undefined })}
+        <div className="text-sm text-muted-foreground">
+          <div>{format(date, "dd/MM/yyyy", { locale: dateLocale })}</div>
+          <div className="text-xs">{format(date, "hh:mm a", { locale: dateLocale })}</div>
         </div>
       );
     },
