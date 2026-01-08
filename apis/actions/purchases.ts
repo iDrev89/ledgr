@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
@@ -305,6 +306,12 @@ export async function createPurchase(
       return newPurchase;
     });
 
+    revalidatePath("/purchases");
+    revalidatePath("/inventory");
+    revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/reports");
+
     return {
       success: true,
       data: serializePurchase(purchase),
@@ -331,6 +338,12 @@ export async function deletePurchase(
     await prisma.purchase.delete({
       where: { id },
     });
+
+    revalidatePath("/purchases");
+    revalidatePath("/inventory");
+    revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return {
       success: true,

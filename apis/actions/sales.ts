@@ -440,9 +440,11 @@ export const createSale = async (
     const balance = total.minus(totalPaid);
 
     // Parse custom date if provided (in local timezone)
-    const customDate = validated.customDate 
+    const customDate = validated.customDate
       ? (() => {
-          const [year, month, day] = validated.customDate.split('-').map(Number);
+          const [year, month, day] = validated.customDate
+            .split("-")
+            .map(Number);
           return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
         })()
       : undefined;
@@ -573,6 +575,7 @@ export const createSale = async (
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeSale(sale) };
   } catch (error) {
@@ -739,7 +742,8 @@ export const completeSale = async (
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
-    revalidatePath("/accounts-receivable");
+    revalidatePath("/receivables");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeSale(completedSale) };
   } catch (error) {
@@ -881,9 +885,11 @@ export const updateSale = async (
     const balance = total.minus(totalPaid);
 
     // Parse custom date if provided (in local timezone)
-    const customDate = validated.customDate 
+    const customDate = validated.customDate
       ? (() => {
-          const [year, month, day] = validated.customDate.split('-').map(Number);
+          const [year, month, day] = validated.customDate
+            .split("-")
+            .map(Number);
           return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
         })()
       : undefined;
@@ -1021,6 +1027,9 @@ export const updateSale = async (
     revalidatePath(`/sales/${sale.id}`);
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/receivables");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeSale(sale) };
   } catch (error) {
@@ -1060,18 +1069,13 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
     }
 
     // Check if sale has an active receivable (not canceled)
-    if (sale.receivable && sale.receivable.status !== AccountsReceivableStatus.CANCELED) {
+    if (
+      sale.receivable &&
+      sale.receivable.status !== AccountsReceivableStatus.CANCELED
+    ) {
       return {
         success: false,
         error: t("cannotDeleteWithActiveReceivable"),
-      };
-    }
-
-    // Check if sale has payments registered
-    if (sale.payments && sale.payments.length > 0) {
-      return {
-        success: false,
-        error: t("cannotDeleteWithPayments"),
       };
     }
 
@@ -1091,7 +1095,7 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
       await tx.bankTransaction.deleteMany({
         where: {
           salePaymentId: {
-            in: sale.payments.map(p => p.id),
+            in: sale.payments.map((p) => p.id),
           },
         },
       });
@@ -1118,7 +1122,8 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
-    revalidatePath("/accounts-receivable");
+    revalidatePath("/receivables");
+    revalidatePath("/reports");
 
     return { success: true, data: undefined };
   } catch (error) {

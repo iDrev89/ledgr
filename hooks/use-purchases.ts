@@ -62,6 +62,13 @@ export function useCreatePurchase() {
       queryClient.invalidateQueries({ queryKey: PURCHASES_QUERY_KEY });
       // Also invalidate inventory since it's affected
       queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      // Invalidate banks since purchase may have bank transaction
+      queryClient.invalidateQueries({ queryKey: ["banks"] });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({ queryKey: ["purchase-report-enhanced"] });
+      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
     },
   });
 }
@@ -85,6 +92,13 @@ export function useDeletePurchase() {
       queryClient.invalidateQueries({ queryKey: PURCHASES_QUERY_KEY });
       // Also invalidate inventory since it's affected
       queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      // Invalidate dashboard for updated stats
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      // Invalidate banks since purchase may have bank transaction
+      queryClient.invalidateQueries({ queryKey: ["banks"] });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({ queryKey: ["purchase-report-enhanced"] });
+      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
     },
   });
 }

@@ -47,10 +47,12 @@ export default function DailySalesReportPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["daily-sales-report", selectedDate.toISOString(), sellerId],
+    queryKey: ["daily-sales-report", format(selectedDate, "yyyy-MM-dd"), sellerId],
     queryFn: async () => {
+      // Send date as ISO string (YYYY-MM-DD) to avoid timezone issues
+      const dateString = format(selectedDate, "yyyy-MM-dd");
       const response = await getDailySalesReport({
-        date: selectedDate,
+        date: dateString,
         sellerId,
       });
       if (!response.success) throw new Error(response.error);

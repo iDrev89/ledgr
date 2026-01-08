@@ -58,6 +58,9 @@ export const useCreateReceivablePayment = () => {
       queryClient.invalidateQueries({ queryKey: ["banks"] });
       // Invalidate dashboard for updated stats
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({ queryKey: ["daily-sales-report"] });
+      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
     },
   });
 };
@@ -77,6 +80,8 @@ export const useCancelReceivable = () => {
       queryClient.invalidateQueries({ queryKey: ["receivables"] });
       // Invalidate dashboard for updated stats
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      // Invalidate reports for updated data
+      queryClient.invalidateQueries({ queryKey: ["daily-sales-report"] });
     },
   });
 };

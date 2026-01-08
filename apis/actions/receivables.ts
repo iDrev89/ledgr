@@ -339,6 +339,7 @@ export const createReceivablePayment = async (
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeReceivable(result) };
   } catch (error) {
@@ -385,6 +386,7 @@ export const cancelReceivable = async (
 
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
+    revalidatePath("/reports");
 
     return { success: true, data: undefined };
   } catch (error) {

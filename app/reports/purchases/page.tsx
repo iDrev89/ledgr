@@ -48,11 +48,18 @@ export default function PurchasesReportPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["purchase-report-enhanced", dateRange],
+    queryKey: [
+      "purchase-report-enhanced",
+      format(dateRange.start, "yyyy-MM-dd"),
+      format(dateRange.end, "yyyy-MM-dd"),
+    ],
     queryFn: async () => {
+      // Send dates as ISO strings (YYYY-MM-DD) to avoid timezone issues
+      const startDateString = format(dateRange.start, "yyyy-MM-dd");
+      const endDateString = format(dateRange.end, "yyyy-MM-dd");
       const response = await getPurchaseReportEnhanced({
-        startDate: dateRange.start,
-        endDate: dateRange.end,
+        startDate: startDateString,
+        endDate: endDateString,
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;

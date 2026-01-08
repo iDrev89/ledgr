@@ -11,8 +11,8 @@ export type DatePreset = "today" | "week" | "month" | "year" | "custom";
 
 // Purchase Report Types
 export interface PurchaseReportFilters {
-  startDate: Date;
-  endDate: Date;
+  startDate: string; // ISO date string YYYY-MM-DD
+  endDate: string; // ISO date string YYYY-MM-DD
   status?: PurchaseStatus[];
   supplierId?: string;
 }
@@ -48,8 +48,8 @@ export interface PurchaseReportData {
 
 // Business Summary Types
 export interface BusinessSummaryFilters {
-  startDate: Date;
-  endDate: Date;
+  startDate: string; // ISO date string YYYY-MM-DD
+  endDate: string; // ISO date string YYYY-MM-DD
 }
 
 export interface RevenueMetrics {
@@ -256,7 +256,7 @@ export interface MetricCardProps {
 
 // Daily Sales Report Types
 export interface DailySalesReportFilters {
-  date: Date;
+  date: string; // ISO date string YYYY-MM-DD
   sellerId?: string;
 }
 

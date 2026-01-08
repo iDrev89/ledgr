@@ -276,6 +276,7 @@ export const createExpense = async (
     revalidatePath("/expenses");
     revalidatePath("/dashboard");
     revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeExpense(result) };
   } catch (error) {
@@ -369,6 +370,7 @@ export const updateExpense = async (
     revalidatePath(`/expenses/${expense.id}`);
     revalidatePath("/dashboard");
     revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: serializeExpense(expense) };
   } catch (error) {
@@ -405,6 +407,8 @@ export const deleteExpense = async (
 
     revalidatePath("/expenses");
     revalidatePath("/dashboard");
+    revalidatePath("/banks");
+    revalidatePath("/reports");
 
     return { success: true, data: undefined };
   } catch (error) {
