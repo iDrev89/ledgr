@@ -41,7 +41,7 @@ export default function ReceivablesPage() {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>("pending");
 
   const { data, isLoading, error } = useReceivables();
   const cancelMutation = useCancelReceivable();
