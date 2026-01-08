@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { format } from "date-fns";
 import {
   AlertCircle,
   TrendingUp,
@@ -28,8 +29,8 @@ export function BusinessSummaryReport({
   const t = useTranslations("Reports");
 
   const { data, isLoading, error } = useBusinessSummary({
-    startDate: dateRange.start,
-    endDate: dateRange.end,
+    startDate: format(dateRange.start, "yyyy-MM-dd"),
+    endDate: format(dateRange.end, "yyyy-MM-dd"),
   });
 
   const formatCurrency = (value: number) => {

@@ -34,8 +34,8 @@ export function PurchaseReport({
   const dateLocale = locale === "es" ? es : enUS;
 
   const { data, isLoading, error } = usePurchaseReport({
-    startDate: dateRange.start,
-    endDate: dateRange.end,
+    startDate: format(dateRange.start, "yyyy-MM-dd"),
+    endDate: format(dateRange.end, "yyyy-MM-dd"),
   });
 
   const formatCurrency = (value: string | number) => {
