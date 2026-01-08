@@ -453,7 +453,7 @@ export const createSale = async (
       const newSale = await tx.sale.create({
         data: {
           createdById: session.user.id,
-          soldById: validated.soldById || null,
+          soldById: validated.soldById || session.user.id || null,
           customerId: validated.customerId,
           currency: "COP",
           subtotal,
