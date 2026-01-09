@@ -49,10 +49,15 @@ export default function DailySalesReportPage() {
   } = useQuery({
     queryKey: ["daily-sales-report", format(selectedDate, "yyyy-MM-dd"), sellerId],
     queryFn: async () => {
-      // Send date as ISO string (YYYY-MM-DD) to avoid timezone issues
-      const dateString = format(selectedDate, "yyyy-MM-dd");
+      // Calculate start and end of day in local timezone and send as ISO strings
+      const startDate = new Date(selectedDate);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(selectedDate);
+      endDate.setHours(23, 59, 59, 999);
+      
       const response = await getDailySalesReport({
-        date: dateString,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         sellerId,
       });
       if (!response.success) throw new Error(response.error);

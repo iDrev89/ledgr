@@ -33,9 +33,15 @@ export function PurchaseReport({
   const t = useTranslations("Reports");
   const dateLocale = locale === "es" ? es : enUS;
 
+  // Calculate start and end of day in local timezone
+  const startDate = new Date(dateRange.start);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = new Date(dateRange.end);
+  endDate.setHours(23, 59, 59, 999);
+
   const { data, isLoading, error } = usePurchaseReport({
-    startDate: format(dateRange.start, "yyyy-MM-dd"),
-    endDate: format(dateRange.end, "yyyy-MM-dd"),
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
   });
 
   const formatCurrency = (value: string | number) => {

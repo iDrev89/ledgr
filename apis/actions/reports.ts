@@ -82,15 +82,15 @@ export async function getPurchaseReport(
   try {
     await requireAuth();
 
-    // Parse date strings to Date objects
-    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
-    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
+    // Parse ISO datetime strings to Date objects
+    const startDate = new Date(filters.startDate);
+    const endDate = new Date(filters.endDate);
 
     const purchases = await prisma.purchase.findMany({
       where: {
         createdAt: {
-          gte: startOfDay(startDateObj),
-          lte: endOfDay(endDateObj),
+          gte: startDate,
+          lte: endDate,
         },
         status:
           filters.status && filters.status.length > 0
@@ -171,12 +171,10 @@ export async function getPurchaseReportEnhanced(
   try {
     await requireAuth();
 
-    // Parse date strings to Date objects
-    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
-    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
-
-    const startDate = startOfDay(startDateObj);
-    const endDate = endOfDay(endDateObj);
+    // Parse ISO datetime strings to Date objects
+    // Client sends full ISO datetime strings with timezone info
+    const startDate = new Date(filters.startDate);
+    const endDate = new Date(filters.endDate);
 
     // Calculate previous period dates
     const daysDiff = differenceInDays(endDate, startDate);
@@ -384,12 +382,10 @@ export async function getBusinessSummary(
   try {
     await requireAuth();
 
-    // Parse date strings to Date objects
-    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
-    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
-
-    const startDate = startOfDay(startDateObj);
-    const endDate = endOfDay(endDateObj);
+    // Parse ISO datetime strings to Date objects
+    // Client sends full ISO datetime strings with timezone info
+    const startDate = new Date(filters.startDate);
+    const endDate = new Date(filters.endDate);
 
     // 1. Get sales (only COMPLETED)
     const sales = await prisma.sale.findMany({
@@ -604,12 +600,10 @@ export async function getBusinessSummaryEnhanced(
   try {
     await requireAuth();
 
-    // Parse date strings to Date objects
-    const startDateObj = new Date(filters.startDate + "T00:00:00.000");
-    const endDateObj = new Date(filters.endDate + "T00:00:00.000");
-
-    const startDate = startOfDay(startDateObj);
-    const endDate = endOfDay(endDateObj);
+    // Parse ISO datetime strings to Date objects
+    // Client sends full ISO datetime strings with timezone info
+    const startDate = new Date(filters.startDate);
+    const endDate = new Date(filters.endDate);
 
     // Calculate previous period dates
     const daysDiff = differenceInDays(endDate, startDate);
@@ -1213,11 +1207,10 @@ export async function getDailySalesReport(
   try {
     const session = await requireAuth();
 
-    // Parse the date string to Date object
-    // filters.date comes as ISO string (YYYY-MM-DD)
-    const dateObj = new Date(filters.date + "T00:00:00.000");
-    const startDate = startOfDay(dateObj);
-    const endDate = endOfDay(dateObj);
+    // Parse ISO datetime strings to Date objects
+    // Client sends full ISO datetime strings with timezone info
+    const startDate = new Date(filters.startDate);
+    const endDate = new Date(filters.endDate);
 
     // Build where clause
     const where: any = {
@@ -1268,7 +1261,7 @@ export async function getDailySalesReport(
           },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { saleNumber: "desc" },
     });
 
     // Calculate metrics

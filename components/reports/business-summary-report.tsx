@@ -28,9 +28,15 @@ export function BusinessSummaryReport({
 }: BusinessSummaryReportProps) {
   const t = useTranslations("Reports");
 
+  // Calculate start and end of day in local timezone
+  const startDate = new Date(dateRange.start);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = new Date(dateRange.end);
+  endDate.setHours(23, 59, 59, 999);
+
   const { data, isLoading, error } = useBusinessSummary({
-    startDate: format(dateRange.start, "yyyy-MM-dd"),
-    endDate: format(dateRange.end, "yyyy-MM-dd"),
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
   });
 
   const formatCurrency = (value: number) => {

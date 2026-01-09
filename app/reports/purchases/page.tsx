@@ -54,12 +54,15 @@ export default function PurchasesReportPage() {
       format(dateRange.end, "yyyy-MM-dd"),
     ],
     queryFn: async () => {
-      // Send dates as ISO strings (YYYY-MM-DD) to avoid timezone issues
-      const startDateString = format(dateRange.start, "yyyy-MM-dd");
-      const endDateString = format(dateRange.end, "yyyy-MM-dd");
+      // Calculate start and end of day in local timezone and send as ISO strings
+      const startDate = new Date(dateRange.start);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(dateRange.end);
+      endDate.setHours(23, 59, 59, 999);
+      
       const response = await getPurchaseReportEnhanced({
-        startDate: startDateString,
-        endDate: endDateString,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;

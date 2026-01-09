@@ -200,7 +200,7 @@ export const getSales = async (params?: {
         where,
         take: limit,
         skip: offset,
-        orderBy: { createdAt: "desc" },
+        orderBy: { saleNumber: "desc" },
         include: {
           customer: true,
           createdBy: {
