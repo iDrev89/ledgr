@@ -169,8 +169,14 @@ export function CustomerForm({
                       )}
                       disabled={isLoading}
                     >
-                      {field.value ? (
-                        format(parseISO(field.value), "dd/MM/yyyy")
+                      {field.value && field.value.trim() !== "" ? (
+                        (() => {
+                          try {
+                            return format(parseISO(field.value), "dd/MM/yyyy");
+                          } catch {
+                            return <span>{t("birthdatePlaceholder")}</span>;
+                          }
+                        })()
                       ) : (
                         <span>{t("birthdatePlaceholder")}</span>
                       )}
@@ -184,7 +190,17 @@ export function CustomerForm({
                 >
                   <Calendar
                     mode="single"
-                    selected={field.value ? parseISO(field.value) : undefined}
+                    selected={
+                      field.value && field.value.trim() !== ""
+                        ? (() => {
+                            try {
+                              return parseISO(field.value);
+                            } catch {
+                              return undefined;
+                            }
+                          })()
+                        : undefined
+                    }
                     captionLayout="dropdown"
                     onSelect={(date) => {
                       field.onChange(
