@@ -572,7 +572,7 @@
     "updateError": "Failed to update sale",
     "loadError": "Failed to load sales",
     "noSales": "No sales recorded. Create your first sale to get started.",
-    "searchPlaceholder": "Search by customer...",
+    "searchPlaceholder": "Search by customer or sale #...",
     "totalSales": "{count} total sales",
     "completedSales": "Completed",
     "openSales": "Open",

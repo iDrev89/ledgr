@@ -93,7 +93,7 @@ export function SaleTable({
           />
         )}
         data={sales}
-        searchKey={["customer.name"]}
+        searchKey={["customer.name", "saleNumber"]}
         searchPlaceholder={t("searchPlaceholder")}
         showPagination
         pageSize={10}

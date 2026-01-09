@@ -573,7 +573,7 @@
     "updateError": "Error al actualizar venta",
     "loadError": "Error al cargar ventas",
     "noSales": "No hay ventas registradas. Crea tu primera venta para comenzar.",
-    "searchPlaceholder": "Buscar por cliente...",
+    "searchPlaceholder": "Buscar por cliente o # de venta...",
     "totalSales": "{count} ventas totales",
     "completedSales": "Cerradas",
     "openSales": "Abiertas",
