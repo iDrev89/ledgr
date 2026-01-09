@@ -1216,12 +1216,14 @@ export async function getDailySalesReport(
     // Parse the date string to Date object
     // filters.date comes as ISO string (YYYY-MM-DD)
     const dateObj = new Date(filters.date + "T00:00:00.000");
+    const startDate = startOfDay(dateObj);
+    const endDate = endOfDay(dateObj);
 
     // Build where clause
     const where: any = {
       createdAt: {
-        gte: startOfDay(dateObj),
-        lte: endOfDay(dateObj),
+        gte: startDate,
+        lte: endDate,
       },
       status: "COMPLETED", // Only show completed sales in reports
     };
