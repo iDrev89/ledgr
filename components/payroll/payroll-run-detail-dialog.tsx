@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useState, Fragment } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +22,12 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import type { PayrollRunWithDetails } from "@/lib/types/payroll";
 import { PayrollRunStatus } from "@/prisma/prisma-client";
 
@@ -35,8 +43,21 @@ export function PayrollRunDetailDialog({
   onOpenChange,
 }: PayrollRunDetailDialogProps) {
   const t = useTranslations("Payroll");
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
 
   if (!run) return null;
+
+  const toggleUserExpanded = (userId: string) => {
+    setExpandedUsers((prev) => {
+      const next = new Set(prev);
+      if (next.has(userId)) {
+        next.delete(userId);
+      } else {
+        next.add(userId);
+      }
+      return next;
+    });
+  };
 
   const formatCurrency = (value: string | number) => {
     const numValue = typeof value === "string" ? parseFloat(value) : value;
@@ -190,44 +211,115 @@ export function PayrollRunDetailDialog({
                       </TableCell>
                     </TableRow>
                   ) : (
-                    run.items.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-medium">
-                              {item.user?.name || "—"}
-                            </span>
-                            {item.user?.email && (
-                              <span className="text-xs text-muted-foreground">
-                                {item.user.email}
-                              </span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {formatCurrency(item.commissionsTotal)}
-                        </TableCell>
-                        <TableCell className="text-right text-destructive">
-                          {parseFloat(item.advancesTotal) > 0
-                            ? `-${formatCurrency(item.advancesTotal)}`
-                            : "-"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {parseFloat(item.adjustmentsTotal) !== 0
-                            ? formatCurrency(item.adjustmentsTotal)
-                            : "-"}
-                        </TableCell>
-                        <TableCell className="text-right font-medium">
-                          {formatCurrency(item.payableTotal)}
-                        </TableCell>
-                        <TableCell className="text-right text-green-700 dark:text-green-400">
-                          {formatCurrency(item.paidAmount)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold">
-                          {formatCurrency(item.balance)}
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    run.items.map((item) => {
+                      const hasServices = item.servicesSummary && item.servicesSummary.length > 0;
+                      const isExpanded = expandedUsers.has(item.userId);
+
+                      return (
+                        <Fragment key={item.id}>
+                          <TableRow>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {hasServices && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0"
+                                    onClick={() => toggleUserExpanded(item.userId)}
+                                  >
+                                    {isExpanded ? (
+                                      <ChevronUp className="h-4 w-4" />
+                                    ) : (
+                                      <ChevronDown className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                <div className="flex flex-col">
+                                  <span className="font-medium">
+                                    {item.user?.name || "—"}
+                                  </span>
+                                  {item.user?.email && (
+                                    <span className="text-xs text-muted-foreground">
+                                      {item.user.email}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {formatCurrency(item.commissionsTotal)}
+                            </TableCell>
+                            <TableCell className="text-right text-destructive">
+                              {parseFloat(item.advancesTotal) > 0
+                                ? `-${formatCurrency(item.advancesTotal)}`
+                                : "-"}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {parseFloat(item.adjustmentsTotal) !== 0
+                                ? formatCurrency(item.adjustmentsTotal)
+                                : "-"}
+                            </TableCell>
+                            <TableCell className="text-right font-medium">
+                              {formatCurrency(item.payableTotal)}
+                            </TableCell>
+                            <TableCell className="text-right text-green-700 dark:text-green-400">
+                              {formatCurrency(item.paidAmount)}
+                            </TableCell>
+                            <TableCell className="text-right font-bold">
+                              {formatCurrency(item.balance)}
+                            </TableCell>
+                          </TableRow>
+                          {hasServices && isExpanded && (
+                            <TableRow className="bg-muted/50">
+                              <TableCell colSpan={7} className="py-4">
+                                <div className="space-y-2">
+                                  <h4 className="text-sm font-semibold text-muted-foreground">
+                                    {t("servicesPerformed")}
+                                  </h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {item.servicesSummary!.map((service, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex justify-between items-center bg-background rounded-lg p-3 border"
+                                      >
+                                        <div className="flex-1 min-w-0">
+                                          <p className="font-medium truncate">
+                                            {service.productName}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                            {t("quantity")}: {service.quantity}
+                                          </p>
+                                        </div>
+                                        <div className="text-right ml-2">
+                                          <p className="font-semibold text-sm">
+                                            {formatCurrency(service.total)}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className="flex justify-end pt-2 border-t">
+                                    <div className="text-right">
+                                      <p className="text-xs text-muted-foreground">
+                                        {t("totalServices")}
+                                      </p>
+                                      <p className="text-sm font-bold">
+                                        {formatCurrency(
+                                          item.servicesSummary!.reduce(
+                                            (sum, s) => sum + parseFloat(s.total),
+                                            0
+                                          )
+                                        )}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </Fragment>
+                      );
+                    })
                   )}
                 </TableBody>
               </Table>

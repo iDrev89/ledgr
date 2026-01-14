@@ -20,6 +20,12 @@ export type PayrollEntryWithDetails = Omit<PayrollEntry, "amount"> & {
   } | null;
 };
 
+export type ServiceSummary = {
+  productName: string;
+  quantity: number;
+  total: string;
+};
+
 export type PayrollRunItemWithDetails = Omit<
   PayrollRunItem,
   | "commissionsTotal"
@@ -42,6 +48,7 @@ export type PayrollRunItemWithDetails = Omit<
     name: string;
     email: string;
   };
+  servicesSummary?: ServiceSummary[];
 };
 
 export type PayrollRunWithDetails = PayrollRun & {

@@ -1,5 +1,48 @@
 # Scripts de Base de Datos
 
+## 🔧 Corregir performedById en SaleItems
+
+Este script corrige los `SaleItems` que tienen `performedById` en `null`, asignándoles el usuario que realizó la venta.
+
+### 📝 ¿Qué hace?
+
+El script:
+
+1. ✅ Encuentra todos los `SaleItems` donde `performedById` es `null`
+2. ✅ Asigna el `soldById` (o `createdById` si `soldById` es `null`) de la venta padre
+3. ✅ Muestra un resumen detallado antes de ejecutar
+4. ✅ No modifica las comisiones existentes, solo actualiza `performedById`
+
+### 🚀 Uso
+
+```bash
+# Ejecutar el script
+pnpm db:fix-performed-by
+```
+
+### 📊 Reporte
+
+El script muestra:
+
+- Número de items a actualizar
+- Ventas afectadas y sus números
+- Usuario que será asignado a cada item
+- Confirmación antes de ejecutar (3 segundos para cancelar)
+- Progreso de actualización en tiempo real
+- Verificación final del resultado
+
+### ✅ Cuándo usarlo
+
+- Después de migrar datos antiguos
+- Si detectas que hay servicios sin asignar a un colaborador
+- Cuando quieres asegurar que todos los items tienen `performedById` para la liquidación de nómina
+
+### ⚠️ Nota
+
+Este script es **seguro** y no elimina datos, solo actualiza campos `null` con información existente de la venta padre.
+
+---
+
 ## 🗑️ Limpiar Base de Datos
 
 Este script elimina **todos los registros de las tablas de negocio** manteniendo intactos los usuarios y sesiones.

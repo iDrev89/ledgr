@@ -20,6 +20,7 @@ import { PayrollRunDetailDialog } from "@/components/payroll/payroll-run-detail-
 import { PayrollRunPaymentDialog } from "@/components/payroll/payroll-run-payment-dialog";
 import {
   usePayrollRuns,
+  usePayrollRun,
   useCreatePayrollRun,
   useFinalizePayrollRun,
   usePayPayrollRun,
@@ -34,9 +35,7 @@ export default function PayrollPage() {
   const t = useTranslations("Payroll");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  const [selectedRun, setSelectedRun] = useState<PayrollRunWithDetails | null>(
-    null,
-  );
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [runToDelete, setRunToDelete] = useState<PayrollRunWithDetails | null>(
     null,
@@ -48,6 +47,7 @@ export default function PayrollPage() {
   const [runToPay, setRunToPay] = useState<PayrollRunWithDetails | null>(null);
 
   const { data, isLoading } = usePayrollRuns();
+  const { data: selectedRunDetail } = usePayrollRun(selectedRunId);
   const createMutation = useCreatePayrollRun();
   const finalizeMutation = useFinalizePayrollRun();
   const payMutation = usePayPayrollRun();
@@ -62,7 +62,7 @@ export default function PayrollPage() {
   };
 
   const handleView = (run: PayrollRunWithDetails) => {
-    setSelectedRun(run);
+    setSelectedRunId(run.id);
     setDetailDialogOpen(true);
   };
 
@@ -142,9 +142,12 @@ export default function PayrollPage() {
 
       {/* Detail Dialog */}
       <PayrollRunDetailDialog
-        run={selectedRun}
+        run={selectedRunDetail || null}
         open={detailDialogOpen}
-        onOpenChange={setDetailDialogOpen}
+        onOpenChange={(open) => {
+          setDetailDialogOpen(open);
+          if (!open) setSelectedRunId(null);
+        }}
       />
 
       {/* Payment Dialog */}

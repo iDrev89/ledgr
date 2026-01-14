@@ -34,29 +34,44 @@ type ActionResponse<T = unknown> =
   | { success: false; error: string; errorCode?: string };
 
 // Serialize Decimal fields to strings for client components
-const serializePayrollRun = (run: any): PayrollRunWithDetails => {
+const serializePayrollRun = (
+  run: any,
+  servicesByUser?: Map<string, Map<string, { quantity: number; total: Decimal }>>
+): PayrollRunWithDetails => {
   return {
     ...run,
     startDate: run.startDate.toISOString(),
     endDate: run.endDate.toISOString(),
     items: run.items
-      ? run.items.map((item: any) => ({
-          ...item,
-          commissionsTotal: item.commissionsTotal.toString(),
-          advancesTotal: item.advancesTotal.toString(),
-          adjustmentsTotal: item.adjustmentsTotal.toString(),
-          salaryFixed: item.salaryFixed ? item.salaryFixed.toString() : null,
-          payableTotal: item.payableTotal.toString(),
-          paidAmount: item.paidAmount.toString(),
-          balance: item.balance.toString(),
-          user: item.user
-            ? {
-                id: item.user.id,
-                name: item.user.name,
-                email: item.user.email,
-              }
-            : undefined,
-        }))
+      ? run.items.map((item: any) => {
+          const userServices = servicesByUser?.get(item.userId);
+          const servicesSummary = userServices
+            ? Array.from(userServices.entries()).map(([productName, data]) => ({
+                productName,
+                quantity: data.quantity,
+                total: data.total.toString(),
+              }))
+            : undefined;
+
+          return {
+            ...item,
+            commissionsTotal: item.commissionsTotal.toString(),
+            advancesTotal: item.advancesTotal.toString(),
+            adjustmentsTotal: item.adjustmentsTotal.toString(),
+            salaryFixed: item.salaryFixed ? item.salaryFixed.toString() : null,
+            payableTotal: item.payableTotal.toString(),
+            paidAmount: item.paidAmount.toString(),
+            balance: item.balance.toString(),
+            user: item.user
+              ? {
+                  id: item.user.id,
+                  name: item.user.name,
+                  email: item.user.email,
+                }
+              : undefined,
+            servicesSummary,
+          };
+        })
       : [],
     entries: run.entries
       ? run.entries.map((entry: any) => ({
@@ -158,7 +173,7 @@ export const getPayrollRuns = async (params?: {
       prisma.payrollRun.count({ where }),
     ]);
 
-    const serializedRuns = runs.map(serializePayrollRun);
+    const serializedRuns = runs.map((run) => serializePayrollRun(run));
 
     return { success: true, data: { runs: serializedRuns, total } };
   } catch (error) {
@@ -210,7 +225,60 @@ export const getPayrollRun = async (
       return { success: false, error: t("notFound") };
     }
 
-    return { success: true, data: serializePayrollRun(run) };
+    // Get services summary for each user in the period
+    const userIds = run.items.map((item) => item.userId);
+    
+    const saleItemsByUser = await prisma.saleItem.findMany({
+      where: {
+        performedById: { in: userIds },
+        sale: {
+          createdAt: {
+            gte: run.startDate,
+            lte: run.endDate,
+          },
+        },
+        product: {
+          type: ProductType.SERVICE,
+        },
+      },
+      include: {
+        product: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    // Group services by user and product
+    const servicesByUser = new Map<
+      string,
+      Map<string, { quantity: number; total: Decimal }>
+    >();
+
+    for (const item of saleItemsByUser) {
+      if (!item.performedById) continue;
+
+      if (!servicesByUser.has(item.performedById)) {
+        servicesByUser.set(item.performedById, new Map());
+      }
+
+      const userServices = servicesByUser.get(item.performedById)!;
+      const productName = item.product.name;
+
+      if (userServices.has(productName)) {
+        const existing = userServices.get(productName)!;
+        existing.quantity += item.quantity;
+        existing.total = existing.total.plus(item.lineTotal);
+      } else {
+        userServices.set(productName, {
+          quantity: item.quantity,
+          total: item.lineTotal,
+        });
+      }
+    }
+
+    return { success: true, data: serializePayrollRun(run, servicesByUser) };
   } catch (error) {
     console.error("Error fetching payroll run:", error);
     return {
