@@ -3,9 +3,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-import { format, parseISO } from "date-fns";
-import { ChevronDownIcon } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { format } from "date-fns";
+import { ChevronDownIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,8 +23,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { parseDateOnly, formatDateOnly } from "@/lib/date-utils";
 import {
   getCustomerSchemas,
   type CreateCustomerInput,
@@ -47,8 +47,20 @@ export function CustomerForm({
 }: CustomerFormProps) {
   const t = useTranslations("Customers");
   const [calendarOpen, setCalendarOpen] = useState(false);
+  
+  // Initialize birthdate from customer data
+  const initialBirthdate = useMemo(() => {
+    return parseDateOnly(customer?.birthdate);
+  }, [customer?.birthdate]);
+  
+  const [birthdate, setBirthdate] = useState<Date | undefined>(initialBirthdate);
 
   const { createCustomerSchema } = useMemo(() => getCustomerSchemas(t), [t]);
+
+  // Sync birthdate state when customer changes
+  useEffect(() => {
+    setBirthdate(initialBirthdate);
+  }, [initialBirthdate]);
 
   const form = useForm<CreateCustomerInput>({
     resolver: zodResolver(createCustomerSchema),
@@ -165,21 +177,13 @@ export function CustomerForm({
                       variant="outline"
                       className={cn(
                         "w-full justify-between font-normal",
-                        !field.value && "text-muted-foreground",
+                        !birthdate && "text-muted-foreground"
                       )}
                       disabled={isLoading}
                     >
-                      {field.value && field.value.trim() !== "" ? (
-                        (() => {
-                          try {
-                            return format(parseISO(field.value), "dd/MM/yyyy");
-                          } catch {
-                            return <span>{t("birthdatePlaceholder")}</span>;
-                          }
-                        })()
-                      ) : (
-                        <span>{t("birthdatePlaceholder")}</span>
-                      )}
+                      {birthdate
+                        ? format(birthdate, "dd/MM/yyyy")
+                        : t("birthdatePlaceholder")}
                       <ChevronDownIcon className="h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -190,28 +194,20 @@ export function CustomerForm({
                 >
                   <Calendar
                     mode="single"
-                    selected={
-                      field.value && field.value.trim() !== ""
-                        ? (() => {
-                            try {
-                              return parseISO(field.value);
-                            } catch {
-                              return undefined;
-                            }
-                          })()
-                        : undefined
-                    }
+                    selected={birthdate}
+                    defaultMonth={birthdate || new Date()}
                     captionLayout="dropdown"
+                    startMonth={new Date(1900, 0)}
+                    endMonth={new Date()}
                     onSelect={(date) => {
-                      field.onChange(
-                        date ? format(date, "yyyy-MM-dd") : "",
-                      );
+                      if (date) {
+                        setBirthdate(date);
+                        field.onChange(formatDateOnly(date));
+                      } else {
+                        setBirthdate(undefined);
+                        field.onChange("");
+                      }
                       setCalendarOpen(false);
-                    }}
-                    disabled={(date) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      return date >= today || date < new Date("1900-01-01");
                     }}
                   />
                 </PopoverContent>
@@ -250,7 +246,11 @@ export function CustomerForm({
           >
             {t("cancel")}
           </Button>
-          <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {customer ? t("update") : t("create")}
           </Button>

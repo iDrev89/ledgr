@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
 import { headers } from "next/headers";
+import { dateOnlyToUTC } from "@/lib/date-utils";
 import {
   createCustomerSchema,
   updateCustomerSchema,
@@ -71,7 +72,7 @@ export const getCustomers = async (params?: {
 };
 
 export const getCustomer = async (
-  id: string,
+  id: string
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -96,7 +97,7 @@ export const getCustomer = async (
 };
 
 export const createCustomer = async (
-  input: CreateCustomerInput,
+  input: CreateCustomerInput
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -109,7 +110,7 @@ export const createCustomer = async (
         email: validated.email || null,
         phone: validated.phone || null,
         docId: validated.docId || null,
-        birthdate: validated.birthdate ? new Date(validated.birthdate) : null,
+        birthdate: dateOnlyToUTC(validated.birthdate),
         note: validated.note || null,
       },
     });
@@ -134,7 +135,7 @@ export const createCustomer = async (
 };
 
 export const updateCustomer = async (
-  input: UpdateCustomerInput,
+  input: UpdateCustomerInput
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -148,7 +149,7 @@ export const updateCustomer = async (
         email: validated.email || null,
         phone: validated.phone || null,
         docId: validated.docId || null,
-        birthdate: validated.birthdate ? new Date(validated.birthdate) : null,
+        birthdate: dateOnlyToUTC(validated.birthdate),
         note: validated.note || null,
       },
     });
@@ -174,7 +175,7 @@ export const updateCustomer = async (
 };
 
 export const deleteCustomer = async (
-  id: string,
+  id: string
 ): Promise<ActionResponse<void>> => {
   try {
     await requireAuth();

@@ -48,7 +48,9 @@ const createCustomerSchemas = (messages?: {
       .refine(
         (date) => {
           if (!date) return true;
-          const selectedDate = new Date(date);
+          // Parse date string as YYYY-MM-DD without timezone conversion
+          const [year, month, day] = date.split('-').map(Number);
+          const selectedDate = new Date(year, month - 1, day);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
           return selectedDate < today;

@@ -26,6 +26,11 @@ import {
   AccountsReceivableStatus,
   ProductType,
 } from "@/prisma/prisma-client";
+import {
+  parseBusinessDate,
+  getBusinessDayStart,
+  getBusinessDayEnd,
+} from "@/lib/date-utils";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -159,18 +164,14 @@ export const getSales = async (params?: {
         where.soldById = sellerId;
       }
 
-      // Admin can filter by date range
+      // Admin can filter by date range (using Colombia timezone)
       if (dateFrom || dateTo) {
         where.createdAt = {};
         if (dateFrom) {
-          // Parse the date and set to start of day
-          const startDate = new Date(dateFrom + "T00:00:00");
-          where.createdAt.gte = startDate;
+          where.createdAt.gte = getBusinessDayStart(dateFrom);
         }
         if (dateTo) {
-          // Parse the date and set to end of day
-          const endDate = new Date(dateTo + "T23:59:59.999");
-          where.createdAt.lte = endDate;
+          where.createdAt.lte = getBusinessDayEnd(dateTo);
         }
       }
     }
@@ -372,6 +373,9 @@ export const createSale = async (
     let subtotal = new Decimal(0);
     let discountTotal = new Decimal(0);
 
+    // Determine the effective seller ID (for service performer assignment)
+    const effectiveSoldById = validated.soldById || session.user.id;
+
     const itemsWithTotals = validated.items.map((item) => {
       const product = productMap.get(item.productId);
       if (!product) {
@@ -394,7 +398,7 @@ export const createSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: validated.soldById || item.performedById,
+          performedById: item.performedById || effectiveSoldById,
           commissionPercentApplied: commissionPercent,
         };
       } else {
@@ -439,14 +443,9 @@ export const createSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
-    // Parse custom date if provided (in local timezone)
+    // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
-      ? (() => {
-          const [year, month, day] = validated.customDate
-            .split("-")
-            .map(Number);
-          return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
-        })()
+      ? parseBusinessDate(validated.customDate)
       : undefined;
 
     // Create sale with items in a transaction
@@ -817,6 +816,9 @@ export const updateSale = async (
     let subtotal = new Decimal(0);
     let discountTotal = new Decimal(0);
 
+    // Determine the effective seller ID (for service performer assignment)
+    const effectiveSoldById = validated.soldById || session.user.id;
+
     const itemsWithTotals = validated.items.map((item) => {
       const product = productMap.get(item.productId);
       if (!product) {
@@ -839,7 +841,7 @@ export const updateSale = async (
           unitPrice,
           discount,
           lineTotal,
-          performedById: validated.soldById || item.performedById,
+          performedById: item.performedById || effectiveSoldById,
           commissionPercentApplied: commissionPercent,
         };
       } else {
@@ -884,14 +886,9 @@ export const updateSale = async (
     // Calculate balance for receivable
     const balance = total.minus(totalPaid);
 
-    // Parse custom date if provided (in local timezone)
+    // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
-      ? (() => {
-          const [year, month, day] = validated.customDate
-            .split("-")
-            .map(Number);
-          return new Date(year, month - 1, day, 12, 0, 0); // Use noon to avoid timezone issues
-        })()
+      ? parseBusinessDate(validated.customDate)
       : undefined;
 
     // Update sale in a transaction

@@ -152,7 +152,7 @@ model Customer {
   email     String?
   phone     String?
   docId     String?
-  birthdate DateTime?
+  birthdate DateTime? @db.Date
   note      String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
