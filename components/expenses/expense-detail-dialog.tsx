@@ -141,7 +141,7 @@ export function ExpenseDetailDialog({
           <>
             <Separator />
             <div>
-              <h3 className="text-sm font-semibold mb-2">{t("description")}</h3>
+              <h3 className="text-sm font-semibold mb-2">{t("descriptionLabel")}</h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                 {expense.description}
               </p>

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 import { Loader2, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,7 +69,20 @@ export function ExpenseForm({
 
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
+  // Helper to parse datetime from backend
+  const parseDateTime = (value: string | Date | undefined): Date | undefined => {
+    if (!value) return undefined;
+    try {
+      if (value instanceof Date) return value;
+      const parsed = parseISO(value);
+      return isValid(parsed) ? parsed : undefined;
+    } catch {
+      return undefined;
+    }
+  };
+
   const form = useForm<CreateExpenseInput>({
+    
     resolver: zodResolver(createExpenseSchema) as any,
     defaultValues: {
       categoryId: expense?.categoryId || "",
@@ -81,8 +94,8 @@ export function ExpenseForm({
       bankId: (expense as any)?.bankId || undefined,
       reference: (expense as any)?.reference || "",
       incurredAt: expense?.incurredAt
-        ? String(expense.incurredAt).split("T")[0]
-        : format(new Date(), "yyyy-MM-dd"),
+        ? (typeof expense.incurredAt === 'string' ? expense.incurredAt : expense.incurredAt.toISOString())
+        : new Date().toISOString(),
     },
   });
 
@@ -130,7 +143,7 @@ export function ExpenseForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("description")}</FormLabel>
+              <FormLabel>{t("descriptionLabel")}</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder={t("descriptionPlaceholder")}
@@ -150,7 +163,7 @@ export function ExpenseForm({
             control={form.control}
             name="amount"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>{t("amount")}</FormLabel>
                 <FormControl>
                   <Input
@@ -185,7 +198,10 @@ export function ExpenseForm({
                         disabled={isLoading}
                       >
                         {field.value ? (
-                          format(parseISO(String(field.value)), "dd/MM/yyyy")
+                          (() => {
+                            const date = parseDateTime(field.value);
+                            return date ? format(date, "dd/MM/yyyy") : t("datePlaceholder");
+                          })()
                         ) : (
                           <span>{t("datePlaceholder")}</span>
                         )}
@@ -196,10 +212,10 @@ export function ExpenseForm({
                   <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? parseISO(String(field.value)) : undefined}
+                      selected={parseDateTime(field.value)}
                       onSelect={(date) => {
                         field.onChange(
-                          date ? format(date, "yyyy-MM-dd") : "",
+                          date ? date.toISOString() : "",
                         );
                         setCalendarOpen(false);
                       }}

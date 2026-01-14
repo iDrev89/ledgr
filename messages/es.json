@@ -689,6 +689,7 @@
     "supplier": "Proveedor",
     "selectSupplier": "Selecciona un proveedor",
     "concept": "Concepto",
+    "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "Descripción del gasto",
     "noDescription": "Sin descripción",
     "amount": "Monto",

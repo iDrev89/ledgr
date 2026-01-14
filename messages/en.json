@@ -682,6 +682,7 @@
     "supplier": "Supplier",
     "selectSupplier": "Select a supplier",
     "concept": "Concept",
+    "descriptionLabel": "Description",
     "descriptionPlaceholder": "Expense description",
     "noDescription": "No description",
     "amount": "Amount",
