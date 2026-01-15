@@ -37,7 +37,7 @@ export const getCustomers = async (params?: {
   try {
     await requireAuth();
 
-    const { search = "", limit = 50, offset = 0 } = params || {};
+    const { search = "", limit, offset = 0 } = params || {};
 
     const where = search
       ? {
@@ -53,7 +53,7 @@ export const getCustomers = async (params?: {
     const [customers, total] = await Promise.all([
       prisma.customer.findMany({
         where,
-        take: limit,
+        ...(limit ? { take: limit } : {}), // Only apply limit if specified
         skip: offset,
         orderBy: { createdAt: "desc" },
       }),

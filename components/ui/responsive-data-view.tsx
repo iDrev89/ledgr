@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 export interface CardActions {
   onView?: (item: any) => void;
@@ -29,9 +29,14 @@ interface ResponsiveDataViewProps<TData> {
   // Datos
   data: TData[];
 
-  // Búsqueda y filtrado
+  // Búsqueda y filtrado (client-side)
   searchKey?: string | string[];
   searchPlaceholder?: string;
+
+  // Búsqueda controlada (server-side)
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 
   // Paginación
   pageSize?: number;
@@ -60,6 +65,10 @@ export function ResponsiveDataView<TData>({
   data,
   searchKey,
   searchPlaceholder = "Search...",
+  // Server-side search props
+  searchValue: controlledSearchValue,
+  onSearchChange,
+  isSearching,
   pageSize = 10,
   showPagination = true,
   emptyMessage = "No data available",
@@ -73,11 +82,18 @@ export function ResponsiveDataView<TData>({
   locale,
 }: ResponsiveDataViewProps<TData>) {
   const isMobile = useIsMobile();
-  const [searchValue, setSearchValue] = React.useState("");
+  // Use controlled value if provided (server-side search), otherwise use local state
+  const [localSearchValue, setLocalSearchValue] = React.useState("");
+  const searchValue = controlledSearchValue ?? localSearchValue;
+  const setSearchValue = onSearchChange ?? setLocalSearchValue;
+  const isServerSearch = onSearchChange !== undefined;
   const [currentPage, setCurrentPage] = React.useState(0);
 
-  // Filtrar datos según búsqueda
+  // Filtrar datos según búsqueda (only for client-side search)
+  // When using server-side search, data is already filtered
   const filteredData = React.useMemo(() => {
+    // Skip client-side filtering if using server-side search
+    if (isServerSearch) return data;
     if (!searchValue || !searchKey) return data;
 
     const searchLower = searchValue.toLowerCase();
@@ -95,7 +111,7 @@ export function ResponsiveDataView<TData>({
         }
       });
     });
-  }, [data, searchValue, searchKey]);
+  }, [data, searchValue, searchKey, isServerSearch]);
 
   // Calcular paginación
   const totalPages = Math.ceil(filteredData.length / pageSize);
@@ -127,10 +143,15 @@ export function ResponsiveDataView<TData>({
       <DataTable
         columns={columns}
         data={data}
-        searchKey={searchKey}
+        // For server-side search, pass undefined to disable DataTable's internal filtering
+        searchKey={isServerSearch ? undefined : searchKey}
         searchPlaceholder={searchPlaceholder}
         showPagination={showPagination}
         pageSize={pageSize}
+        // Server-side search props
+        searchValue={isServerSearch ? searchValue : undefined}
+        onSearchChange={isServerSearch ? setSearchValue : undefined}
+        isSearching={isSearching}
       />
     );
   }
@@ -138,15 +159,20 @@ export function ResponsiveDataView<TData>({
   // Renderizar versión mobile (Cards)
   return (
     <div className="w-full space-y-4">
-      {/* Búsqueda */}
-      {searchKey && (
+      {/* Búsqueda - show for either client-side (searchKey) or server-side (isServerSearch) search */}
+      {(searchKey || isServerSearch) && (
         <div className="flex items-center gap-2">
-          <Input
-            placeholder={searchPlaceholder}
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className="flex-1"
-          />
+          <div className="relative flex-1">
+            <Input
+              placeholder={searchPlaceholder}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              className="w-full pr-8"
+            />
+            {isSearching && (
+              <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+            )}
+          </div>
         </div>
       )}
 

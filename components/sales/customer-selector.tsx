@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, ChevronsUpDown, Plus, Search } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, Search, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { Customer } from "@/lib/types/customer";
 
 interface CustomerSelectorProps {
@@ -37,12 +38,29 @@ export function CustomerSelector({
   const tCustomers = useTranslations("Customers");
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   // Store the last known customer name to prevent flickering
   const [lastCustomerName, setLastCustomerName] = useState<string>("");
 
-  // Fetch all active customers (we'll filter on the client side with Command)
-  const { data } = useCustomers({ limit: 200 });
+  // Debounce search query to avoid too many server requests
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Fetch customers with server-side search
+  // When searching: no limit (find any customer)
+  // When not searching: limit to 100 for initial load performance
+  const queryParams = debouncedSearch 
+    ? { search: debouncedSearch } 
+    : { limit: 100 };
+    
+  const { data, isLoading } = useCustomers(queryParams);
   const customers = data?.customers || [];
+
+  // Debug: Log search queries
+  useEffect(() => {
+    if (debouncedSearch) {
+      console.log("🔍 Searching customers:", debouncedSearch, queryParams);
+    }
+  }, [debouncedSearch, queryParams]);
 
   const selectedCustomer = customers.find((c) => c.id === value);
 
@@ -73,9 +91,17 @@ export function CustomerSelector({
     setDialogOpen(open);
   };
 
+  const handlePopoverOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    // Reset search when closing
+    if (!isOpen) {
+      setSearchInput("");
+    }
+  };
+
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handlePopoverOpenChange}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -99,8 +125,12 @@ export function CustomerSelector({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-          <Command shouldFilter={true}>
-            <CommandInput placeholder={t("searchCustomer")} />
+          <Command shouldFilter={false}>
+            <CommandInput
+              placeholder={t("searchCustomer")}
+              value={searchInput}
+              onValueChange={setSearchInput}
+            />
             <CommandList>
               {/* Fixed Create Button - Always visible at the top */}
               <CommandGroup>
@@ -118,46 +148,52 @@ export function CustomerSelector({
               {/* Separator */}
               <div className="border-b" />
 
-              {/* Filterable Customers List */}
-              <CommandEmpty>
-                <div className="flex flex-col items-center justify-center gap-2 py-6">
-                  <Search className="h-8 w-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    {t("noCustomersFound")}
-                  </p>
+              {/* Loading State */}
+              {isLoading && (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
-              </CommandEmpty>
-              <CommandGroup
-                heading={customers.length > 0 ? t("customers") : undefined}
-              >
-                {customers.map((customer) => (
-                  <CommandItem
-                    key={customer.id}
-                    value={customer.name}
-                    keywords={[
-                      customer.email || "",
-                      customer.phone || "",
-                      customer.docId || "",
-                    ]}
-                    onSelect={() => handleSelect(customer.id)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === customer.id ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-medium">{customer.name}</span>
-                      {(customer.email || customer.phone) && (
-                        <span className="text-xs text-muted-foreground">
-                          {customer.email || customer.phone}
-                        </span>
-                      )}
+              )}
+
+              {/* Customers List */}
+              {!isLoading && (
+                <>
+                  <CommandEmpty>
+                    <div className="flex flex-col items-center justify-center gap-2 py-6">
+                      <Search className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">
+                        {t("noCustomersFound")}
+                      </p>
                     </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                  </CommandEmpty>
+                  <CommandGroup
+                    heading={customers.length > 0 ? t("customers") : undefined}
+                  >
+                    {customers.map((customer) => (
+                      <CommandItem
+                        key={customer.id}
+                        value={customer.id}
+                        onSelect={() => handleSelect(customer.id)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            value === customer.id ? "opacity-100" : "opacity-0",
+                          )}
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{customer.name}</span>
+                          {(customer.email || customer.phone) && (
+                            <span className="text-xs text-muted-foreground">
+                              {customer.email || customer.phone}
+                            </span>
+                          )}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>

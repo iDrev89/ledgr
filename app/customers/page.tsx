@@ -16,6 +16,7 @@ import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { Customer } from "@/lib/types/customer";
 
 export default function CustomersPage() {
@@ -24,8 +25,15 @@ export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<
     Customer | undefined
   >();
+  const [searchInput, setSearchInput] = useState("");
 
-  const { data, isLoading, error } = useCustomers();
+  // Debounce search query to avoid too many server requests
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Server-side search - always fetches based on search term
+  const { data, isLoading, error } = useCustomers(
+    debouncedSearch ? { search: debouncedSearch } : undefined
+  );
 
   const handleCreate = () => {
     setSelectedCustomer(undefined);
@@ -76,7 +84,7 @@ export default function CustomersPage() {
             </Alert>
           )}
 
-          {isLoading ? (
+          {isLoading && !data ? (
             <div className="space-y-3">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
@@ -86,6 +94,9 @@ export default function CustomersPage() {
             <CustomerTable
               customers={data?.customers || []}
               onEdit={handleEdit}
+              searchValue={searchInput}
+              onSearchChange={setSearchInput}
+              isSearching={isLoading}
             />
           )}
         </CardContent>

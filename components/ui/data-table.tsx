@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,8 +42,14 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  // Client-side search
   searchKey?: string | string[];
   searchPlaceholder?: string;
+  // Server-side search (controlled)
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
+  // Display options
   showColumnVisibility?: boolean;
   showPagination?: boolean;
   pageSize?: number;
@@ -54,18 +60,28 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   searchPlaceholder = "Search...",
+  // Server-side search props
+  searchValue: controlledSearchValue,
+  onSearchChange,
+  isSearching,
   showColumnVisibility = false,
   showPagination = true,
   pageSize = 10,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
+
+  // Determine if we're in controlled (server-side) mode
+  const isServerSearch = onSearchChange !== undefined;
+  const searchInputValue = isServerSearch
+    ? (controlledSearchValue ?? "")
+    : (globalFilter ?? "");
 
   // Custom filter function for multiple keys
   const multiKeyFilter = React.useCallback(
@@ -88,7 +104,7 @@ export function DataTable<TData, TValue>({
         }
       });
     },
-    [searchKey],
+    [searchKey]
   );
 
   const table = useReactTable({
@@ -125,26 +141,37 @@ export function DataTable<TData, TValue>({
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex flex-1 items-center gap-2">
-          {searchKey && (
-            <Input
-              placeholder={searchPlaceholder}
-              value={
-                Array.isArray(searchKey)
-                  ? (globalFilter ?? "")
-                  : ((table.getColumn(searchKey)?.getFilterValue() as string) ??
-                    "")
-              }
-              onChange={(event) => {
-                if (Array.isArray(searchKey)) {
-                  setGlobalFilter(event.target.value);
-                } else {
-                  table
-                    .getColumn(searchKey)
-                    ?.setFilterValue(event.target.value);
+          {/* Show search input for either client-side (searchKey) or server-side (isServerSearch) search */}
+          {(searchKey || isServerSearch) && (
+            <div className="relative max-w-sm">
+              <Input
+                placeholder={searchPlaceholder}
+                value={
+                  isServerSearch
+                    ? searchInputValue
+                    : Array.isArray(searchKey)
+                      ? (globalFilter ?? "")
+                      : ((table
+                          .getColumn(searchKey!)
+                          ?.getFilterValue() as string) ?? "")
                 }
-              }}
-              className="max-w-sm"
-            />
+                onChange={(event) => {
+                  if (isServerSearch) {
+                    onSearchChange?.(event.target.value);
+                  } else if (Array.isArray(searchKey)) {
+                    setGlobalFilter(event.target.value);
+                  } else if (searchKey) {
+                    table
+                      .getColumn(searchKey)
+                      ?.setFilterValue(event.target.value);
+                  }
+                }}
+                className="max-w-sm pr-8"
+              />
+              {isSearching && (
+                <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+              )}
+            </div>
           )}
         </div>
         {showColumnVisibility && (
@@ -190,7 +217,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -209,7 +236,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

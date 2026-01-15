@@ -23,12 +23,22 @@ import { createCustomerColumns } from "./customer-columns";
 interface CustomerTableProps {
   customers: Customer[];
   onEdit: (customer: Customer) => void;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
+export function CustomerTable({
+  customers,
+  onEdit,
+  searchValue,
+  onSearchChange,
+  isSearching,
+}: CustomerTableProps) {
   const t = useTranslations("Customers");
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
-    null,
+    null
   );
   const deleteMutation = useDeleteCustomer();
 
@@ -64,8 +74,13 @@ export function CustomerTable({ customers, onEdit }: CustomerTableProps) {
           />
         )}
         data={customers}
-        searchKey={["name"]}
+        // When using server-side search, don't use searchKey (disables client-side filtering)
+        searchKey={onSearchChange ? undefined : ["name"]}
         searchPlaceholder={t("searchPlaceholder")}
+        // Server-side search props
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         showPagination
         pageSize={10}
         emptyMessage={t("noCustomers")}
