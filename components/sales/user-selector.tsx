@@ -77,12 +77,18 @@ export function UserSelector({
           disabled={disabled}
         >
           {value ? (
-            <span className="truncate flex items-center gap-2">
-              <User className="h-4 w-4" />
-              {selectedUser?.name || lastUserName || placeholder || t("selectSeller")}
+            <span className="truncate flex items-center gap-2.5">
+              <User className="h-4 w-4 shrink-0 text-primary" />
+              <span className="truncate">
+                {selectedUser?.name ||
+                  lastUserName ||
+                  placeholder ||
+                  t("selectSeller")}
+              </span>
             </span>
           ) : (
-            <span className="text-muted-foreground">
+            <span className="text-muted-foreground flex items-center gap-2.5">
+              <User className="h-4 w-4 shrink-0 opacity-60" />
               {placeholder || t("selectSeller")}
             </span>
           )}

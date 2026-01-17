@@ -1,8 +1,23 @@
 "use client";
 
-import { Eye, Trash2, Package, CreditCard, Edit, Check } from "lucide-react";
+import {
+  Eye,
+  Trash2,
+  Package,
+  Calendar,
+  MoreVertical,
+  CreditCard,
+  Edit,
+  Check,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
@@ -10,6 +25,12 @@ import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { useTranslations } from "next-intl";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SaleCardProps {
   sale: SaleWithDetails;
@@ -64,7 +85,10 @@ const getPaymentMethodBadge = (
 
   const config = variants[method];
   return (
-    <Badge variant={config.variant} className="font-normal">
+    <Badge
+      variant={config.variant}
+      className="font-normal text-xs px-2 py-0.5 pointer-events-none"
+    >
       {config.label}
     </Badge>
   );
@@ -85,179 +109,198 @@ export function SaleCard({
   const hasReceivable =
     sale.receivable && parseFloat(sale.receivable.balance) > 0;
 
-  // Obtener método de pago principal
+  // Primary payment method
   const primaryPayment =
     sale.payments && sale.payments.length > 0 ? sale.payments[0] : null;
   const hasMultiplePayments = sale.payments && sale.payments.length > 1;
 
+  // Product summary
+  const productNames = sale.items.map((i) => i.product.name).join(", ");
+  const itemCount = sale.items.length;
+
   return (
     <Card
-      className="border-2 hover:border-primary/50 transition-all shadow-sm hover:shadow-md cursor-pointer"
+      className="group overflow-hidden ring-1 ring-border shadow-md transition-all duration-200 hover:shadow-lg hover:ring-primary/50 bg-background rounded-xl cursor-pointer"
       onClick={onView}
     >
-      <CardContent className="p-4 space-y-3">
-        {/* Header: Número de venta + Fecha + Botón eliminar */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono font-bold text-lg">
-                #{String(sale.saleNumber).padStart(4, "0")}
-              </span>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {format(new Date(sale.createdAt), "dd/MM/yyyy hh:mm a", {
-                  locale: dateLocale,
-                })}
-              </span>
-            </div>
-          </div>
-          {onDelete && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
+      <CardContent className="p-0 relative">
+        {/* Header: Sale Info + Price */}
+        <div className="flex items-center justify-between px-5 py-3 bg-muted/30 border-b border-border/40">
+          <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+            <Badge
+              variant="secondary"
+              className="text-[11px] h-5 px-2 font-mono font-medium bg-background text-foreground border border-border/60 tabular-nums"
             >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-
-        <Separator />
-
-        {/* Cliente */}
-        <div className="space-y-1">
-          <p className="font-semibold text-base">{sale.customer.name}</p>
-          {sale.customer.email && (
-            <p className="text-xs text-muted-foreground truncate">
-              {sale.customer.email}
-            </p>
-          )}
-        </div>
-
-        {/* Vendedor - solo mostrar si es diferente del creador */}
-        {sale.soldBy && sale.soldBy.id !== sale.createdBy.id && (
-          <div className="bg-primary/5 border border-primary/20 rounded-md p-2">
-            <p className="text-xs font-medium text-primary">
-              {t("soldBy")}: {sale.soldBy.name}
-            </p>
+              #{String(sale.saleNumber).padStart(4, "0")}
+            </Badge>
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-3 w-3" />
+              {format(new Date(sale.createdAt), "dd/MM/yy - hh:mm a", {
+                locale: dateLocale,
+              })}
+            </span>
           </div>
-        )}
 
-        <Separator />
-
-        {/* Items */}
-        <div className="flex items-start gap-2">
-          <Package className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium">
-              {sale.items.length}{" "}
-              {sale.items.length === 1 ? t("item") : t("items")}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {sale.items
-                .slice(0, 2)
-                .map((item) => item.product.name)
-                .join(", ")}
-              {sale.items.length > 2 && ` +${sale.items.length - 2}`}
-            </p>
+          {/* Price in Header */}
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-base tabular-nums">
+              {formatCurrency(sale.total)}
+            </span>
+            {/* Action Menu */}
+            {isAdmin && !isDraftCard && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {onEdit && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit();
+                      }}
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      {t("edit")}
+                    </DropdownMenuItem>
+                  )}
+                  {onDelete && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                      }}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      {t("delete")}
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
 
-        {/* Pagos */}
-        <div className="flex items-center gap-2">
-          <CreditCard className="h-4 w-4 text-muted-foreground shrink-0" />
-          {sale.payments && sale.payments.length > 0 ? (
-            <div className="flex items-center gap-2 flex-wrap">
-              {primaryPayment &&
-                !hasMultiplePayments &&
-                getPaymentMethodBadge(primaryPayment.method, t)}
-              {hasMultiplePayments && (
-                <Badge variant="secondary" className="font-normal">
-                  {sale.payments.length} {t("payments")}
-                </Badge>
+        {/* Body Content */}
+        <div className="p-5 grid gap-4">
+          {/* Customer Section with Left Accent */}
+          <div className="flex items-start gap-3 pl-3 border-l-2 border-primary/40">
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm text-foreground truncate">
+                {sale.customer.name}
+              </p>
+              {hasReceivable && sale.receivable && (
+                <span className="inline-flex items-center text-[10px] font-medium text-amber-600 dark:text-amber-500 mt-1">
+                  {t("balance")}: {formatCurrency(sale.receivable.balance)}
+                </span>
               )}
             </div>
-          ) : (
-            <Badge variant="outline" className="font-normal">
-              {t("noPayments")}
-            </Badge>
-          )}
-        </div>
-
-        {/* Balance pendiente */}
-        {hasReceivable && sale.receivable && (
-          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md p-2">
-            <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
-              ⚠️ {t("balance")}: {formatCurrency(sale.receivable.balance)}
-            </p>
           </div>
-        )}
 
-        <Separator />
+          <Separator className="bg-border/50" />
 
-        {/* Footer: Total + Botones */}
-        <div className="flex items-center justify-between pt-1">
-          <div>
-            <p className="text-xs text-muted-foreground">{t("total")}</p>
-            <p className="text-xl font-bold">{formatCurrency(sale.total)}</p>
-          </div>
-          <div className="flex gap-2">
-            {isDraftCard && onEdit && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit();
-                }}
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                {t("edit")}
-              </Button>
-            )}
-            {isDraftCard && onCloseSale && (
-              <Button
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCloseSale();
-                }}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                {t("closeSale")}
-              </Button>
-            )}
-            {!isDraftCard && (
-              <>
-                {isAdmin && onEdit && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit();
-                    }}
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    {t("edit")}
-                  </Button>
+          {/* Bottom Row: Details & Quick Info */}
+          <div className="flex items-center justify-between gap-2 text-sm">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              {/* Items summary */}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Package className="h-4 w-4 shrink-0" />
+                <span className="truncate text-xs">
+                  <span className="font-medium text-foreground">
+                    {itemCount}
+                  </span>{" "}
+                  {itemCount === 1 ? t("item") : t("items")} • {productNames}
+                </span>
+              </div>
+
+              {/* Payment info */}
+              <div className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4 shrink-0 text-muted-foreground" />
+                {sale.payments && sale.payments.length > 0 ? (
+                  <>
+                    {primaryPayment &&
+                      !hasMultiplePayments &&
+                      getPaymentMethodBadge(primaryPayment.method, t)}
+                    {hasMultiplePayments && (
+                      <Badge
+                        variant="secondary"
+                        className="text-[10px] h-5 px-1.5"
+                      >
+                        {sale.payments.length} {t("payments")}
+                      </Badge>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-xs text-muted-foreground">
+                    {t("noPayments")}
+                  </span>
                 )}
+              </div>
+            </div>
+
+            {/* Primary Action Button */}
+            <div className="shrink-0 flex gap-2">
+              {isDraftCard ? (
+                <>
+                  {onEdit && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-9 w-9 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit();
+                      }}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {onCloseSale && (
+                    <Button
+                      size="sm"
+                      className="h-9 px-4 text-xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCloseSale();
+                      }}
+                    >
+                      {t("closeSale")}
+                    </Button>
+                  )}
+                </>
+              ) : (
                 <Button
                   size="sm"
+                  variant="outline"
+                  className="h-9 px-4 text-xs font-medium border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onView();
                   }}
                 >
-                  <Eye className="h-4 w-4 mr-2" />
-                  {t("view")}
+                  {t("viewDetails")}
                 </Button>
-              </>
-            )}
+              )}
+            </div>
           </div>
+
+          {/* Sold By Footer (if visible) */}
+          {sale.soldBy && sale.soldBy.id !== sale.createdBy.id && (
+            <div className="text-[10px] text-muted-foreground text-right mt-1">
+              {t("soldBy")}{" "}
+              <span className="font-medium text-foreground">
+                {sale.soldBy.name}
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -202,14 +202,14 @@ export default function SalesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 -mx-4 px-4 border-b md:static md:bg-transparent md:border-0 md:p-0 md:mb-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground hidden md:block">
+            {t("description")}
+          </p>
         </div>
-        <Button onClick={handleCreate} className="w-full sm:w-auto">
+        <Button onClick={handleCreate} className="w-full md:w-auto shadow-sm">
           <Plus className="mr-2 h-4 w-4" />
           {t("createSale")}
         </Button>
@@ -232,109 +232,117 @@ export default function SalesPage() {
               else setCompletedSearch("");
             }}
           >
-            {/* Tabs header with search on the right */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-              <TabsList>
-                <TabsTrigger value="completed">
-                  {t("completedSales")}{" "}
-                  <span className="ml-1 text-muted-foreground">
-                    {completedData?.total || 0}
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger value="draft">
-                  {t("openSales")}{" "}
-                  <span className="ml-1 text-muted-foreground">
-                    {draftData?.total || 0}
-                  </span>
-                </TabsTrigger>
-              </TabsList>
+            {/* Tabs header & Controls */}
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="flex items-center justify-between">
+                <TabsList className="w-full sm:w-auto grid grid-cols-2 h-10 p-1 bg-muted/50">
+                  <TabsTrigger value="completed" className="px-4">
+                    {t("completedSales")}{" "}
+                    <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                      {completedData?.total || 0}
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger value="draft" className="px-4">
+                    {t("openSales")}{" "}
+                    <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                      {draftData?.total || 0}
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              {/* Search */}
-              <SearchInput
-                value={
-                  activeTab === "completed" ? completedSearch : draftSearch
-                }
-                onChange={(value) => {
-                  if (activeTab === "completed") {
-                    setCompletedSearch(value);
-                    completedPagination.setPage(0); // Reset to first page on search
-                  } else {
-                    setDraftSearch(value);
-                    draftPagination.setPage(0); // Reset to first page on search
-                  }
-                }}
-                placeholder={t("searchPlaceholder")}
-                isLoading={
-                  activeTab === "completed"
-                    ? isCompletedSearching
-                    : isDraftSearching
-                }
-                className="w-full sm:w-[280px]"
-              />
-            </div>
-
-            {/* Filters Row - Only for completed tab and admin */}
-            {activeTab === "completed" && isAdmin() && (
-              <div className="flex flex-col sm:flex-row gap-3 mb-6 p-3 rounded-lg bg-muted/30 border">
-                {/* Seller Filter */}
-                <div className="flex-1 sm:max-w-[200px]">
-                  <UserSelector
-                    value={sellerId}
-                    onValueChange={handleSellerChange}
-                    placeholder={t("allSellers")}
+              {/* Search & Filters Toolbar */}
+              <div className="flex flex-col lg:flex-row gap-3">
+                <div className="relative flex-1">
+                  <SearchInput
+                    value={
+                      activeTab === "completed" ? completedSearch : draftSearch
+                    }
+                    onChange={(value) => {
+                      if (activeTab === "completed") {
+                        setCompletedSearch(value);
+                        completedPagination.setPage(0);
+                      } else {
+                        setDraftSearch(value);
+                        draftPagination.setPage(0);
+                      }
+                    }}
+                    placeholder={t("searchPlaceholder")}
+                    isLoading={
+                      activeTab === "completed"
+                        ? isCompletedSearching
+                        : isDraftSearching
+                    }
+                    className="w-full"
                   />
                 </div>
 
-                {/* Date Filter */}
-                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full sm:w-[180px] gap-2 font-normal",
-                        !dateFrom && "text-muted-foreground",
-                      )}
+                {/* Filters - Responsive Grid/Flex */}
+                {activeTab === "completed" && isAdmin() && (
+                  <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <div className="w-full sm:w-auto sm:min-w-[200px]">
+                      <UserSelector
+                        value={sellerId}
+                        onValueChange={handleSellerChange}
+                        placeholder={t("allSellers")}
+                      />
+                    </div>
+                    <Popover
+                      open={datePickerOpen}
+                      onOpenChange={setDatePickerOpen}
                     >
-                      <CalendarIcon className="h-4 w-4 shrink-0" />
-                      {dateFrom ? (
-                        <span className="truncate">
-                          {format(parseISO(dateFrom), "dd/MM/yyyy", {
-                            locale: dateLocale,
-                          })}
-                        </span>
-                      ) : (
-                        <span>{t("selectDate")}</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={dateFrom ? parseISO(dateFrom) : undefined}
-                      onSelect={handleDateChange}
-                      locale={dateLocale}
-                    />
-                  </PopoverContent>
-                </Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "flex-1 sm:flex-none justify-start text-left font-normal sm:w-[180px] gap-2.5",
+                            !dateFrom && "text-muted-foreground",
+                          )}
+                        >
+                          <CalendarIcon className="h-4 w-4 shrink-0 text-primary/70" />
+                          {dateFrom ? (
+                            <span className="truncate">
+                              {format(parseISO(dateFrom), "dd/MM/yy", {
+                                locale: dateLocale,
+                              })}
+                            </span>
+                          ) : (
+                            <span>{t("selectDate")}</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={dateFrom ? parseISO(dateFrom) : undefined}
+                          onSelect={handleDateChange}
+                          locale={dateLocale}
+                        />
+                      </PopoverContent>
+                    </Popover>
 
-                {/* Clear Filters */}
-                {(sellerId || dateFrom) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSellerId(undefined);
-                      setDateFrom(undefined);
-                      setDateTo(undefined);
-                    }}
-                    className="text-muted-foreground"
-                  >
-                    <X className="mr-1 h-4 w-4" />
-                    Limpiar
-                  </Button>
+                    {(sellerId || dateFrom) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSellerId(undefined);
+                          setDateFrom(undefined);
+                          setDateTo(undefined);
+                        }}
+                        className="text-muted-foreground hover:text-foreground px-3 h-10"
+                        title="Limpiar filtros"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        <span className="hidden sm:inline">
+                          {t("clearFilters")}
+                        </span>
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
+            </div>
 
             {/* Completed Sales Tab */}
             <TabsContent value="completed" className="space-y-4 mt-0">
