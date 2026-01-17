@@ -32,6 +32,14 @@ import {
   getBusinessDayEnd,
 } from "@/lib/date-utils";
 
+// Normalize text by removing accents for search
+const normalizeText = (text: string): string => {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+};
+
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
@@ -177,6 +185,8 @@ export const getSales = async (params?: {
     }
 
     if (search) {
+      // Use basic contains for initial filtering, then normalize in memory
+      const normalizedSearch = normalizeText(search);
       where.OR = [
         {
           customer: {
@@ -196,10 +206,13 @@ export const getSales = async (params?: {
       where.customerId = customerId;
     }
 
-    const [sales, total] = await Promise.all([
+    // When searching, fetch more results for in-memory filtering
+    const fetchLimit = search ? Math.max(limit * 3, 100) : limit;
+
+    const [allSales, totalWithoutFilter] = await Promise.all([
       prisma.sale.findMany({
         where,
-        take: limit,
+        take: fetchLimit,
         skip: offset,
         orderBy: { saleNumber: "desc" },
         include: {
@@ -248,6 +261,29 @@ export const getSales = async (params?: {
       prisma.sale.count({ where }),
     ]);
 
+    // Apply accent-insensitive filtering in memory
+    let filteredSales = allSales;
+    if (search) {
+      const normalizedSearch = normalizeText(search);
+      filteredSales = allSales.filter((sale) => {
+        const customerName = sale.customer?.name || "";
+        const customerEmail = sale.customer?.email || "";
+        const note = sale.note || "";
+        const saleNumber = String(sale.saleNumber).padStart(4, "0");
+
+        return (
+          normalizeText(customerName).includes(normalizedSearch) ||
+          normalizeText(customerEmail).includes(normalizedSearch) ||
+          normalizeText(note).includes(normalizedSearch) ||
+          saleNumber.includes(search) // Also search by sale number
+        );
+      });
+    }
+
+    // Apply limit after filtering
+    const sales = filteredSales.slice(0, limit);
+    const total = search ? filteredSales.length : totalWithoutFilter;
+
     const serializedSales = sales.map(serializeSale);
 
     return { success: true, data: { sales: serializedSales, total } };
@@ -261,7 +297,7 @@ export const getSales = async (params?: {
 };
 
 export const getSale = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -330,7 +366,7 @@ export const getSale = async (
 
 export const createSale = async (
   input: CreateSaleInput,
-  isDraft: boolean = false
+  isDraft: boolean = false,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -587,7 +623,7 @@ export const createSale = async (
 };
 
 export const completeSale = async (
-  saleId: string
+  saleId: string,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 
@@ -755,7 +791,7 @@ export const completeSale = async (
 };
 
 export const updateSale = async (
-  input: UpdateSaleInput
+  input: UpdateSaleInput,
 ): Promise<ActionResponse<SaleWithDetails>> => {
   const t = await getTranslations("Sales.errors");
 

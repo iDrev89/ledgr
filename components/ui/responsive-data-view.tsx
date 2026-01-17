@@ -4,9 +4,8 @@ import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DataTable } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Search, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface CardActions {
   onView?: (item: any) => void;
@@ -29,19 +28,29 @@ interface ResponsiveDataViewProps<TData> {
   // Datos
   data: TData[];
 
-  // Server-side search
-  searchPlaceholder?: string;
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  // Total count for "Mostrando X de Y" display
+  totalCount?: number;
 
   // Paginación
   pageSize?: number;
   showPagination?: boolean;
+  /** Current page for server-side pagination (0-indexed) */
+  page?: number;
+  /** Callback when page changes for server-side pagination */
+  onPageChange?: (page: number) => void;
+
+  /** Enabe internal pagination rendering. Set to false if pagination is handled externally. */
+  enablePagination?: boolean;
 
   // Estados
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
+
+  // Deprecated - search is now handled at page level
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 
   // Callbacks para mobile
   onView?: (item: TData) => void;
@@ -60,14 +69,15 @@ export function ResponsiveDataView<TData>({
   renderCard,
   cardGridCols = "grid-cols-1 sm:grid-cols-2",
   data,
-  searchPlaceholder = "Buscar...",
-  searchValue,
-  onSearchChange,
-  isSearching = false,
+  totalCount,
   pageSize = 10,
   showPagination = true,
+  page,
+  onPageChange,
+  enablePagination = true,
   emptyMessage = "No hay datos disponibles",
   emptyIcon,
+  searchValue,
   onView,
   onEdit,
   onDelete,
@@ -83,9 +93,12 @@ export function ResponsiveDataView<TData>({
   const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedData = showPagination
-    ? data.slice(startIndex, endIndex)
-    : data;
+  // If external pagination is enabled, we display data as is (it's already sliced by server)
+  // If internal pagination is enabled, we slice the data
+  const paginatedData =
+    showPagination && enablePagination
+      ? data.slice(startIndex, endIndex)
+      : data;
 
   // Reset page when search changes
   React.useEffect(() => {
@@ -103,21 +116,19 @@ export function ResponsiveDataView<TData>({
     locale,
   };
 
-  // Check if search is enabled
-  const hasSearch = onSearchChange !== undefined;
-
   // Renderizar versión desktop (DataTable)
   if (!isMobile) {
     return (
       <DataTable
         columns={columns}
         data={data}
-        searchPlaceholder={searchPlaceholder}
-        searchValue={searchValue}
-        onSearchChange={onSearchChange}
-        isSearching={isSearching}
+        totalCount={totalCount ?? data.length}
         showPagination={showPagination}
         pageSize={pageSize}
+        page={page}
+        onPageChange={onPageChange}
+        emptyMessage={emptyMessage}
+        enablePagination={enablePagination}
       />
     );
   }
@@ -125,22 +136,6 @@ export function ResponsiveDataView<TData>({
   // Renderizar versión mobile (Cards)
   return (
     <div className="w-full space-y-4">
-      {/* Búsqueda Mobile */}
-      {hasSearch && (
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder={searchPlaceholder}
-            value={searchValue ?? ""}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-8 pr-8"
-          />
-          {isSearching && (
-            <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
-          )}
-        </div>
-      )}
-
       {/* Cards Grid */}
       {paginatedData.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -156,41 +151,33 @@ export function ResponsiveDataView<TData>({
       )}
 
       {/* Paginación Mobile */}
-      {showPagination && totalPages > 1 && (
-        <div className="flex items-center justify-between px-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
-            disabled={currentPage === 0}
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-            Anterior
-          </Button>
-
-          <span className="text-sm text-muted-foreground">
-            Página {currentPage + 1} de {totalPages}
-          </span>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
-            }
-            disabled={currentPage === totalPages - 1}
-          >
-            Siguiente
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-      )}
-
-      {/* Info total de resultados */}
-      {searchValue && (
-        <div className="text-xs text-center text-muted-foreground">
-          {data.length} resultado{data.length !== 1 ? "s" : ""} encontrado
-          {data.length !== 1 ? "s" : ""}
+      {showPagination && enablePagination && totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {startIndex + 1} de {totalCount ?? data.length} registros
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+              disabled={currentPage === 0}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+              }
+              disabled={currentPage === totalPages - 1}
+            >
+              Siguiente
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
         </div>
       )}
     </div>

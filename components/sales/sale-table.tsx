@@ -33,6 +33,11 @@ interface SaleTableProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   isSearching?: boolean;
+  // Server-side pagination props
+  totalCount?: number;
+  page?: number;
+  onPageChange?: (page: number) => void;
+  enablePagination?: boolean;
 }
 
 export function SaleTable({
@@ -45,6 +50,10 @@ export function SaleTable({
   searchValue,
   onSearchChange,
   isSearching,
+  totalCount,
+  page,
+  onPageChange,
+  enablePagination = true,
 }: SaleTableProps) {
   const t = useTranslations("Sales");
   const { data: session } = useSession();
@@ -108,12 +117,16 @@ export function SaleTable({
           />
         )}
         data={sales}
+        totalCount={totalCount}
         searchPlaceholder={t("searchPlaceholder")}
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         isSearching={isSearching}
-        showPagination
+        showPagination={true}
+        enablePagination={enablePagination}
         pageSize={10}
+        page={page}
+        onPageChange={onPageChange}
         emptyMessage={t("noSales")}
         onView={onView}
         onDelete={canDelete ? setSaleToDelete : undefined}

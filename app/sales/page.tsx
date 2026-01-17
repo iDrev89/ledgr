@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Plus, AlertCircle, Check } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { es, enUS } from "date-fns/locale";
+import { Plus, AlertCircle, Check, CalendarIcon, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,13 +27,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { SaleTable } from "@/components/sales/sale-table";
 import { SaleDetailDialog } from "@/components/sales/sale-detail-dialog";
-import { SalesFilters } from "@/components/sales/sales-filters";
+import { UserSelector } from "@/components/sales/user-selector";
+import { SearchInput } from "@/components/ui/search-input";
 import { useSales, useCompleteSale } from "@/hooks/use-sales";
 import { useDebounce } from "@/hooks/use-debounce";
+import { usePermissions } from "@/hooks/use-permissions";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export default function SalesPage() {
   const t = useTranslations("Sales");
@@ -44,11 +57,31 @@ export default function SalesPage() {
   const [activeTab, setActiveTab] = useState<string>("completed");
   const [saleToClose, setSaleToClose] = useState<SaleWithDetails | null>(null);
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const { isAdmin } = usePermissions();
+  const dateLocale = locale === "es" ? es : enUS;
 
   // Filter states for completed sales
   const [sellerId, setSellerId] = useState<string | undefined>(undefined);
   const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
   const [dateTo, setDateTo] = useState<string | undefined>(undefined);
+
+  // Pagination states
+  const PAGE_SIZE = 10;
+  // const [completedPage, setCompletedPage] = useState(0);
+  // const [draftPage, setDraftPage] = useState(0);
+
+  const completedPagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+    // totalCount is updated from query result
+  });
+
+  const draftPagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+    // totalCount is updated from query result
+  });
 
   // Search states for each tab
   const [completedSearch, setCompletedSearch] = useState("");
@@ -73,6 +106,8 @@ export default function SalesPage() {
     dateTo,
     status: "COMPLETED",
     search: debouncedCompletedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: completedPagination.offset,
   });
   const isCompletedSearching = completedFetching && !completedLoading;
 
@@ -86,6 +121,8 @@ export default function SalesPage() {
     sellerId: draftSellerId,
     status: "DRAFT",
     search: debouncedDraftSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: draftPagination.offset,
   });
   const isDraftSearching = draftFetching && !draftLoading;
 
@@ -108,10 +145,33 @@ export default function SalesPage() {
     setSellerId(filters.sellerId);
     setDateFrom(filters.dateFrom);
     setDateTo(filters.dateTo);
+    completedPagination.setPage(0); // Reset to first page when filters change
+  };
+
+  const handleSellerChange = (newSellerId: string) => {
+    setSellerId(newSellerId || undefined);
+    completedPagination.setPage(0); // Reset to first page
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    if (date) {
+      const dateString = format(date, "yyyy-MM-dd");
+      setDateFrom(dateString);
+      setDateTo(dateString);
+      setDatePickerOpen(false);
+      completedPagination.setPage(0); // Reset to first page
+    }
+  };
+
+  const handleClearDate = () => {
+    setDateFrom(undefined);
+    setDateTo(undefined);
+    completedPagination.setPage(0); // Reset to first page
   };
 
   const handleDraftFiltersChange = (filters: { sellerId?: string }) => {
     setDraftSellerId(filters.sellerId);
+    draftPagination.setPage(0); // Reset to first page
   };
 
   const handleCloseSale = (sale: SaleWithDetails) => {
@@ -156,34 +216,128 @@ export default function SalesPage() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <div>
             <CardTitle>{t("salesHistory")}</CardTitle>
             <CardDescription>{t("salesHistoryDescription")}</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="completed">
-                {t("completedSales")}{" "}
-                {completedData?.total ? `(${completedData.total})` : ""}
-              </TabsTrigger>
-              <TabsTrigger value="draft">
-                {t("openSales")}{" "}
-                {draftData?.total ? `(${draftData.total})` : ""}
-              </TabsTrigger>
-            </TabsList>
+          <Tabs
+            value={activeTab}
+            onValueChange={(tab) => {
+              setActiveTab(tab);
+              // Clear search when switching tabs
+              if (tab === "completed") setDraftSearch("");
+              else setCompletedSearch("");
+            }}
+          >
+            {/* Tabs header with search on the right */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <TabsList>
+                <TabsTrigger value="completed">
+                  {t("completedSales")}{" "}
+                  <span className="ml-1 text-muted-foreground">
+                    {completedData?.total || 0}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger value="draft">
+                  {t("openSales")}{" "}
+                  <span className="ml-1 text-muted-foreground">
+                    {draftData?.total || 0}
+                  </span>
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Search */}
+              <SearchInput
+                value={
+                  activeTab === "completed" ? completedSearch : draftSearch
+                }
+                onChange={(value) => {
+                  if (activeTab === "completed") {
+                    setCompletedSearch(value);
+                    completedPagination.setPage(0); // Reset to first page on search
+                  } else {
+                    setDraftSearch(value);
+                    draftPagination.setPage(0); // Reset to first page on search
+                  }
+                }}
+                placeholder={t("searchPlaceholder")}
+                isLoading={
+                  activeTab === "completed"
+                    ? isCompletedSearching
+                    : isDraftSearching
+                }
+                className="w-full sm:w-[280px]"
+              />
+            </div>
+
+            {/* Filters Row - Only for completed tab and admin */}
+            {activeTab === "completed" && isAdmin() && (
+              <div className="flex flex-col sm:flex-row gap-3 mb-6 p-3 rounded-lg bg-muted/30 border">
+                {/* Seller Filter */}
+                <div className="flex-1 sm:max-w-[200px]">
+                  <UserSelector
+                    value={sellerId}
+                    onValueChange={handleSellerChange}
+                    placeholder={t("allSellers")}
+                  />
+                </div>
+
+                {/* Date Filter */}
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full sm:w-[180px] gap-2 font-normal",
+                        !dateFrom && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="h-4 w-4 shrink-0" />
+                      {dateFrom ? (
+                        <span className="truncate">
+                          {format(parseISO(dateFrom), "dd/MM/yyyy", {
+                            locale: dateLocale,
+                          })}
+                        </span>
+                      ) : (
+                        <span>{t("selectDate")}</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dateFrom ? parseISO(dateFrom) : undefined}
+                      onSelect={handleDateChange}
+                      locale={dateLocale}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {/* Clear Filters */}
+                {(sellerId || dateFrom) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSellerId(undefined);
+                      setDateFrom(undefined);
+                      setDateTo(undefined);
+                    }}
+                    className="text-muted-foreground"
+                  >
+                    <X className="mr-1 h-4 w-4" />
+                    Limpiar
+                  </Button>
+                )}
+              </div>
+            )}
 
             {/* Completed Sales Tab */}
-            <TabsContent value="completed" className="space-y-6">
-              <SalesFilters
-                sellerId={sellerId}
-                dateFrom={dateFrom}
-                dateTo={dateTo}
-                onFiltersChange={handleFiltersChange}
-              />
-
+            <TabsContent value="completed" className="space-y-4 mt-0">
               {completedError && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -204,20 +358,29 @@ export default function SalesPage() {
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : (
-                <SaleTable
-                  sales={completedData?.sales || []}
-                  onView={handleViewSale}
-                  onEdit={handleEditCompletedSale}
-                  locale={locale}
-                  searchValue={completedSearch}
-                  onSearchChange={setCompletedSearch}
-                  isSearching={isCompletedSearching}
-                />
+                <>
+                  <SaleTable
+                    sales={completedData?.sales || []}
+                    onView={handleViewSale}
+                    onEdit={handleEditCompletedSale}
+                    locale={locale}
+                    totalCount={completedData?.total}
+                    page={completedPagination.page}
+                    onPageChange={completedPagination.setPage}
+                    enablePagination={false}
+                  />
+                  <PaginationControl
+                    currentPage={completedPagination.page}
+                    totalCount={completedData?.total || 0}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={completedPagination.onPageChange}
+                  />
+                </>
               )}
             </TabsContent>
 
             {/* Draft Sales Tab */}
-            <TabsContent value="draft" className="space-y-6">
+            <TabsContent value="draft" className="space-y-4 mt-0">
               <div className="text-sm text-muted-foreground">
                 {t("openSalesDescription")}
               </div>
@@ -240,17 +403,26 @@ export default function SalesPage() {
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : (
-                <SaleTable
-                  sales={draftData?.sales || []}
-                  onView={handleViewSale}
-                  onEdit={handleEditDraftSale}
-                  onCloseSale={handleCloseSale}
-                  isDraftTable
-                  locale={locale}
-                  searchValue={draftSearch}
-                  onSearchChange={setDraftSearch}
-                  isSearching={isDraftSearching}
-                />
+                <>
+                  <SaleTable
+                    sales={draftData?.sales || []}
+                    onView={handleViewSale}
+                    onEdit={handleEditDraftSale}
+                    onCloseSale={handleCloseSale}
+                    isDraftTable
+                    locale={locale}
+                    totalCount={draftData?.total}
+                    page={draftPagination.page}
+                    onPageChange={draftPagination.setPage}
+                    enablePagination={false}
+                  />
+                  <PaginationControl
+                    currentPage={draftPagination.page}
+                    totalCount={draftData?.total || 0}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={draftPagination.onPageChange}
+                  />
+                </>
               )}
             </TabsContent>
           </Tabs>
