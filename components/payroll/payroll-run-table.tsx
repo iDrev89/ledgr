@@ -12,6 +12,10 @@ interface PayrollRunTableProps {
   onFinalize: (run: PayrollRunWithDetails) => void;
   onPay: (run: PayrollRunWithDetails) => void;
   onDelete: (run: PayrollRunWithDetails) => void;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
 export function PayrollRunTable({
@@ -20,6 +24,9 @@ export function PayrollRunTable({
   onFinalize,
   onPay,
   onDelete,
+  searchValue,
+  onSearchChange,
+  isSearching,
 }: PayrollRunTableProps) {
   const t = useTranslations("Payroll");
   const locale = useLocale();
@@ -30,15 +37,13 @@ export function PayrollRunTable({
     <ResponsiveDataView
       columns={columns}
       renderCard={(run) => (
-        <PayrollRunCard
-          run={run}
-          onView={() => onView(run)}
-          locale={locale}
-        />
+        <PayrollRunCard run={run} onView={() => onView(run)} locale={locale} />
       )}
       data={runs}
-      searchKey="periodLabel"
       searchPlaceholder={t("searchPlaceholder")}
+      searchValue={searchValue}
+      onSearchChange={onSearchChange}
+      isSearching={isSearching}
       showPagination={true}
       pageSize={10}
       emptyMessage={t("noPayrollRuns")}

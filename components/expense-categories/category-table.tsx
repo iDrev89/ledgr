@@ -23,9 +23,19 @@ import { createCategoryColumns } from "./category-columns";
 interface CategoryTableProps {
   categories: ExpenseCategoryWithRelations[];
   onEdit: (category: ExpenseCategoryWithRelations) => void;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export function CategoryTable({ categories, onEdit }: CategoryTableProps) {
+export function CategoryTable({
+  categories,
+  onEdit,
+  searchValue,
+  onSearchChange,
+  isSearching,
+}: CategoryTableProps) {
   const t = useTranslations("ExpenseCategories");
   const [categoryToDelete, setCategoryToDelete] =
     useState<ExpenseCategoryWithRelations | null>(null);
@@ -63,8 +73,10 @@ export function CategoryTable({ categories, onEdit }: CategoryTableProps) {
           />
         )}
         data={categories}
-        searchKey={["name"]}
         searchPlaceholder={t("searchPlaceholder")}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         showPagination
         pageSize={10}
         emptyMessage={t("noCategories")}

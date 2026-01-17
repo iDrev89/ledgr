@@ -29,15 +29,22 @@ interface SaleTableProps {
   onCloseSale?: (sale: SaleWithDetails) => void;
   isDraftTable?: boolean;
   locale?: string;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export function SaleTable({ 
-  sales, 
-  onView, 
-  onEdit, 
-  onCloseSale, 
-  isDraftTable = false, 
-  locale 
+export function SaleTable({
+  sales,
+  onView,
+  onEdit,
+  onCloseSale,
+  isDraftTable = false,
+  locale,
+  searchValue,
+  onSearchChange,
+  isSearching,
 }: SaleTableProps) {
   const t = useTranslations("Sales");
   const { data: session } = useSession();
@@ -68,7 +75,7 @@ export function SaleTable({
   const columns = createSaleColumns({
     onView,
     onDelete: canDelete ? setSaleToDelete : undefined,
-    onEdit: isDraftTable ? onEdit : (isAdmin && onEdit ? onEdit : undefined),
+    onEdit: isDraftTable ? onEdit : isAdmin && onEdit ? onEdit : undefined,
     onCloseSale: isDraftTable ? onCloseSale : undefined,
     isDraftTable,
     isAdmin,
@@ -85,22 +92,32 @@ export function SaleTable({
             sale={sale}
             onView={() => onView(sale)}
             onDelete={canDelete ? () => setSaleToDelete(sale) : undefined}
-            onEdit={isDraftTable && onEdit ? () => onEdit(sale) : (isAdmin && onEdit ? () => onEdit(sale) : undefined)}
-            onCloseSale={isDraftTable && onCloseSale ? () => onCloseSale(sale) : undefined}
+            onEdit={
+              isDraftTable && onEdit
+                ? () => onEdit(sale)
+                : isAdmin && onEdit
+                  ? () => onEdit(sale)
+                  : undefined
+            }
+            onCloseSale={
+              isDraftTable && onCloseSale ? () => onCloseSale(sale) : undefined
+            }
             isDraftCard={isDraftTable}
             isAdmin={isAdmin}
             locale={locale}
           />
         )}
         data={sales}
-        searchKey={["customer.name", "saleNumber"]}
         searchPlaceholder={t("searchPlaceholder")}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         showPagination
         pageSize={10}
         emptyMessage={t("noSales")}
         onView={onView}
         onDelete={canDelete ? setSaleToDelete : undefined}
-        onEdit={isDraftTable ? onEdit : (isAdmin && onEdit ? onEdit : undefined)}
+        onEdit={isDraftTable ? onEdit : isAdmin && onEdit ? onEdit : undefined}
         onCloseSale={isDraftTable ? onCloseSale : undefined}
         isDraftCard={isDraftTable}
         isAdmin={isAdmin}

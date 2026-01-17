@@ -8,9 +8,18 @@ import { createTransactionColumns } from "./transaction-columns";
 
 interface TransactionTableProps {
   transactions: BankTransactionWithRelations[];
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export const TransactionTable = ({ transactions }: TransactionTableProps) => {
+export const TransactionTable = ({
+  transactions,
+  searchValue,
+  onSearchChange,
+  isSearching,
+}: TransactionTableProps) => {
   const t = useTranslations("BankTransactions");
   const locale = useLocale();
 
@@ -23,14 +32,13 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
     <ResponsiveDataView
       columns={columns}
       renderCard={(transaction) => (
-        <TransactionCard
-          transaction={transaction}
-          locale={locale}
-        />
+        <TransactionCard transaction={transaction} locale={locale} />
       )}
       data={transactions}
-      searchKey={["description", "reference"]}
       searchPlaceholder={t("searchPlaceholder")}
+      searchValue={searchValue}
+      onSearchChange={onSearchChange}
+      isSearching={isSearching}
       showPagination
       pageSize={20}
       emptyMessage={t("noTransactions")}

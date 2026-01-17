@@ -29,6 +29,7 @@ import { SaleTable } from "@/components/sales/sale-table";
 import { SaleDetailDialog } from "@/components/sales/sale-detail-dialog";
 import { SalesFilters } from "@/components/sales/sales-filters";
 import { useSales, useCompleteSale } from "@/hooks/use-sales";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { toast } from "sonner";
 
@@ -49,22 +50,44 @@ export default function SalesPage() {
   const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
   const [dateTo, setDateTo] = useState<string | undefined>(undefined);
 
+  // Search states for each tab
+  const [completedSearch, setCompletedSearch] = useState("");
+  const debouncedCompletedSearch = useDebounce(completedSearch, 300);
+  const [draftSearch, setDraftSearch] = useState("");
+  const debouncedDraftSearch = useDebounce(draftSearch, 300);
+
   // Filter states for draft sales
-  const [draftSellerId, setDraftSellerId] = useState<string | undefined>(undefined);
+  const [draftSellerId, setDraftSellerId] = useState<string | undefined>(
+    undefined,
+  );
 
   // Query for completed sales
-  const { data: completedData, isLoading: completedLoading, error: completedError } = useSales({
+  const {
+    data: completedData,
+    isLoading: completedLoading,
+    error: completedError,
+    isFetching: completedFetching,
+  } = useSales({
     sellerId,
     dateFrom,
     dateTo,
     status: "COMPLETED",
+    search: debouncedCompletedSearch || undefined,
   });
+  const isCompletedSearching = completedFetching && !completedLoading;
 
   // Query for draft sales
-  const { data: draftData, isLoading: draftLoading, error: draftError } = useSales({
+  const {
+    data: draftData,
+    isLoading: draftLoading,
+    error: draftError,
+    isFetching: draftFetching,
+  } = useSales({
     sellerId: draftSellerId,
     status: "DRAFT",
+    search: debouncedDraftSearch || undefined,
   });
+  const isDraftSearching = draftFetching && !draftLoading;
 
   const completeSaleMutation = useCompleteSale();
 
@@ -87,9 +110,7 @@ export default function SalesPage() {
     setDateTo(filters.dateTo);
   };
 
-  const handleDraftFiltersChange = (filters: {
-    sellerId?: string;
-  }) => {
+  const handleDraftFiltersChange = (filters: { sellerId?: string }) => {
     setDraftSellerId(filters.sellerId);
   };
 
@@ -145,10 +166,12 @@ export default function SalesPage() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="completed">
-                {t("completedSales")} {completedData?.total ? `(${completedData.total})` : ""}
+                {t("completedSales")}{" "}
+                {completedData?.total ? `(${completedData.total})` : ""}
               </TabsTrigger>
               <TabsTrigger value="draft">
-                {t("openSales")} {draftData?.total ? `(${draftData.total})` : ""}
+                {t("openSales")}{" "}
+                {draftData?.total ? `(${draftData.total})` : ""}
               </TabsTrigger>
             </TabsList>
 
@@ -165,7 +188,9 @@ export default function SalesPage() {
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    {completedError instanceof Error ? completedError.message : t("loadError")}
+                    {completedError instanceof Error
+                      ? completedError.message
+                      : t("loadError")}
                   </AlertDescription>
                 </Alert>
               )}
@@ -184,6 +209,9 @@ export default function SalesPage() {
                   onView={handleViewSale}
                   onEdit={handleEditCompletedSale}
                   locale={locale}
+                  searchValue={completedSearch}
+                  onSearchChange={setCompletedSearch}
+                  isSearching={isCompletedSearching}
                 />
               )}
             </TabsContent>
@@ -198,7 +226,9 @@ export default function SalesPage() {
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    {draftError instanceof Error ? draftError.message : t("loadError")}
+                    {draftError instanceof Error
+                      ? draftError.message
+                      : t("loadError")}
                   </AlertDescription>
                 </Alert>
               )}
@@ -217,6 +247,9 @@ export default function SalesPage() {
                   onCloseSale={handleCloseSale}
                   isDraftTable
                   locale={locale}
+                  searchValue={draftSearch}
+                  onSearchChange={setDraftSearch}
+                  isSearching={isDraftSearching}
                 />
               )}
             </TabsContent>
@@ -241,11 +274,15 @@ export default function SalesPage() {
               {saleToClose && (
                 <div className="mt-4 p-3 rounded-lg bg-muted space-y-1">
                   <p className="font-medium">
-                    {t("saleNumber")}: #{String(saleToClose.saleNumber).padStart(4, "0")}
+                    {t("saleNumber")}: #
+                    {String(saleToClose.saleNumber).padStart(4, "0")}
                   </p>
-                  <p>{t("customer")}: {saleToClose.customer?.name}</p>
+                  <p>
+                    {t("customer")}: {saleToClose.customer?.name}
+                  </p>
                   <p className="font-semibold">
-                    {t("total")}: {new Intl.NumberFormat("es-CO", {
+                    {t("total")}:{" "}
+                    {new Intl.NumberFormat("es-CO", {
                       style: "currency",
                       currency: "COP",
                       minimumFractionDigits: 0,

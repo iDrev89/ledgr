@@ -20,6 +20,7 @@ import { useProducts } from "@/hooks/use-products";
 import { useProductCategories } from "@/hooks/use-product-categories";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { Product } from "@/lib/types/product";
 import type { ProductCategoryWithRelations } from "@/lib/types/product-categories";
 
@@ -35,12 +36,28 @@ export default function ProductsPage() {
     ProductCategoryWithRelations | undefined
   >(undefined);
 
-  const { data, isLoading, error } = useProducts();
+  // Server-side search state for products
+  const [productSearch, setProductSearch] = useState("");
+  const debouncedProductSearch = useDebounce(productSearch, 300);
+
+  // Server-side search state for categories
+  const [categorySearch, setCategorySearch] = useState("");
+  const debouncedCategorySearch = useDebounce(categorySearch, 300);
+
+  const { data, isLoading, error, isFetching } = useProducts(
+    debouncedProductSearch ? { search: debouncedProductSearch } : undefined,
+  );
+  const isProductSearching = isFetching && !isLoading;
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
     error: categoriesError,
-  } = useProductCategories();
+    isFetching: categoriesFetching,
+  } = useProductCategories(
+    debouncedCategorySearch ? { search: debouncedCategorySearch } : undefined,
+  );
+  const isCategorySearching = categoriesFetching && !categoriesLoading;
 
   const handleCreate = () => {
     setSelectedProduct(undefined);
@@ -138,6 +155,9 @@ export default function ProductsPage() {
                 <ProductTable
                   products={data?.products || []}
                   onEdit={handleEdit}
+                  searchValue={productSearch}
+                  onSearchChange={setProductSearch}
+                  isSearching={isProductSearching}
                 />
               )}
             </CardContent>
@@ -155,7 +175,11 @@ export default function ProductsPage() {
                     {tCategories("categoryListDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateCategory} size="sm" className="w-full sm:w-auto">
+                <Button
+                  onClick={handleCreateCategory}
+                  size="sm"
+                  className="w-full sm:w-auto"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   {tCategories("createCategory")}
                 </Button>
@@ -183,6 +207,9 @@ export default function ProductsPage() {
                 <CategoryTable
                   categories={categories}
                   onEdit={handleEditCategory}
+                  searchValue={categorySearch}
+                  onSearchChange={setCategorySearch}
+                  isSearching={isCategorySearching}
                 />
               )}
             </CardContent>

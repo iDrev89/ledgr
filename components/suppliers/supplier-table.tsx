@@ -22,9 +22,19 @@ import {
 interface SupplierTableProps {
   suppliers: Supplier[];
   onEdit: (supplier: Supplier) => void;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
+export function SupplierTable({
+  suppliers,
+  onEdit,
+  searchValue,
+  onSearchChange,
+  isSearching,
+}: SupplierTableProps) {
   const t = useTranslations("Suppliers");
   const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(
     null,
@@ -59,8 +69,10 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
       <ResponsiveDataView
         data={suppliers}
         columns={columns}
-        searchKey={["name", "email", "phone", "taxId"]}
         searchPlaceholder={t("searchPlaceholder")}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         renderCard={(supplier) => (
           <SupplierCard
             supplier={supplier}
@@ -79,7 +91,9 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteConfirmMessage", { name: supplierToDelete?.name || "" })}
+              {t("deleteConfirmMessage", {
+                name: supplierToDelete?.name || "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

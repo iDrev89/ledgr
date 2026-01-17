@@ -22,9 +22,18 @@ import {
 
 interface PurchaseTableProps {
   purchases: SerializedPurchase[];
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
-export function PurchaseTable({ purchases }: PurchaseTableProps) {
+export function PurchaseTable({
+  purchases,
+  searchValue,
+  onSearchChange,
+  isSearching,
+}: PurchaseTableProps) {
   const t = useTranslations("Purchases");
   const [selectedPurchase, setSelectedPurchase] =
     useState<SerializedPurchase | null>(null);
@@ -59,8 +68,10 @@ export function PurchaseTable({ purchases }: PurchaseTableProps) {
       <ResponsiveDataView
         data={purchases}
         columns={columns}
-        searchKey={["supplier.name", "invoiceNo"]}
         searchPlaceholder={t("searchPlaceholder")}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         renderCard={(purchase) => (
           <PurchaseCard
             purchase={purchase}

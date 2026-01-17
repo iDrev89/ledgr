@@ -25,6 +25,10 @@ interface ExpenseTableProps {
   onView: (expense: ExpenseWithDetails) => void;
   onEdit: (expense: ExpenseWithDetails) => void;
   locale?: string;
+  // Server-side search props
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 }
 
 export function ExpenseTable({
@@ -32,6 +36,9 @@ export function ExpenseTable({
   onView,
   onEdit,
   locale,
+  searchValue,
+  onSearchChange,
+  isSearching,
 }: ExpenseTableProps) {
   const t = useTranslations("Expenses");
   const [expenseToDelete, setExpenseToDelete] =
@@ -74,8 +81,10 @@ export function ExpenseTable({
           />
         )}
         data={expenses}
-        searchKey={["description"]}
         searchPlaceholder={t("searchPlaceholder")}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        isSearching={isSearching}
         showPagination
         pageSize={10}
         emptyMessage={t("noExpenses")}

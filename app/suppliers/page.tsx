@@ -16,6 +16,7 @@ import { SupplierDialog } from "@/components/suppliers/supplier-dialog";
 import { useSuppliers } from "@/hooks/use-suppliers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { Supplier } from "@/prisma/prisma-client";
 
 export default function SuppliersPage() {
@@ -25,7 +26,14 @@ export default function SuppliersPage() {
     Supplier | undefined
   >();
 
-  const { data, isLoading, error } = useSuppliers();
+  // Server-side search
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  const { data, isLoading, error, isFetching } = useSuppliers(
+    debouncedSearch ? { search: debouncedSearch } : undefined,
+  );
+  const isSearching = isFetching && !isLoading;
 
   const handleCreate = () => {
     setSelectedSupplier(undefined);
@@ -86,6 +94,9 @@ export default function SuppliersPage() {
             <SupplierTable
               suppliers={data?.suppliers || []}
               onEdit={handleEdit}
+              searchValue={searchInput}
+              onSearchChange={setSearchInput}
+              isSearching={isSearching}
             />
           )}
         </CardContent>

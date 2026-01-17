@@ -31,6 +31,7 @@ import {
   useBankTransactions,
   useBanksWithBalance,
 } from "@/hooks/use-bank-transactions";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { BankWithRelations } from "@/lib/types/bank";
 import {
   AlertDialog,
@@ -57,14 +58,28 @@ export default function BanksPage() {
   );
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
 
-  const { data, isLoading, error } = useBanks();
+  // Server-side search states
+  const [bankSearch, setBankSearch] = useState("");
+  const debouncedBankSearch = useDebounce(bankSearch, 300);
+  const [transactionSearch, setTransactionSearch] = useState("");
+
+  const { data, isLoading, error, isFetching } = useBanks(
+    debouncedBankSearch ? { search: debouncedBankSearch } : undefined,
+  );
+  const isBankSearching = isFetching && !isLoading;
+
   const { data: banksWithBalance, isLoading: loadingBalance } =
     useBanksWithBalance();
   const {
     data: transactionsData,
     isLoading: loadingTransactions,
     error: transactionsError,
+    isFetching: transactionsFetching,
   } = useBankTransactions();
+  // Note: useBankTransactions doesn't support search yet
+  const isTransactionSearching =
+    transactionsFetching && !loadingTransactions && !!transactionSearch;
+
   const deleteMutation = useDeleteBank();
 
   const handleCreate = () => {
@@ -125,7 +140,11 @@ export default function BanksPage() {
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <Button onClick={handleCreateTransfer} variant="outline" className="w-full sm:w-auto">
+          <Button
+            onClick={handleCreateTransfer}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
             <ArrowLeftRight className="mr-2 h-4 w-4" />
             {t("createTransfer")}
           </Button>
@@ -247,6 +266,9 @@ export default function BanksPage() {
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   t={t}
+                  searchValue={bankSearch}
+                  onSearchChange={setBankSearch}
+                  isSearching={isBankSearching}
                 />
               )}
             </CardContent>
@@ -289,6 +311,9 @@ export default function BanksPage() {
               ) : (
                 <TransactionTable
                   transactions={transactionsData?.transactions || []}
+                  searchValue={transactionSearch}
+                  onSearchChange={setTransactionSearch}
+                  isSearching={isTransactionSearching}
                 />
               )}
             </CardContent>

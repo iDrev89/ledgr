@@ -25,15 +25,18 @@ export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<
     Customer | undefined
   >();
-  const [searchInput, setSearchInput] = useState("");
 
-  // Debounce search query to avoid too many server requests
+  // Server-side search state
+  const [searchInput, setSearchInput] = useState("");
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // Server-side search - always fetches based on search term
-  const { data, isLoading, error } = useCustomers(
-    debouncedSearch ? { search: debouncedSearch } : undefined
+  // Fetch customers with server-side search
+  const { data, isLoading, error, isFetching } = useCustomers(
+    debouncedSearch ? { search: debouncedSearch } : undefined,
   );
+
+  // Show loading indicator when fetching but not on initial load
+  const isSearching = isFetching && !isLoading;
 
   const handleCreate = () => {
     setSelectedCustomer(undefined);
@@ -84,7 +87,7 @@ export default function CustomersPage() {
             </Alert>
           )}
 
-          {isLoading && !data ? (
+          {isLoading ? (
             <div className="space-y-3">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
@@ -96,7 +99,7 @@ export default function CustomersPage() {
               onEdit={handleEdit}
               searchValue={searchInput}
               onSearchChange={setSearchInput}
-              isSearching={isLoading}
+              isSearching={isSearching}
             />
           )}
         </CardContent>
