@@ -40,6 +40,7 @@ import { CategorySelector } from "./category-selector";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
 import { useBanks } from "@/hooks/use-banks";
 import { cn } from "@/lib/utils";
+import { AttachmentUpload } from "@/components/shared/attachment-upload";
 
 enum PaymentMethod {
   CASH = "CASH",
@@ -70,7 +71,9 @@ export function ExpenseForm({
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
   // Helper to parse datetime from backend
-  const parseDateTime = (value: string | Date | undefined): Date | undefined => {
+  const parseDateTime = (
+    value: string | Date | undefined,
+  ): Date | undefined => {
     if (!value) return undefined;
     try {
       if (value instanceof Date) return value;
@@ -82,7 +85,6 @@ export function ExpenseForm({
   };
 
   const form = useForm<CreateExpenseInput>({
-    
     resolver: zodResolver(createExpenseSchema) as any,
     defaultValues: {
       categoryId: expense?.categoryId || "",
@@ -94,8 +96,11 @@ export function ExpenseForm({
       bankId: (expense as any)?.bankId || undefined,
       reference: (expense as any)?.reference || "",
       incurredAt: expense?.incurredAt
-        ? (typeof expense.incurredAt === 'string' ? expense.incurredAt : expense.incurredAt.toISOString())
+        ? typeof expense.incurredAt === "string"
+          ? expense.incurredAt
+          : expense.incurredAt.toISOString()
         : new Date().toISOString(),
+      attachment: expense?.attachment || null,
     },
   });
 
@@ -200,7 +205,9 @@ export function ExpenseForm({
                         {field.value ? (
                           (() => {
                             const date = parseDateTime(field.value);
-                            return date ? format(date, "dd/MM/yyyy") : t("datePlaceholder");
+                            return date
+                              ? format(date, "dd/MM/yyyy")
+                              : t("datePlaceholder");
                           })()
                         ) : (
                           <span>{t("datePlaceholder")}</span>
@@ -209,14 +216,15 @@ export function ExpenseForm({
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="start"
+                  >
                     <Calendar
                       mode="single"
                       selected={parseDateTime(field.value)}
                       onSelect={(date) => {
-                        field.onChange(
-                          date ? date.toISOString() : "",
-                        );
+                        field.onChange(date ? date.toISOString() : "");
                         setCalendarOpen(false);
                       }}
                       disabled={isLoading}
@@ -229,119 +237,146 @@ export function ExpenseForm({
           />
         </div>
 
-        {/* Payment Method */}
-        <FormField
-          control={form.control}
-          name="paymentMethod"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {t("paymentMethod")} <span className="text-destructive">*</span>
-              </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value}
-                disabled={isLoading}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("paymentMethodPlaceholder")} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value={PaymentMethod.CASH}>
-                    {t("paymentCash")}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.CARD}>
-                    {t("paymentCard")}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.TRANSFER}>
-                    {t("paymentTransfer")}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.DIGITAL}>
-                    {t("paymentDigital")}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.OTHER}>
-                    {t("paymentOther")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Bank (only for TRANSFER) */}
-        {paymentMethod === PaymentMethod.TRANSFER && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Payment Method */}
           <FormField
             control={form.control}
-            name="bankId"
+            name="paymentMethod"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("bank")} <span className="text-destructive">*</span>
+                  {t("paymentMethod")}{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  value={field.value || undefined}
+                  value={field.value}
                   disabled={isLoading}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("bankPlaceholder")} />
+                      <SelectValue
+                        placeholder={t("paymentMethodPlaceholder")}
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {banks.map((bank) => (
-                      <SelectItem key={bank.id} value={bank.id}>
-                        {bank.name}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value={PaymentMethod.CASH}>
+                      {t("paymentCash")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.CARD}>
+                      {t("paymentCard")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.TRANSFER}>
+                      {t("paymentTransfer")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.DIGITAL}>
+                      {t("paymentDigital")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.OTHER}>
+                      {t("paymentOther")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
 
-        {/* Reference */}
-        {paymentMethod === PaymentMethod.TRANSFER && (
+          {/* Invoice Number */}
           <FormField
             control={form.control}
-            name="reference"
+            name="invoiceNo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("reference")}</FormLabel>
+                <FormLabel>{t("invoiceNo")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={t("referencePlaceholder")}
+                    placeholder={t("invoiceNoPlaceholder")}
                     {...field}
                     disabled={isLoading}
                   />
                 </FormControl>
-                <FormDescription>{t("referenceDescription")}</FormDescription>
+                <FormDescription>{t("invoiceNoDescription")}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+        </div>
+
+        {/* Bank and Reference (only for TRANSFER) */}
+        {paymentMethod === PaymentMethod.TRANSFER && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Bank */}
+            <FormField
+              control={form.control}
+              name="bankId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("bank")} <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || undefined}
+                    disabled={isLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("bankPlaceholder")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {banks.map((bank) => (
+                        <SelectItem key={bank.id} value={bank.id}>
+                          {bank.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Reference */}
+            <FormField
+              control={form.control}
+              name="reference"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("reference")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t("referencePlaceholder")}
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormDescription>{t("referenceDescription")}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         )}
 
-        {/* Invoice Number */}
+        {/* Attachment */}
         <FormField
           control={form.control}
-          name="invoiceNo"
+          name="attachment"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("invoiceNo")}</FormLabel>
+              <FormLabel>{t("attachmentLabel")}</FormLabel>
               <FormControl>
-                <Input
-                  placeholder={t("invoiceNoPlaceholder")}
-                  {...field}
+                <AttachmentUpload
+                  currentUrl={field.value}
+                  onUploadComplete={field.onChange}
                   disabled={isLoading}
+                  folder="expenses"
+                  label={t("attachmentPlaceholder")}
                 />
               </FormControl>
-              <FormDescription>{t("invoiceNoDescription")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}

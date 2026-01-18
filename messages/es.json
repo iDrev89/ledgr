@@ -23,7 +23,13 @@
     "noDataYet": "No hay datos aún",
     "errors": {
       "fetchFailed": "Error al obtener los datos del dashboard"
-    }
+    },
+    "todaysBirthdays": "Cumpleaños de Hoy",
+    "turningYears": "Cumple {age} años",
+    "today": "Hoy",
+    "birthdayToday": "1 cliente cumple años hoy",
+    "birthdaysToday": "{count} clientes cumplen años hoy",
+    "years": "años"
   },
   "Users": {
     "title": "Usuarios",
@@ -295,6 +301,8 @@
     "createSuccess": "Compra creada exitosamente",
     "createError": "Error al crear la compra",
     "purchaseHistory": "Historial de Compras",
+    "purchaseList": "Lista de Compras",
+    "purchaseListDescription": "Ve y administra todas tus compras.",
     "viewPurchase": "Ver Compra",
     "purchaseDetail": "Detalle de Compra",
     "noPurchases": "No hay compras registradas",
@@ -703,8 +711,12 @@
     "amount": "Monto",
     "date": "Fecha",
     "invoiceNo": "N° Factura",
-    "invoiceNoPlaceholder": "Número de factura",
-    "invoiceNoDescription": "Opcional - Número de factura o referencia",
+    "invoiceNoPlaceholder": "Ej: FAC-001",
+    "invoiceNoDescription": "Número de factura o recibo del proveedor",
+    "attachmentLabel": "Comprobante",
+    "attachmentPlaceholder": "Subir imagen del recibo/factura",
+    "attachmentTitle": "Comprobante del Gasto",
+    "viewAttachment": "Ver Comprobante",
     "categoryDescription": "Opcional - Categoría del gasto",
     "paymentMethod": "Método de Pago",
     "paymentMethodPlaceholder": "Selecciona un método de pago",

@@ -21,6 +21,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { usePagination } from "@/hooks/use-pagination";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import type { Customer } from "@/lib/types/customer";
+import { BirthdaysCard } from "@/components/dashboard/birthdays-card";
 
 export default function CustomersPage() {
   const t = useTranslations("Customers");
@@ -84,6 +85,8 @@ export default function CustomersPage() {
           {t("createCustomer")}
         </Button>
       </div>
+
+      <BirthdaysCard />
 
       <Card>
         <CardHeader>

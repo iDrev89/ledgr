@@ -5,6 +5,7 @@ import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
+import { ImageViewerDialog } from "@/components/shared/image-viewer-dialog";
 
 interface ExpenseDetailDialogProps {
   open: boolean;
@@ -141,7 +142,9 @@ export function ExpenseDetailDialog({
           <>
             <Separator />
             <div>
-              <h3 className="text-sm font-semibold mb-2">{t("descriptionLabel")}</h3>
+              <h3 className="text-sm font-semibold mb-2">
+                {t("descriptionLabel")}
+              </h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                 {expense.description}
               </p>
@@ -164,6 +167,23 @@ export function ExpenseDetailDialog({
                   {formatDate(expense.createdAt)}
                 </p>
               </div>
+            </div>
+          </>
+        )}
+
+        {/* Attachment */}
+        {expense.attachment && (
+          <>
+            <Separator />
+            <div>
+              <h3 className="text-sm font-semibold mb-2">
+                {t("attachmentLabel")}
+              </h3>
+              <ImageViewerDialog
+                imageUrl={expense.attachment}
+                title={t("attachmentTitle")}
+                buttonText={t("viewAttachment")}
+              />
             </div>
           </>
         )}

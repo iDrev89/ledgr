@@ -70,6 +70,7 @@ const createExpenseSchemas = (messages?: {
         .trim()
         .optional()
         .or(z.literal("")),
+      attachment: z.string().optional().nullable(),
       incurredAt: z
         .string()
         .or(z.date())
