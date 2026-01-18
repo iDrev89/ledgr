@@ -27,6 +27,7 @@ interface CustomerTableProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function CustomerTable({
@@ -35,6 +36,7 @@ export function CustomerTable({
   searchValue,
   onSearchChange,
   isSearching,
+  enablePagination = true,
 }: CustomerTableProps) {
   const t = useTranslations("Customers");
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
@@ -79,6 +81,7 @@ export function CustomerTable({
         onSearchChange={onSearchChange}
         isSearching={isSearching}
         showPagination
+        enablePagination={enablePagination}
         pageSize={10}
         emptyMessage={t("noCustomers")}
         onEdit={onEdit}

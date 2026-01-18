@@ -13,9 +13,7 @@ interface PayrollRunTableProps {
   onPay: (run: PayrollRunWithDetails) => void;
   onDelete: (run: PayrollRunWithDetails) => void;
   // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function PayrollRunTable({
@@ -24,9 +22,7 @@ export function PayrollRunTable({
   onFinalize,
   onPay,
   onDelete,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: PayrollRunTableProps) {
   const t = useTranslations("Payroll");
   const locale = useLocale();
@@ -41,10 +37,8 @@ export function PayrollRunTable({
       )}
       data={runs}
       searchPlaceholder={t("searchPlaceholder")}
-      searchValue={searchValue}
-      onSearchChange={onSearchChange}
-      isSearching={isSearching}
-      showPagination={true}
+      showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noPayrollRuns")}
       onView={onView}

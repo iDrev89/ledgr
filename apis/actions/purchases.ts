@@ -71,46 +71,94 @@ const serializePurchase = (
 /**
  * Get all purchases
  */
-export async function getPurchases(): Promise<
+export async function getPurchases(params?: {
+  search?: string;
+  supplierId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<
   ActionResponse<{ purchases: SerializedPurchase[]; total: number }>
 > {
   try {
     const session = await requireAuth();
 
-    const purchases = await prisma.purchase.findMany({
-      include: {
-        supplier: {
-          select: {
-            id: true,
-            name: true,
+    const {
+      search = "",
+      supplierId,
+      dateFrom,
+      dateTo,
+      limit,
+      offset = 0,
+    } = params || {};
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { purchaseNumber: { contains: search, mode: "insensitive" as const } },
+        { invoiceNo: { contains: search, mode: "insensitive" as const } },
+        { note: { contains: search, mode: "insensitive" as const } },
+        {
+          supplier: {
+            name: { contains: search, mode: "insensitive" as const },
           },
         },
-        bank: {
-          select: {
-            id: true,
-            name: true,
+      ];
+    }
+
+    if (supplierId) {
+      where.supplierId = supplierId;
+    }
+
+    if (dateFrom && dateTo) {
+      where.createdAt = {
+        gte: new Date(dateFrom),
+        lte: new Date(dateTo),
+      };
+    }
+
+    const [purchases, total] = await Promise.all([
+      prisma.purchase.findMany({
+        where,
+        ...(limit ? { take: limit } : {}),
+        skip: offset,
+        include: {
+          supplier: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
-        },
-        createdBy: {
-          select: {
-            name: true,
+          bank: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
-        },
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
+          createdBy: {
+            select: {
+              name: true,
+            },
+          },
+          items: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.purchase.count({ where }),
+    ]);
 
     const serialized = purchases.map(serializePurchase);
 

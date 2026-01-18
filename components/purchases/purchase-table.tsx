@@ -22,17 +22,12 @@ import {
 
 interface PurchaseTableProps {
   purchases: SerializedPurchase[];
-  // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function PurchaseTable({
   purchases,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: PurchaseTableProps) {
   const t = useTranslations("Purchases");
   const [selectedPurchase, setSelectedPurchase] =
@@ -68,10 +63,8 @@ export function PurchaseTable({
       <ResponsiveDataView
         data={purchases}
         columns={columns}
-        searchPlaceholder={t("searchPlaceholder")}
-        searchValue={searchValue}
-        onSearchChange={onSearchChange}
-        isSearching={isSearching}
+        showPagination
+        enablePagination={enablePagination}
         renderCard={(purchase) => (
           <PurchaseCard
             purchase={purchase}

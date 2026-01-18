@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProductStock } from "@/lib/types/inventory";
 import { StatsCard } from "@/components/shared/stats-card";
 import type { Product } from "@/lib/types/product";
+import { useDebounce } from "@/hooks/use-debounce";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 
 export default function InventoryPage() {
   const t = useTranslations("Inventory");
@@ -32,7 +36,26 @@ export default function InventoryPage() {
   >();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const { data, isLoading, error } = useInventorySummary();
+  // Search and Pagination
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch]);
+
+  const { data, isLoading, error, isFetching } = useInventorySummary({
+    search: debouncedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isSearching = isFetching && !isLoading;
 
   // Check permissions
   const canCreate = hasPermission("inventory", "create");
@@ -65,14 +88,12 @@ export default function InventoryPage() {
     setSelectedProduct(null);
   };
 
-  // Calculate statistics
-  const stats = {
-    totalProducts: data?.length || 0,
-    lowStock:
-      data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10)
-        .length || 0,
-    outOfStock: data?.filter((item) => item.currentStock === 0).length || 0,
-    inStock: data?.filter((item) => item.currentStock > 10).length || 0,
+  // Statistics from server
+  const stats = data?.stats || {
+    totalProducts: 0,
+    lowStock: 0,
+    outOfStock: 0,
+    inStock: 0,
   };
 
   return (
@@ -122,10 +143,18 @@ export default function InventoryPage() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <CardTitle>{t("inventoryList")}</CardTitle>
               <CardDescription>{t("inventoryListDescription")}</CardDescription>
+            </div>
+            <div className="w-full md:w-auto md:min-w-[300px]">
+              <SearchInput
+                value={search}
+                onChange={setSearch}
+                placeholder={t("searchPlaceholder")}
+                isLoading={isSearching}
+              />
             </div>
           </div>
         </CardHeader>
@@ -146,12 +175,21 @@ export default function InventoryPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <InventoryTable
-              inventory={data || []}
-              onAdjust={handleAdjust}
-              onViewHistory={handleViewHistory}
-              canAdjust={canUpdate}
-            />
+            <>
+              <InventoryTable
+                inventory={data?.items || []}
+                onAdjust={handleAdjust}
+                onViewHistory={handleViewHistory}
+                canAdjust={canUpdate}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

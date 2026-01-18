@@ -13,11 +13,18 @@ export const PURCHASES_QUERY_KEY = ["purchases"];
 /**
  * Hook to fetch all purchases
  */
-export function usePurchases() {
+export function usePurchases(params?: {
+  search?: string;
+  supplierId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  limit?: number;
+  offset?: number;
+}) {
   return useQuery({
-    queryKey: PURCHASES_QUERY_KEY,
+    queryKey: [...PURCHASES_QUERY_KEY, params],
     queryFn: async () => {
-      const response = await getPurchases();
+      const response = await getPurchases(params);
       if (!response.success) {
         throw new Error(response.error);
       }
@@ -68,7 +75,9 @@ export function useCreatePurchase() {
       queryClient.invalidateQueries({ queryKey: ["banks"] });
       // Invalidate reports for updated data
       queryClient.invalidateQueries({ queryKey: ["purchase-report-enhanced"] });
-      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }
@@ -98,7 +107,9 @@ export function useDeletePurchase() {
       queryClient.invalidateQueries({ queryKey: ["banks"] });
       // Invalidate reports for updated data
       queryClient.invalidateQueries({ queryKey: ["purchase-report-enhanced"] });
-      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 }

@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useEffect } from "react";
-import { format } from "date-fns";
-import { ChevronDownIcon, Loader2 } from "lucide-react";
+import { format, parse, isValid, isAfter, startOfDay } from "date-fns";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
 import { parseDateOnly, formatDateOnly } from "@/lib/date-utils";
 import {
   getCustomerSchemas,
@@ -39,6 +38,24 @@ interface CustomerFormProps {
   isLoading?: boolean;
 }
 
+// Helper to format input as DD/MM/YYYY while typing
+function formatDateInput(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  let formatted = "";
+
+  if (digits.length > 0) {
+    formatted = digits.slice(0, 2);
+  }
+  if (digits.length > 2) {
+    formatted += "/" + digits.slice(2, 4);
+  }
+  if (digits.length > 4) {
+    formatted += "/" + digits.slice(4, 8);
+  }
+
+  return formatted;
+}
+
 export function CustomerForm({
   customer,
   onSubmit,
@@ -47,19 +64,27 @@ export function CustomerForm({
 }: CustomerFormProps) {
   const t = useTranslations("Customers");
   const [calendarOpen, setCalendarOpen] = useState(false);
-  
+
   // Initialize birthdate from customer data
   const initialBirthdate = useMemo(() => {
     return parseDateOnly(customer?.birthdate);
   }, [customer?.birthdate]);
-  
-  const [birthdate, setBirthdate] = useState<Date | undefined>(initialBirthdate);
+
+  const [birthdate, setBirthdate] = useState<Date | undefined>(
+    initialBirthdate,
+  );
+  const [birthdateInput, setBirthdateInput] = useState(
+    initialBirthdate ? format(initialBirthdate, "dd/MM/yyyy") : "",
+  );
 
   const { createCustomerSchema } = useMemo(() => getCustomerSchemas(t), [t]);
 
   // Sync birthdate state when customer changes
   useEffect(() => {
     setBirthdate(initialBirthdate);
+    setBirthdateInput(
+      initialBirthdate ? format(initialBirthdate, "dd/MM/yyyy") : "",
+    );
   }, [initialBirthdate]);
 
   const form = useForm<CreateCustomerInput>({
@@ -69,9 +94,7 @@ export function CustomerForm({
       email: customer?.email || "",
       phone: customer?.phone || "",
       docId: customer?.docId || "",
-      birthdate: customer?.birthdate
-        ? String(customer.birthdate).split("T")[0]
-        : "",
+      birthdate: initialBirthdate ? formatDateOnly(initialBirthdate) : "",
       note: customer?.note || "",
     },
   });
@@ -86,6 +109,64 @@ export function CustomerForm({
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+  };
+
+  // Handle text input change for birthdate
+  const handleBirthdateInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const formatted = formatDateInput(e.target.value);
+    setBirthdateInput(formatted);
+
+    if (formatted.length === 0) {
+      setBirthdate(undefined);
+      form.setValue("birthdate", "", { shouldValidate: true });
+      return;
+    }
+
+    if (formatted.length === 10) {
+      const parsed = parse(formatted, "dd/MM/yyyy", new Date());
+      const today = startOfDay(new Date());
+
+      if (!isValid(parsed) || parsed.getFullYear() < 1900) {
+        setBirthdate(undefined);
+        // Set invalid value to ensure form is invalid
+        form.setValue("birthdate", "invalid");
+        form.setError("birthdate", {
+          type: "manual",
+          message: t("validation.birthdateInvalid"),
+        });
+      } else if (isAfter(parsed, today)) {
+        setBirthdate(undefined);
+        form.setValue("birthdate", "invalid");
+        form.setError("birthdate", {
+          type: "manual",
+          message: t("validation.birthdateNotToday"),
+        });
+      } else {
+        setBirthdate(parsed);
+        form.setValue("birthdate", formatDateOnly(parsed), {
+          shouldValidate: true,
+        });
+        form.clearErrors("birthdate");
+      }
+    }
+  };
+
+  // Handle calendar selection
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (date) {
+      setBirthdate(date);
+      setBirthdateInput(format(date, "dd/MM/yyyy"));
+      form.setValue("birthdate", formatDateOnly(date), {
+        shouldValidate: true,
+      });
+    } else {
+      setBirthdate(undefined);
+      setBirthdateInput("");
+      form.setValue("birthdate", "", { shouldValidate: true });
+    }
+    setCalendarOpen(false);
   };
 
   return (
@@ -167,51 +248,48 @@ export function CustomerForm({
         <FormField
           control={form.control}
           name="birthdate"
-          render={({ field }) => (
+          render={() => (
             <FormItem className="flex flex-col">
               <FormLabel>{t("birthdate")}</FormLabel>
-              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-between font-normal",
-                        !birthdate && "text-muted-foreground"
-                      )}
-                      disabled={isLoading}
-                    >
-                      {birthdate
-                        ? format(birthdate, "dd/MM/yyyy")
-                        : t("birthdatePlaceholder")}
-                      <ChevronDownIcon className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto overflow-hidden p-0"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={birthdate}
-                    defaultMonth={birthdate || new Date()}
-                    captionLayout="dropdown"
-                    startMonth={new Date(1900, 0)}
-                    endMonth={new Date()}
-                    onSelect={(date) => {
-                      if (date) {
-                        setBirthdate(date);
-                        field.onChange(formatDateOnly(date));
-                      } else {
-                        setBirthdate(undefined);
-                        field.onChange("");
-                      }
-                      setCalendarOpen(false);
-                    }}
+              <div className="flex gap-2">
+                <FormControl>
+                  <Input
+                    value={birthdateInput}
+                    onChange={handleBirthdateInputChange}
+                    placeholder="DD/MM/YYYY"
+                    disabled={isLoading}
+                    maxLength={10}
+                    className="flex-1"
                   />
-                </PopoverContent>
-              </Popover>
+                </FormControl>
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      disabled={isLoading}
+                      className="shrink-0"
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="end"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={birthdate}
+                      defaultMonth={birthdate || new Date()}
+                      captionLayout="dropdown"
+                      startMonth={new Date(1900, 0)}
+                      endMonth={new Date()}
+                      onSelect={handleCalendarSelect}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
               <FormMessage />
             </FormItem>
           )}

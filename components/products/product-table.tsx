@@ -23,18 +23,13 @@ import { createProductColumns } from "./product-columns";
 interface ProductTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
-  // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function ProductTable({
   products,
   onEdit,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: ProductTableProps) {
   const t = useTranslations("Products");
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
@@ -72,11 +67,8 @@ export function ProductTable({
           />
         )}
         data={products}
-        searchPlaceholder={t("searchPlaceholder")}
-        searchValue={searchValue}
-        onSearchChange={onSearchChange}
-        isSearching={isSearching}
         showPagination
+        enablePagination={enablePagination}
         pageSize={10}
         emptyMessage={t("noProducts")}
         onEdit={onEdit}

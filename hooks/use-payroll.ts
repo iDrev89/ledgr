@@ -28,6 +28,7 @@ import type {
 // ==================== PAYROLL RUNS ====================
 
 export const usePayrollRuns = (params?: {
+  search?: string;
   status?: PayrollRunStatus;
   limit?: number;
   offset?: number;

@@ -10,10 +10,7 @@ interface BankTableProps {
   onEdit: (bank: BankWithRelations) => void;
   onDelete: (bank: BankWithRelations) => void;
   t: (key: string) => string;
-  // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function BankTable({
@@ -21,9 +18,7 @@ export function BankTable({
   onEdit,
   onDelete,
   t,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: BankTableProps) {
   const columns = getBankColumns({ onEdit, onDelete, t });
 
@@ -38,11 +33,8 @@ export function BankTable({
         />
       )}
       data={banks}
-      searchPlaceholder={t("searchPlaceholder")}
-      searchValue={searchValue}
-      onSearchChange={onSearchChange}
-      isSearching={isSearching}
-      showPagination={true}
+      showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noBanks")}
       onEdit={onEdit}

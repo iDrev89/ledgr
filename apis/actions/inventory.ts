@@ -243,24 +243,88 @@ export const getProductStock = async (
   }
 };
 
-export const getInventorySummary = async (): Promise<
-  ActionResponse<
-    {
+export const getInventorySummary = async (params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<
+  ActionResponse<{
+    items: {
       product: Product;
       currentStock: number;
       lastMovement?: StockMovement;
-    }[]
-  >
+    }[];
+    total: number;
+    stats: {
+      totalProducts: number;
+      lowStock: number;
+      outOfStock: number;
+      inStock: number;
+    };
+  }>
 > => {
   const t = await getTranslations("Inventory.errors");
 
   try {
     await requireAuth();
 
-    // Get all products
-    const products = await prisma.product.findMany({
-      where: { active: true, type: "PRODUCT" }, // Only physical products
-      orderBy: { name: "asc" },
+    const { search = "", limit, offset = 0 } = params || {};
+
+    const where: any = { active: true, type: "PRODUCT" }; // Only physical products
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" as const } },
+        { sku: { contains: search, mode: "insensitive" as const } },
+      ];
+    }
+
+    // Get products with pagination
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        ...(limit ? { take: limit } : {}),
+        skip: offset,
+        orderBy: { name: "asc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    // Calculate global stats (fetch minimal data for all products)
+    const allProductsForStats = await prisma.product.findMany({
+      where: { active: true, type: "PRODUCT" },
+      select: {
+        id: true,
+        stockMoves: {
+          select: { moveType: true, quantity: true },
+        },
+      },
+    });
+
+    const stats = {
+      totalProducts: allProductsForStats.length,
+      lowStock: 0,
+      outOfStock: 0,
+      inStock: 0,
+    };
+
+    allProductsForStats.forEach((p) => {
+      let currentStock = 0;
+      p.stockMoves.forEach((m) => {
+        if (
+          m.moveType === StockMoveType.PURCHASE ||
+          m.moveType === StockMoveType.ADJUSTMENT
+        ) {
+          currentStock += m.quantity;
+        } else if (m.moveType === StockMoveType.SALE) {
+          currentStock -= Math.abs(m.quantity);
+        }
+      });
+
+      if (currentStock === 0) stats.outOfStock++;
+      else if (currentStock <= 10)
+        stats.lowStock++; // Assuming low stock threshold is 10
+      else stats.inStock++;
     });
 
     // Get stock for each product
@@ -297,7 +361,10 @@ export const getInventorySummary = async (): Promise<
       }),
     );
 
-    return { success: true, data: inventorySummary };
+    return {
+      success: true,
+      data: { items: inventorySummary, total, stats },
+    };
   } catch (error) {
     console.error("Error fetching inventory summary:", error);
     return {

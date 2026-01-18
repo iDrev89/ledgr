@@ -11,10 +11,7 @@ interface InventoryTableProps {
   onAdjust: (item: ProductStock) => void;
   onViewHistory: (item: ProductStock) => void;
   canAdjust?: boolean;
-  // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function InventoryTable({
@@ -22,9 +19,7 @@ export function InventoryTable({
   onAdjust,
   onViewHistory,
   canAdjust = true,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: InventoryTableProps) {
   const t = useTranslations("Inventory");
 
@@ -47,11 +42,8 @@ export function InventoryTable({
         />
       )}
       data={inventory}
-      searchPlaceholder={t("searchPlaceholder")}
-      searchValue={searchValue}
-      onSearchChange={onSearchChange}
-      isSearching={isSearching}
       showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noInventory")}
     />

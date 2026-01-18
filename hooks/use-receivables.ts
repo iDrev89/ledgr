@@ -9,8 +9,10 @@ import type { CreateReceivablePaymentInput } from "@/lib/validations/receivables
 
 export const useReceivables = (params?: {
   search?: string;
-  status?: string;
+  status?: string | string[];
   customerId?: string;
+  limit?: number;
+  offset?: number;
 }) => {
   return useQuery({
     queryKey: ["receivables", params],
@@ -60,7 +62,9 @@ export const useCreateReceivablePayment = () => {
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       // Invalidate reports for updated data
       queryClient.invalidateQueries({ queryKey: ["daily-sales-report"] });
-      queryClient.invalidateQueries({ queryKey: ["business-summary-enhanced"] });
+      queryClient.invalidateQueries({
+        queryKey: ["business-summary-enhanced"],
+      });
     },
   });
 };

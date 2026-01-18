@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,9 @@ import { useSuppliers } from "@/hooks/use-suppliers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useDebounce } from "@/hooks/use-debounce";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { Supplier } from "@/prisma/prisma-client";
 
 export default function SuppliersPage() {
@@ -30,9 +33,23 @@ export default function SuppliersPage() {
   const [searchInput, setSearchInput] = useState("");
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  const { data, isLoading, error, isFetching } = useSuppliers(
-    debouncedSearch ? { search: debouncedSearch } : undefined,
-  );
+  // Pagination state
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when search changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch]);
+
+  const { data, isLoading, error, isFetching } = useSuppliers({
+    search: debouncedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
   const isSearching = isFetching && !isLoading;
 
   const handleCreate = () => {
@@ -67,10 +84,18 @@ export default function SuppliersPage() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <CardTitle>{t("supplierList")}</CardTitle>
               <CardDescription>{t("supplierListDescription")}</CardDescription>
+            </div>
+            <div className="w-full md:w-auto md:min-w-[300px]">
+              <SearchInput
+                value={searchInput}
+                onChange={setSearchInput}
+                placeholder={t("searchPlaceholder")}
+                isLoading={isSearching}
+              />
             </div>
           </div>
         </CardHeader>
@@ -91,13 +116,19 @@ export default function SuppliersPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <SupplierTable
-              suppliers={data?.suppliers || []}
-              onEdit={handleEdit}
-              searchValue={searchInput}
-              onSearchChange={setSearchInput}
-              isSearching={isSearching}
-            />
+            <>
+              <SupplierTable
+                suppliers={data?.suppliers || []}
+                onEdit={handleEdit}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

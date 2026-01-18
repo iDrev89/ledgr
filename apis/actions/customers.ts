@@ -72,7 +72,7 @@ export const getCustomers = async (params?: {
 };
 
 export const getCustomer = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -97,17 +97,61 @@ export const getCustomer = async (
 };
 
 export const createCustomer = async (
-  input: CreateCustomerInput
+  input: CreateCustomerInput,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
 
     const validated = createCustomerSchema.parse(input);
 
+    // Check for duplicates by docId or email
+    const duplicateConditions = [];
+
+    if (validated.docId) {
+      duplicateConditions.push({ docId: validated.docId });
+    }
+
+    if (validated.email) {
+      duplicateConditions.push({ email: validated.email.toLowerCase() });
+    }
+
+    if (duplicateConditions.length > 0) {
+      const existingCustomer = await prisma.customer.findFirst({
+        where: {
+          OR: duplicateConditions,
+        },
+        select: {
+          id: true,
+          docId: true,
+          email: true,
+          name: true,
+        },
+      });
+
+      if (existingCustomer) {
+        if (validated.docId && existingCustomer.docId === validated.docId) {
+          return {
+            success: false,
+            error: `Ya existe un cliente con la identificación ${validated.docId}: ${existingCustomer.name}`,
+          };
+        }
+        if (
+          validated.email &&
+          existingCustomer.email?.toLowerCase() ===
+            validated.email.toLowerCase()
+        ) {
+          return {
+            success: false,
+            error: `Ya existe un cliente con el correo ${validated.email}: ${existingCustomer.name}`,
+          };
+        }
+      }
+    }
+
     const customer = await prisma.customer.create({
       data: {
         name: validated.name,
-        email: validated.email || null,
+        email: validated.email?.toLowerCase() || null,
         phone: validated.phone || null,
         docId: validated.docId || null,
         birthdate: dateOnlyToUTC(validated.birthdate),
@@ -123,7 +167,7 @@ export const createCustomer = async (
     if (error instanceof Error && error.message.includes("Unique constraint")) {
       return {
         success: false,
-        error: "A customer with this email already exists",
+        error: "Ya existe un cliente con estos datos",
       };
     }
     return {
@@ -135,7 +179,7 @@ export const createCustomer = async (
 };
 
 export const updateCustomer = async (
-  input: UpdateCustomerInput
+  input: UpdateCustomerInput,
 ): Promise<ActionResponse<Customer>> => {
   try {
     await requireAuth();
@@ -175,7 +219,7 @@ export const updateCustomer = async (
 };
 
 export const deleteCustomer = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   try {
     await requireAuth();

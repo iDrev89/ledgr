@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
@@ -33,6 +33,9 @@ import {
 } from "@/hooks/use-bank-transactions";
 import { useDebounce } from "@/hooks/use-debounce";
 import { StatsCard } from "@/components/shared/stats-card";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { BankWithRelations } from "@/lib/types/bank";
 import {
   AlertDialog,
@@ -64,13 +67,29 @@ export default function BanksPage() {
   const debouncedBankSearch = useDebounce(bankSearch, 300);
   const [transactionSearch, setTransactionSearch] = useState("");
 
-  const { data, isLoading, error, isFetching } = useBanks(
-    debouncedBankSearch ? { search: debouncedBankSearch } : undefined,
-  );
-  const isBankSearching = isFetching && !isLoading;
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
 
-  const { data: banksWithBalance, isLoading: loadingBalance } =
-    useBanksWithBalance();
+  // Reset pagination when search changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedBankSearch]);
+
+  const {
+    data: banksData,
+    isLoading: loadingBanks,
+    error: banksError,
+    isFetching: banksFetching,
+  } = useBanksWithBalance({
+    search: debouncedBankSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isBankSearching = banksFetching && !loadingBanks;
+
   const {
     data: transactionsData,
     isLoading: loadingTransactions,
@@ -125,11 +144,7 @@ export default function BanksPage() {
     }).format(amount);
   };
 
-  const totalBalance =
-    banksWithBalance?.reduce(
-      (sum, bank) => sum + (bank.currentBalance || 0),
-      0,
-    ) || 0;
+  const totalBalance = banksData?.totalBalance || 0;
 
   return (
     <div className="flex flex-col gap-6">
@@ -163,14 +178,14 @@ export default function BanksPage() {
           value={formatCurrency(totalBalance)}
           description={t("acrossAllBanks")}
           icon={Wallet}
-          isLoading={loadingBalance}
+          isLoading={loadingBanks}
         />
         <StatsCard
           label={t("activeBanks")}
-          value={banksWithBalance?.length || 0}
+          value={banksData?.total || 0}
           description={t("banksConfigured")}
           icon={Activity}
-          isLoading={loadingBalance}
+          isLoading={loadingBanks}
         />
         <StatsCard
           label={t("recentActivity")}
@@ -197,39 +212,55 @@ export default function BanksPage() {
         <TabsContent value="banks">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <CardTitle>{t("banksTitle")}</CardTitle>
                   <CardDescription>{t("banksDescription")}</CardDescription>
                 </div>
+                <div className="w-full md:w-auto md:min-w-[300px]">
+                  <SearchInput
+                    value={bankSearch}
+                    onChange={setBankSearch}
+                    placeholder={t("searchPlaceholder")}
+                    isLoading={isBankSearching}
+                  />
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              {error && (
+              {banksError && (
                 <Alert variant="destructive" className="mb-4">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    {error instanceof Error ? error.message : t("loadError")}
+                    {banksError instanceof Error
+                      ? banksError.message
+                      : t("loadError")}
                   </AlertDescription>
                 </Alert>
               )}
 
-              {isLoading || loadingBalance ? (
+              {loadingBanks ? (
                 <div className="space-y-3">
                   <Skeleton className="h-12 w-full" />
                   <Skeleton className="h-12 w-full" />
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : (
-                <BankTable
-                  banks={banksWithBalance || []}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  t={t}
-                  searchValue={bankSearch}
-                  onSearchChange={setBankSearch}
-                  isSearching={isBankSearching}
-                />
+                <>
+                  <BankTable
+                    banks={(banksData?.banks as BankWithRelations[]) || []}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    t={t}
+                    enablePagination={false}
+                  />
+                  <PaginationControl
+                    currentPage={pagination.page}
+                    totalCount={banksData?.total || 0}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={pagination.onPageChange}
+                  />
+                </>
               )}
             </CardContent>
           </Card>

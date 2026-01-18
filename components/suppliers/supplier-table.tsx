@@ -22,18 +22,13 @@ import {
 interface SupplierTableProps {
   suppliers: Supplier[];
   onEdit: (supplier: Supplier) => void;
-  // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function SupplierTable({
   suppliers,
   onEdit,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: SupplierTableProps) {
   const t = useTranslations("Suppliers");
   const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(
@@ -69,10 +64,6 @@ export function SupplierTable({
       <ResponsiveDataView
         data={suppliers}
         columns={columns}
-        searchPlaceholder={t("searchPlaceholder")}
-        searchValue={searchValue}
-        onSearchChange={onSearchChange}
-        isSearching={isSearching}
         renderCard={(supplier) => (
           <SupplierCard
             supplier={supplier}
@@ -80,6 +71,10 @@ export function SupplierTable({
             onDelete={handleDelete}
           />
         )}
+        showPagination
+        enablePagination={enablePagination}
+        pageSize={10}
+        emptyMessage={t("noSuppliers")}
       />
 
       {/* Delete Confirmation */}

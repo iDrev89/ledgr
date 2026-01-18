@@ -47,13 +47,15 @@ const serializeReceivable = (receivable: any): any => {
                 unitPrice: item.unitPrice.toString(),
                 discount: item.discount.toString(),
                 lineTotal: item.lineTotal.toString(),
-                commissionPercentApplied: item.commissionPercentApplied?.toString(),
+                commissionPercentApplied:
+                  item.commissionPercentApplied?.toString(),
                 product: item.product
                   ? {
                       ...item.product,
                       price: item.product.price.toString(),
                       cost: item.product.cost?.toString() || "0",
-                      commissionPercent: item.product.commissionPercent?.toString() || "0",
+                      commissionPercent:
+                        item.product.commissionPercent?.toString() || "0",
                     }
                   : null,
               }))
@@ -72,7 +74,7 @@ const serializeReceivable = (receivable: any): any => {
 
 export const getReceivables = async (params?: {
   search?: string;
-  status?: string;
+  status?: string | string[];
   customerId?: string;
   limit?: number;
   offset?: number;
@@ -102,7 +104,11 @@ export const getReceivables = async (params?: {
     }
 
     if (status) {
-      where.status = status;
+      if (Array.isArray(status)) {
+        where.status = { in: status };
+      } else {
+        where.status = status;
+      }
     }
 
     if (customerId) {

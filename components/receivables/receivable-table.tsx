@@ -13,9 +13,7 @@ interface ReceivableTableProps {
   t: (key: string) => string;
   locale?: string;
   // Server-side search props
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function ReceivableTable({
@@ -25,9 +23,7 @@ export function ReceivableTable({
   onCancel,
   t,
   locale,
-  searchValue,
-  onSearchChange,
-  isSearching,
+  enablePagination = true,
 }: ReceivableTableProps) {
   const columns = createReceivableColumns({
     onView,
@@ -51,10 +47,8 @@ export function ReceivableTable({
       )}
       data={receivables}
       searchPlaceholder={t("searchPlaceholder")}
-      searchValue={searchValue}
-      onSearchChange={onSearchChange}
-      isSearching={isSearching}
-      showPagination={true}
+      showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noReceivables")}
       onView={onView}

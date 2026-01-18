@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { AlertCircle, Receipt, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   Card,
   CardContent,
@@ -44,21 +48,31 @@ export default function ReceivablesPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("pending");
 
-  const { data, isLoading, error } = useReceivables();
+  // Search and Pagination
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when search or filter changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch, filter]);
+
+  const { data, isLoading, isFetching, error } = useReceivables({
+    search: debouncedSearch || undefined,
+    status: filter === "pending" ? ["OPEN", "PARTIAL"] : undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isSearching = isFetching && !isLoading;
+
   const cancelMutation = useCancelReceivable();
-
-  // Filter receivables based on selected filter
-  const filteredReceivables = useMemo(() => {
-    if (!data?.receivables) return [];
-
-    if (filter === "pending") {
-      return data.receivables.filter(
-        (r) => r.status === "OPEN" || r.status === "PARTIAL",
-      );
-    }
-
-    return data.receivables;
-  }, [data?.receivables, filter]);
+  const receivables = data?.receivables || [];
 
   const handleView = (receivable: ReceivableWithDetails) => {
     setSelectedReceivable(receivable);
@@ -106,7 +120,7 @@ export default function ReceivablesPage() {
       <PageHeader pageTitle={t("title")} pageDes={t("description")} />
 
       {/* Stats Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <StatsCard
           label={t("totalReceivables")}
           value={data?.total || 0}
@@ -115,18 +129,8 @@ export default function ReceivablesPage() {
         />
         <StatsCard
           label={t("totalBalance")}
-          value={formatCurrency(totalBalance.toString())}
+          value={formatCurrency(String(totalBalance))} // Use calculated total or from API if available
           icon={DollarSign}
-          isLoading={isLoading}
-        />
-        <StatsCard
-          label={t("openReceivables")}
-          value={
-            data?.receivables.filter(
-              (r) => r.status === "OPEN" || r.status === "PARTIAL",
-            ).length || 0
-          }
-          icon={AlertCircle}
           isLoading={isLoading}
         />
       </div>
@@ -134,21 +138,34 @@ export default function ReceivablesPage() {
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
+            <div className="flex flex-col gap-1">
               <CardTitle>{t("receivablesList")}</CardTitle>
               <CardDescription>
                 {t("receivablesListDescription")}
               </CardDescription>
             </div>
-            <Tabs
-              value={filter}
-              onValueChange={(v) => setFilter(v as FilterType)}
-            >
-              <TabsList>
-                <TabsTrigger value="all">{t("filterAll")}</TabsTrigger>
-                <TabsTrigger value="pending">{t("filterPending")}</TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full md:w-auto">
+              <div className="w-full sm:w-[250px]">
+                <SearchInput
+                  value={search}
+                  onChange={setSearch}
+                  placeholder={t("searchPlaceholder")}
+                  isLoading={isSearching}
+                />
+              </div>
+              <Tabs
+                value={filter}
+                onValueChange={(v) => setFilter(v as FilterType)}
+                className="w-full sm:w-auto"
+              >
+                <TabsList className="grid w-full grid-cols-2 sm:w-auto">
+                  <TabsTrigger value="all">{t("filterAll")}</TabsTrigger>
+                  <TabsTrigger value="pending">
+                    {t("filterPending")}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -168,14 +185,23 @@ export default function ReceivablesPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <ReceivableTable
-              receivables={filteredReceivables}
-              onView={handleView}
-              onPayment={handlePayment}
-              onCancel={handleCancel}
-              t={t}
-              locale={locale}
-            />
+            <>
+              <ReceivableTable
+                receivables={receivables}
+                onView={handleView}
+                onPayment={handlePayment}
+                onCancel={handleCancel}
+                t={t}
+                locale={locale}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

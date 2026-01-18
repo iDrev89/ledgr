@@ -17,7 +17,8 @@ export const inventoryKeys = {
   detail: (id: string) => [...inventoryKeys.all, "detail", id] as const,
   productStock: (productId: string) =>
     [...inventoryKeys.all, "product-stock", productId] as const,
-  summary: () => [...inventoryKeys.all, "summary"] as const,
+  summary: (filters?: Record<string, any>) =>
+    [...inventoryKeys.all, "summary", filters] as const,
 } as const;
 
 export function useStockMovements(params?: {
@@ -98,11 +99,15 @@ export function useProductStock(productId: string) {
   });
 }
 
-export function useInventorySummary() {
+export function useInventorySummary(params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}) {
   return useQuery({
-    queryKey: inventoryKeys.summary(),
+    queryKey: inventoryKeys.summary(params),
     queryFn: async () => {
-      const result = await getInventorySummary();
+      const result = await getInventorySummary(params);
       if (!result.success) {
         throw new Error(result.error);
       }
