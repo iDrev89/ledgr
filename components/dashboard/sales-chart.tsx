@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { useSalesChartData } from "@/hooks/use-dashboard";
 import { useTranslations } from "next-intl";
 import {
@@ -14,6 +13,7 @@ import {
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { BarChart3 } from "lucide-react";
 
 export const SalesChart = () => {
   const t = useTranslations("Dashboard");
@@ -47,20 +47,22 @@ export const SalesChart = () => {
   };
 
   return (
-    <Card className="col-span-full">
-      <CardHeader>
+    <Card className="rounded-lg border border-border">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10">📊</div>
-            {t("salesVsExpenses")}
-          </CardTitle>
-          <div className="flex gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-primary" />
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">
+              {t("salesVsExpenses")}
+            </CardTitle>
+          </div>
+          <div className="flex gap-4 text-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="h-2.5 w-2.5 rounded-full bg-primary" />
               <span className="text-muted-foreground">{t("sales")}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-destructive" />
+            <div className="flex items-center gap-1.5">
+              <div className="h-2.5 w-2.5 rounded-full bg-destructive" />
               <span className="text-muted-foreground">{t("expenses")}</span>
             </div>
           </div>
@@ -78,15 +80,20 @@ export const SalesChart = () => {
                   dataKey="date"
                   tickFormatter={formatDate}
                   className="text-xs"
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
                 />
-                <YAxis tickFormatter={formatCurrency} className="text-xs" />
+                <YAxis
+                  tickFormatter={formatCurrency}
+                  className="text-xs"
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Area
                   type="monotone"
                   dataKey="sales"
                   stroke="hsl(var(--primary))"
                   fill="hsl(var(--primary))"
-                  fillOpacity={0.2}
+                  fillOpacity={0.1}
                   strokeWidth={2}
                 />
                 <Area
@@ -94,7 +101,7 @@ export const SalesChart = () => {
                   dataKey="expenses"
                   stroke="hsl(var(--destructive))"
                   fill="hsl(var(--destructive))"
-                  fillOpacity={0.2}
+                  fillOpacity={0.1}
                   strokeWidth={2}
                 />
               </AreaChart>

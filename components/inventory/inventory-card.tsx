@@ -1,10 +1,9 @@
 "use client";
 
-import { Settings, History, Package, AlertTriangle, TrendingUp, Tag } from "lucide-react";
+import { Settings, History, Package, AlertTriangle, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import type { ProductStock } from "@/lib/types/inventory";
 import { useTranslations } from "next-intl";
 
@@ -32,26 +31,23 @@ const formatCurrency = (value: number | string) => {
 const getStockStatus = (
   stock: number,
   minStock: number | null,
-  t: (key: string) => string
+  t: (key: string) => string,
 ) => {
   if (stock === 0) {
     return {
       label: t("outOfStock"),
       variant: "destructive" as const,
-      icon: <AlertTriangle className="h-3 w-3" />,
     };
   }
   if (minStock && stock <= minStock) {
     return {
       label: t("lowStock"),
       variant: "secondary" as const,
-      icon: <AlertTriangle className="h-3 w-3" />,
     };
   }
   return {
     label: t("inStock"),
     variant: "default" as const,
-    icon: <Package className="h-3 w-3" />,
   };
 };
 
@@ -65,14 +61,14 @@ export function InventoryCard({
   const status = getStockStatus(item.currentStock, null, t);
 
   return (
-    <Card
-      className="border-2 hover:border-primary/50 transition-all shadow-sm hover:shadow-md"
-    >
+    <Card className="rounded-lg border border-border hover:bg-secondary/50 transition-colors">
       <CardContent className="p-4 space-y-3">
-        {/* Header: Nombre + Estado de Stock */}
+        {/* Header: Nombre + Estado */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base truncate">{item.product.name}</h3>
+            <h3 className="font-semibold text-sm truncate">
+              {item.product.name}
+            </h3>
             {item.product.sku && (
               <div className="flex items-center gap-1 mt-1">
                 <Tag className="h-3 w-3 text-muted-foreground" />
@@ -82,93 +78,65 @@ export function InventoryCard({
               </div>
             )}
           </div>
-          <Badge variant={status.variant} className="shrink-0">
-            {status.icon}
-            <span className="ml-1">{status.label}</span>
+          <Badge variant={status.variant} className="text-xs shrink-0">
+            {status.label}
           </Badge>
         </div>
 
-        <Separator />
-
-        {/* Categoría - Disabled: property not included in fetch */}
-        {/* {item.product.category && (
-          <>
-            <div className="text-sm text-muted-foreground">
-              {item.product.category.name}
-            </div>
-            <Separator />
-          </>
-        )} */}
-
         {/* Stock Actual */}
-        <div className="bg-primary/5 rounded-md p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">{t("currentStock")}</p>
-              <p className="text-3xl font-bold">{formatNumber(item.currentStock)}</p>
-            </div>
-            <Package className="h-8 w-8 text-primary/40" />
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-muted-foreground">{t("currentStock")}</p>
+            <p className="text-2xl font-semibold tracking-tight">
+              {formatNumber(item.currentStock)}
+            </p>
           </div>
+          <Package className="h-5 w-5 text-muted-foreground" />
         </div>
 
-        {/* Detalles */}
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          {/* minStock - Disabled: property not in schema */}
-          {/* {item.product.minStock !== null && (
-            <div>
-              <p className="text-xs text-muted-foreground">{t("minStock")}</p>
-              <p className="font-medium">{formatNumber(item.product.minStock)}</p>
-            </div>
-          )} */}
-          
-          {item.product.cost && (
-            <div>
-              <p className="text-xs text-muted-foreground">{t("unitCost")}</p>
-              <p className="font-medium">{formatCurrency(parseFloat(item.product.cost.toString()))}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Movimientos Recientes */}
-        {item.lastMovement && (
-          <>
-            <Separator />
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3" />
-              <span>
-                {t("lastMovement")}: {new Date(item.lastMovement.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          </>
+        {/* Costo unitario si existe */}
+        {item.product.cost && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">{t("unitCost")}</span>
+            <span className="font-medium">
+              {formatCurrency(parseFloat(item.product.cost.toString()))}
+            </span>
+          </div>
         )}
 
-        <Separator />
+        {/* Último movimiento */}
+        {item.lastMovement && (
+          <p className="text-xs text-muted-foreground">
+            {t("lastMovement")}:{" "}
+            {new Date(item.lastMovement.createdAt).toLocaleDateString()}
+          </p>
+        )}
 
-        {/* Footer: Botones de Acción */}
-        <div className="flex items-center gap-2">
+        {/* Botones de Acción */}
+        <div className="flex items-center gap-2 pt-1">
           <Button
             size="sm"
             variant="outline"
-            className="flex-1"
+            className="flex-1 h-8 text-xs"
             onClick={(e) => {
               e.stopPropagation();
               onViewHistory();
             }}
           >
-            <History className="h-4 w-4 mr-2" />
-            {t("viewHistory")}
+            <History className="h-3 w-3 mr-1.5" />
+            {t("history")}
           </Button>
-          
+
           {canAdjust && (
             <Button
               size="sm"
-              className="flex-1"
+              className="flex-1 h-8 text-xs"
               onClick={(e) => {
                 e.stopPropagation();
                 onAdjust();
               }}
             >
-              <Settings className="h-4 w-4 mr-2" />
+              <Settings className="h-3 w-3 mr-1.5" />
               {t("adjust")}
             </Button>
           )}
@@ -177,4 +145,3 @@ export function InventoryCard({
     </Card>
   );
 }
-

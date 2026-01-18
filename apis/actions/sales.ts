@@ -1167,3 +1167,110 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
     };
   }
 };
+
+export type EmployeeSalesStats = {
+  totalAmount: string;
+  transactionCount: number;
+  cashAmount: string;
+  transferAmount: string;
+  cardAmount: string;
+  digitalAmount: string;
+};
+
+export const getEmployeeSalesStats = async (params?: {
+  sellerId?: string;
+}): Promise<ActionResponse<EmployeeSalesStats>> => {
+  const t = await getTranslations("Sales.errors");
+
+  try {
+    const session = await requireAuth();
+
+    // Get the start of today
+    const now = new Date();
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+
+    // Determine which seller to fetch stats for
+    // Admins see ALL stats by default, or can filter by specific seller
+    // Non-admins always see only their own stats
+    let targetSellerId: string | undefined = undefined;
+
+    if (session.user.role === "admin") {
+      // Admin: show all if no filter, or filter by specific seller
+      targetSellerId = params?.sellerId; // undefined = all sellers
+    } else {
+      // Non-admin: always their own stats only
+      targetSellerId = session.user.id;
+    }
+
+    // Build where clause
+    const where: any = {
+      status: "COMPLETED",
+      createdAt: {
+        gte: startOfDay,
+      },
+    };
+
+    // Only add seller filter if a specific seller is targeted
+    if (targetSellerId) {
+      where.soldById = targetSellerId;
+    }
+
+    // Get sales with payments
+    const sales = await prisma.sale.findMany({
+      where,
+      include: {
+        payments: true,
+      },
+    });
+
+    // Calculate totals
+    let totalAmount = new Decimal(0);
+    let cashAmount = new Decimal(0);
+    let transferAmount = new Decimal(0);
+    let cardAmount = new Decimal(0);
+    let digitalAmount = new Decimal(0);
+
+    for (const sale of sales) {
+      totalAmount = totalAmount.plus(sale.total);
+
+      for (const payment of sale.payments) {
+        switch (payment.method) {
+          case "CASH":
+            cashAmount = cashAmount.plus(payment.amount);
+            break;
+          case "TRANSFER":
+            transferAmount = transferAmount.plus(payment.amount);
+            break;
+          case "CARD":
+            cardAmount = cardAmount.plus(payment.amount);
+            break;
+          case "DIGITAL":
+            digitalAmount = digitalAmount.plus(payment.amount);
+            break;
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: {
+        totalAmount: totalAmount.toString(),
+        transactionCount: sales.length,
+        cashAmount: cashAmount.toString(),
+        transferAmount: transferAmount.toString(),
+        cardAmount: cardAmount.toString(),
+        digitalAmount: digitalAmount.toString(),
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching employee sales stats:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("fetchFailed"),
+    };
+  }
+};

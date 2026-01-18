@@ -206,43 +206,42 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination - Clean design */}
+      {/* Pagination */}
       {showPagination && enablePagination && total > pageSize && (
-        <div className="flex items-center justify-between pt-4">
-          <div className="text-sm text-muted-foreground">
-            Mostrando {displayedRows > 0 ? startItem : 0} -{" "}
-            {displayedRows > 0 ? endItem : 0} de {total} registros
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (isServerSidePagination) {
-                  onPageChange(Math.max(0, currentPage - 1));
-                } else {
-                  table.previousPage();
-                }
-              }}
-              disabled={currentPage === 0}
-            >
-              Anterior
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (isServerSidePagination) {
-                  onPageChange(currentPage + 1);
-                } else {
-                  table.nextPage();
-                }
-              }}
-              disabled={currentPage >= totalPages - 1}
-            >
-              Siguiente
-            </Button>
-          </div>
+        <div className="flex items-center justify-between pt-4 border-t border-border mt-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              if (isServerSidePagination) {
+                onPageChange(Math.max(0, currentPage - 1));
+              } else {
+                table.previousPage();
+              }
+            }}
+            disabled={currentPage === 0}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <span className="mr-1">‹</span> Anterior
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Página {currentPage + 1} de {totalPages}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              if (isServerSidePagination) {
+                onPageChange(currentPage + 1);
+              } else {
+                table.nextPage();
+              }
+            }}
+            disabled={currentPage >= totalPages - 1}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Siguiente <span className="ml-1">›</span>
+          </Button>
         </div>
       )}
     </div>

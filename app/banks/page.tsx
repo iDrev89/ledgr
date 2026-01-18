@@ -32,6 +32,7 @@ import {
   useBanksWithBalance,
 } from "@/hooks/use-bank-transactions";
 import { useDebounce } from "@/hooks/use-debounce";
+import { StatsCard } from "@/components/shared/stats-card";
 import type { BankWithRelations } from "@/lib/types/bank";
 import {
   AlertDialog,
@@ -155,70 +156,29 @@ export default function BanksPage() {
         </div>
       </div>
 
-      {/* Stats Cards - Compact Design */}
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-green-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalBalance")}
-                </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {formatCurrency(totalBalance)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("acrossAllBanks")}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                <Wallet className="h-5 w-5 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-blue-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("activeBanks")}
-                </p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {banksWithBalance?.length || 0}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("banksConfigured")}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                <Activity className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-purple-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("recentActivity")}
-                </p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {transactionsData?.total || 0}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("totalTransactions")}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                <ArrowLeftRight className="h-5 w-5 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+        <StatsCard
+          label={t("totalBalance")}
+          value={formatCurrency(totalBalance)}
+          description={t("acrossAllBanks")}
+          icon={Wallet}
+          isLoading={loadingBalance}
+        />
+        <StatsCard
+          label={t("activeBanks")}
+          value={banksWithBalance?.length || 0}
+          description={t("banksConfigured")}
+          icon={Activity}
+          isLoading={loadingBalance}
+        />
+        <StatsCard
+          label={t("recentActivity")}
+          value={transactionsData?.total || 0}
+          description={t("totalTransactions")}
+          icon={ArrowLeftRight}
+          isLoading={loadingTransactions}
+        />
       </div>
 
       <Tabs defaultValue="banks" className="w-full">

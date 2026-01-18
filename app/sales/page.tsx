@@ -45,6 +45,7 @@ import { PaginationControl } from "@/components/ui/pagination-control";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { SalesStatsCards } from "@/components/sales/sales-stats-cards";
 
 export default function SalesPage() {
   const t = useTranslations("Sales");
@@ -202,18 +203,22 @@ export default function SalesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 -mx-4 px-4 border-b md:static md:bg-transparent md:border-0 md:p-0 md:mb-4">
+      {/* Page header - aligned */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground hidden md:block">
             {t("description")}
           </p>
         </div>
-        <Button onClick={handleCreate} className="w-full md:w-auto shadow-sm">
+        <Button onClick={handleCreate} className="shadow-sm">
           <Plus className="mr-2 h-4 w-4" />
           {t("createSale")}
         </Button>
       </div>
+
+      {/* Employee Sales Stats Cards */}
+      <SalesStatsCards sellerId={sellerId} />
 
       <Card>
         <CardHeader className="pb-3">
@@ -309,6 +314,15 @@ export default function SalesPage() {
                           ) : (
                             <span>{t("selectDate")}</span>
                           )}
+                          {dateFrom && (
+                            <X
+                              className="h-3.5 w-3.5 ml-auto shrink-0 opacity-50 hover:opacity-100"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleClearDate();
+                              }}
+                            />
+                          )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="end">
@@ -320,25 +334,6 @@ export default function SalesPage() {
                         />
                       </PopoverContent>
                     </Popover>
-
-                    {(sellerId || dateFrom) && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setSellerId(undefined);
-                          setDateFrom(undefined);
-                          setDateTo(undefined);
-                        }}
-                        className="text-muted-foreground hover:text-foreground px-3 h-10"
-                        title="Limpiar filtros"
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        <span className="hidden sm:inline">
-                          {t("clearFilters")}
-                        </span>
-                      </Button>
-                    )}
                   </div>
                 )}
               </div>

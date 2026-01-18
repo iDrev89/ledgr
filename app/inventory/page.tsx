@@ -19,6 +19,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProductStock } from "@/lib/types/inventory";
+import { StatsCard } from "@/components/shared/stats-card";
 import type { Product } from "@/lib/types/product";
 
 export default function InventoryPage() {
@@ -91,77 +92,32 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/* Stats Cards - Compact Design */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-        <Card className="border-l-4 border-l-muted-foreground/30">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalProducts")}
-                </p>
-                <p className="text-2xl font-bold">{stats.totalProducts}</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center">
-                <Package className="h-5 w-5 text-muted-foreground" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-green-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("inStock")}
-                </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.inStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                <div className="h-5 w-5 rounded-full bg-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-orange-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("lowStock")}
-                </p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {stats.lowStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-destructive">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("outOfStock")}
-                </p>
-                <p className="text-2xl font-bold text-destructive">
-                  {stats.outOfStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-destructive" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        <StatsCard
+          label={t("totalProducts")}
+          value={stats.totalProducts}
+          icon={Package}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("inStock")}
+          value={stats.inStock}
+          icon={Package}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("lowStock")}
+          value={stats.lowStock}
+          icon={AlertCircle}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("outOfStock")}
+          value={stats.outOfStock}
+          icon={AlertCircle}
+          isLoading={isLoading}
+        />
       </div>
 
       <Card>

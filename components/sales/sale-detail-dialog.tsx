@@ -62,7 +62,7 @@ export function SaleDetailDialog({
 
   // Contenido compartido entre Dialog y Sheet
   const content = (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="space-y-6 px-1">
       {/* Sale Information - Two Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Customer Information */}

@@ -280,13 +280,14 @@ export function SaleCard({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-9 px-4 text-xs font-medium border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-sm"
+                  className="h-9 px-3 text-xs font-medium border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onView();
                   }}
                 >
-                  {t("viewDetails")}
+                  <Eye className="h-4 w-4 md:mr-1.5" />
+                  <span className="hidden md:inline">{t("viewDetails")}</span>
                 </Button>
               )}
             </div>

@@ -67,7 +67,7 @@ interface ResponsiveDataViewProps<TData> {
 export function ResponsiveDataView<TData>({
   columns,
   renderCard,
-  cardGridCols = "grid-cols-1 sm:grid-cols-2",
+  cardGridCols = "grid-cols-1 md:grid-cols-2",
   data,
   totalCount,
   pageSize = 10,
@@ -152,32 +152,32 @@ export function ResponsiveDataView<TData>({
 
       {/* Paginación Mobile */}
       {showPagination && enablePagination && totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            Mostrando {startIndex + 1} de {totalCount ?? data.length} registros
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
-              disabled={currentPage === 0}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Anterior
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
-              }
-              disabled={currentPage === totalPages - 1}
-            >
-              Siguiente
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
+        <div className="flex items-center justify-between py-2 border-t border-border bg-muted/30 -mx-3 px-3 mt-4 rounded-b-lg">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+            disabled={currentPage === 0}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Anterior
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Página {currentPage + 1} de {totalPages}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+            }
+            disabled={currentPage === totalPages - 1}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Siguiente
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
         </div>
       )}
     </div>

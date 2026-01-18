@@ -605,6 +605,12 @@
       "noteMax": "Note must be less than 500 characters",
       "idRequired": "Sale ID is required"
     },
+    "stats": {
+      "daySales": "Today's Sales",
+      "transactions": "Transactions",
+      "cashTotal": "Cash",
+      "transferTotal": "Transfers"
+    },
     "errors": {
       "fetchFailed": "Failed to fetch sales",
       "notFound": "Sale not found",

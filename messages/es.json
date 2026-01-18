@@ -612,6 +612,12 @@
       "noteMax": "La nota debe tener menos de 500 caracteres",
       "idRequired": "El ID de la venta es requerido"
     },
+    "stats": {
+      "daySales": "Ventas del Día",
+      "transactions": "Transacciones",
+      "cashTotal": "Efectivo",
+      "transferTotal": "Transferencias"
+    },
     "errors": {
       "fetchFailed": "Error al obtener ventas",
       "notFound": "Venta no encontrada",

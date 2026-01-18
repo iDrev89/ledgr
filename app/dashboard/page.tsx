@@ -30,7 +30,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title={t("totalSales")}
           value={stats ? formatCurrency(stats.totalSales) : "$0"}
@@ -38,7 +38,6 @@ export default function DashboardPage() {
           icon={DollarSign}
           description={t("vsLastMonth")}
           loading={isLoading}
-          color="green"
         />
         <StatCard
           title={t("salesCount")}
@@ -46,7 +45,6 @@ export default function DashboardPage() {
           icon={ShoppingCart}
           description={t("thisMonth")}
           loading={isLoading}
-          color="blue"
         />
         <StatCard
           title={t("totalExpenses")}
@@ -55,7 +53,6 @@ export default function DashboardPage() {
           icon={TrendingDown}
           description={t("vsLastMonth")}
           loading={isLoading}
-          color="orange"
         />
         <StatCard
           title={t("totalCustomers")}
@@ -63,7 +60,6 @@ export default function DashboardPage() {
           icon={Users}
           description={t("allTime")}
           loading={isLoading}
-          color="purple"
         />
       </div>
 

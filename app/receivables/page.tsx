@@ -29,6 +29,7 @@ import { ReceivableTable } from "@/components/receivables/receivable-table";
 import { ReceivableDetailDialog } from "@/components/receivables/receivable-detail-dialog";
 import { ReceivablePaymentDialog } from "@/components/receivables/receivable-payment-dialog";
 import { useReceivables, useCancelReceivable } from "@/hooks/use-receivables";
+import { StatsCard } from "@/components/shared/stats-card";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 
 type FilterType = "all" | "pending";
@@ -104,61 +105,30 @@ export default function ReceivablesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader pageTitle={t("title")} pageDes={t("description")} />
 
-      {/* Stats Cards - Compact Design */}
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-blue-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalReceivables")}
-                </p>
-                <p className="text-2xl font-bold">{data?.total || 0}</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                <Receipt className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-amber-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalBalance")}
-                </p>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {formatCurrency(totalBalance.toString())}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-amber-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-orange-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("openReceivables")}
-                </p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {data?.receivables.filter(
-                    (r) => r.status === "OPEN" || r.status === "PARTIAL",
-                  ).length || 0}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+        <StatsCard
+          label={t("totalReceivables")}
+          value={data?.total || 0}
+          icon={Receipt}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("totalBalance")}
+          value={formatCurrency(totalBalance.toString())}
+          icon={DollarSign}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("openReceivables")}
+          value={
+            data?.receivables.filter(
+              (r) => r.status === "OPEN" || r.status === "PARTIAL",
+            ).length || 0
+          }
+          icon={AlertCircle}
+          isLoading={isLoading}
+        />
       </div>
 
       <Card>
