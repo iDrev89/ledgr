@@ -34,7 +34,7 @@ export async function getSuppliers(params?: {
   try {
     await requireAuth();
 
-    const { search = "", active, limit = 50, offset = 0 } = params || {};
+    const { search = "", active, limit, offset = 0 } = params || {};
 
     const where: any = {};
 
@@ -50,7 +50,8 @@ export async function getSuppliers(params?: {
     const [suppliers, total] = await Promise.all([
       prisma.supplier.findMany({
         where,
-        take: limit,
+        // Only apply limit if specified (to allow full search results)
+        ...(limit ? { take: limit } : {}),
         skip: offset,
         orderBy: { name: "asc" },
       }),

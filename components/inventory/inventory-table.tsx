@@ -11,6 +11,7 @@ interface InventoryTableProps {
   onAdjust: (item: ProductStock) => void;
   onViewHistory: (item: ProductStock) => void;
   canAdjust?: boolean;
+  enablePagination?: boolean;
 }
 
 export function InventoryTable({
@@ -18,6 +19,7 @@ export function InventoryTable({
   onAdjust,
   onViewHistory,
   canAdjust = true,
+  enablePagination = true,
 }: InventoryTableProps) {
   const t = useTranslations("Inventory");
 
@@ -40,9 +42,8 @@ export function InventoryTable({
         />
       )}
       data={inventory}
-      searchKey="productName"
-      searchPlaceholder={t("searchPlaceholder")}
       showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noInventory")}
     />

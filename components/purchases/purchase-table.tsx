@@ -22,9 +22,13 @@ import {
 
 interface PurchaseTableProps {
   purchases: SerializedPurchase[];
+  enablePagination?: boolean;
 }
 
-export function PurchaseTable({ purchases }: PurchaseTableProps) {
+export function PurchaseTable({
+  purchases,
+  enablePagination = true,
+}: PurchaseTableProps) {
   const t = useTranslations("Purchases");
   const [selectedPurchase, setSelectedPurchase] =
     useState<SerializedPurchase | null>(null);
@@ -59,8 +63,8 @@ export function PurchaseTable({ purchases }: PurchaseTableProps) {
       <ResponsiveDataView
         data={purchases}
         columns={columns}
-        searchKey={["supplier.name", "invoiceNo"]}
-        searchPlaceholder={t("searchPlaceholder")}
+        showPagination
+        enablePagination={enablePagination}
         renderCard={(purchase) => (
           <PurchaseCard
             purchase={purchase}

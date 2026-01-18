@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
@@ -63,40 +62,56 @@ export function SaleDetailDialog({
 
   // Contenido compartido entre Dialog y Sheet
   const content = (
-    <div className="space-y-6 overflow-x-hidden">
-      {/* Sale Information */}
+    <div className="space-y-6 px-1">
+      {/* Sale Information - Two Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Customer Information */}
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold mb-2">{t("customerInfo")}</h3>
-          <div className="bg-muted rounded-lg p-3 space-y-1">
-            <p className="font-medium">{sale.customer.name}</p>
-            {sale.customer.email && (
-              <p className="text-sm text-muted-foreground">
-                {t("email")}: {sale.customer.email}
-              </p>
-            )}
-            {sale.customer.phone && (
-              <p className="text-sm text-muted-foreground">
-                {t("phone")}: {sale.customer.phone}
-              </p>
-            )}
-            {sale.customer.docId && (
-              <p className="text-sm text-muted-foreground">
-                {t("docId")}: {sale.customer.docId}
-              </p>
-            )}
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("customerInfo")}
+          </h3>
+          <div className="bg-card ring-1 ring-border rounded-lg p-4 space-y-1">
+            <div className="flex items-start gap-3 border-l-2 border-primary pl-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-foreground">
+                  {sale.customer.name}
+                </p>
+                {sale.customer.phone && (
+                  <p className="text-sm text-muted-foreground">
+                    {sale.customer.phone}
+                  </p>
+                )}
+                {sale.customer.email && (
+                  <p className="text-sm text-muted-foreground truncate">
+                    {sale.customer.email}
+                  </p>
+                )}
+                {sale.customer.docId && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t("docId")}: {sale.customer.docId}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Created By Information */}
         <div>
-          <h3 className="text-sm font-semibold mb-2">{t("createdBy")}</h3>
-          <div className="bg-muted rounded-lg p-4 space-y-1">
-            <p className="font-medium">{sale.createdBy.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {sale.createdBy.email}
-            </p>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("createdBy")}
+          </h3>
+          <div className="bg-card ring-1 ring-border rounded-lg p-4">
+            <div className="flex items-start gap-3 border-l-2 border-muted-foreground/30 pl-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-foreground">
+                  {sale.createdBy.name}
+                </p>
+                <p className="text-sm text-muted-foreground truncate">
+                  {sale.createdBy.email}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -104,60 +119,72 @@ export function SaleDetailDialog({
       {/* Sold By Information - only show if different from createdBy */}
       {sale.soldBy && sale.soldBy.id !== sale.createdBy.id && (
         <div>
-          <h3 className="text-sm font-semibold mb-2">{t("soldBy")}</h3>
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-1">
-            <p className="font-medium text-primary">{sale.soldBy.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {sale.soldBy.email}
-            </p>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("soldBy")}
+          </h3>
+          <div className="bg-info/5 ring-1 ring-info/30 rounded-lg p-4">
+            <div className="flex items-start gap-3 border-l-2 border-info pl-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-info">{sale.soldBy.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {sale.soldBy.email}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Payments */}
+      {/* Payments Section */}
       {sale.payments && sale.payments.length > 0 && (
         <>
           <div>
-            <h3 className="text-sm font-semibold mb-3">{t("payments")}</h3>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+              {t("payments")}
+            </h3>
             <div className="space-y-2">
               {sale.payments.map((payment) => (
                 <div
                   key={payment.id}
-                  className="flex flex-col gap-3 p-3 rounded-lg bg-muted/50"
+                  className="bg-card ring-1 ring-border rounded-lg overflow-hidden"
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center justify-between gap-3 p-4">
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <Badge variant="secondary" className="w-fit">
-                        {getPaymentMethodLabel(payment.method)}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="font-medium">
+                          {getPaymentMethodLabel(payment.method)}
+                        </Badge>
+                      </div>
                       {payment.bank && (
-                        <span className="text-xs text-muted-foreground truncate">
+                        <span className="text-xs text-muted-foreground">
                           {payment.bank.name}
                           {payment.bank.accountNo &&
                             ` - ${payment.bank.accountNo}`}
                         </span>
                       )}
                       {payment.reference && (
-                        <span className="text-xs text-muted-foreground truncate">
+                        <span className="text-xs text-muted-foreground font-mono">
                           Ref: {payment.reference}
                         </span>
                       )}
                     </div>
 
-                    <span className="font-medium whitespace-nowrap text-lg shrink-0">
+                    <span className="font-bold text-lg tabular-nums shrink-0">
                       {formatCurrency(payment.amount)}
                     </span>
                   </div>
 
                   {/* Botón para ver comprobante si existe */}
                   {payment.attachmentUrl && (
-                    <ImageViewerDialog
-                      imageUrl={payment.attachmentUrl}
-                      title={t("paymentAttachmentTitle")}
-                      buttonText={t("paymentViewAttachment")}
-                      buttonVariant="outline"
-                      buttonSize="default"
-                    />
+                    <div className="px-4 pb-4 pt-0">
+                      <ImageViewerDialog
+                        imageUrl={payment.attachmentUrl}
+                        title={t("paymentAttachmentTitle")}
+                        buttonText={t("paymentViewAttachment")}
+                        buttonVariant="outline"
+                        buttonSize="default"
+                      />
+                    </div>
                   )}
                 </div>
               ))}
@@ -165,16 +192,16 @@ export function SaleDetailDialog({
           </div>
 
           {sale.receivable && parseFloat(sale.receivable.balance) > 0 && (
-            <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+            <div className="p-4 rounded-lg bg-warning/10 ring-1 ring-warning/30">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                  {t("balance")}:
+                <span className="text-sm font-medium text-warning-foreground">
+                  {t("balance")}
                 </span>
-                <span className="text-lg font-bold text-amber-900 dark:text-amber-100">
+                <span className="text-lg font-bold text-warning">
                   {formatCurrency(sale.receivable.balance)}
                 </span>
               </div>
-              <span className="text-xs text-amber-700 dark:text-amber-300">
+              <span className="text-xs text-muted-foreground">
                 {t("totalPaid")}:{" "}
                 {formatCurrency(
                   parseFloat(sale.total) - parseFloat(sale.receivable.balance),
@@ -189,13 +216,18 @@ export function SaleDetailDialog({
 
       {/* Items */}
       <div>
-        <h3 className="text-sm font-semibold mb-3">{t("items")}</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+          {t("items")}
+        </h3>
         {isMobile ? (
           /* Vista mobile con cards */
           <div className="space-y-3">
             {sale.items.map((item) => (
-              <Card key={item.id} className="border">
-                <CardContent className="p-3 space-y-3">
+              <div
+                key={item.id}
+                className="bg-card ring-1 ring-border rounded-lg overflow-hidden"
+              >
+                <div className="p-4 space-y-3">
                   <div className="space-y-1">
                     <p className="font-semibold">{item.product.name}</p>
                     {item.product.sku && (
@@ -225,15 +257,16 @@ export function SaleDetailDialog({
                       </div>
                     )}
                   </div>
-                  <Separator />
-                  <div className="flex justify-between items-center pt-1">
-                    <span className="font-semibold">{t("lineTotal")}</span>
-                    <span className="text-lg font-bold">
+                  <div className="flex justify-between items-center pt-2 border-t border-border/50">
+                    <span className="font-medium text-sm">
+                      {t("lineTotal")}
+                    </span>
+                    <span className="font-bold text-base tabular-nums">
                       {formatCurrency(item.lineTotal)}
                     </span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -286,17 +319,19 @@ export function SaleDetailDialog({
 
       {/* Totals */}
       <div className="flex justify-end">
-        <div className="w-full sm:w-64 space-y-2">
+        <div className="w-full sm:w-72 bg-card ring-1 ring-border rounded-lg p-4 space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("subtotal")}</span>
-            <span className="font-medium">{formatCurrency(sale.subtotal)}</span>
+            <span className="font-medium tabular-nums">
+              {formatCurrency(sale.subtotal)}
+            </span>
           </div>
           {parseFloat(sale.discountTotal) > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
                 {t("discountTotal")}
               </span>
-              <span className="font-medium text-destructive">
+              <span className="font-medium text-destructive tabular-nums">
                 -{formatCurrency(sale.discountTotal)}
               </span>
             </div>
@@ -304,15 +339,15 @@ export function SaleDetailDialog({
           {parseFloat(sale.taxTotal) > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">{t("taxTotal")}</span>
-              <span className="font-medium">
+              <span className="font-medium tabular-nums">
                 {formatCurrency(sale.taxTotal)}
               </span>
             </div>
           )}
           <Separator />
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center pt-1">
             <span className="font-semibold">{t("total")}</span>
-            <span className="text-lg font-bold">
+            <span className="text-lg font-bold text-success tabular-nums">
               {formatCurrency(sale.total)}
             </span>
           </div>
@@ -322,8 +357,10 @@ export function SaleDetailDialog({
       {/* Note */}
       {sale.note && (
         <div>
-          <h3 className="text-sm font-semibold mb-2">{t("note")}</h3>
-          <div className="bg-muted rounded-lg p-4">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("note")}
+          </h3>
+          <div className="bg-muted/50 ring-1 ring-border rounded-lg p-4">
             <p className="text-sm text-muted-foreground">{sale.note}</p>
           </div>
         </div>

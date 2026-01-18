@@ -6,6 +6,7 @@ import {
   updateSale,
   deleteSale,
   completeSale,
+  getEmployeeSalesStats,
 } from "@/apis/actions/sales";
 import type { CreateSaleInput, UpdateSaleInput } from "@/lib/validations/sales";
 import { inventoryKeys } from "./use-inventory";
@@ -16,7 +17,21 @@ export const saleKeys = {
   list: (filters?: Record<string, any>) =>
     [...saleKeys.lists(), filters] as const,
   detail: (id: string) => [...saleKeys.all, "detail", id] as const,
+  stats: () => [...saleKeys.all, "stats"] as const,
 } as const;
+
+export function useEmployeeSalesStats(params?: { sellerId?: string }) {
+  return useQuery({
+    queryKey: [...saleKeys.stats(), params],
+    queryFn: async () => {
+      const result = await getEmployeeSalesStats(params);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data;
+    },
+  });
+}
 
 export function useSales(params?: {
   search?: string;
@@ -60,7 +75,13 @@ export function useCreateSale() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ input, isDraft }: { input: CreateSaleInput; isDraft?: boolean }) => {
+    mutationFn: async ({
+      input,
+      isDraft,
+    }: {
+      input: CreateSaleInput;
+      isDraft?: boolean;
+    }) => {
       const result = await createSale(input, isDraft);
       if (!result.success) {
         throw new Error(result.error);
@@ -206,7 +227,10 @@ export function useCompleteSale() {
       return result.data;
     },
     onSuccess: (completedSale) => {
-      queryClient.setQueryData(saleKeys.detail(completedSale.id), completedSale);
+      queryClient.setQueryData(
+        saleKeys.detail(completedSale.id),
+        completedSale,
+      );
       queryClient.invalidateQueries({
         queryKey: saleKeys.lists(),
       });

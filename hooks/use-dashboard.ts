@@ -61,3 +61,18 @@ export const useLowStockAlerts = () => {
     refetchInterval: 60000,
   });
 };
+
+export const useTodaysBirthdays = () => {
+  return useQuery({
+    queryKey: ["dashboard", "todays-birthdays"],
+    queryFn: async () => {
+      const { getTodaysBirthdays } = await import("@/apis/actions/dashboard");
+      const result = await getTodaysBirthdays();
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data;
+    },
+    refetchInterval: 60000 * 60, // Check hourly
+  });
+};

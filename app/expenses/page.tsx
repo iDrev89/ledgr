@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Plus, AlertCircle, FolderTree } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,10 @@ import { CategoryTable } from "@/components/expense-categories/category-table";
 import { CategoryDialog } from "@/components/expense-categories/category-dialog";
 import { useExpenses } from "@/hooks/use-expenses";
 import { useExpenseCategories } from "@/hooks/use-expense-categories";
+import { useDebounce } from "@/hooks/use-debounce";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
 import type { ExpenseCategoryWithRelations } from "@/lib/types/expense-categories";
 
@@ -43,16 +47,45 @@ export default function ExpensesPage() {
     ExpenseCategoryWithRelations | undefined
   >(undefined);
 
+  // Server-side search states
+  const [expenseSearch, setExpenseSearch] = useState("");
+  const debouncedExpenseSearch = useDebounce(expenseSearch, 300);
+  const [categorySearch, setCategorySearch] = useState("");
+  const debouncedCategorySearch = useDebounce(categorySearch, 300);
+
+  // Pagination for expenses
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when search changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedExpenseSearch]);
+
   const {
     data: expensesData,
     isLoading: expensesLoading,
     error: expensesError,
-  } = useExpenses();
+    isFetching: expensesFetching,
+  } = useExpenses({
+    search: debouncedExpenseSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isExpenseSearching = expensesFetching && !expensesLoading;
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
     error: categoriesError,
-  } = useExpenseCategories();
+    isFetching: categoriesFetching,
+  } = useExpenseCategories(
+    debouncedCategorySearch ? { search: debouncedCategorySearch } : undefined,
+  );
+  const isCategorySearching = categoriesFetching && !categoriesLoading;
 
   const handleCreateExpense = () => {
     setExpenseToEdit(undefined);
@@ -121,18 +154,21 @@ export default function ExpensesPage() {
         <TabsContent value="expenses">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <CardTitle>{t("expenseHistory")}</CardTitle>
                   <CardDescription>
                     {t("expenseHistoryDescription")}
                   </CardDescription>
                 </div>
-                {expensesData && (
-                  <div className="text-sm text-muted-foreground">
-                    {t("totalExpenses", { count: expensesData.total })}
-                  </div>
-                )}
+                <div className="w-full md:w-auto md:min-w-[300px]">
+                  <SearchInput
+                    value={expenseSearch}
+                    onChange={setExpenseSearch}
+                    placeholder={t("searchPlaceholder")}
+                    isLoading={isExpenseSearching}
+                  />
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -156,12 +192,21 @@ export default function ExpensesPage() {
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : (
-                <ExpenseTable
-                  expenses={expensesData?.expenses || []}
-                  onView={handleViewExpense}
-                  onEdit={handleEditExpense}
-                  locale={locale}
-                />
+                <>
+                  <ExpenseTable
+                    expenses={expensesData?.expenses || []}
+                    onView={handleViewExpense}
+                    onEdit={handleEditExpense}
+                    locale={locale}
+                    enablePagination={false}
+                  />
+                  <PaginationControl
+                    currentPage={pagination.page}
+                    totalCount={expensesData?.total || 0}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={pagination.onPageChange}
+                  />
+                </>
               )}
             </CardContent>
           </Card>
@@ -178,7 +223,11 @@ export default function ExpensesPage() {
                     {tCategories("categoryListDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateCategory} size="sm" className="w-full sm:w-auto">
+                <Button
+                  onClick={handleCreateCategory}
+                  size="sm"
+                  className="w-full sm:w-auto"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   {tCategories("createCategory")}
                 </Button>
@@ -206,6 +255,9 @@ export default function ExpensesPage() {
                 <CategoryTable
                   categories={categories}
                   onEdit={handleEditCategory}
+                  searchValue={categorySearch}
+                  onSearchChange={setCategorySearch}
+                  isSearching={isCategorySearching}
                 />
               )}
             </CardContent>

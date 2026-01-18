@@ -23,9 +23,14 @@ import { createProductColumns } from "./product-columns";
 interface ProductTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
+  enablePagination?: boolean;
 }
 
-export function ProductTable({ products, onEdit }: ProductTableProps) {
+export function ProductTable({
+  products,
+  onEdit,
+  enablePagination = true,
+}: ProductTableProps) {
   const t = useTranslations("Products");
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const deleteMutation = useDeleteProduct();
@@ -62,9 +67,8 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
           />
         )}
         data={products}
-        searchKey={["name"]}
-        searchPlaceholder={t("searchPlaceholder")}
         showPagination
+        enablePagination={enablePagination}
         pageSize={10}
         emptyMessage={t("noProducts")}
         onEdit={onEdit}

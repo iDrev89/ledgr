@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SearchInput } from "@/components/ui/search-input";
 import { CustomerTable } from "@/components/customers/customer-table";
 import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useDebounce } from "@/hooks/use-debounce";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { Customer } from "@/lib/types/customer";
+import { BirthdaysCard } from "@/components/dashboard/birthdays-card";
 
 export default function CustomersPage() {
   const t = useTranslations("Customers");
@@ -25,15 +29,32 @@ export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<
     Customer | undefined
   >();
-  const [searchInput, setSearchInput] = useState("");
 
-  // Debounce search query to avoid too many server requests
+  // Server-side search state
+  const [searchInput, setSearchInput] = useState("");
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // Server-side search - always fetches based on search term
-  const { data, isLoading, error } = useCustomers(
-    debouncedSearch ? { search: debouncedSearch } : undefined
-  );
+  // Pagination state
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when search changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [searchInput]);
+
+  // Fetch customers with server-side search and pagination
+  const { data, isLoading, error, isFetching } = useCustomers({
+    search: debouncedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+
+  // Show loading indicator when fetching but not on initial load
+  const isSearching = isFetching && !isLoading;
 
   const handleCreate = () => {
     setSelectedCustomer(undefined);
@@ -65,12 +86,22 @@ export default function CustomersPage() {
         </Button>
       </div>
 
+      <BirthdaysCard />
+
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <CardTitle>{t("customerList")}</CardTitle>
               <CardDescription>{t("customerListDescription")}</CardDescription>
+            </div>
+            <div className="w-full md:w-auto md:min-w-[300px]">
+              <SearchInput
+                value={searchInput}
+                onChange={setSearchInput}
+                placeholder={t("searchPlaceholder")}
+                isLoading={isSearching}
+              />
             </div>
           </div>
         </CardHeader>
@@ -84,20 +115,26 @@ export default function CustomersPage() {
             </Alert>
           )}
 
-          {isLoading && !data ? (
+          {isLoading ? (
             <div className="space-y-3">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <CustomerTable
-              customers={data?.customers || []}
-              onEdit={handleEdit}
-              searchValue={searchInput}
-              onSearchChange={setSearchInput}
-              isSearching={isLoading}
-            />
+            <>
+              <CustomerTable
+                customers={data?.customers || []}
+                onEdit={handleEdit}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

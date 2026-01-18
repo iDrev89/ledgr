@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,12 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProductStock } from "@/lib/types/inventory";
+import { StatsCard } from "@/components/shared/stats-card";
 import type { Product } from "@/lib/types/product";
+import { useDebounce } from "@/hooks/use-debounce";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 
 export default function InventoryPage() {
   const t = useTranslations("Inventory");
@@ -31,7 +36,26 @@ export default function InventoryPage() {
   >();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const { data, isLoading, error } = useInventorySummary();
+  // Search and Pagination
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch]);
+
+  const { data, isLoading, error, isFetching } = useInventorySummary({
+    search: debouncedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isSearching = isFetching && !isLoading;
 
   // Check permissions
   const canCreate = hasPermission("inventory", "create");
@@ -64,14 +88,12 @@ export default function InventoryPage() {
     setSelectedProduct(null);
   };
 
-  // Calculate statistics
-  const stats = {
-    totalProducts: data?.length || 0,
-    lowStock:
-      data?.filter((item) => item.currentStock > 0 && item.currentStock <= 10)
-        .length || 0,
-    outOfStock: data?.filter((item) => item.currentStock === 0).length || 0,
-    inStock: data?.filter((item) => item.currentStock > 10).length || 0,
+  // Statistics from server
+  const stats = data?.stats || {
+    totalProducts: 0,
+    lowStock: 0,
+    outOfStock: 0,
+    inStock: 0,
   };
 
   return (
@@ -91,85 +113,48 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/* Stats Cards - Compact Design */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-        <Card className="border-l-4 border-l-muted-foreground/30">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalProducts")}
-                </p>
-                <p className="text-2xl font-bold">{stats.totalProducts}</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center">
-                <Package className="h-5 w-5 text-muted-foreground" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-green-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("inStock")}
-                </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.inStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                <div className="h-5 w-5 rounded-full bg-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-orange-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("lowStock")}
-                </p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {stats.lowStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-destructive">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("outOfStock")}
-                </p>
-                <p className="text-2xl font-bold text-destructive">
-                  {stats.outOfStock}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-destructive" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        <StatsCard
+          label={t("totalProducts")}
+          value={stats.totalProducts}
+          icon={Package}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("inStock")}
+          value={stats.inStock}
+          icon={Package}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("lowStock")}
+          value={stats.lowStock}
+          icon={AlertCircle}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("outOfStock")}
+          value={stats.outOfStock}
+          icon={AlertCircle}
+          isLoading={isLoading}
+        />
       </div>
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <CardTitle>{t("inventoryList")}</CardTitle>
               <CardDescription>{t("inventoryListDescription")}</CardDescription>
+            </div>
+            <div className="w-full md:w-auto md:min-w-[300px]">
+              <SearchInput
+                value={search}
+                onChange={setSearch}
+                placeholder={t("searchPlaceholder")}
+                isLoading={isSearching}
+              />
             </div>
           </div>
         </CardHeader>
@@ -190,12 +175,21 @@ export default function InventoryPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <InventoryTable
-              inventory={data || []}
-              onAdjust={handleAdjust}
-              onViewHistory={handleViewHistory}
-              canAdjust={canUpdate}
-            />
+            <>
+              <InventoryTable
+                inventory={data?.items || []}
+                onAdjust={handleAdjust}
+                onViewHistory={handleViewHistory}
+                canAdjust={canUpdate}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

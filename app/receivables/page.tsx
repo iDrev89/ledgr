@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { AlertCircle, Receipt, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   Card,
   CardContent,
@@ -29,6 +33,7 @@ import { ReceivableTable } from "@/components/receivables/receivable-table";
 import { ReceivableDetailDialog } from "@/components/receivables/receivable-detail-dialog";
 import { ReceivablePaymentDialog } from "@/components/receivables/receivable-payment-dialog";
 import { useReceivables, useCancelReceivable } from "@/hooks/use-receivables";
+import { StatsCard } from "@/components/shared/stats-card";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 
 type FilterType = "all" | "pending";
@@ -43,21 +48,31 @@ export default function ReceivablesPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("pending");
 
-  const { data, isLoading, error } = useReceivables();
+  // Search and Pagination
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when search or filter changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch, filter]);
+
+  const { data, isLoading, isFetching, error } = useReceivables({
+    search: debouncedSearch || undefined,
+    status: filter === "pending" ? ["OPEN", "PARTIAL"] : undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isSearching = isFetching && !isLoading;
+
   const cancelMutation = useCancelReceivable();
-
-  // Filter receivables based on selected filter
-  const filteredReceivables = useMemo(() => {
-    if (!data?.receivables) return [];
-
-    if (filter === "pending") {
-      return data.receivables.filter(
-        (r) => r.status === "OPEN" || r.status === "PARTIAL",
-      );
-    }
-
-    return data.receivables;
-  }, [data?.receivables, filter]);
+  const receivables = data?.receivables || [];
 
   const handleView = (receivable: ReceivableWithDetails) => {
     setSelectedReceivable(receivable);
@@ -104,81 +119,53 @@ export default function ReceivablesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader pageTitle={t("title")} pageDes={t("description")} />
 
-      {/* Stats Cards - Compact Design */}
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-blue-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalReceivables")}
-                </p>
-                <p className="text-2xl font-bold">{data?.total || 0}</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                <Receipt className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-amber-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("totalBalance")}
-                </p>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {formatCurrency(totalBalance.toString())}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-amber-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-orange-600">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {t("openReceivables")}
-                </p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {data?.receivables.filter(
-                    (r) => r.status === "OPEN" || r.status === "PARTIAL",
-                  ).length || 0}
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+        <StatsCard
+          label={t("totalReceivables")}
+          value={data?.total || 0}
+          icon={Receipt}
+          isLoading={isLoading}
+        />
+        <StatsCard
+          label={t("totalBalance")}
+          value={formatCurrency(String(totalBalance))} // Use calculated total or from API if available
+          icon={DollarSign}
+          isLoading={isLoading}
+        />
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
+            <div className="flex flex-col gap-1">
               <CardTitle>{t("receivablesList")}</CardTitle>
               <CardDescription>
                 {t("receivablesListDescription")}
               </CardDescription>
             </div>
-            <Tabs
-              value={filter}
-              onValueChange={(v) => setFilter(v as FilterType)}
-            >
-              <TabsList>
-                <TabsTrigger value="all">{t("filterAll")}</TabsTrigger>
-                <TabsTrigger value="pending">{t("filterPending")}</TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full md:w-auto">
+              <div className="w-full sm:w-[250px]">
+                <SearchInput
+                  value={search}
+                  onChange={setSearch}
+                  placeholder={t("searchPlaceholder")}
+                  isLoading={isSearching}
+                />
+              </div>
+              <Tabs
+                value={filter}
+                onValueChange={(v) => setFilter(v as FilterType)}
+                className="w-full sm:w-auto"
+              >
+                <TabsList className="grid w-full grid-cols-2 sm:w-auto">
+                  <TabsTrigger value="all">{t("filterAll")}</TabsTrigger>
+                  <TabsTrigger value="pending">
+                    {t("filterPending")}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -198,14 +185,23 @@ export default function ReceivablesPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : (
-            <ReceivableTable
-              receivables={filteredReceivables}
-              onView={handleView}
-              onPayment={handlePayment}
-              onCancel={handleCancel}
-              t={t}
-              locale={locale}
-            />
+            <>
+              <ReceivableTable
+                receivables={receivables}
+                onView={handleView}
+                onPayment={handlePayment}
+                onCancel={handleCancel}
+                t={t}
+                locale={locale}
+                enablePagination={false}
+              />
+              <PaginationControl
+                currentPage={pagination.page}
+                totalCount={data?.total || 0}
+                pageSize={PAGE_SIZE}
+                onPageChange={pagination.onPageChange}
+              />
+            </>
           )}
         </CardContent>
       </Card>

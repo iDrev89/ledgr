@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, AlertCircle, FolderTree } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ import { useProducts } from "@/hooks/use-products";
 import { useProductCategories } from "@/hooks/use-product-categories";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useDebounce } from "@/hooks/use-debounce";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
 import type { Product } from "@/lib/types/product";
 import type { ProductCategoryWithRelations } from "@/lib/types/product-categories";
 
@@ -35,12 +39,42 @@ export default function ProductsPage() {
     ProductCategoryWithRelations | undefined
   >(undefined);
 
-  const { data, isLoading, error } = useProducts();
+  // Server-side search state for products
+  const [productSearch, setProductSearch] = useState("");
+  const debouncedProductSearch = useDebounce(productSearch, 300);
+
+  // Server-side search state for categories
+  const [categorySearch, setCategorySearch] = useState("");
+  const debouncedCategorySearch = useDebounce(categorySearch, 300);
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
     error: categoriesError,
-  } = useProductCategories();
+    isFetching: categoriesFetching,
+  } = useProductCategories(
+    debouncedCategorySearch ? { search: debouncedCategorySearch } : undefined,
+  );
+  const isCategorySearching = categoriesFetching && !categoriesLoading;
+
+  // Pagination state for products
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  // Reset pagination when product search changes
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedProductSearch]);
+
+  const { data, isLoading, error, isFetching } = useProducts({
+    search: debouncedProductSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isProductSearching = isFetching && !isLoading;
 
   const handleCreate = () => {
     setSelectedProduct(undefined);
@@ -102,18 +136,21 @@ export default function ProductsPage() {
         <TabsContent value="products">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <CardTitle>{t("productList")}</CardTitle>
                   <CardDescription>
                     {t("productListDescription")}
                   </CardDescription>
                 </div>
-                {data && (
-                  <div className="text-sm text-muted-foreground">
-                    {t("totalProducts", { count: data.total })}
-                  </div>
-                )}
+                <div className="w-full md:w-auto md:min-w-[300px]">
+                  <SearchInput
+                    value={productSearch}
+                    onChange={setProductSearch}
+                    placeholder={t("searchPlaceholder")}
+                    isLoading={isProductSearching}
+                  />
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -135,10 +172,19 @@ export default function ProductsPage() {
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : (
-                <ProductTable
-                  products={data?.products || []}
-                  onEdit={handleEdit}
-                />
+                <>
+                  <ProductTable
+                    products={data?.products || []}
+                    onEdit={handleEdit}
+                    enablePagination={false}
+                  />
+                  <PaginationControl
+                    currentPage={pagination.page}
+                    totalCount={data?.total || 0}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={pagination.onPageChange}
+                  />
+                </>
               )}
             </CardContent>
           </Card>
@@ -155,7 +201,11 @@ export default function ProductsPage() {
                     {tCategories("categoryListDescription")}
                   </CardDescription>
                 </div>
-                <Button onClick={handleCreateCategory} size="sm" className="w-full sm:w-auto">
+                <Button
+                  onClick={handleCreateCategory}
+                  size="sm"
+                  className="w-full sm:w-auto"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   {tCategories("createCategory")}
                 </Button>
@@ -183,6 +233,9 @@ export default function ProductsPage() {
                 <CategoryTable
                   categories={categories}
                   onEdit={handleEditCategory}
+                  searchValue={categorySearch}
+                  onSearchChange={setCategorySearch}
+                  isSearching={isCategorySearching}
                 />
               )}
             </CardContent>

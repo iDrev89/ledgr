@@ -12,6 +12,8 @@ interface PayrollRunTableProps {
   onFinalize: (run: PayrollRunWithDetails) => void;
   onPay: (run: PayrollRunWithDetails) => void;
   onDelete: (run: PayrollRunWithDetails) => void;
+  // Server-side search props
+  enablePagination?: boolean;
 }
 
 export function PayrollRunTable({
@@ -20,6 +22,7 @@ export function PayrollRunTable({
   onFinalize,
   onPay,
   onDelete,
+  enablePagination = true,
 }: PayrollRunTableProps) {
   const t = useTranslations("Payroll");
   const locale = useLocale();
@@ -30,16 +33,12 @@ export function PayrollRunTable({
     <ResponsiveDataView
       columns={columns}
       renderCard={(run) => (
-        <PayrollRunCard
-          run={run}
-          onView={() => onView(run)}
-          locale={locale}
-        />
+        <PayrollRunCard run={run} onView={() => onView(run)} locale={locale} />
       )}
       data={runs}
-      searchKey="periodLabel"
       searchPlaceholder={t("searchPlaceholder")}
-      showPagination={true}
+      showPagination
+      enablePagination={enablePagination}
       pageSize={10}
       emptyMessage={t("noPayrollRuns")}
       onView={onView}

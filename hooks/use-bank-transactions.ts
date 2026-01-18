@@ -20,7 +20,8 @@ export const bankTransactionKeys = {
   list: (filters?: Record<string, any>) =>
     [...bankTransactionKeys.lists(), filters] as const,
   detail: (id: string) => [...bankTransactionKeys.all, "detail", id] as const,
-  banksWithBalance: () => ["banks", "with-balance"] as const,
+  banksWithBalance: (filters?: Record<string, any>) =>
+    ["banks", "with-balance", filters] as const,
 } as const;
 
 export function useBankTransactions(params?: {
@@ -152,11 +153,15 @@ export function useDeleteBankTransaction() {
   });
 }
 
-export function useBanksWithBalance() {
+export function useBanksWithBalance(params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}) {
   return useQuery({
-    queryKey: bankTransactionKeys.banksWithBalance(),
+    queryKey: bankTransactionKeys.banksWithBalance(params),
     queryFn: async () => {
-      const result = await getBanksWithBalance();
+      const result = await getBanksWithBalance(params);
       if (!result.success) {
         throw new Error(result.error);
       }

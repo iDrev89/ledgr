@@ -463,26 +463,59 @@ export const deleteBankTransaction = async (
     };
   }
 };
-
-export const getBanksWithBalance = async (): Promise<
-  ActionResponse<BankWithBalance[]>
+export const getBanksWithBalance = async (params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<
+  ActionResponse<{
+    banks: BankWithBalance[];
+    total: number;
+    totalBalance: number;
+  }>
 > => {
   const t = await getTranslations("BankTransactions.errors");
 
   try {
     await requireAuth();
 
-    const banks = await prisma.bank.findMany({
-      where: { active: true },
-      orderBy: { name: "asc" },
-      include: {
-        _count: {
-          select: {
-            transactions: true,
+    const { search = "", limit = 50, offset = 0 } = params || {};
+
+    const where: any = { active: true };
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" as const } },
+        { accountNo: { contains: search, mode: "insensitive" as const } },
+      ];
+    }
+
+    const [banks, total, globalBalanceResult] = await Promise.all([
+      prisma.bank.findMany({
+        where,
+        take: limit,
+        skip: offset,
+        orderBy: { name: "asc" },
+        include: {
+          _count: {
+            select: {
+              transactions: true,
+              salePayments: true,
+              receivablePayments: true,
+              purchases: true,
+            },
           },
         },
-      },
-    });
+      }),
+      prisma.bank.count({ where }),
+      prisma.bankTransaction.aggregate({
+        _sum: { amount: true },
+      }),
+    ]);
+
+    const totalBalance = globalBalanceResult._sum.amount
+      ? parseFloat(globalBalanceResult._sum.amount.toString())
+      : 0;
 
     const banksWithBalance = await Promise.all(
       banks.map(async (bank) => {
@@ -508,11 +541,15 @@ export const getBanksWithBalance = async (): Promise<
           updatedAt: bank.updatedAt,
           currentBalance,
           transactionCount: bank._count.transactions,
+          _count: bank._count,
         };
       }),
     );
 
-    return { success: true, data: banksWithBalance as any };
+    return {
+      success: true,
+      data: { banks: banksWithBalance as any, total, totalBalance },
+    };
   } catch (error) {
     console.error("Error fetching banks with balance:", error);
     return {

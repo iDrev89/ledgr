@@ -4,9 +4,8 @@ import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DataTable } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface CardActions {
   onView?: (item: any) => void;
@@ -29,22 +28,29 @@ interface ResponsiveDataViewProps<TData> {
   // Datos
   data: TData[];
 
-  // Búsqueda y filtrado (client-side)
-  searchKey?: string | string[];
-  searchPlaceholder?: string;
-
-  // Búsqueda controlada (server-side)
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  isSearching?: boolean;
+  // Total count for "Mostrando X de Y" display
+  totalCount?: number;
 
   // Paginación
   pageSize?: number;
   showPagination?: boolean;
+  /** Current page for server-side pagination (0-indexed) */
+  page?: number;
+  /** Callback when page changes for server-side pagination */
+  onPageChange?: (page: number) => void;
+
+  /** Enabe internal pagination rendering. Set to false if pagination is handled externally. */
+  enablePagination?: boolean;
 
   // Estados
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
+
+  // Deprecated - search is now handled at page level
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  isSearching?: boolean;
 
   // Callbacks para mobile
   onView?: (item: TData) => void;
@@ -61,18 +67,17 @@ interface ResponsiveDataViewProps<TData> {
 export function ResponsiveDataView<TData>({
   columns,
   renderCard,
-  cardGridCols = "grid-cols-1 sm:grid-cols-2",
+  cardGridCols = "grid-cols-1 md:grid-cols-2",
   data,
-  searchKey,
-  searchPlaceholder = "Search...",
-  // Server-side search props
-  searchValue: controlledSearchValue,
-  onSearchChange,
-  isSearching,
+  totalCount,
   pageSize = 10,
   showPagination = true,
-  emptyMessage = "No data available",
+  page,
+  onPageChange,
+  enablePagination = true,
+  emptyMessage = "No hay datos disponibles",
   emptyIcon,
+  searchValue,
   onView,
   onEdit,
   onDelete,
@@ -82,44 +87,18 @@ export function ResponsiveDataView<TData>({
   locale,
 }: ResponsiveDataViewProps<TData>) {
   const isMobile = useIsMobile();
-  // Use controlled value if provided (server-side search), otherwise use local state
-  const [localSearchValue, setLocalSearchValue] = React.useState("");
-  const searchValue = controlledSearchValue ?? localSearchValue;
-  const setSearchValue = onSearchChange ?? setLocalSearchValue;
-  const isServerSearch = onSearchChange !== undefined;
   const [currentPage, setCurrentPage] = React.useState(0);
 
-  // Filtrar datos según búsqueda (only for client-side search)
-  // When using server-side search, data is already filtered
-  const filteredData = React.useMemo(() => {
-    // Skip client-side filtering if using server-side search
-    if (isServerSearch) return data;
-    if (!searchValue || !searchKey) return data;
-
-    const searchLower = searchValue.toLowerCase();
-    const keys = Array.isArray(searchKey) ? searchKey : [searchKey];
-
-    return data.filter((item: any) => {
-      return keys.some((key) => {
-        try {
-          // Manejar keys anidadas como "customer.name"
-          const value = key.split(".").reduce((obj, k) => obj?.[k], item);
-          if (value === null || value === undefined) return false;
-          return String(value).toLowerCase().includes(searchLower);
-        } catch {
-          return false;
-        }
-      });
-    });
-  }, [data, searchValue, searchKey, isServerSearch]);
-
-  // Calcular paginación
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  // Calcular paginación para mobile
+  const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedData = showPagination
-    ? filteredData.slice(startIndex, endIndex)
-    : filteredData;
+  // If external pagination is enabled, we display data as is (it's already sliced by server)
+  // If internal pagination is enabled, we slice the data
+  const paginatedData =
+    showPagination && enablePagination
+      ? data.slice(startIndex, endIndex)
+      : data;
 
   // Reset page when search changes
   React.useEffect(() => {
@@ -143,15 +122,13 @@ export function ResponsiveDataView<TData>({
       <DataTable
         columns={columns}
         data={data}
-        // For server-side search, pass undefined to disable DataTable's internal filtering
-        searchKey={isServerSearch ? undefined : searchKey}
-        searchPlaceholder={searchPlaceholder}
+        totalCount={totalCount ?? data.length}
         showPagination={showPagination}
         pageSize={pageSize}
-        // Server-side search props
-        searchValue={isServerSearch ? searchValue : undefined}
-        onSearchChange={isServerSearch ? setSearchValue : undefined}
-        isSearching={isSearching}
+        page={page}
+        onPageChange={onPageChange}
+        emptyMessage={emptyMessage}
+        enablePagination={enablePagination}
       />
     );
   }
@@ -159,23 +136,6 @@ export function ResponsiveDataView<TData>({
   // Renderizar versión mobile (Cards)
   return (
     <div className="w-full space-y-4">
-      {/* Búsqueda - show for either client-side (searchKey) or server-side (isServerSearch) search */}
-      {(searchKey || isServerSearch) && (
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Input
-              placeholder={searchPlaceholder}
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full pr-8"
-            />
-            {isSearching && (
-              <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Cards Grid */}
       {paginatedData.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -191,41 +151,33 @@ export function ResponsiveDataView<TData>({
       )}
 
       {/* Paginación Mobile */}
-      {showPagination && totalPages > 1 && (
-        <div className="flex items-center justify-between px-2">
+      {showPagination && enablePagination && totalPages > 1 && (
+        <div className="flex items-center justify-between py-2 border-t border-border bg-muted/30 -mx-3 px-3 mt-4 rounded-b-lg">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
             disabled={currentPage === 0}
+            className="text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
             Anterior
           </Button>
-
           <span className="text-sm text-muted-foreground">
             Página {currentPage + 1} de {totalPages}
           </span>
-
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() =>
               setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
             }
             disabled={currentPage === totalPages - 1}
+            className="text-muted-foreground hover:text-foreground"
           >
             Siguiente
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
-        </div>
-      )}
-
-      {/* Info total de resultados */}
-      {searchValue && (
-        <div className="text-xs text-center text-muted-foreground">
-          {filteredData.length} resultado{filteredData.length !== 1 ? "s" : ""}{" "}
-          encontrado{filteredData.length !== 1 ? "s" : ""}
         </div>
       )}
     </div>

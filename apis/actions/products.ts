@@ -54,7 +54,7 @@ export const getProducts = async (params?: {
   try {
     await requireAuth();
 
-    const { search = "", type, active, limit = 50, offset = 0 } = params || {};
+    const { search = "", type, active, limit, offset = 0 } = params || {};
 
     const where: any = {};
 
@@ -77,7 +77,8 @@ export const getProducts = async (params?: {
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
-        take: limit,
+        // Only apply limit if specified OR no search (to allow full search results)
+        ...(limit ? { take: limit } : {}),
         skip: offset,
         orderBy: { createdAt: "desc" },
       }),

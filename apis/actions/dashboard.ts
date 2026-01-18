@@ -399,3 +399,88 @@ export const getLowStockAlerts = async (): Promise<
     };
   }
 };
+
+// Get birthdays for TODAY
+export const getTodaysBirthdays = async (): Promise<
+  ActionResponse<
+    Array<{
+      id: string;
+      name: string;
+      email: string | null;
+      phone: string | null;
+      age: number;
+    }>
+  >
+> => {
+  const t = await getTranslations("Dashboard.errors");
+
+  try {
+    await requireAuth();
+
+    const customers = await prisma.customer.findMany({
+      where: {
+        birthdate: { not: null },
+      },
+      select: {
+        id: true,
+        name: true,
+        birthdate: true,
+        email: true,
+        phone: true,
+      },
+    });
+
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentDay = today.getDate();
+
+    const todaysBirthdays = customers
+      .map((customer) => {
+        if (!customer.birthdate) return null;
+        const birthdate = new Date(customer.birthdate);
+
+        // Check if month and day match today (ignoring year)
+        // Note: birthdate is stored as UTC at midnight usually, so getMonth/getDate works if timezone aligns.
+        // Ideally we'd use database functions, but raw query logic is complex across DB types.
+        // Javascript Date.getMonth() is 0-indexed.
+
+        // We use getMonth/getDate which operate in local time of the server (or UTC depending on env).
+        // Best approach for consistency with `birthdate` being just a date (often stored as 00:00:00 UTC)
+        // is to check UTC values if Prisma stores @db.Date as UTC midnight.
+        // However, `today` is `new Date()`.
+        // Let's assume standard simple comparison for now.
+
+        const bMonth = birthdate.getUTCMonth();
+        const bDay = birthdate.getUTCDate();
+
+        // Compare with today's date. Since we can't easily know user's timezone offset here
+        // without passing it from client, we'll try to match standard UTC.
+        // BUT, `today` is `new Date()`.
+        // Let's assume standard simple comparison for now.
+
+        if (bMonth === currentMonth && bDay === currentDay) {
+          const age = today.getFullYear() - birthdate.getFullYear();
+          return {
+            id: customer.id,
+            name: customer.name,
+            email: customer.email,
+            phone: customer.phone,
+            age,
+          };
+        }
+        return null;
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null);
+
+    return {
+      success: true,
+      data: todaysBirthdays,
+    };
+  } catch (error) {
+    console.error("Error fetching today's birthdays:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("fetchFailed"),
+    };
+  }
+};

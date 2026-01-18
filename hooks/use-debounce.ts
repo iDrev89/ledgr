@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
  * @param value - The value to debounce
  * @param delay - The delay in milliseconds (default: 300ms)
  * @returns The debounced value
- * 
+ *
  * @example
  * ```tsx
  * const [searchInput, setSearchInput] = useState("");
  * const debouncedSearch = useDebounce(searchInput, 300);
- * 
+ *
  * // Use debouncedSearch for API calls
  * const { data } = useQuery({
  *   queryKey: ["items", debouncedSearch],
@@ -18,7 +18,7 @@ import { useState, useEffect } from "react";
  * });
  * ```
  */
-export function useDebounce<T>(value: T, delay: number = 300): T {
+export function useDebounce<T>(value: T, delay: number = 50): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {

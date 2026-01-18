@@ -25,6 +25,7 @@ interface ExpenseTableProps {
   onView: (expense: ExpenseWithDetails) => void;
   onEdit: (expense: ExpenseWithDetails) => void;
   locale?: string;
+  enablePagination?: boolean;
 }
 
 export function ExpenseTable({
@@ -32,6 +33,7 @@ export function ExpenseTable({
   onView,
   onEdit,
   locale,
+  enablePagination = true,
 }: ExpenseTableProps) {
   const t = useTranslations("Expenses");
   const [expenseToDelete, setExpenseToDelete] =
@@ -74,9 +76,8 @@ export function ExpenseTable({
           />
         )}
         data={expenses}
-        searchKey={["description"]}
-        searchPlaceholder={t("searchPlaceholder")}
         showPagination
+        enablePagination={enablePagination}
         pageSize={10}
         emptyMessage={t("noExpenses")}
         onView={onView}

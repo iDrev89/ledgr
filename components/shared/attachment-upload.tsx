@@ -15,6 +15,7 @@ interface AttachmentUploadProps {
   currentUrl?: string | null;
   label?: string;
   disabled?: boolean;
+  folder?: string;
 }
 
 export function AttachmentUpload({
@@ -22,6 +23,7 @@ export function AttachmentUpload({
   currentUrl,
   label = "Comprobante de Pago",
   disabled = false,
+  folder = "payments",
 }: AttachmentUploadProps) {
   const [uploadState, setUploadState] = useState<{
     file: File | null;
@@ -126,7 +128,7 @@ export function AttachmentUpload({
         fileName: file.name,
         contentType: compressedFile.type,
         fileSize: compressedFile.size,
-        folder: "payments",
+        folder,
       });
 
       if (!result.success || !result.data) {

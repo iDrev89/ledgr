@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SearchInput } from "@/components/ui/search-input";
+import { usePagination } from "@/hooks/use-pagination";
+import { PaginationControl } from "@/components/ui/pagination-control";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,7 +50,27 @@ export default function PayrollPage() {
   const [payDialogOpen, setPayDialogOpen] = useState(false);
   const [runToPay, setRunToPay] = useState<PayrollRunWithDetails | null>(null);
 
-  const { data, isLoading } = usePayrollRuns();
+  // Search and Pagination
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const PAGE_SIZE = 10;
+  const pagination = usePagination({
+    pageSize: PAGE_SIZE,
+    initialPage: 0,
+  });
+
+  useEffect(() => {
+    pagination.setPage(0);
+  }, [debouncedSearch]);
+
+  const { data, isLoading, isFetching } = usePayrollRuns({
+    search: debouncedSearch || undefined,
+    limit: PAGE_SIZE,
+    offset: pagination.offset,
+  });
+  const isSearching = isFetching && !isLoading;
+
   const { data: selectedRunDetail } = usePayrollRun(selectedRunId);
   const createMutation = useCreatePayrollRun();
   const finalizeMutation = useFinalizePayrollRun();
@@ -110,10 +134,23 @@ export default function PayrollPage() {
         pageTitle={t("title")}
         pageDes={t("description")}
         actions={
-          <Button onClick={() => setCreateDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("createRun")}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <div className="w-full sm:w-[300px]">
+              <SearchInput
+                value={search}
+                onChange={setSearch}
+                placeholder={t("searchPlaceholder")}
+                isLoading={isSearching}
+              />
+            </div>
+            <Button
+              onClick={() => setCreateDialogOpen(true)}
+              className="w-full sm:w-auto"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {t("createRun")}
+            </Button>
+          </div>
         }
       />
 
@@ -123,13 +160,22 @@ export default function PayrollPage() {
           <Skeleton className="h-64 w-full" />
         </div>
       ) : (
-        <PayrollRunTable
-          runs={runs}
-          onView={handleView}
-          onFinalize={handleFinalize}
-          onPay={handlePay}
-          onDelete={handleDelete}
-        />
+        <>
+          <PayrollRunTable
+            runs={runs}
+            onView={handleView}
+            onFinalize={handleFinalize}
+            onPay={handlePay}
+            onDelete={handleDelete}
+            enablePagination={false}
+          />
+          <PaginationControl
+            currentPage={pagination.page}
+            totalCount={data?.total || 0}
+            pageSize={PAGE_SIZE}
+            onPageChange={pagination.onPageChange}
+          />
+        </>
       )}
 
       {/* Create Dialog */}

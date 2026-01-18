@@ -22,9 +22,14 @@ import {
 interface SupplierTableProps {
   suppliers: Supplier[];
   onEdit: (supplier: Supplier) => void;
+  enablePagination?: boolean;
 }
 
-export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
+export function SupplierTable({
+  suppliers,
+  onEdit,
+  enablePagination = true,
+}: SupplierTableProps) {
   const t = useTranslations("Suppliers");
   const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(
     null,
@@ -59,8 +64,6 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
       <ResponsiveDataView
         data={suppliers}
         columns={columns}
-        searchKey={["name", "email", "phone", "taxId"]}
-        searchPlaceholder={t("searchPlaceholder")}
         renderCard={(supplier) => (
           <SupplierCard
             supplier={supplier}
@@ -68,6 +71,10 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
             onDelete={handleDelete}
           />
         )}
+        showPagination
+        enablePagination={enablePagination}
+        pageSize={10}
+        emptyMessage={t("noSuppliers")}
       />
 
       {/* Delete Confirmation */}
@@ -79,7 +86,9 @@ export function SupplierTable({ suppliers, onEdit }: SupplierTableProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteConfirmMessage", { name: supplierToDelete?.name || "" })}
+              {t("deleteConfirmMessage", {
+                name: supplierToDelete?.name || "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

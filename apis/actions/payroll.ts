@@ -36,7 +36,10 @@ type ActionResponse<T = unknown> =
 // Serialize Decimal fields to strings for client components
 const serializePayrollRun = (
   run: any,
-  servicesByUser?: Map<string, Map<string, { quantity: number; total: Decimal }>>
+  servicesByUser?: Map<
+    string,
+    Map<string, { quantity: number; total: Decimal }>
+  >,
 ): PayrollRunWithDetails => {
   return {
     ...run,
@@ -120,6 +123,7 @@ const requireAuth = async () => {
 // ==================== PAYROLL RUNS ====================
 
 export const getPayrollRuns = async (params?: {
+  search?: string;
   status?: PayrollRunStatus;
   limit?: number;
   offset?: number;
@@ -131,9 +135,13 @@ export const getPayrollRuns = async (params?: {
   try {
     await requireAuth();
 
-    const { status, limit = 50, offset = 0 } = params || {};
+    const { search, status, limit = 50, offset = 0 } = params || {};
 
     const where: any = {};
+
+    if (search) {
+      where.periodLabel = { contains: search, mode: "insensitive" as const };
+    }
 
     if (status) {
       where.status = status;
@@ -186,7 +194,7 @@ export const getPayrollRuns = async (params?: {
 };
 
 export const getPayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -227,7 +235,7 @@ export const getPayrollRun = async (
 
     // Get services summary for each user in the period
     const userIds = run.items.map((item) => item.userId);
-    
+
     const saleItemsByUser = await prisma.saleItem.findMany({
       where: {
         performedById: { in: userIds },
@@ -289,7 +297,7 @@ export const getPayrollRun = async (
 };
 
 export const createPayrollRun = async (
-  input: CreatePayrollRunInput & { userIds?: string[] }
+  input: CreatePayrollRunInput & { userIds?: string[] },
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -565,7 +573,7 @@ export const createPayrollRun = async (
 };
 
 export const finalizePayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -657,7 +665,7 @@ export const finalizePayrollRun = async (
 
 export const payPayrollRun = async (
   id: string,
-  payments: { userId: string; amount: string }[]
+  payments: { userId: string; amount: string }[],
 ): Promise<ActionResponse<PayrollRunWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -773,7 +781,7 @@ export const payPayrollRun = async (
 };
 
 export const deletePayrollRun = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -898,7 +906,7 @@ export const getPayrollEntries = async (params?: {
 };
 
 export const createPayrollEntry = async (
-  input: CreatePayrollEntryInput
+  input: CreatePayrollEntryInput,
 ): Promise<ActionResponse<PayrollEntryWithDetails>> => {
   const t = await getTranslations("Payroll.errors");
 
@@ -940,7 +948,7 @@ export const createPayrollEntry = async (
 };
 
 export const deletePayrollEntry = async (
-  id: string
+  id: string,
 ): Promise<ActionResponse<void>> => {
   const t = await getTranslations("Payroll.errors");
 

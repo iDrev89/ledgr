@@ -32,6 +32,7 @@ const serializeExpense = (expense: any): any => {
           lineTotal: item.lineTotal.toString(),
         }))
       : undefined,
+    attachment: expense.attachment || null,
   };
 };
 
@@ -239,6 +240,7 @@ export const createExpense = async (
           bankId: validated.bankId || null,
           reference: validated.reference || null,
           incurredAt,
+          attachment: validated.attachment || null,
         },
         include: {
           category: true,
@@ -351,6 +353,7 @@ export const updateExpense = async (
         bankId: validated.bankId || null,
         reference: validated.reference || null,
         incurredAt,
+        attachment: validated.attachment || null,
       },
       include: {
         category: true,

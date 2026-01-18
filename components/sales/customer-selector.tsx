@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, ChevronsUpDown, Plus, Search, Loader2 } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  Plus,
+  Search,
+  Loader2,
+  Cake,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandEmpty,
@@ -29,6 +37,19 @@ interface CustomerSelectorProps {
   disabled?: boolean;
 }
 
+const isBirthdayToday = (date: Date | string | null | undefined) => {
+  if (!date) return false;
+  const birthDate = new Date(date);
+  const today = new Date();
+
+  // Compare UTC birth day/month with local today day/month
+  // This assumes birthdate is stored as UTC midnight (standard for date fields)
+  return (
+    birthDate.getUTCDate() === today.getDate() &&
+    birthDate.getUTCMonth() === today.getMonth()
+  );
+};
+
 export function CustomerSelector({
   value,
   onValueChange,
@@ -41,6 +62,9 @@ export function CustomerSelector({
   const [searchInput, setSearchInput] = useState("");
   // Store the last known customer name to prevent flickering
   const [lastCustomerName, setLastCustomerName] = useState<string>("");
+  const [lastCustomerBirthdate, setLastCustomerBirthdate] = useState<
+    Date | string | null
+  >(null);
 
   // Debounce search query to avoid too many server requests
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -48,10 +72,10 @@ export function CustomerSelector({
   // Fetch customers with server-side search
   // When searching: no limit (find any customer)
   // When not searching: limit to 100 for initial load performance
-  const queryParams = debouncedSearch 
-    ? { search: debouncedSearch } 
+  const queryParams = debouncedSearch
+    ? { search: debouncedSearch }
     : { limit: 100 };
-    
+
   const { data, isLoading } = useCustomers(queryParams);
   const customers = data?.customers || [];
 
@@ -63,13 +87,17 @@ export function CustomerSelector({
   }, [debouncedSearch, queryParams]);
 
   const selectedCustomer = customers.find((c) => c.id === value);
+  const isSelectedBirthday = isBirthdayToday(
+    selectedCustomer?.birthdate || lastCustomerBirthdate,
+  );
 
-  // Update last known name when customer is found
+  // Update last known name and birthdate when customer is found
   useEffect(() => {
-    if (selectedCustomer?.name) {
+    if (selectedCustomer) {
       setLastCustomerName(selectedCustomer.name);
+      setLastCustomerBirthdate(selectedCustomer.birthdate);
     }
-  }, [selectedCustomer?.name]);
+  }, [selectedCustomer]);
 
   const handleSelect = (customerId: string) => {
     onValueChange(customerId);
@@ -111,10 +139,21 @@ export function CustomerSelector({
             disabled={disabled}
           >
             {value ? (
-              <span className="truncate">
+              <span className="truncate flex items-center gap-2">
                 {selectedCustomer?.name ||
                   lastCustomerName ||
                   t("selectCustomer")}
+                {isSelectedBirthday && (
+                  <Badge
+                    variant="secondary"
+                    className="h-5 px-1.5 bg-pink-100 text-pink-700 hover:bg-pink-100 border-pink-200 gap-1 flex items-center"
+                  >
+                    <Cake className="size-3" />
+                    <span className="text-[10px] font-medium hidden sm:inline">
+                      Cumpleaños
+                    </span>
+                  </Badge>
+                )}
               </span>
             ) : (
               <span className="text-muted-foreground">
@@ -169,28 +208,43 @@ export function CustomerSelector({
                   <CommandGroup
                     heading={customers.length > 0 ? t("customers") : undefined}
                   >
-                    {customers.map((customer) => (
-                      <CommandItem
-                        key={customer.id}
-                        value={customer.id}
-                        onSelect={() => handleSelect(customer.id)}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === customer.id ? "opacity-100" : "opacity-0",
-                          )}
-                        />
-                        <div className="flex flex-col">
-                          <span className="font-medium">{customer.name}</span>
-                          {(customer.email || customer.phone) && (
-                            <span className="text-xs text-muted-foreground">
-                              {customer.email || customer.phone}
-                            </span>
-                          )}
-                        </div>
-                      </CommandItem>
-                    ))}
+                    {customers.map((customer) => {
+                      const isBirthday = isBirthdayToday(customer.birthdate);
+                      return (
+                        <CommandItem
+                          key={customer.id}
+                          value={customer.id}
+                          onSelect={() => handleSelect(customer.id)}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value === customer.id
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                          <div className="flex flex-col flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">
+                                {customer.name}
+                              </span>
+                              {isBirthday && (
+                                <span className="flex h-5 items-center gap-1 rounded-full bg-pink-100 px-2 text-[10px] font-medium text-pink-700 dark:bg-pink-900/30 dark:text-pink-400">
+                                  <Cake className="size-3" />
+                                  Hoy
+                                </span>
+                              )}
+                            </div>
+                            {(customer.email || customer.phone) && (
+                              <span className="text-xs text-muted-foreground">
+                                {customer.email || customer.phone}
+                              </span>
+                            )}
+                          </div>
+                        </CommandItem>
+                      );
+                    })}
                   </CommandGroup>
                 </>
               )}

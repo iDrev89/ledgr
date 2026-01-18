@@ -27,6 +27,7 @@ interface CustomerTableProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   isSearching?: boolean;
+  enablePagination?: boolean;
 }
 
 export function CustomerTable({
@@ -35,10 +36,11 @@ export function CustomerTable({
   searchValue,
   onSearchChange,
   isSearching,
+  enablePagination = true,
 }: CustomerTableProps) {
   const t = useTranslations("Customers");
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
-    null
+    null,
   );
   const deleteMutation = useDeleteCustomer();
 
@@ -74,14 +76,12 @@ export function CustomerTable({
           />
         )}
         data={customers}
-        // When using server-side search, don't use searchKey (disables client-side filtering)
-        searchKey={onSearchChange ? undefined : ["name"]}
         searchPlaceholder={t("searchPlaceholder")}
-        // Server-side search props
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         isSearching={isSearching}
         showPagination
+        enablePagination={enablePagination}
         pageSize={10}
         emptyMessage={t("noCustomers")}
         onEdit={onEdit}
