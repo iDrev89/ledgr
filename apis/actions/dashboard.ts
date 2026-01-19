@@ -430,9 +430,18 @@ export const getTodaysBirthdays = async (): Promise<
       },
     });
 
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentDay = today.getDate();
+    // Use Colombia timezone to determine "today"
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Bogota",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const todayString = formatter.format(now); // YYYY-MM-DD
+    const [_, currentMonthStr, currentDayStr] = todayString.split("-");
+    const currentMonth = Number(currentMonthStr); // 1-12
+    const currentDay = Number(currentDayStr); // 1-31
 
     const todaysBirthdays = customers
       .map((customer) => {
@@ -447,19 +456,15 @@ export const getTodaysBirthdays = async (): Promise<
         // We use getMonth/getDate which operate in local time of the server (or UTC depending on env).
         // Best approach for consistency with `birthdate` being just a date (often stored as 00:00:00 UTC)
         // is to check UTC values if Prisma stores @db.Date as UTC midnight.
-        // However, `today` is `new Date()`.
-        // Let's assume standard simple comparison for now.
 
-        const bMonth = birthdate.getUTCMonth();
-        const bDay = birthdate.getUTCDate();
+        const bMonth = birthdate.getUTCMonth(); // 0-11
+        const bDay = birthdate.getUTCDate(); // 1-31
 
-        // Compare with today's date. Since we can't easily know user's timezone offset here
-        // without passing it from client, we'll try to match standard UTC.
-        // BUT, `today` is `new Date()`.
-        // Let's assume standard simple comparison for now.
-
-        if (bMonth === currentMonth && bDay === currentDay) {
-          const age = today.getFullYear() - birthdate.getFullYear();
+        // Compare with today's date in Colombia.
+        // birthdate month is 0-indexed, currentMonth is 1-indexed (from string)
+        if (bMonth === currentMonth - 1 && bDay === currentDay) {
+          const age =
+            Number(todayString.split("-")[0]) - birthdate.getUTCFullYear();
           return {
             id: customer.id,
             name: customer.name,
