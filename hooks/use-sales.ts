@@ -90,7 +90,7 @@ export function useCreateSale() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: saleKeys.lists(),
+        queryKey: saleKeys.all,
       });
       // Invalidate inventory queries since stock was updated
       queryClient.invalidateQueries({
@@ -136,7 +136,7 @@ export function useUpdateSale() {
     onSuccess: (updatedSale) => {
       queryClient.setQueryData(saleKeys.detail(updatedSale.id), updatedSale);
       queryClient.invalidateQueries({
-        queryKey: saleKeys.lists(),
+        queryKey: saleKeys.all,
       });
       // Invalidate inventory queries since stock was updated
       queryClient.invalidateQueries({
@@ -183,7 +183,7 @@ export function useDeleteSale() {
         queryKey: saleKeys.detail(deletedId),
       });
       queryClient.invalidateQueries({
-        queryKey: saleKeys.lists(),
+        queryKey: saleKeys.all,
       });
       // Invalidate inventory queries since stock was restored
       queryClient.invalidateQueries({
@@ -232,7 +232,7 @@ export function useCompleteSale() {
         completedSale,
       );
       queryClient.invalidateQueries({
-        queryKey: saleKeys.lists(),
+        queryKey: saleKeys.all,
       });
       // Invalidate inventory queries since stock was updated
       queryClient.invalidateQueries({
