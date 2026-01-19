@@ -1186,12 +1186,16 @@ export const getEmployeeSalesStats = async (params?: {
     const session = await requireAuth();
 
     // Get the start of today
+    // Get the start of today in Colombia timezone (business day)
     const now = new Date();
-    const startOfDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-    );
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Bogota",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const todayString = formatter.format(now); // YYYY-MM-DD
+    const startOfDay = getBusinessDayStart(todayString);
 
     // Determine which seller to fetch stats for
     // Admins see ALL stats by default, or can filter by specific seller
