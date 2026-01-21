@@ -208,7 +208,7 @@ export function SaleCard({
           <Separator className="bg-border/50" />
 
           {/* Bottom Row: Details & Quick Info */}
-          <div className="flex items-center justify-between gap-2 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               {/* Items summary */}
               <div className="flex items-center gap-2 text-muted-foreground">
@@ -266,13 +266,13 @@ export function SaleCard({
                   {onCloseSale && (
                     <Button
                       size="sm"
-                      className="h-9 px-4 text-xs"
+                      className="h-9 w-9 p-0"
                       onClick={(e) => {
                         e.stopPropagation();
                         onCloseSale();
                       }}
                     >
-                      {t("closeSale")}
+                      <Check className="h-4 w-4" />
                     </Button>
                   )}
                 </>

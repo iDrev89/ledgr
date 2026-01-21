@@ -194,7 +194,9 @@ export const createSaleColumns = ({
       return (
         <div className="text-sm text-muted-foreground">
           <div>{format(date, "dd/MM/yyyy", { locale: dateLocale })}</div>
-          <div className="text-xs">{format(date, "hh:mm a", { locale: dateLocale })}</div>
+          <div className="text-xs">
+            {format(date, "hh:mm a", { locale: dateLocale })}
+          </div>
         </div>
       );
     },
@@ -206,31 +208,7 @@ export const createSaleColumns = ({
       const sale = row.original;
 
       return (
-        <div className="flex justify-end gap-2">
-          {isDraftTable && (
-            <>
-              {onEdit && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(sale)}
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  {t("edit")}
-                </Button>
-              )}
-              {onCloseSale && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => onCloseSale(sale)}
-                >
-                  <Check className="mr-2 h-4 w-4" />
-                  {t("closeSale")}
-                </Button>
-              )}
-            </>
-          )}
+        <div className="flex justify-end w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -245,28 +223,19 @@ export const createSaleColumns = ({
                 <Eye className="mr-2 h-4 w-4" />
                 {t("view")}
               </DropdownMenuItem>
-              {!isDraftTable && isAdmin && onEdit && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onEdit(sale)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    {t("edit")}
-                  </DropdownMenuItem>
-                </>
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit(sale)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  {t("edit")}
+                </DropdownMenuItem>
               )}
-              {onDelete && !isDraftTable && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => onDelete(sale)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    {t("delete")}
-                  </DropdownMenuItem>
-                </>
+              {isDraftTable && onCloseSale && (
+                <DropdownMenuItem onClick={() => onCloseSale(sale)}>
+                  <Check className="mr-2 h-4 w-4" />
+                  {t("closeSale")}
+                </DropdownMenuItem>
               )}
-              {onDelete && isDraftTable && (
+              {onDelete && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

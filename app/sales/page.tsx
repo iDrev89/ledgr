@@ -448,21 +448,22 @@ export default function SalesPage() {
               {t("closeSaleWarning")}
               {saleToClose && (
                 <div className="mt-4 p-3 rounded-lg bg-muted space-y-1">
-                  <p className="font-medium">
+                  <div className="font-medium text-sm">
                     {t("saleNumber")}: #
                     {String(saleToClose.saleNumber).padStart(4, "0")}
-                  </p>
-                  <p>
+                  </div>
+                  <div className="text-sm">
                     {t("customer")}: {saleToClose.customer?.name}
-                  </p>
-                  <p className="font-semibold">
+                  </div>
+                  <div className="font-semibold text-sm">
                     {t("total")}:{" "}
                     {new Intl.NumberFormat("es-CO", {
                       style: "currency",
                       currency: "COP",
                       minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
                     }).format(parseFloat(saleToClose.total))}
-                  </p>
+                  </div>
                 </div>
               )}
             </AlertDialogDescription>
