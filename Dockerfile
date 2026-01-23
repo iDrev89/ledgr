@@ -23,6 +23,9 @@ COPY prisma ./prisma/
 # Install dependencies with cache mount for faster builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
+# Generate Prisma client in deps stage
+RUN pnpm prisma generate
+
 # ============================================
 # Stage 2: Build the application
 # ============================================
@@ -30,7 +33,7 @@ FROM base AS build
 
 WORKDIR /app
 
-# Copy dependencies from deps stage
+# Copy dependencies from deps stage (including generated Prisma client)
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -38,8 +41,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Generate Prisma client and build the application
-RUN pnpm prisma generate
+# Build the application
 RUN pnpm build
 
 # ============================================
@@ -67,10 +69,8 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 
-# Copy Prisma files for runtime
+# Copy Prisma schema for potential migrations
 COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
 
 # Set correct permissions
 RUN chown -R nextjs:nodejs /app
