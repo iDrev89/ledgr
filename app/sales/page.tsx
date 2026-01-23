@@ -446,27 +446,27 @@ export default function SalesPage() {
             <AlertDialogTitle>{t("confirmCloseSale")}</AlertDialogTitle>
             <AlertDialogDescription>
               {t("closeSaleWarning")}
-              {saleToClose && (
-                <div className="mt-4 p-3 rounded-lg bg-muted space-y-1">
-                  <div className="font-medium text-sm">
-                    {t("saleNumber")}: #
-                    {String(saleToClose.saleNumber).padStart(4, "0")}
-                  </div>
-                  <div className="text-sm">
-                    {t("customer")}: {saleToClose.customer?.name}
-                  </div>
-                  <div className="font-semibold text-sm">
-                    {t("total")}:{" "}
-                    {new Intl.NumberFormat("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    }).format(parseFloat(saleToClose.total))}
-                  </div>
-                </div>
-              )}
             </AlertDialogDescription>
+            {saleToClose && (
+              <div className="mt-4 p-3 rounded-lg bg-muted space-y-1">
+                <div className="font-medium text-sm">
+                  {t("saleNumber")}: #
+                  {String(saleToClose.saleNumber).padStart(4, "0")}
+                </div>
+                <div className="text-sm">
+                  {t("customer")}: {saleToClose.customer?.name}
+                </div>
+                <div className="font-semibold text-sm">
+                  {t("total")}:{" "}
+                  {new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  }).format(parseFloat(saleToClose.total))}
+                </div>
+              </div>
+            )}
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>

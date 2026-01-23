@@ -578,6 +578,7 @@ export const createSale = async (
                 moveType: StockMoveType.SALE,
                 quantity: item.quantity,
                 unitCost: product.cost,
+                refId: newSale.id,
                 note: `Venta #${String(newSale.saleNumber).padStart(4, "0")}`,
               },
             });
@@ -670,11 +671,14 @@ export const completeSale = async (
 
     // Complete the sale in a transaction
     const completedSale = await prisma.$transaction(async (tx) => {
-      // Create AccountsReceivable if there's a balance
+      // Create or update AccountsReceivable if there's a balance
+      // Using upsert to handle legacy DRAFT sales that may already have a receivable
+      // (created by old code before the fix)
       let receivable = null;
       if (balance.gt(0)) {
-        receivable = await tx.accountsReceivable.create({
-          data: {
+        receivable = await tx.accountsReceivable.upsert({
+          where: { saleId: existingSale.id },
+          create: {
             customerId: existingSale.customerId,
             saleId: existingSale.id,
             currency: existingSale.currency,
@@ -684,6 +688,18 @@ export const completeSale = async (
               ? AccountsReceivableStatus.PARTIAL
               : AccountsReceivableStatus.OPEN,
           },
+          update: {
+            total: existingSale.total,
+            balance,
+            status: totalPaid.gt(0)
+              ? AccountsReceivableStatus.PARTIAL
+              : AccountsReceivableStatus.OPEN,
+          },
+        });
+      } else {
+        // If fully paid, delete any existing receivable
+        await tx.accountsReceivable.deleteMany({
+          where: { saleId: existingSale.id },
         });
       }
 
@@ -696,6 +712,7 @@ export const completeSale = async (
               moveType: StockMoveType.SALE,
               quantity: item.quantity,
               unitCost: item.product.cost,
+              refId: existingSale.id,
               note: `Venta #${String(existingSale.saleNumber).padStart(4, "0")}`,
             },
           });
@@ -944,19 +961,21 @@ export const updateSale = async (
         where: { saleId: validated.id },
       });
 
-      await tx.accountsReceivable.deleteMany({
-        where: { saleId: validated.id },
-      });
-
-      if (currentSale) {
-        await tx.stockMovement.deleteMany({
-          where: {
-            moveType: StockMoveType.SALE,
-            note: {
-              contains: `Venta #${String(currentSale.saleNumber).padStart(4, "0")}`,
-            },
-          },
+      // Only delete receivable and stock movements for COMPLETED sales
+      // DRAFT sales don't have these records
+      if (existingSale.status === "COMPLETED") {
+        await tx.accountsReceivable.deleteMany({
+          where: { saleId: validated.id },
         });
+
+        if (currentSale) {
+          await tx.stockMovement.deleteMany({
+            where: {
+              moveType: StockMoveType.SALE,
+              refId: validated.id,
+            },
+          });
+        }
       }
 
       // Update the sale with new items and payments
@@ -1014,42 +1033,47 @@ export const updateSale = async (
         },
       });
 
-      // Create AccountsReceivable if there's a balance
+      // Only create AccountsReceivable and stock movements for COMPLETED sales
+      // DRAFT sales don't create these records until the sale is closed
       let receivable = null;
-      if (balance.gt(0)) {
-        receivable = await tx.accountsReceivable.create({
-          data: {
-            customerId: validated.customerId,
-            saleId: updatedSale.id,
-            currency: "COP",
-            total,
-            balance,
-            status: totalPaid.gt(0)
-              ? AccountsReceivableStatus.PARTIAL
-              : AccountsReceivableStatus.OPEN,
-          },
-          select: {
-            id: true,
-            total: true,
-            balance: true,
-            status: true,
-          },
-        });
-      }
-
-      // Create new stock movements
-      for (const item of itemsWithTotals) {
-        const product = products.find((p) => p.id === item.productId);
-        if (product?.type === "PRODUCT") {
-          await tx.stockMovement.create({
+      if (existingSale.status === "COMPLETED") {
+        // Create AccountsReceivable if there's a balance
+        if (balance.gt(0)) {
+          receivable = await tx.accountsReceivable.create({
             data: {
-              productId: item.productId,
-              moveType: StockMoveType.SALE,
-              quantity: item.quantity,
-              unitCost: product.cost,
-              note: `Venta #${String(updatedSale.saleNumber).padStart(4, "0")}`,
+              customerId: validated.customerId,
+              saleId: updatedSale.id,
+              currency: "COP",
+              total,
+              balance,
+              status: totalPaid.gt(0)
+                ? AccountsReceivableStatus.PARTIAL
+                : AccountsReceivableStatus.OPEN,
+            },
+            select: {
+              id: true,
+              total: true,
+              balance: true,
+              status: true,
             },
           });
+        }
+
+        // Create new stock movements for products
+        for (const item of itemsWithTotals) {
+          const product = products.find((p) => p.id === item.productId);
+          if (product?.type === "PRODUCT") {
+            await tx.stockMovement.create({
+              data: {
+                productId: item.productId,
+                moveType: StockMoveType.SALE,
+                quantity: item.quantity,
+                unitCost: product.cost,
+                refId: updatedSale.id,
+                note: `Venta #${String(updatedSale.saleNumber).padStart(4, "0")}`,
+              },
+            });
+          }
         }
       }
 
