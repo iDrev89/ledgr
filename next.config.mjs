@@ -45,7 +45,9 @@ const withPWA = withPWAInit({
   ],
 });
 
-const nextConfig = {};
+const nextConfig = {
+  output: "standalone",
+};
 
 const withNextIntl = createNextIntlPlugin();
 export default withPWA(withNextIntl(nextConfig));
