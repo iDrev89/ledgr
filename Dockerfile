@@ -16,14 +16,14 @@ FROM base AS deps
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and prisma schema
 COPY package.json pnpm-lock.yaml* ./
-COPY prisma ./prisma/
+COPY prisma/schema.prisma ./prisma/
 
 # Install dependencies with cache mount for faster builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Generate Prisma client in deps stage
+# Generate Prisma client with Linux binaries
 RUN pnpm prisma generate
 
 # ============================================
@@ -33,9 +33,15 @@ FROM base AS build
 
 WORKDIR /app
 
-# Copy dependencies from deps stage (including generated Prisma client)
+# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code (prisma/prisma-client is excluded via .dockerignore)
 COPY . .
+
+# Copy Prisma client generated in deps (with Linux binaries)
+# This overwrites any Windows-generated client that might slip through
+COPY --from=deps /app/prisma/prisma-client ./prisma/prisma-client
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -70,7 +76,7 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 
 # Copy Prisma schema for potential migrations
-COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma/schema.prisma ./prisma/
 
 # Set correct permissions
 RUN chown -R nextjs:nodejs /app
