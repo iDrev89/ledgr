@@ -8,6 +8,9 @@ out
 build
 dist
 
+# Prisma generated client (will be regenerated in Docker)
+prisma/prisma-client
+
 # Development files
 .git
 .gitignore
