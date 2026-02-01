@@ -20,10 +20,11 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role       String?
-  banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
+  role          String?
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  allowedAccess Boolean   @default(false)
 
   sales              Sale[]            @relation("SaleCreator")
   soldSales          Sale[]            @relation("SaleSeller")

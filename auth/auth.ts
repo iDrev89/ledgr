@@ -9,22 +9,13 @@ import {
 } from "./permisssions";
 import prisma from "@/lib/prisma";
 
-// Emails permitidos para login con Google (separados por comas en .env)
-// Ejemplo: ALLOWED_EMAILS="user1@example.com,user2@example.com"
-const ALLOWED_EMAILS = process.env.ALLOWED_EMAILS
-  ? process.env.ALLOWED_EMAILS.split(",").map((email: string) => email.trim())
-  : [];
-
-// Función para validar si un email está permitido
-export const isEmailAllowed = (email: string): boolean => {
-  // Si no hay emails configurados, permitir todos
-  
-  if (ALLOWED_EMAILS.length === 0) {
-    return true;
-  }
-  const allowed = ALLOWED_EMAILS.includes(email);
-  console.log("allowed", allowed);
-  return allowed;
+// Función para validar si un email tiene acceso permitido en la DB
+export const isEmailAllowed = async (email: string): Promise<boolean> => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { allowedAccess: true },
+  });
+  return user?.allowedAccess ?? false;
 };
 
 export const auth = betterAuth({
@@ -73,7 +64,8 @@ export const auth = betterAuth({
       const email = context.context?.session?.user.email;
 
       if (email !== undefined) {
-        if (!isEmailAllowed(email)) {
+        const allowed = await isEmailAllowed(email);
+        if (!allowed) {
           throw new Error("Email not allowed");
         }
       }

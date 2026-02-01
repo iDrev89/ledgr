@@ -31,8 +31,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MoreHorizontal, UserX, UserCheck, Edit, Trash2 } from "lucide-react";
-import { User, useDeleteUser, useToggleUserBan } from "@/hooks/use-users";
+import { MoreHorizontal, UserX, UserCheck, Edit, Trash2, ShieldCheck, ShieldOff } from "lucide-react";
+import { User, useDeleteUser, useToggleUserBan, useToggleAllowedAccess } from "@/hooks/use-users";
 import { toast } from "sonner";
 import { EditUser } from "./edit-user";
 import { useTranslations } from "next-intl";
@@ -49,6 +49,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
 
   const deleteUserMutation = useDeleteUser();
   const toggleBanMutation = useToggleUserBan();
+  const toggleAccessMutation = useToggleAllowedAccess();
 
   const handleDeleteUser = async () => {
     if (!deleteUser) return;
@@ -70,6 +71,21 @@ export function UsersList({ users, isLoading }: UsersListProps) {
       });
       toast.success(
         user.banned ? t("userUnbannedSuccess") : t("userBannedSuccess"),
+      );
+    } catch (error: any) {
+      toast.error(error.message || t("updateUserStatusError"));
+    }
+  };
+
+  const handleToggleAccess = async (user: User) => {
+    const currentAccess = user.allowedAccess ?? false;
+    try {
+      await toggleAccessMutation.mutateAsync({
+        id: user.id,
+        allowedAccess: !currentAccess,
+      });
+      toast.success(
+        currentAccess ? t("accessDisabledSuccess") : t("accessEnabledSuccess"),
       );
     } catch (error: any) {
       toast.error(error.message || t("updateUserStatusError"));
@@ -118,6 +134,7 @@ export function UsersList({ users, isLoading }: UsersListProps) {
               <TableHead>{t("user")}</TableHead>
               <TableHead>{t("email")}</TableHead>
               <TableHead>{t("role")}</TableHead>
+              <TableHead>{t("access")}</TableHead>
               <TableHead>{t("status")}</TableHead>
               <TableHead>{t("created")}</TableHead>
               <TableHead className="text-right">{t("actions")}</TableHead>
@@ -158,6 +175,13 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                   <Badge variant="outline">{user.role || "user"}</Badge>
                 </TableCell>
                 <TableCell>
+                  {user.allowedAccess ? (
+                    <Badge variant="default">{t("accessEnabled")}</Badge>
+                  ) : (
+                    <Badge variant="secondary">{t("accessDisabled")}</Badge>
+                  )}
+                </TableCell>
+                <TableCell>
                   {user.banned ? (
                     <Badge variant="destructive">{t("banned")}</Badge>
                   ) : (
@@ -194,6 +218,22 @@ export function UsersList({ users, isLoading }: UsersListProps) {
                           <>
                             <UserX className="mr-2 h-4 w-4" />
                             {t("ban")}
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleToggleAccess(user)}
+                        disabled={toggleAccessMutation.isPending}
+                      >
+                        {user.allowedAccess ? (
+                          <>
+                            <ShieldOff className="mr-2 h-4 w-4" />
+                            {t("disableAccess")}
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            {t("enableAccess")}
                           </>
                         )}
                       </DropdownMenuItem>

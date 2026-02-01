@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useCreateUser, UserRole } from "@/hooks/use-users";
 import { toast } from "sonner";
@@ -43,6 +44,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
       email: "",
       password: "",
       role: UserRole.USER,
+      allowedAccess: true,
     },
   });
 
@@ -150,6 +152,27 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="allowedAccess"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">{t("allowedAccess")}</FormLabel>
+                <FormDescription>{t("allowedAccessHelper")}</FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={createUserMutation.isPending}
+                  aria-label={t("allowedAccess")}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
         {createUserMutation.error && (
           <Alert variant="destructive">

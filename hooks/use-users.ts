@@ -2,9 +2,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { admin } from "@/auth/auth-client";
 import type { UserWithRole } from "better-auth/plugins";
 import { UserRole, type UserRoleType } from "@/lib/constants";
+import {
+  getUsers as getUsersAction,
+  updateUserAccess,
+  type UserWithAccess,
+} from "@/apis/actions/users";
 
-// Re-export UserWithRole type from better-auth for convenience
-export type { UserWithRole as User };
+// Extended User type that includes allowedAccess
+export type User = UserWithRole & { allowedAccess?: boolean };
 
 // Re-export UserRole enum
 export { UserRole };
@@ -18,7 +23,7 @@ export const userKeys = {
   detail: (id: string) => [...userKeys.all, "detail", id] as const,
 } as const;
 
-// User API functions using adminClient
+// User API functions using server actions and adminClient
 const userApi = {
   async list(params?: {
     limit?: number;
@@ -27,25 +32,24 @@ const userApi = {
     searchField?: "name" | "email";
     sortBy?: string;
     sortDirection?: "asc" | "desc";
-  }): Promise<{ users: UserWithRole[]; total: number }> {
-    const result = await admin.listUsers({
-      query: {
-        limit: params?.limit || 100,
-        offset: params?.offset || 0,
-        searchValue: params?.searchValue,
-        searchField: params?.searchField || "name",
-        sortBy: params?.sortBy || "createdAt",
-        sortDirection: params?.sortDirection || "desc",
-      },
+  }): Promise<{ users: User[]; total: number }> {
+    // Use server action to get users with allowedAccess field
+    const result = await getUsersAction({
+      limit: params?.limit || 100,
+      offset: params?.offset || 0,
+      search: params?.searchValue,
+      searchField: params?.searchField || "name",
+      sortBy: params?.sortBy || "createdAt",
+      sortDirection: params?.sortDirection || "desc",
     });
 
-    if (!result.data) {
-      throw new Error("Failed to fetch users");
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch users");
     }
 
     return {
-      users: result.data.users || [],
-      total: result.data.total || 0,
+      users: result.data.users as User[],
+      total: result.data.total,
     };
   },
 
@@ -54,12 +58,16 @@ const userApi = {
     email: string;
     password: string;
     role?: UserRoleType;
+    allowedAccess?: boolean;
   }): Promise<UserWithRole> {
     const result = await admin.createUser({
       name: data.name,
       email: data.email,
       password: data.password,
       role: data.role || UserRole.USER,
+      data: {
+        allowedAccess: data.allowedAccess ?? true, // Default to true for manually created users
+      },
     });
 
     if (!result.data || !result.data.user) {
@@ -76,6 +84,7 @@ const userApi = {
       email?: string;
       role?: UserRoleType;
       banned?: boolean;
+      allowedAccess?: boolean;
     },
   ): Promise<UserWithRole> {
     const result = await admin.updateUser({
@@ -213,6 +222,35 @@ export function useToggleUserBan() {
       banReason?: string;
       banExpiresIn?: number;
     }) => userApi.toggleBan(id, banned, banReason, banExpiresIn),
+    onSuccess: (data, variables) => {
+      // Invalidate the specific user and lists to refetch fresh data
+      queryClient.invalidateQueries({
+        queryKey: userKeys.detail(variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: userKeys.lists(),
+      });
+    },
+  });
+}
+
+export function useToggleAllowedAccess() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      allowedAccess,
+    }: {
+      id: string;
+      allowedAccess: boolean;
+    }) => {
+      const result = await updateUserAccess(id, allowedAccess);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update user access");
+      }
+      return result.data;
+    },
     onSuccess: (data, variables) => {
       // Invalidate the specific user and lists to refetch fresh data
       queryClient.invalidateQueries({

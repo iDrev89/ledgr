@@ -85,6 +85,15 @@
     "deleteUserError": "Failed to delete user",
     "banUserError": "Failed to ban user",
     "unbanUserError": "Failed to unban user",
+    "access": "Access",
+    "allowedAccess": "Allowed Access",
+    "allowedAccessHelper": "Allows the user to sign in to the application",
+    "accessEnabled": "Access Enabled",
+    "accessDisabled": "Access Disabled",
+    "enableAccess": "Enable Access",
+    "disableAccess": "Disable Access",
+    "accessEnabledSuccess": "Access enabled successfully",
+    "accessDisabledSuccess": "Access disabled successfully",
     "updateUserStatusError": "Failed to update user status"
   },
   "Customers": {

@@ -14,6 +14,7 @@ const baseUserSchema = z.object({
     .trim(),
   email: z.string().email("Invalid email address").toLowerCase().trim(),
   role: z.nativeEnum(UserRole),
+  allowedAccess: z.boolean().optional(),
 });
 
 // Schema for creating a new user
@@ -26,11 +27,13 @@ export const createUserSchema = baseUserSchema.extend({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Password must contain at least one uppercase letter, one lowercase letter, and one number",
     ),
+  allowedAccess: z.boolean().default(true), // Users created manually have access by default
 });
 
 // Schema for updating a user
 export const updateUserSchema = baseUserSchema.extend({
   banned: z.boolean().optional(),
+  allowedAccess: z.boolean().optional(),
 });
 
 // Schema for banning a user

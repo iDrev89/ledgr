@@ -131,7 +131,8 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   banned: 'banned',
   banReason: 'banReason',
-  banExpires: 'banExpires'
+  banExpires: 'banExpires',
+  allowedAccess: 'allowedAccess'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {

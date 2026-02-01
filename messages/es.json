@@ -91,6 +91,15 @@
     "deleteUserError": "Error al eliminar usuario",
     "banUserError": "Error al suspender usuario",
     "unbanUserError": "Error al reactivar usuario",
+    "access": "Acceso",
+    "allowedAccess": "Acceso Habilitado",
+    "allowedAccessHelper": "Permite al usuario iniciar sesión en la aplicación",
+    "accessEnabled": "Acceso Activo",
+    "accessDisabled": "Sin Acceso",
+    "enableAccess": "Habilitar Acceso",
+    "disableAccess": "Deshabilitar Acceso",
+    "accessEnabledSuccess": "Acceso habilitado exitosamente",
+    "accessDisabledSuccess": "Acceso deshabilitado exitosamente",
     "updateUserStatusError": "Error al actualizar el estado del usuario"
   },
   "Customers": {
