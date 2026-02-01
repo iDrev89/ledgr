@@ -27,7 +27,7 @@ export const createUserSchema = baseUserSchema.extend({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Password must contain at least one uppercase letter, one lowercase letter, and one number",
     ),
-  allowedAccess: z.boolean().default(true), // Users created manually have access by default
+  allowedAccess: z.boolean().optional(), // Default handled in form defaultValues
 });
 
 // Schema for updating a user
