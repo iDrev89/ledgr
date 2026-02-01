@@ -22,14 +22,12 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Edit, Loader2 } from "lucide-react";
 import { User, useUpdateUser, UserRole } from "@/hooks/use-users";
 import { toast } from "sonner";
@@ -52,7 +50,6 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
       name: user.name,
       email: user.email,
       role: (user.role as UpdateUserInput["role"]) || UserRole.USER,
-      allowedAccess: user.allowedAccess ?? false,
     },
   });
 
@@ -63,7 +60,6 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
         name: user.name,
         email: user.email,
         role: (user.role as UpdateUserInput["role"]) || UserRole.USER,
-        allowedAccess: user.allowedAccess ?? false,
       });
     }
   }, [user, form]);
@@ -159,27 +155,6 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                     </SelectContent>
                   </Select>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="allowedAccess"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t("allowedAccess")}</FormLabel>
-                    <FormDescription>{t("allowedAccessHelper")}</FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={updateUserMutation.isPending}
-                      aria-label={t("allowedAccess")}
-                    />
-                  </FormControl>
                 </FormItem>
               )}
             />

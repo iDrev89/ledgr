@@ -23,6 +23,54 @@ const requireAuth = async () => {
   return session;
 };
 
+// Helper to get date boundaries in Colombia timezone
+const getColombiaDateBoundaries = () => {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Bogota",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayString = formatter.format(now); // YYYY-MM-DD in Colombia
+  const [year, month, day] = todayString.split("-").map(Number);
+
+  // Start of current month in Colombia timezone, converted to UTC
+  const startOfMonth = new Date(
+    Date.UTC(year, month - 1, 1) + 5 * 60 * 60 * 1000 // Add 5 hours to get Colombia midnight in UTC
+  );
+
+  // Start of last month
+  const lastMonth = month === 1 ? 12 : month - 1;
+  const lastMonthYear = month === 1 ? year - 1 : year;
+  const startOfLastMonth = new Date(
+    Date.UTC(lastMonthYear, lastMonth - 1, 1) + 5 * 60 * 60 * 1000
+  );
+
+  // End of last month (start of current month)
+  const endOfLastMonth = new Date(startOfMonth.getTime() - 1);
+
+  // Start of today in Colombia
+  const startOfToday = new Date(
+    Date.UTC(year, month - 1, day) + 5 * 60 * 60 * 1000
+  );
+
+  // Start of tomorrow in Colombia
+  const startOfTomorrow = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000);
+
+  return {
+    startOfMonth,
+    startOfLastMonth,
+    endOfLastMonth,
+    startOfToday,
+    startOfTomorrow,
+    todayString,
+    year,
+    month,
+    day,
+  };
+};
+
 // Get dashboard statistics
 export const getDashboardStats = async (): Promise<
   ActionResponse<{
@@ -39,10 +87,8 @@ export const getDashboardStats = async (): Promise<
   try {
     await requireAuth();
 
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    const { startOfMonth, startOfLastMonth, endOfLastMonth } =
+      getColombiaDateBoundaries();
 
     // Current month sales
     const [salesThisMonth, salesLastMonth] = await Promise.all([
@@ -137,6 +183,17 @@ export const getDashboardStats = async (): Promise<
   }
 };
 
+// Helper to convert UTC date to Colombia date string (YYYY-MM-DD)
+const utcToColombiaDateString = (utcDate: Date): string => {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Bogota",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return formatter.format(utcDate);
+};
+
 // Get sales chart data (last 7 days including today)
 export const getSalesChartData = async (): Promise<
   ActionResponse<
@@ -152,28 +209,18 @@ export const getSalesChartData = async (): Promise<
   try {
     await requireAuth();
 
-    // Get current date and time in UTC
-    const now = new Date();
+    const { startOfToday, startOfTomorrow, todayString, year, month, day } =
+      getColombiaDateBoundaries();
 
-    // Get today at start of day (UTC)
-    const today = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-    );
-
-    // Calculate start date (6 days ago from today)
-    const startDate = new Date(today);
-    startDate.setUTCDate(today.getUTCDate() - 6);
-
-    // Get tomorrow's date to ensure we include all of today
-    const tomorrow = new Date(today);
-    tomorrow.setUTCDate(today.getUTCDate() + 1);
+    // Calculate start date (6 days ago from today in Colombia)
+    const startDate = new Date(startOfToday.getTime() - 6 * 24 * 60 * 60 * 1000);
 
     const [sales, expenses] = await Promise.all([
       prisma.sale.findMany({
         where: {
           createdAt: {
             gte: startDate,
-            lt: tomorrow, // Less than tomorrow = includes all of today
+            lt: startOfTomorrow,
           },
         },
         select: {
@@ -185,7 +232,7 @@ export const getSalesChartData = async (): Promise<
         where: {
           incurredAt: {
             gte: startDate,
-            lt: tomorrow, // Less than tomorrow = includes all of today
+            lt: startOfTomorrow,
           },
         },
         select: {
@@ -195,29 +242,28 @@ export const getSalesChartData = async (): Promise<
       }),
     ]);
 
-    // Group by date
+    // Group by date (using Colombia timezone)
     const dataMap = new Map<string, { sales: number; expenses: number }>();
 
-    // Initialize all 7 dates (from startDate to today, inclusive)
+    // Initialize all 7 dates (from 6 days ago to today, inclusive)
     for (let i = 0; i < 7; i++) {
-      const date = new Date(startDate);
-      date.setUTCDate(startDate.getUTCDate() + i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateOffset = new Date(startOfToday.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
+      const dateStr = utcToColombiaDateString(dateOffset);
       dataMap.set(dateStr, { sales: 0, expenses: 0 });
     }
 
-    // Add sales
+    // Add sales (convert UTC createdAt to Colombia date)
     sales.forEach((sale) => {
-      const dateStr = sale.createdAt.toISOString().split("T")[0];
+      const dateStr = utcToColombiaDateString(sale.createdAt);
       const current = dataMap.get(dateStr);
       if (current) {
         current.sales += sale.total.toNumber();
       }
     });
 
-    // Add expenses
+    // Add expenses (convert UTC incurredAt to Colombia date)
     expenses.forEach((expense) => {
-      const dateStr = expense.incurredAt.toISOString().split("T")[0];
+      const dateStr = utcToColombiaDateString(expense.incurredAt);
       const current = dataMap.get(dateStr);
       if (current) {
         current.expenses += expense.amount.toNumber();
@@ -260,9 +306,7 @@ export const getTopProducts = async (): Promise<
   try {
     await requireAuth();
 
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+    const { startOfMonth } = getColombiaDateBoundaries();
 
     // Get all sale items from this month
     const saleItems = await prisma.saleItem.findMany({
