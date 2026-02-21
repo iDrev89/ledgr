@@ -214,7 +214,8 @@ export type AccountTransactionType = (typeof AccountTransactionType)[keyof typeo
 export const StockMoveType: {
   PURCHASE: 'PURCHASE',
   SALE: 'SALE',
-  ADJUSTMENT: 'ADJUSTMENT'
+  ADJUSTMENT: 'ADJUSTMENT',
+  TRANSFER: 'TRANSFER'
 };
 
 export type StockMoveType = (typeof StockMoveType)[keyof typeof StockMoveType]
@@ -3864,6 +3865,7 @@ export namespace Prisma {
     purchases: number
     users: number
     cashCloses: number
+    stockMoves: number
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3873,6 +3875,7 @@ export namespace Prisma {
     purchases?: boolean | BranchCountOutputTypeCountPurchasesArgs
     users?: boolean | BranchCountOutputTypeCountUsersArgs
     cashCloses?: boolean | BranchCountOutputTypeCountCashClosesArgs
+    stockMoves?: boolean | BranchCountOutputTypeCountStockMovesArgs
   }
 
   // Custom InputTypes
@@ -3926,6 +3929,13 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountCashClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CashRegisterCloseWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountStockMovesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockMovementWhereInput
   }
 
 
@@ -10602,6 +10612,7 @@ export namespace Prisma {
     purchases?: boolean | Branch$purchasesArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
     cashCloses?: boolean | Branch$cashClosesArgs<ExtArgs>
+    stockMoves?: boolean | Branch$stockMovesArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
 
@@ -10649,6 +10660,7 @@ export namespace Prisma {
     purchases?: boolean | Branch$purchasesArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
     cashCloses?: boolean | Branch$cashClosesArgs<ExtArgs>
+    stockMoves?: boolean | Branch$stockMovesArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10663,6 +10675,7 @@ export namespace Prisma {
       purchases: Prisma.$PurchasePayload<ExtArgs>[]
       users: Prisma.$UserBranchPayload<ExtArgs>[]
       cashCloses: Prisma.$CashRegisterClosePayload<ExtArgs>[]
+      stockMoves: Prisma.$StockMovementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11074,6 +11087,7 @@ export namespace Prisma {
     purchases<T extends Branch$purchasesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$purchasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Branch$usersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cashCloses<T extends Branch$cashClosesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$cashClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stockMoves<T extends Branch$stockMovesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$stockMovesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11641,6 +11655,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.stockMoves
+   */
+  export type Branch$stockMovesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    where?: StockMovementWhereInput
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    cursor?: StockMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
   }
 
   /**
@@ -30369,6 +30407,7 @@ export namespace Prisma {
   export type StockMovementMinAggregateOutputType = {
     id: string | null
     productId: string | null
+    branchId: string | null
     moveType: $Enums.StockMoveType | null
     quantity: number | null
     unitCost: Decimal | null
@@ -30381,6 +30420,7 @@ export namespace Prisma {
   export type StockMovementMaxAggregateOutputType = {
     id: string | null
     productId: string | null
+    branchId: string | null
     moveType: $Enums.StockMoveType | null
     quantity: number | null
     unitCost: Decimal | null
@@ -30393,6 +30433,7 @@ export namespace Prisma {
   export type StockMovementCountAggregateOutputType = {
     id: number
     productId: number
+    branchId: number
     moveType: number
     quantity: number
     unitCost: number
@@ -30417,6 +30458,7 @@ export namespace Prisma {
   export type StockMovementMinAggregateInputType = {
     id?: true
     productId?: true
+    branchId?: true
     moveType?: true
     quantity?: true
     unitCost?: true
@@ -30429,6 +30471,7 @@ export namespace Prisma {
   export type StockMovementMaxAggregateInputType = {
     id?: true
     productId?: true
+    branchId?: true
     moveType?: true
     quantity?: true
     unitCost?: true
@@ -30441,6 +30484,7 @@ export namespace Prisma {
   export type StockMovementCountAggregateInputType = {
     id?: true
     productId?: true
+    branchId?: true
     moveType?: true
     quantity?: true
     unitCost?: true
@@ -30540,6 +30584,7 @@ export namespace Prisma {
   export type StockMovementGroupByOutputType = {
     id: string
     productId: string
+    branchId: string | null
     moveType: $Enums.StockMoveType
     quantity: number
     unitCost: Decimal | null
@@ -30571,6 +30616,7 @@ export namespace Prisma {
   export type StockMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    branchId?: boolean
     moveType?: boolean
     quantity?: boolean
     unitCost?: boolean
@@ -30578,12 +30624,14 @@ export namespace Prisma {
     refId?: boolean
     note?: boolean
     createdAt?: boolean
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    branchId?: boolean
     moveType?: boolean
     quantity?: boolean
     unitCost?: boolean
@@ -30591,12 +30639,14 @@ export namespace Prisma {
     refId?: boolean
     note?: boolean
     createdAt?: boolean
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    branchId?: boolean
     moveType?: boolean
     quantity?: boolean
     unitCost?: boolean
@@ -30604,12 +30654,14 @@ export namespace Prisma {
     refId?: boolean
     note?: boolean
     createdAt?: boolean
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectScalar = {
     id?: boolean
     productId?: boolean
+    branchId?: boolean
     moveType?: boolean
     quantity?: boolean
     unitCost?: boolean
@@ -30619,25 +30671,30 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type StockMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "moveType" | "quantity" | "unitCost" | "refType" | "refId" | "note" | "createdAt", ExtArgs["result"]["stockMovement"]>
+  export type StockMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "branchId" | "moveType" | "quantity" | "unitCost" | "refType" | "refId" | "note" | "createdAt", ExtArgs["result"]["stockMovement"]>
   export type StockMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
   export type StockMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
   export type StockMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | StockMovement$branchArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
 
   export type $StockMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StockMovement"
     objects: {
+      branch: Prisma.$BranchPayload<ExtArgs> | null
       product: Prisma.$ProductPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       productId: string
+      branchId: string | null
       moveType: $Enums.StockMoveType
       quantity: number
       unitCost: Prisma.Decimal | null
@@ -31039,6 +31096,7 @@ export namespace Prisma {
    */
   export interface Prisma__StockMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends StockMovement$branchArgs<ExtArgs> = {}>(args?: Subset<T, StockMovement$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -31071,6 +31129,7 @@ export namespace Prisma {
   interface StockMovementFieldRefs {
     readonly id: FieldRef<"StockMovement", 'String'>
     readonly productId: FieldRef<"StockMovement", 'String'>
+    readonly branchId: FieldRef<"StockMovement", 'String'>
     readonly moveType: FieldRef<"StockMovement", 'StockMoveType'>
     readonly quantity: FieldRef<"StockMovement", 'Int'>
     readonly unitCost: FieldRef<"StockMovement", 'Decimal'>
@@ -31471,6 +31530,25 @@ export namespace Prisma {
      * Limit how many StockMovements to delete.
      */
     limit?: number
+  }
+
+  /**
+   * StockMovement.branch
+   */
+  export type StockMovement$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -41389,6 +41467,7 @@ export namespace Prisma {
   export const StockMovementScalarFieldEnum: {
     id: 'id',
     productId: 'productId',
+    branchId: 'branchId',
     moveType: 'moveType',
     quantity: 'quantity',
     unitCost: 'unitCost',
@@ -42247,6 +42326,7 @@ export namespace Prisma {
     purchases?: PurchaseListRelationFilter
     users?: UserBranchListRelationFilter
     cashCloses?: CashRegisterCloseListRelationFilter
+    stockMoves?: StockMovementListRelationFilter
   }
 
   export type BranchOrderByWithRelationInput = {
@@ -42265,6 +42345,7 @@ export namespace Prisma {
     purchases?: PurchaseOrderByRelationAggregateInput
     users?: UserBranchOrderByRelationAggregateInput
     cashCloses?: CashRegisterCloseOrderByRelationAggregateInput
+    stockMoves?: StockMovementOrderByRelationAggregateInput
   }
 
   export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -42286,6 +42367,7 @@ export namespace Prisma {
     purchases?: PurchaseListRelationFilter
     users?: UserBranchListRelationFilter
     cashCloses?: CashRegisterCloseListRelationFilter
+    stockMoves?: StockMovementListRelationFilter
   }, "id" | "name">
 
   export type BranchOrderByWithAggregationInput = {
@@ -43710,6 +43792,7 @@ export namespace Prisma {
     NOT?: StockMovementWhereInput | StockMovementWhereInput[]
     id?: StringFilter<"StockMovement"> | string
     productId?: StringFilter<"StockMovement"> | string
+    branchId?: StringNullableFilter<"StockMovement"> | string | null
     moveType?: EnumStockMoveTypeFilter<"StockMovement"> | $Enums.StockMoveType
     quantity?: IntFilter<"StockMovement"> | number
     unitCost?: DecimalNullableFilter<"StockMovement"> | Decimal | DecimalJsLike | number | string | null
@@ -43717,12 +43800,14 @@ export namespace Prisma {
     refId?: StringNullableFilter<"StockMovement"> | string | null
     note?: StringNullableFilter<"StockMovement"> | string | null
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
 
   export type StockMovementOrderByWithRelationInput = {
     id?: SortOrder
     productId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     moveType?: SortOrder
     quantity?: SortOrder
     unitCost?: SortOrderInput | SortOrder
@@ -43730,6 +43815,7 @@ export namespace Prisma {
     refId?: SortOrderInput | SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    branch?: BranchOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
   }
 
@@ -43739,6 +43825,7 @@ export namespace Prisma {
     OR?: StockMovementWhereInput[]
     NOT?: StockMovementWhereInput | StockMovementWhereInput[]
     productId?: StringFilter<"StockMovement"> | string
+    branchId?: StringNullableFilter<"StockMovement"> | string | null
     moveType?: EnumStockMoveTypeFilter<"StockMovement"> | $Enums.StockMoveType
     quantity?: IntFilter<"StockMovement"> | number
     unitCost?: DecimalNullableFilter<"StockMovement"> | Decimal | DecimalJsLike | number | string | null
@@ -43746,12 +43833,14 @@ export namespace Prisma {
     refId?: StringNullableFilter<"StockMovement"> | string | null
     note?: StringNullableFilter<"StockMovement"> | string | null
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id">
 
   export type StockMovementOrderByWithAggregationInput = {
     id?: SortOrder
     productId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     moveType?: SortOrder
     quantity?: SortOrder
     unitCost?: SortOrderInput | SortOrder
@@ -43772,6 +43861,7 @@ export namespace Prisma {
     NOT?: StockMovementScalarWhereWithAggregatesInput | StockMovementScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StockMovement"> | string
     productId?: StringWithAggregatesFilter<"StockMovement"> | string
+    branchId?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
     moveType?: EnumStockMoveTypeWithAggregatesFilter<"StockMovement"> | $Enums.StockMoveType
     quantity?: IntWithAggregatesFilter<"StockMovement"> | number
     unitCost?: DecimalNullableWithAggregatesFilter<"StockMovement"> | Decimal | DecimalJsLike | number | string | null
@@ -44974,6 +45064,7 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateInput = {
@@ -44992,6 +45083,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUpdateInput = {
@@ -45010,6 +45102,7 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateInput = {
@@ -45028,6 +45121,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateManyInput = {
@@ -46532,12 +46626,14 @@ export namespace Prisma {
     refId?: string | null
     note?: string | null
     createdAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutStockMovesInput
     product: ProductCreateNestedOneWithoutStockMovesInput
   }
 
   export type StockMovementUncheckedCreateInput = {
     id?: string
     productId: string
+    branchId?: string | null
     moveType: $Enums.StockMoveType
     quantity: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -46556,12 +46652,14 @@ export namespace Prisma {
     refId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutStockMovesNestedInput
     product?: ProductUpdateOneRequiredWithoutStockMovesNestedInput
   }
 
   export type StockMovementUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
     quantity?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -46574,6 +46672,7 @@ export namespace Prisma {
   export type StockMovementCreateManyInput = {
     id?: string
     productId: string
+    branchId?: string | null
     moveType: $Enums.StockMoveType
     quantity: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -46597,6 +46696,7 @@ export namespace Prisma {
   export type StockMovementUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
     quantity?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -47799,7 +47899,17 @@ export namespace Prisma {
     none?: FinancialAccountWhereInput
   }
 
+  export type StockMovementListRelationFilter = {
+    every?: StockMovementWhereInput
+    some?: StockMovementWhereInput
+    none?: StockMovementWhereInput
+  }
+
   export type FinancialAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StockMovementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -48214,20 +48324,10 @@ export namespace Prisma {
     isNot?: BusinessLineWhereInput | null
   }
 
-  export type StockMovementListRelationFilter = {
-    every?: StockMovementWhereInput
-    some?: StockMovementWhereInput
-    none?: StockMovementWhereInput
-  }
-
   export type PurchaseItemListRelationFilter = {
     every?: PurchaseItemWhereInput
     some?: PurchaseItemWhereInput
     none?: PurchaseItemWhereInput
-  }
-
-  export type StockMovementOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type PurchaseItemOrderByRelationAggregateInput = {
@@ -48927,6 +49027,7 @@ export namespace Prisma {
   export type StockMovementCountOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    branchId?: SortOrder
     moveType?: SortOrder
     quantity?: SortOrder
     unitCost?: SortOrder
@@ -48944,6 +49045,7 @@ export namespace Prisma {
   export type StockMovementMaxOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    branchId?: SortOrder
     moveType?: SortOrder
     quantity?: SortOrder
     unitCost?: SortOrder
@@ -48956,6 +49058,7 @@ export namespace Prisma {
   export type StockMovementMinOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    branchId?: SortOrder
     moveType?: SortOrder
     quantity?: SortOrder
     unitCost?: SortOrder
@@ -50247,6 +50350,13 @@ export namespace Prisma {
     connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
   }
 
+  export type StockMovementCreateNestedManyWithoutBranchInput = {
+    create?: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput> | StockMovementCreateWithoutBranchInput[] | StockMovementUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutBranchInput | StockMovementCreateOrConnectWithoutBranchInput[]
+    createMany?: StockMovementCreateManyBranchInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
   export type FinancialAccountUncheckedCreateNestedManyWithoutBranchInput = {
     create?: XOR<FinancialAccountCreateWithoutBranchInput, FinancialAccountUncheckedCreateWithoutBranchInput> | FinancialAccountCreateWithoutBranchInput[] | FinancialAccountUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: FinancialAccountCreateOrConnectWithoutBranchInput | FinancialAccountCreateOrConnectWithoutBranchInput[]
@@ -50287,6 +50397,13 @@ export namespace Prisma {
     connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutBranchInput | CashRegisterCloseCreateOrConnectWithoutBranchInput[]
     createMany?: CashRegisterCloseCreateManyBranchInputEnvelope
     connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  }
+
+  export type StockMovementUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput> | StockMovementCreateWithoutBranchInput[] | StockMovementUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutBranchInput | StockMovementCreateOrConnectWithoutBranchInput[]
+    createMany?: StockMovementCreateManyBranchInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
   export type FinancialAccountUpdateManyWithoutBranchNestedInput = {
@@ -50373,6 +50490,20 @@ export namespace Prisma {
     deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
   }
 
+  export type StockMovementUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput> | StockMovementCreateWithoutBranchInput[] | StockMovementUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutBranchInput | StockMovementCreateOrConnectWithoutBranchInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutBranchInput | StockMovementUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: StockMovementCreateManyBranchInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutBranchInput | StockMovementUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutBranchInput | StockMovementUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
   export type FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput = {
     create?: XOR<FinancialAccountCreateWithoutBranchInput, FinancialAccountUncheckedCreateWithoutBranchInput> | FinancialAccountCreateWithoutBranchInput[] | FinancialAccountUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: FinancialAccountCreateOrConnectWithoutBranchInput | FinancialAccountCreateOrConnectWithoutBranchInput[]
@@ -50455,6 +50586,20 @@ export namespace Prisma {
     update?: CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput | CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutBranchInput | CashRegisterCloseUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput> | StockMovementCreateWithoutBranchInput[] | StockMovementUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutBranchInput | StockMovementCreateOrConnectWithoutBranchInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutBranchInput | StockMovementUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: StockMovementCreateManyBranchInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutBranchInput | StockMovementUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutBranchInput | StockMovementUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutBranchesInput = {
@@ -52207,6 +52352,12 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutPurchaseItemsInput, ProductUpdateWithoutPurchaseItemsInput>, ProductUncheckedUpdateWithoutPurchaseItemsInput>
   }
 
+  export type BranchCreateNestedOneWithoutStockMovesInput = {
+    create?: XOR<BranchCreateWithoutStockMovesInput, BranchUncheckedCreateWithoutStockMovesInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutStockMovesInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type ProductCreateNestedOneWithoutStockMovesInput = {
     create?: XOR<ProductCreateWithoutStockMovesInput, ProductUncheckedCreateWithoutStockMovesInput>
     connectOrCreate?: ProductCreateOrConnectWithoutStockMovesInput
@@ -52215,6 +52366,16 @@ export namespace Prisma {
 
   export type EnumStockMoveTypeFieldUpdateOperationsInput = {
     set?: $Enums.StockMoveType
+  }
+
+  export type BranchUpdateOneWithoutStockMovesNestedInput = {
+    create?: XOR<BranchCreateWithoutStockMovesInput, BranchUncheckedCreateWithoutStockMovesInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutStockMovesInput
+    upsert?: BranchUpsertWithoutStockMovesInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutStockMovesInput, BranchUpdateWithoutStockMovesInput>, BranchUncheckedUpdateWithoutStockMovesInput>
   }
 
   export type ProductUpdateOneRequiredWithoutStockMovesNestedInput = {
@@ -54802,6 +54963,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StockMovementCreateWithoutBranchInput = {
+    id?: string
+    moveType: $Enums.StockMoveType
+    quantity: number
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    refType?: string | null
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    product: ProductCreateNestedOneWithoutStockMovesInput
+  }
+
+  export type StockMovementUncheckedCreateWithoutBranchInput = {
+    id?: string
+    productId: string
+    moveType: $Enums.StockMoveType
+    quantity: number
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    refType?: string | null
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StockMovementCreateOrConnectWithoutBranchInput = {
+    where: StockMovementWhereUniqueInput
+    create: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput>
+  }
+
+  export type StockMovementCreateManyBranchInputEnvelope = {
+    data: StockMovementCreateManyBranchInput | StockMovementCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FinancialAccountUpsertWithWhereUniqueWithoutBranchInput = {
     where: FinancialAccountWhereUniqueInput
     update: XOR<FinancialAccountUpdateWithoutBranchInput, FinancialAccountUncheckedUpdateWithoutBranchInput>
@@ -54915,6 +55110,38 @@ export namespace Prisma {
     data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyWithoutBranchInput>
   }
 
+  export type StockMovementUpsertWithWhereUniqueWithoutBranchInput = {
+    where: StockMovementWhereUniqueInput
+    update: XOR<StockMovementUpdateWithoutBranchInput, StockMovementUncheckedUpdateWithoutBranchInput>
+    create: XOR<StockMovementCreateWithoutBranchInput, StockMovementUncheckedCreateWithoutBranchInput>
+  }
+
+  export type StockMovementUpdateWithWhereUniqueWithoutBranchInput = {
+    where: StockMovementWhereUniqueInput
+    data: XOR<StockMovementUpdateWithoutBranchInput, StockMovementUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type StockMovementUpdateManyWithWhereWithoutBranchInput = {
+    where: StockMovementScalarWhereInput
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type StockMovementScalarWhereInput = {
+    AND?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+    OR?: StockMovementScalarWhereInput[]
+    NOT?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+    id?: StringFilter<"StockMovement"> | string
+    productId?: StringFilter<"StockMovement"> | string
+    branchId?: StringNullableFilter<"StockMovement"> | string | null
+    moveType?: EnumStockMoveTypeFilter<"StockMovement"> | $Enums.StockMoveType
+    quantity?: IntFilter<"StockMovement"> | number
+    unitCost?: DecimalNullableFilter<"StockMovement"> | Decimal | DecimalJsLike | number | string | null
+    refType?: StringNullableFilter<"StockMovement"> | string | null
+    refId?: StringNullableFilter<"StockMovement"> | string | null
+    note?: StringNullableFilter<"StockMovement"> | string | null
+    createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+  }
+
   export type UserCreateWithoutBranchesInput = {
     id: string
     name: string
@@ -54989,6 +55216,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutUsersInput = {
@@ -55006,6 +55234,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutUsersInput = {
@@ -55104,6 +55333,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutUsersInput = {
@@ -55121,6 +55351,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateWithoutFinancialAccountsInput = {
@@ -55138,6 +55369,7 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutFinancialAccountsInput = {
@@ -55155,6 +55387,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutFinancialAccountsInput = {
@@ -55530,6 +55763,7 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutFinancialAccountsInput = {
@@ -55547,6 +55781,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type SalePaymentUpsertWithWhereUniqueWithoutAccountInput = {
@@ -56689,10 +56924,12 @@ export namespace Prisma {
     refId?: string | null
     note?: string | null
     createdAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutStockMovesInput
   }
 
   export type StockMovementUncheckedCreateWithoutProductInput = {
     id?: string
+    branchId?: string | null
     moveType: $Enums.StockMoveType
     quantity: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -56830,21 +57067,6 @@ export namespace Prisma {
   export type StockMovementUpdateManyWithWhereWithoutProductInput = {
     where: StockMovementScalarWhereInput
     data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutProductInput>
-  }
-
-  export type StockMovementScalarWhereInput = {
-    AND?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
-    OR?: StockMovementScalarWhereInput[]
-    NOT?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
-    id?: StringFilter<"StockMovement"> | string
-    productId?: StringFilter<"StockMovement"> | string
-    moveType?: EnumStockMoveTypeFilter<"StockMovement"> | $Enums.StockMoveType
-    quantity?: IntFilter<"StockMovement"> | number
-    unitCost?: DecimalNullableFilter<"StockMovement"> | Decimal | DecimalJsLike | number | string | null
-    refType?: StringNullableFilter<"StockMovement"> | string | null
-    refId?: StringNullableFilter<"StockMovement"> | string | null
-    note?: StringNullableFilter<"StockMovement"> | string | null
-    createdAt?: DateTimeFilter<"StockMovement"> | Date | string
   }
 
   export type PurchaseItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -57039,6 +57261,7 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutSalesInput = {
@@ -57056,6 +57279,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesInput = {
@@ -57378,6 +57602,7 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutSalesInput = {
@@ -57395,6 +57620,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BusinessLineUpsertWithoutSalesInput = {
@@ -58615,6 +58841,7 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutExpensesInput = {
@@ -58632,6 +58859,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutExpensesInput = {
@@ -58947,6 +59175,7 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutExpensesInput = {
@@ -58964,6 +59193,7 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BusinessLineUpsertWithoutExpensesInput = {
@@ -59323,6 +59553,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutPurchasesInput = {
@@ -59340,6 +59571,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
     cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutPurchasesInput = {
@@ -59583,6 +59815,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutPurchasesInput = {
@@ -59600,6 +59833,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
     cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type FinancialAccountUpsertWithoutPurchasesInput = {
@@ -59972,6 +60206,47 @@ export namespace Prisma {
     stockMoves?: StockMovementUncheckedUpdateManyWithoutProductNestedInput
   }
 
+  export type BranchCreateWithoutStockMovesInput = {
+    id?: string
+    name: string
+    code?: string | null
+    address?: string | null
+    phone?: string | null
+    active?: boolean
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
+    sales?: SaleCreateNestedManyWithoutBranchInput
+    expenses?: ExpenseCreateNestedManyWithoutBranchInput
+    purchases?: PurchaseCreateNestedManyWithoutBranchInput
+    users?: UserBranchCreateNestedManyWithoutBranchInput
+    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutStockMovesInput = {
+    id?: string
+    name: string
+    code?: string | null
+    address?: string | null
+    phone?: string | null
+    active?: boolean
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
+    sales?: SaleUncheckedCreateNestedManyWithoutBranchInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
+    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutStockMovesInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutStockMovesInput, BranchUncheckedCreateWithoutStockMovesInput>
+  }
+
   export type ProductCreateWithoutStockMovesInput = {
     id?: string
     type?: $Enums.ProductType
@@ -60011,6 +60286,53 @@ export namespace Prisma {
   export type ProductCreateOrConnectWithoutStockMovesInput = {
     where: ProductWhereUniqueInput
     create: XOR<ProductCreateWithoutStockMovesInput, ProductUncheckedCreateWithoutStockMovesInput>
+  }
+
+  export type BranchUpsertWithoutStockMovesInput = {
+    update: XOR<BranchUpdateWithoutStockMovesInput, BranchUncheckedUpdateWithoutStockMovesInput>
+    create: XOR<BranchCreateWithoutStockMovesInput, BranchUncheckedCreateWithoutStockMovesInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutStockMovesInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutStockMovesInput, BranchUncheckedUpdateWithoutStockMovesInput>
+  }
+
+  export type BranchUpdateWithoutStockMovesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
+    sales?: SaleUpdateManyWithoutBranchNestedInput
+    expenses?: ExpenseUpdateManyWithoutBranchNestedInput
+    purchases?: PurchaseUpdateManyWithoutBranchNestedInput
+    users?: UserBranchUpdateManyWithoutBranchNestedInput
+    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutStockMovesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutBranchNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
+    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type ProductUpsertWithoutStockMovesInput = {
@@ -61069,6 +61391,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutCashClosesInput = {
@@ -61086,6 +61409,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
+    stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutCashClosesInput = {
@@ -61231,6 +61555,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutCashClosesInput = {
@@ -61248,6 +61573,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
+    stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutCashRegisterClosesInput = {
@@ -62849,6 +63175,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type StockMovementCreateManyBranchInput = {
+    id?: string
+    productId: string
+    moveType: $Enums.StockMoveType
+    quantity: number
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    refType?: string | null
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
   export type FinancialAccountUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
@@ -63139,6 +63477,42 @@ export namespace Prisma {
     closedById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    refType?: NullableStringFieldUpdateOperationsInput | string | null
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutStockMovesNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    refType?: NullableStringFieldUpdateOperationsInput | string | null
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    refType?: NullableStringFieldUpdateOperationsInput | string | null
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SalePaymentCreateManyAccountInput = {
@@ -63888,6 +64262,7 @@ export namespace Prisma {
 
   export type StockMovementCreateManyProductInput = {
     id?: string
+    branchId?: string | null
     moveType: $Enums.StockMoveType
     quantity: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -63947,10 +64322,12 @@ export namespace Prisma {
     refId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutStockMovesNestedInput
   }
 
   export type StockMovementUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
     quantity?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -63962,6 +64339,7 @@ export namespace Prisma {
 
   export type StockMovementUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     moveType?: EnumStockMoveTypeFieldUpdateOperationsInput | $Enums.StockMoveType
     quantity?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null

@@ -48,11 +48,11 @@ export const useTopProducts = () => {
   });
 };
 
-export const useLowStockAlerts = () => {
+export const useLowStockAlerts = (branchId?: string) => {
   return useQuery({
-    queryKey: ["dashboard", "low-stock"],
+    queryKey: ["dashboard", "low-stock", branchId],
     queryFn: async () => {
-      const result = await getLowStockAlerts();
+      const result = await getLowStockAlerts({ branchId });
       if (!result.success) {
         throw new Error(result.error);
       }

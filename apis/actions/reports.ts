@@ -418,14 +418,16 @@ export async function getBusinessSummary(
     });
 
     // 2. Get stock movements (for COGS)
+    const stockMovementWhere: any = {
+      moveType: StockMoveType.SALE,
+      createdAt: { gte: startDate, lte: endDate },
+    };
+    if (filters.branchId) {
+      stockMovementWhere.branchId = filters.branchId;
+    }
+
     const stockMovements = await prisma.stockMovement.findMany({
-      where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
+      where: stockMovementWhere,
       select: {
         quantity: true,
         unitCost: true,
@@ -676,13 +678,15 @@ export async function getBusinessSummaryEnhanced(
     });
 
     // Get stock movements for COGS (current period)
+    const smWhere: any = { moveType: StockMoveType.SALE };
+    if (filters.branchId) {
+      smWhere.branchId = filters.branchId;
+    }
+
     const stockMovements = await prisma.stockMovement.findMany({
       where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
+        ...smWhere,
+        createdAt: { gte: startDate, lte: endDate },
       },
       select: {
         quantity: true,
@@ -693,11 +697,8 @@ export async function getBusinessSummaryEnhanced(
     // Get stock movements for COGS (previous period)
     const previousStockMovements = await prisma.stockMovement.findMany({
       where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: previousStartDate,
-          lte: previousEndDate,
-        },
+        ...smWhere,
+        createdAt: { gte: previousStartDate, lte: previousEndDate },
       },
       select: {
         quantity: true,

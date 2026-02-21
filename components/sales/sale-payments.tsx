@@ -52,6 +52,7 @@ export function SalePayments({
   disabled,
 }: SalePaymentsProps) {
   const t = useTranslations("Sales");
+  const tAccounts = useTranslations("Accounts");
   const { data: accountsData } = useAccounts({ activeOnly: true });
   const accounts = accountsData?.accounts || [];
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
@@ -407,7 +408,7 @@ export function SalePayments({
                               </span>
                             )}
                             <Badge variant="outline" className="text-[10px] ml-1">
-                              {getAccountTypeLabel(account.type, t)}
+                              {getAccountTypeLabel(account.type, tAccounts)}
                             </Badge>
                           </div>
                         </SelectItem>

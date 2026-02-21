@@ -25,6 +25,9 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { SearchInput } from "@/components/ui/search-input";
 import { usePagination } from "@/hooks/use-pagination";
 import { PaginationControl } from "@/components/ui/pagination-control";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
+import { StockTransferDialog } from "@/components/inventory/stock-transfer-dialog";
 
 export default function InventoryPage() {
   const t = useTranslations("Inventory");
@@ -35,6 +38,9 @@ export default function InventoryPage() {
     string | undefined
   >();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const { activeBranchId } = useActiveBranch();
+  const [branchFilter, setBranchFilter] = useState<string | null>(null);
 
   // Search and Pagination
   const [search, setSearch] = useState("");
@@ -47,11 +53,18 @@ export default function InventoryPage() {
   });
 
   useEffect(() => {
+    if (activeBranchId && branchFilter === null) {
+      setBranchFilter(activeBranchId);
+    }
+  }, [activeBranchId, branchFilter]);
+
+  useEffect(() => {
     pagination.setPage(0);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, branchFilter]);
 
   const { data, isLoading, error, isFetching } = useInventorySummary({
     search: debouncedSearch || undefined,
+    branchId: branchFilter || undefined,
     limit: PAGE_SIZE,
     offset: pagination.offset,
   });
@@ -105,12 +118,17 @@ export default function InventoryPage() {
           </h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        {canCreate && (
-          <Button onClick={handleAddMovement} className="w-full sm:w-auto">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("addMovement")}
-          </Button>
-        )}
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          {canCreate && (
+            <StockTransferDialog />
+          )}
+          {canCreate && (
+            <Button onClick={handleAddMovement} className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("addMovement")}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -148,13 +166,22 @@ export default function InventoryPage() {
               <CardTitle>{t("inventoryList")}</CardTitle>
               <CardDescription>{t("inventoryListDescription")}</CardDescription>
             </div>
-            <div className="w-full md:w-auto md:min-w-[300px]">
-              <SearchInput
-                value={search}
-                onChange={setSearch}
-                placeholder={t("searchPlaceholder")}
-                isLoading={isSearching}
-              />
+            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+              <div className="w-full md:w-[200px]">
+                <BranchSelector
+                  value={branchFilter}
+                  onValueChange={setBranchFilter}
+                  allowNone
+                />
+              </div>
+              <div className="w-full md:min-w-[300px]">
+                <SearchInput
+                  value={search}
+                  onChange={setSearch}
+                  placeholder={t("searchPlaceholder")}
+                  isLoading={isSearching}
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -198,12 +225,14 @@ export default function InventoryPage() {
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         productId={selectedProductId}
+        branchId={branchFilter || activeBranchId}
       />
 
       <StockMovementHistory
         open={historyOpen}
         onOpenChange={handleHistoryClose}
         product={selectedProduct}
+        branchId={branchFilter || undefined}
       />
     </div>
   );

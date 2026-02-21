@@ -377,6 +377,7 @@
     "movePurchase": "Compra",
     "moveSale": "Venta",
     "moveAdjustment": "Ajuste",
+    "moveTransfer": "Transferencia",
     "moveTypeDescription": "Compra/Ajuste agrega stock, Venta resta stock",
     "quantity": "Cantidad",
     "quantityPlaceholder": "Ingresa la cantidad",
@@ -393,6 +394,16 @@
     "loadError": "Error al cargar inventario",
     "noInventory": "No hay productos en inventario. Agrega productos primero.",
     "noMovements": "No hay movimientos de inventario registrados para este producto.",
+    "branch": "Sucursal",
+    "allBranches": "Todas las sucursales",
+    "selectBranch": "Seleccionar sucursal",
+    "transferStock": "Transferir Stock",
+    "transferDescription": "Transfiere productos entre sucursales.",
+    "fromBranch": "Sucursal Origen",
+    "toBranch": "Sucursal Destino",
+    "transferSuccess": "Transferencia de stock realizada exitosamente",
+    "transferError": "Error al transferir stock",
+    "insufficientStock": "Stock insuficiente en la sucursal de origen",
     "searchPlaceholder": "Buscar productos...",
     "historyTitle": "Historial de Movimientos",
     "reference": "Ref",
@@ -420,7 +431,10 @@
       "fetchFailed": "Error al obtener inventario",
       "notFound": "Movimiento de inventario no encontrado",
       "productNotFound": "Producto no encontrado",
-      "createFailed": "Error al crear movimiento de inventario"
+      "createFailed": "Error al crear movimiento de inventario",
+      "sameBranch": "La sucursal de origen y destino no pueden ser la misma",
+      "insufficientStock": "Stock insuficiente en la sucursal de origen",
+      "transferFailed": "Error al transferir stock"
     }
   },
   "ProductCategories": {

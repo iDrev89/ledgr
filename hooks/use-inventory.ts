@@ -5,9 +5,10 @@ import {
   createStockMovement,
   getProductStock,
   getInventorySummary,
+  transferStock,
 } from "@/apis/actions/inventory";
 import type { StockMoveType } from "@/prisma/prisma-client";
-import type { CreateStockMovementInput } from "@/lib/validations/inventory";
+import type { CreateStockMovementInput, StockTransferInput } from "@/lib/validations/inventory";
 
 export const inventoryKeys = {
   all: ["inventory"] as const,
@@ -15,18 +16,19 @@ export const inventoryKeys = {
   list: (filters?: Record<string, any>) =>
     [...inventoryKeys.lists(), filters] as const,
   detail: (id: string) => [...inventoryKeys.all, "detail", id] as const,
-  productStock: (productId: string) =>
-    [...inventoryKeys.all, "product-stock", productId] as const,
+  productStock: (productId: string, branchId?: string) =>
+    [...inventoryKeys.all, "product-stock", productId, branchId] as const,
   summary: (filters?: Record<string, any>) =>
     [...inventoryKeys.all, "summary", filters] as const,
 } as const;
 
-export function useStockMovements(params?: {
+export const useStockMovements = (params?: {
   productId?: string;
+  branchId?: string;
   moveType?: StockMoveType;
   limit?: number;
   offset?: number;
-}) {
+}) => {
   return useQuery({
     queryKey: inventoryKeys.list(params),
     queryFn: async () => {
@@ -38,9 +40,9 @@ export function useStockMovements(params?: {
     },
     placeholderData: (previousData) => previousData,
   });
-}
+};
 
-export function useStockMovement(id: string) {
+export const useStockMovement = (id: string) => {
   return useQuery({
     queryKey: inventoryKeys.detail(id),
     queryFn: async () => {
@@ -52,9 +54,9 @@ export function useStockMovement(id: string) {
     },
     enabled: !!id,
   });
-}
+};
 
-export function useCreateStockMovement() {
+export const useCreateStockMovement = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -65,31 +67,17 @@ export function useCreateStockMovement() {
       }
       return result.data;
     },
-    onSuccess: (data) => {
-      // Invalidate all inventory-related queries
-      queryClient.invalidateQueries({
-        queryKey: inventoryKeys.lists(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: inventoryKeys.summary(),
-      });
-      // Invalidate the specific product stock query to update the history
-      queryClient.invalidateQueries({
-        queryKey: inventoryKeys.productStock(data.productId),
-      });
-      // Invalidate all product stock queries in case the dialog was closed before seeing the update
-      queryClient.invalidateQueries({
-        queryKey: inventoryKeys.all,
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.all });
     },
   });
-}
+};
 
-export function useProductStock(productId: string) {
+export const useProductStock = (productId: string, branchId?: string) => {
   return useQuery({
-    queryKey: inventoryKeys.productStock(productId),
+    queryKey: inventoryKeys.productStock(productId, branchId),
     queryFn: async () => {
-      const result = await getProductStock(productId);
+      const result = await getProductStock(productId, branchId);
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -97,13 +85,14 @@ export function useProductStock(productId: string) {
     },
     enabled: !!productId,
   });
-}
+};
 
-export function useInventorySummary(params?: {
+export const useInventorySummary = (params?: {
   search?: string;
+  branchId?: string;
   limit?: number;
   offset?: number;
-}) {
+}) => {
   return useQuery({
     queryKey: inventoryKeys.summary(params),
     queryFn: async () => {
@@ -114,4 +103,21 @@ export function useInventorySummary(params?: {
       return result.data;
     },
   });
-}
+};
+
+export const useTransferStock = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: StockTransferInput) => {
+      const result = await transferStock(data);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.all });
+    },
+  });
+};

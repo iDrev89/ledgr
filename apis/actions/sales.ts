@@ -594,6 +594,7 @@ export const createSale = async (
             await tx.stockMovement.create({
               data: {
                 productId: item.productId,
+                branchId: newSale.branchId || null,
                 moveType: StockMoveType.SALE,
                 quantity: item.quantity,
                 unitCost: product.cost,
@@ -732,6 +733,7 @@ export const completeSale = async (
           await tx.stockMovement.create({
             data: {
               productId: item.productId,
+              branchId: existingSale.branchId || null,
               moveType: StockMoveType.SALE,
               quantity: item.quantity,
               unitCost: item.product.cost,
@@ -1111,6 +1113,7 @@ export const updateSale = async (
             await tx.stockMovement.create({
               data: {
                 productId: item.productId,
+                branchId: updatedSale.branchId || null,
                 moveType: StockMoveType.SALE,
                 quantity: item.quantity,
                 unitCost: product.cost,

@@ -15,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertCircle,
+  ArrowLeftRight,
   Package,
   TrendingUp,
   TrendingDown,
@@ -29,11 +30,14 @@ interface StockMovementHistoryProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product: Product | null;
+  branchId?: string;
 }
 
 interface MovementWithRef {
   id: string;
   productId: string;
+  branchId?: string | null;
+  branch?: { id: string; name: string } | null;
   moveType: StockMoveType;
   quantity: number;
   unitCost: string | null;
@@ -55,6 +59,8 @@ const getMoveTypeIcon = (type: StockMoveType) => {
       return <TrendingDown className="h-4 w-4" />;
     case StockMoveType.ADJUSTMENT:
       return <Settings className="h-4 w-4" />;
+    case StockMoveType.TRANSFER:
+      return <ArrowLeftRight className="h-4 w-4" />;
     default:
       return <TrendingUp className="h-4 w-4" />;
   }
@@ -68,6 +74,8 @@ const getMoveTypeColor = (type: StockMoveType) => {
       return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
     case StockMoveType.ADJUSTMENT:
       return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+    case StockMoveType.TRANSFER:
+      return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
     default:
       return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
   }
@@ -77,9 +85,10 @@ export function StockMovementHistory({
   open,
   onOpenChange,
   product,
+  branchId,
 }: StockMovementHistoryProps) {
   const t = useTranslations("Inventory");
-  const { data, isLoading, error } = useProductStock(product?.id || "");
+  const { data, isLoading, error } = useProductStock(product?.id || "", branchId);
 
   const formatDate = (date: Date) => {
     const now = new Date();
@@ -160,6 +169,8 @@ export function StockMovementHistory({
                 const isPositive =
                   movement.moveType === StockMoveType.PURCHASE ||
                   (movement.moveType === StockMoveType.ADJUSTMENT &&
+                    movement.quantity > 0) ||
+                  (movement.moveType === StockMoveType.TRANSFER &&
                     movement.quantity > 0);
 
                 return (
@@ -188,6 +199,12 @@ export function StockMovementHistory({
                         <p className="text-sm text-muted-foreground">
                           {movement.note}
                         </p>
+                      )}
+
+                      {(movement as MovementWithRef).branch && (
+                        <Badge variant="outline" className="text-xs w-fit">
+                          {(movement as MovementWithRef).branch!.name}
+                        </Badge>
                       )}
 
                       {movement.refType && movement.refId && (

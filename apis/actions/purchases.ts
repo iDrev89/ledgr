@@ -308,6 +308,7 @@ export async function createPurchase(
         await tx.stockMovement.create({
           data: {
             productId: item.productId,
+            branchId: newPurchase.branchId || null,
             moveType: StockMoveType.PURCHASE,
             quantity: item.quantity,
             unitCost: new Decimal(item.unitCost),

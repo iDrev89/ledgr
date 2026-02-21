@@ -30,9 +30,11 @@ import {
 } from "@/lib/validations/inventory";
 import { StockMoveType } from "@/prisma/prisma-client";
 import { useProducts } from "@/hooks/use-products";
+import { BranchSelector } from "@/components/ui/branch-selector";
 
 interface StockMovementFormProps {
   productId?: string;
+  branchId?: string;
   onSubmit: (data: CreateStockMovementInput) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
@@ -40,6 +42,7 @@ interface StockMovementFormProps {
 
 export function StockMovementForm({
   productId,
+  branchId,
   onSubmit,
   onCancel,
   isLoading,
@@ -56,6 +59,7 @@ export function StockMovementForm({
     resolver: zodResolver(createStockMovementSchema),
     defaultValues: {
       productId: productId || "",
+      branchId: branchId || "",
       moveType: StockMoveType.ADJUSTMENT,
       quantity: 0,
       unitCost: "",
@@ -107,6 +111,25 @@ export function StockMovementForm({
                     ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="branchId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("branch")}</FormLabel>
+              <FormControl>
+                <BranchSelector
+                  value={field.value || null}
+                  onValueChange={(val) => field.onChange(val || "")}
+                  disabled={isLoading}
+                  allowNone={false}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

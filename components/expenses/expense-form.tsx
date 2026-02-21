@@ -61,6 +61,7 @@ export function ExpenseForm({
   isLoading,
 }: ExpenseFormProps) {
   const t = useTranslations("Expenses");
+  const tAccounts = useTranslations("Accounts");
   const { data } = useAccounts({ activeOnly: true });
   const accounts = data?.accounts || [];
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -373,7 +374,7 @@ export function ExpenseForm({
                   <SelectContent>
                     {accounts.map((account) => (
                       <SelectItem key={account.id} value={account.id}>
-                        {account.name} ({getAccountTypeLabel(account.type, t)})
+                        {account.name} ({getAccountTypeLabel(account.type, tAccounts)})
                       </SelectItem>
                     ))}
                   </SelectContent>

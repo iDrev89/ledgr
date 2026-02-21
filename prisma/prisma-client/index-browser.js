@@ -395,6 +395,7 @@ exports.Prisma.PurchaseItemScalarFieldEnum = {
 exports.Prisma.StockMovementScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
+  branchId: 'branchId',
   moveType: 'moveType',
   quantity: 'quantity',
   unitCost: 'unitCost',
@@ -567,7 +568,8 @@ exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
 exports.StockMoveType = exports.$Enums.StockMoveType = {
   PURCHASE: 'PURCHASE',
   SALE: 'SALE',
-  ADJUSTMENT: 'ADJUSTMENT'
+  ADJUSTMENT: 'ADJUSTMENT',
+  TRANSFER: 'TRANSFER'
 };
 
 exports.AccountsReceivableStatus = exports.$Enums.AccountsReceivableStatus = {

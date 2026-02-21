@@ -31,6 +31,7 @@ const createStockMovementSchemas = (messages?: {
       )
       .optional()
       .or(z.literal("")),
+    branchId: z.string().optional().nullable(),
     note: z
       .string()
       .max(500, messages?.noteMax || "Note must be less than 500 characters")
@@ -75,3 +76,18 @@ export type CreateStockMovementInput = z.infer<
 export type UpdateStockMovementInput = z.infer<
   typeof updateStockMovementSchema
 >;
+
+export const stockTransferSchema = z.object({
+  productId: z.string().min(1, "Product is required"),
+  fromBranchId: z.string().min(1, "Origin branch is required"),
+  toBranchId: z.string().min(1, "Destination branch is required"),
+  quantity: z.number().int().min(1, "Quantity must be at least 1"),
+  note: z
+    .string()
+    .max(500, "Note must be less than 500 characters")
+    .trim()
+    .optional()
+    .or(z.literal("")),
+});
+
+export type StockTransferInput = z.infer<typeof stockTransferSchema>;

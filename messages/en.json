@@ -367,6 +367,7 @@
     "movePurchase": "Purchase",
     "moveSale": "Sale",
     "moveAdjustment": "Adjustment",
+    "moveTransfer": "Transfer",
     "moveTypeDescription": "Purchase/Adjustment adds stock, Sale removes stock",
     "quantity": "Quantity",
     "quantityPlaceholder": "Enter quantity",
@@ -383,6 +384,16 @@
     "loadError": "Failed to load inventory",
     "noInventory": "No products in inventory. Add products first.",
     "noMovements": "No stock movements recorded for this product.",
+    "branch": "Branch",
+    "allBranches": "All branches",
+    "selectBranch": "Select branch",
+    "transferStock": "Transfer Stock",
+    "transferDescription": "Transfer products between branches.",
+    "fromBranch": "Origin Branch",
+    "toBranch": "Destination Branch",
+    "transferSuccess": "Stock transfer completed successfully",
+    "transferError": "Failed to transfer stock",
+    "insufficientStock": "Insufficient stock at origin branch",
     "searchPlaceholder": "Search products...",
     "historyTitle": "Stock Movement History",
     "reference": "Ref",
@@ -410,7 +421,10 @@
       "fetchFailed": "Failed to fetch inventory",
       "notFound": "Stock movement not found",
       "productNotFound": "Product not found",
-      "createFailed": "Failed to create stock movement"
+      "createFailed": "Failed to create stock movement",
+      "sameBranch": "Origin and destination branches cannot be the same",
+      "insufficientStock": "Insufficient stock at origin branch",
+      "transferFailed": "Failed to transfer stock"
     }
   },
   "ProductCategories": {

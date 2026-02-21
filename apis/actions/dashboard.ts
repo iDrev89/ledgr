@@ -376,7 +376,9 @@ export const getTopProducts = async (): Promise<
 };
 
 // Get low stock alerts
-export const getLowStockAlerts = async (): Promise<
+export const getLowStockAlerts = async (params?: {
+  branchId?: string;
+}): Promise<
   ActionResponse<
     Array<{
       productId: string;
@@ -389,6 +391,11 @@ export const getLowStockAlerts = async (): Promise<
 
   try {
     await requireAuth();
+
+    const movementWhere: any = {};
+    if (params?.branchId) {
+      movementWhere.branchId = params.branchId;
+    }
 
     const products = await prisma.product.findMany({
       where: {
@@ -405,18 +412,15 @@ export const getLowStockAlerts = async (): Promise<
 
     for (const product of products) {
       const movements = await prisma.stockMovement.findMany({
-        where: { productId: product.id },
+        where: { productId: product.id, ...movementWhere },
       });
 
       let currentStock = 0;
       movements.forEach((movement) => {
-        if (
-          movement.moveType === StockMoveType.PURCHASE ||
-          movement.moveType === StockMoveType.ADJUSTMENT
-        ) {
-          currentStock += movement.quantity;
-        } else if (movement.moveType === StockMoveType.SALE) {
+        if (movement.moveType === StockMoveType.SALE) {
           currentStock -= Math.abs(movement.quantity);
+        } else {
+          currentStock += movement.quantity;
         }
       });
 

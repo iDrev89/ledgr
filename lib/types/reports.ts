@@ -50,6 +50,7 @@ export interface PurchaseReportData {
 export interface BusinessSummaryFilters {
   startDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   endDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
+  branchId?: string;
 }
 
 export interface RevenueMetrics {
