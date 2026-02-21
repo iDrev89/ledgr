@@ -3,7 +3,7 @@ import {
   ExpenseItem,
   ExpenseCategory,
   Supplier,
-  Bank,
+  FinancialAccount,
 } from "@/prisma/prisma-client";
 
 export type { Expense, ExpenseItem };
@@ -11,7 +11,7 @@ export type { Expense, ExpenseItem };
 export type ExpenseWithDetails = Expense & {
   category?: ExpenseCategory | null;
   supplier?: Supplier | null;
-  bank?: Bank | null;
+  account?: FinancialAccount | null;
   createdBy?: {
     id: string;
     name: string;

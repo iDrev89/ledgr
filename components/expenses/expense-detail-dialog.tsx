@@ -45,9 +45,11 @@ export function ExpenseDetailDialog({
 
   const methodLabels: Record<string, string> = {
     CASH: t("paymentCash"),
-    CARD: t("paymentCard"),
-    TRANSFER: t("paymentTransfer"),
-    DIGITAL: t("paymentDigital"),
+    DEBIT_CARD: t("paymentDebitCard"),
+    CREDIT_CARD: t("paymentCreditCard"),
+    BANK_TRANSFER: t("paymentBankTransfer"),
+    DIGITAL_PAYMENT: t("paymentDigitalPayment"),
+    CHECK: t("paymentCheck"),
     OTHER: t("paymentOther"),
   };
 
@@ -91,16 +93,16 @@ export function ExpenseDetailDialog({
               {methodLabels[expense.paymentMethod] || expense.paymentMethod}
             </Badge>
           </div>
-          {expense.paymentMethod === "TRANSFER" && expense.bank && (
+          {expense.account && (
             <div>
-              <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
-              <p className="text-sm">{expense.bank.name}</p>
+              <h3 className="text-sm font-semibold mb-2">{t("destinationAccount")}</h3>
+              <p className="text-sm">{expense.account.name}</p>
             </div>
           )}
         </div>
 
-        {/* Reference (for transfers) */}
-        {expense.paymentMethod === "TRANSFER" && expense.reference && (
+        {/* Reference (all methods except CASH) */}
+        {expense.paymentMethod !== "CASH" && expense.reference && (
           <div>
             <h3 className="text-sm font-semibold mb-2">{t("reference")}</h3>
             <p className="text-sm text-muted-foreground">{expense.reference}</p>

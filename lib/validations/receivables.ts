@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { PaymentMethod } from "@/prisma/prisma-client";
 
-// Helper to create schemas with custom messages
 const createReceivableSchemas = (messages?: {
   customerIdRequired?: string;
   amountInvalid?: string;
   amountMin?: string;
   paymentMethodRequired?: string;
+  accountIdRequired?: string;
   idRequired?: string;
 }) => {
   const receivablePaymentSchema = z.object({
@@ -20,7 +20,9 @@ const createReceivableSchemas = (messages?: {
     method: z.nativeEnum(PaymentMethod, {
       message: messages?.paymentMethodRequired || "Payment method is required",
     }),
-    bankId: z.string().optional().or(z.literal("")),
+    accountId: z
+      .string()
+      .min(1, messages?.accountIdRequired || "Account is required"),
     note: z.string().max(500).trim().optional().or(z.literal("")),
   });
 
@@ -33,18 +35,17 @@ const createReceivableSchemas = (messages?: {
   return { receivablePaymentSchema, createReceivablePaymentSchema };
 };
 
-// For client-side with i18n
 export const getReceivableSchemas = (t: (key: string) => string) => {
   return createReceivableSchemas({
     customerIdRequired: t("validation.customerIdRequired"),
     amountInvalid: t("validation.amountInvalid"),
     amountMin: t("validation.amountMin"),
     paymentMethodRequired: t("validation.paymentMethodRequired"),
+    accountIdRequired: t("validation.accountIdRequired"),
     idRequired: t("validation.idRequired"),
   });
 };
 
-// For server-side (English fallback)
 const { receivablePaymentSchema, createReceivablePaymentSchema } =
   createReceivableSchemas();
 

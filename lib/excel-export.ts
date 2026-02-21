@@ -332,8 +332,10 @@ export function exportDailySalesToExcel(
   // Payment method labels for Excel
   const paymentMethodLabels: Record<string, string> = {
     CASH: "Efectivo",
-    TRANSFER: "Transferencia",
-    CARD: "Tarjeta",
+    DEBIT_CARD: "T. Débito",
+    CREDIT_CARD: "T. Crédito",
+    BANK_TRANSFER: "Transferencia",
+    DIGITAL_PAYMENT: "Pago Digital",
     CHECK: "Cheque",
     OTHER: "Otro",
   };
@@ -382,8 +384,10 @@ export function exportDailySalesToExcel(
 
       const paymentMethodLabels: Record<string, string> = {
         CASH: "Efectivo",
-        TRANSFER: "Transferencia",
-        CARD: "Tarjeta",
+        DEBIT_CARD: "T. Débito",
+        CREDIT_CARD: "T. Crédito",
+        BANK_TRANSFER: "Transferencia",
+        DIGITAL_PAYMENT: "Pago Digital",
         CHECK: "Cheque",
         OTHER: "Otro",
       };

@@ -26,8 +26,9 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { PurchaseItems } from "./purchase-items";
 import { useSuppliers } from "@/hooks/use-suppliers";
-import { useBanks } from "@/hooks/use-banks";
+import { useAccounts } from "@/hooks/use-accounts";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import { getDefaultAccountForMethod, getAccountTypeLabel } from "@/lib/payment-utils";
 import type { PurchaseItem, CreatePurchaseInput } from "@/lib/types/purchases";
 
 interface PurchaseFormProps {
@@ -50,8 +51,8 @@ export function PurchaseForm({
   });
   const suppliers = suppliersData?.suppliers || [];
 
-  const { data: banksData } = useBanks();
-  const banks = banksData?.banks || [];
+  const { data: accountsData } = useAccounts({ activeOnly: true });
+  const accounts = accountsData?.accounts || [];
 
   const form = useForm<any>({
     mode: "onChange",
@@ -60,7 +61,7 @@ export function PurchaseForm({
       invoiceNo: "",
       note: "",
       paymentMethod: "CASH" as PaymentMethod,
-      bankId: "",
+      accountId: "",
       reference: "",
     },
   });
@@ -99,7 +100,7 @@ export function PurchaseForm({
 
       // Campos de pago
       paymentMethod: data.paymentMethod,
-      bankId: data.bankId || undefined,
+      accountId: data.accountId || undefined,
       reference: data.reference || undefined,
     };
 
@@ -234,14 +235,23 @@ export function PurchaseForm({
                     <SelectItem value={PaymentMethod.CASH}>
                       {t("paymentCash")}
                     </SelectItem>
-                    <SelectItem value={PaymentMethod.TRANSFER}>
-                      {t("paymentTransfer")}
+                    <SelectItem value={PaymentMethod.DEBIT_CARD}>
+                      {t("paymentDebitCard")}
                     </SelectItem>
-                    <SelectItem value={PaymentMethod.CARD}>
-                      {t("paymentCard")}
+                    <SelectItem value={PaymentMethod.CREDIT_CARD}>
+                      {t("paymentCreditCard")}
                     </SelectItem>
-                    <SelectItem value={PaymentMethod.DIGITAL}>
-                      {t("paymentDigital")}
+                    <SelectItem value={PaymentMethod.BANK_TRANSFER}>
+                      {t("paymentBankTransfer")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.DIGITAL_PAYMENT}>
+                      {t("paymentDigitalPayment")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.CHECK}>
+                      {t("paymentCheck")}
+                    </SelectItem>
+                    <SelectItem value={PaymentMethod.OTHER}>
+                      {t("paymentOther")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -250,60 +260,55 @@ export function PurchaseForm({
             )}
           />
 
-          {/* Bank (only for TRANSFER) */}
-          {paymentMethod === "TRANSFER" && (
-            <FormField
-              control={form.control}
-              name="bankId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("bank")} <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || undefined}
-                    disabled={isLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("bankPlaceholder")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {banks.map((bank) => (
-                        <SelectItem key={bank.id} value={bank.id}>
-                          {bank.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          {/* Reference (only for TRANSFER) */}
-          {paymentMethod === "TRANSFER" && (
-            <FormField
-              control={form.control}
-              name="reference"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("reference")}</FormLabel>
+          {/* Cuenta destino */}
+          <FormField
+            control={form.control}
+            name="accountId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("destinationAccount")}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || undefined}
+                  disabled={isLoading}
+                >
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("referencePlaceholder")}
-                      disabled={isLoading}
-                    />
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("selectAccount")} />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+                  <SelectContent>
+                    {accounts.map((account) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name}
+                        {account.accountNumber && ` - ${account.accountNumber}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Reference */}
+          <FormField
+            control={form.control}
+            name="reference"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("reference")}</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder={t("referencePlaceholder")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <Separator />

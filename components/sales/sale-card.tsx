@@ -26,6 +26,10 @@ import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { useTranslations } from "next-intl";
 import {
+  getPaymentMethodLabel,
+  getPaymentMethodBadgeVariant,
+} from "@/lib/payment-utils";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -57,39 +61,12 @@ const getPaymentMethodBadge = (
   method: PaymentMethod,
   t: (key: string) => string,
 ) => {
-  const variants: Record<
-    PaymentMethod,
-    { label: string; variant: "default" | "secondary" | "outline" }
-  > = {
-    [PaymentMethod.CASH]: {
-      label: t("paymentCash"),
-      variant: "default",
-    },
-    [PaymentMethod.CARD]: {
-      label: t("paymentCard"),
-      variant: "secondary",
-    },
-    [PaymentMethod.TRANSFER]: {
-      label: t("paymentTransfer"),
-      variant: "outline",
-    },
-    [PaymentMethod.DIGITAL]: {
-      label: t("paymentDigital"),
-      variant: "secondary",
-    },
-    [PaymentMethod.OTHER]: {
-      label: t("paymentOther"),
-      variant: "outline",
-    },
-  };
-
-  const config = variants[method];
   return (
     <Badge
-      variant={config.variant}
+      variant={getPaymentMethodBadgeVariant(method)}
       className="font-normal text-xs px-2 py-0.5 pointer-events-none"
     >
-      {config.label}
+      {getPaymentMethodLabel(method, t)}
     </Badge>
   );
 };

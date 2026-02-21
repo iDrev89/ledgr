@@ -66,7 +66,7 @@ const serializeReceivable = (receivable: any): any => {
       ? receivable.payments.map((payment: any) => ({
           ...payment,
           amount: payment.amount.toString(),
-          bank: payment.bank || null,
+          account: payment.account || null,
         }))
       : [],
   };
@@ -149,7 +149,14 @@ export const getReceivables = async (params?: {
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+                select: {
+                  id: true,
+                  name: true,
+                  type: true,
+                  accountNumber: true,
+                },
+              },
             },
             orderBy: {
               paidAt: "desc",
@@ -218,7 +225,14 @@ export const getReceivable = async (
         },
         payments: {
           include: {
-            bank: true,
+            account: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                accountNumber: true,
+              },
+            },
           },
           orderBy: {
             paidAt: "desc",
@@ -283,11 +297,18 @@ export const createReceivablePayment = async (
           receivableId: validated.receivableId,
           amount: paymentAmount,
           method: validated.method,
-          bankId: validated.bankId || null,
+          accountId: validated.accountId,
           note: validated.note || null,
         },
         include: {
-          bank: true,
+          account: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              accountNumber: true,
+            },
+          },
         },
       });
 
@@ -315,7 +336,14 @@ export const createReceivablePayment = async (
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+                select: {
+                  id: true,
+                  name: true,
+                  type: true,
+                  accountNumber: true,
+                },
+              },
             },
             orderBy: {
               paidAt: "desc",
@@ -324,27 +352,24 @@ export const createReceivablePayment = async (
         },
       });
 
-      // Create bank transaction if payment has a bank
-      if (payment.bankId) {
-        await tx.bankTransaction.create({
-          data: {
-            bankId: payment.bankId,
-            type: "INCOME" as any,
-            amount: payment.amount,
-            description: `Cobro CxC - Venta #${String(updatedReceivable.sale?.saleNumber || 0).padStart(4, "0")}${updatedReceivable.customer ? ` - ${updatedReceivable.customer.name}` : ""}`,
-            reference: validated.note || null,
-            transactionDate: payment.paidAt,
-            receivablePaymentId: payment.id,
-          },
-        });
-      }
+      await tx.accountTransaction.create({
+        data: {
+          accountId: validated.accountId,
+          type: "INCOME" as any,
+          amount: payment.amount,
+          description: `Cobro CxC - Venta #${String(updatedReceivable.sale?.saleNumber || 0).padStart(4, "0")}${updatedReceivable.customer ? ` - ${updatedReceivable.customer.name}` : ""}`,
+          reference: validated.note || null,
+          transactionDate: payment.paidAt,
+          receivablePaymentId: payment.id,
+        },
+      });
 
       return updatedReceivable;
     });
 
     revalidatePath("/receivables");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return { success: true, data: serializeReceivable(result) };

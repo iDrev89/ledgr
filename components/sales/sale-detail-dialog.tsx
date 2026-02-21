@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import { getPaymentMethodLabel } from "@/lib/payment-utils";
 import { ImageViewerDialog } from "@/components/shared/image-viewer-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -47,16 +48,8 @@ export function SaleDetailDialog({
     }).format(numValue);
   };
 
-  const getPaymentMethodLabel = (method: PaymentMethod) => {
-    const labels: Record<PaymentMethod, string> = {
-      [PaymentMethod.CASH]: t("paymentCash"),
-      [PaymentMethod.CARD]: t("paymentCard"),
-      [PaymentMethod.TRANSFER]: t("paymentTransfer"),
-      [PaymentMethod.DIGITAL]: t("paymentDigital"),
-      [PaymentMethod.OTHER]: t("paymentOther"),
-    };
-    return labels[method];
-  };
+  const getMethodLabel = (method: PaymentMethod) =>
+    getPaymentMethodLabel(method, t);
 
   const dateLocale = locale === "es" ? es : enUS;
 
@@ -152,14 +145,14 @@ export function SaleDetailDialog({
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="font-medium">
-                          {getPaymentMethodLabel(payment.method)}
+                          {getMethodLabel(payment.method)}
                         </Badge>
                       </div>
-                      {payment.bank && (
+                      {payment.account && (
                         <span className="text-xs text-muted-foreground">
-                          {payment.bank.name}
-                          {payment.bank.accountNo &&
-                            ` - ${payment.bank.accountNo}`}
+                          {payment.account.name}
+                          {payment.account.accountNumber &&
+                            ` - ${payment.account.accountNumber}`}
                         </span>
                       )}
                       {payment.reference && (

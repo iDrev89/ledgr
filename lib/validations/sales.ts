@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { PaymentMethod } from "@/prisma/prisma-client";
 
-// Helper to create schemas with custom messages
 const createSaleSchemas = (messages?: {
   customerIdRequired?: string;
   itemsRequired?: string;
@@ -18,6 +17,7 @@ const createSaleSchemas = (messages?: {
   paymentsExceedTotal?: string;
   noteMax?: string;
   idRequired?: string;
+  accountIdRequired?: string;
 }) => {
   const saleItemSchema = z.object({
     productId: z
@@ -57,7 +57,9 @@ const createSaleSchemas = (messages?: {
     method: z.nativeEnum(PaymentMethod, {
       message: messages?.paymentMethodRequired || "Payment method is required",
     }),
-    bankId: z.string().optional().or(z.literal("")),
+    accountId: z
+      .string()
+      .min(1, messages?.accountIdRequired || "Account is required"),
     reference: z.string().max(100).trim().optional().or(z.literal("")),
     attachmentUrl: z.url().optional().or(z.literal("")),
   });
@@ -94,7 +96,6 @@ const createSaleSchemas = (messages?: {
   };
 };
 
-// For client-side with i18n
 export const getSaleSchemas = (t: (key: string) => string) => {
   return createSaleSchemas({
     customerIdRequired: t("validation.customerIdRequired"),
@@ -112,10 +113,10 @@ export const getSaleSchemas = (t: (key: string) => string) => {
     paymentsExceedTotal: t("validation.paymentsExceedTotal"),
     noteMax: t("validation.noteMax"),
     idRequired: t("validation.idRequired"),
+    accountIdRequired: t("validation.accountIdRequired"),
   });
 };
 
-// For server-side (English fallback)
 const {
   createSaleSchema,
   updateSaleSchema,

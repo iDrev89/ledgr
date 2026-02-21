@@ -25,9 +25,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PaymentMethod } from "@/prisma/prisma-client";
-import { useBanks } from "@/hooks/use-banks";
+import { useAccounts } from "@/hooks/use-accounts";
 import { AttachmentUpload } from "@/components/shared/attachment-upload";
 import type { SalePaymentInput } from "@/lib/validations/sales";
+import {
+  getDefaultAccountForMethod,
+  getPaymentMethodLabel as getMethodLabel,
+  getAccountTypeLabel,
+} from "@/lib/payment-utils";
 
 export type SalePaymentRow = SalePaymentInput & {
   tempId: string;
@@ -47,8 +52,8 @@ export function SalePayments({
   disabled,
 }: SalePaymentsProps) {
   const t = useTranslations("Sales");
-  const { data: banksData } = useBanks({ activeOnly: true });
-  const banks = banksData?.banks || [];
+  const { data: accountsData } = useAccounts({ activeOnly: true });
+  const accounts = accountsData?.accounts || [];
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
 
   const handleAddPayment = () => {
@@ -56,7 +61,7 @@ export function SalePayments({
       tempId: `temp-${Date.now()}`,
       amount: "",
       method: PaymentMethod.CASH,
-      bankId: "",
+      accountId: getDefaultAccountForMethod(PaymentMethod.CASH, accounts) || "",
       reference: "",
       attachmentUrl: "",
     };
@@ -96,10 +101,15 @@ export function SalePayments({
       payments.map((p) => {
         if (p.tempId === tempId) {
           const updated = { ...p, [field]: value };
-          // Clear bank and attachment if method is not TRANSFER
-          if (field === "method" && value !== PaymentMethod.TRANSFER) {
-            updated.bankId = "";
-            updated.attachmentUrl = "";
+          if (field === "method") {
+            updated.accountId =
+              getDefaultAccountForMethod(value as PaymentMethod, accounts) || "";
+            if (
+              value !== PaymentMethod.BANK_TRANSFER &&
+              value !== PaymentMethod.DIGITAL_PAYMENT
+            ) {
+              updated.attachmentUrl = "";
+            }
           }
           return updated;
         }
@@ -108,16 +118,8 @@ export function SalePayments({
     );
   };
 
-  const getPaymentMethodLabel = (method: PaymentMethod) => {
-    const labels: Record<PaymentMethod, string> = {
-      [PaymentMethod.CASH]: t("paymentCash"),
-      [PaymentMethod.CARD]: t("paymentCard"),
-      [PaymentMethod.TRANSFER]: t("paymentTransfer"),
-      [PaymentMethod.DIGITAL]: t("paymentDigital"),
-      [PaymentMethod.OTHER]: t("paymentOther"),
-    };
-    return labels[method];
-  };
+  const getPaymentMethodLabelLocal = (method: PaymentMethod) =>
+    getMethodLabel(method, t);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -172,7 +174,9 @@ export function SalePayments({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {payments.map((payment, index) => {
             const amount = parseFloat(payment.amount) || 0;
-            const hasAttachment = payment.method === PaymentMethod.TRANSFER;
+            const hasAttachment =
+              payment.method === PaymentMethod.BANK_TRANSFER ||
+              payment.method === PaymentMethod.DIGITAL_PAYMENT;
 
             return (
               <Card
@@ -185,7 +189,7 @@ export function SalePayments({
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">
-                          {getPaymentMethodLabel(payment.method)}
+                          {getPaymentMethodLabelLocal(payment.method)}
                         </Badge>
                         {hasAttachment && payment.attachmentUrl && (
                           <Badge variant="outline" className="text-xs">
@@ -309,14 +313,20 @@ export function SalePayments({
                       <SelectItem value={PaymentMethod.CASH}>
                         {t("paymentCash")}
                       </SelectItem>
-                      <SelectItem value={PaymentMethod.CARD}>
-                        {t("paymentCard")}
+                      <SelectItem value={PaymentMethod.DEBIT_CARD}>
+                        {t("paymentDebitCard")}
                       </SelectItem>
-                      <SelectItem value={PaymentMethod.TRANSFER}>
-                        {t("paymentTransfer")}
+                      <SelectItem value={PaymentMethod.CREDIT_CARD}>
+                        {t("paymentCreditCard")}
                       </SelectItem>
-                      <SelectItem value={PaymentMethod.DIGITAL}>
-                        {t("paymentDigital")}
+                      <SelectItem value={PaymentMethod.BANK_TRANSFER}>
+                        {t("paymentBankTransfer")}
+                      </SelectItem>
+                      <SelectItem value={PaymentMethod.DIGITAL_PAYMENT}>
+                        {t("paymentDigitalPayment")}
+                      </SelectItem>
+                      <SelectItem value={PaymentMethod.CHECK}>
+                        {t("paymentCheck")}
                       </SelectItem>
                       <SelectItem value={PaymentMethod.OTHER}>
                         {t("paymentOther")}
@@ -364,40 +374,47 @@ export function SalePayments({
                   )}
                 </div>
 
-                {/* Bank (only for transfers) */}
-                {editingPayment.method === PaymentMethod.TRANSFER && (
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="payment-bank"
-                      className="text-sm font-medium"
-                    >
-                      {t("paymentBank")}
-                    </Label>
-                    <Select
-                      value={editingPayment.bankId || ""}
-                      onValueChange={(value) =>
-                        handlePaymentChange(
-                          editingPayment.tempId,
-                          "bankId",
-                          value,
-                        )
-                      }
-                      disabled={disabled}
-                    >
-                      <SelectTrigger id="payment-bank" className="h-12">
-                        <SelectValue placeholder={t("selectBank")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {banks.map((bank) => (
-                          <SelectItem key={bank.id} value={bank.id}>
-                            {bank.name}
-                            {bank.accountNo && ` - ${bank.accountNo}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+                {/* Destination Account */}
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="payment-account"
+                    className="text-sm font-medium"
+                  >
+                    {t("paymentDestinationAccount")}
+                  </Label>
+                  <Select
+                    value={editingPayment.accountId || ""}
+                    onValueChange={(value) =>
+                      handlePaymentChange(
+                        editingPayment.tempId,
+                        "accountId",
+                        value,
+                      )
+                    }
+                    disabled={disabled}
+                  >
+                    <SelectTrigger id="payment-account" className="h-12">
+                      <SelectValue placeholder={t("selectAccount")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accounts.map((account) => (
+                        <SelectItem key={account.id} value={account.id}>
+                          <div className="flex items-center gap-2">
+                            <span>{account.name}</span>
+                            {account.accountNumber && (
+                              <span className="text-muted-foreground">
+                                - {account.accountNumber}
+                              </span>
+                            )}
+                            <Badge variant="outline" className="text-[10px] ml-1">
+                              {getAccountTypeLabel(account.type, t)}
+                            </Badge>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 {/* Reference */}
                 <div className="space-y-2">
@@ -423,8 +440,9 @@ export function SalePayments({
                   />
                 </div>
 
-                {/* Attachment (only for transfers) */}
-                {editingPayment.method === PaymentMethod.TRANSFER && (
+                {/* Attachment (for transfers and digital payments) */}
+                {(editingPayment.method === PaymentMethod.BANK_TRANSFER ||
+                  editingPayment.method === PaymentMethod.DIGITAL_PAYMENT) && (
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">
                       {t("paymentAttachmentLabel")}

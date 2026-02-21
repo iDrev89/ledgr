@@ -16,6 +16,10 @@ import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import {
+  getPaymentMethodLabel,
+  getPaymentMethodBadgeVariant,
+} from "@/lib/payment-utils";
 
 interface CreateSaleColumnsProps {
   onView: (sale: SaleWithDetails) => void;
@@ -42,36 +46,9 @@ const getPaymentMethodBadge = (
   method: PaymentMethod,
   t: (key: string) => string,
 ) => {
-  const variants: Record<
-    PaymentMethod,
-    { label: string; variant: "default" | "secondary" | "outline" }
-  > = {
-    [PaymentMethod.CASH]: {
-      label: t("paymentCash"),
-      variant: "default",
-    },
-    [PaymentMethod.CARD]: {
-      label: t("paymentCard"),
-      variant: "secondary",
-    },
-    [PaymentMethod.TRANSFER]: {
-      label: t("paymentTransfer"),
-      variant: "outline",
-    },
-    [PaymentMethod.DIGITAL]: {
-      label: t("paymentDigital"),
-      variant: "secondary",
-    },
-    [PaymentMethod.OTHER]: {
-      label: t("paymentOther"),
-      variant: "outline",
-    },
-  };
-
-  const config = variants[method];
   return (
-    <Badge variant={config.variant} className="font-normal">
-      {config.label}
+    <Badge variant={getPaymentMethodBadgeVariant(method)} className="font-normal">
+      {getPaymentMethodLabel(method, t)}
     </Badge>
   );
 };

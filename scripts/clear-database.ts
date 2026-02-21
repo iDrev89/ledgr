@@ -9,9 +9,9 @@ async function main() {
     // El orden es CRÍTICO debido a las relaciones de claves foráneas
     // Eliminamos desde las tablas más dependientes hacia las más independientes
 
-    console.log("⏳ Eliminando transacciones bancarias...");
-    await prisma.bankTransaction.deleteMany({});
-    console.log("✅ BankTransaction eliminado");
+    console.log("⏳ Eliminando transacciones de cuentas...");
+    await prisma.accountTransaction.deleteMany({});
+    console.log("✅ AccountTransaction eliminado");
 
     console.log("⏳ Eliminando items de nómina...");
     await prisma.payrollRunItem.deleteMany({});
@@ -85,9 +85,9 @@ async function main() {
     await prisma.customer.deleteMany({});
     console.log("✅ Customer eliminado");
 
-    console.log("⏳ Eliminando bancos...");
-    await prisma.bank.deleteMany({});
-    console.log("✅ Bank eliminado");
+    console.log("⏳ Eliminando cuentas financieras...");
+    await prisma.financialAccount.deleteMany({});
+    console.log("✅ FinancialAccount eliminado");
 
     // Resetear los contadores de autoincremento (solo para PostgreSQL)
     console.log("\n⏳ Reseteando contadores de autoincremento...");

@@ -40,9 +40,11 @@ export function ExpenseCard({
 
   const methodLabels: Record<string, string> = {
     CASH: t("paymentCash"),
-    CARD: t("paymentCard"),
-    TRANSFER: t("paymentTransfer"),
-    DIGITAL: t("paymentDigital"),
+    DEBIT_CARD: t("paymentDebitCard"),
+    CREDIT_CARD: t("paymentCreditCard"),
+    BANK_TRANSFER: t("paymentBankTransfer"),
+    DIGITAL_PAYMENT: t("paymentDigitalPayment"),
+    CHECK: t("paymentCheck"),
     OTHER: t("paymentOther"),
   };
 
@@ -126,8 +128,8 @@ export function ExpenseCard({
             <CreditCard className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="flex-1">
               <p className="text-sm">{methodLabels[expense.paymentMethod] || expense.paymentMethod}</p>
-              {expense.paymentMethod === "TRANSFER" && expense.bank && (
-                <p className="text-xs text-muted-foreground">{expense.bank.name}</p>
+              {expense.account && (
+                <p className="text-xs text-muted-foreground">{expense.account.name}</p>
               )}
             </div>
           </div>

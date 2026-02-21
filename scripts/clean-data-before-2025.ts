@@ -21,7 +21,7 @@ async function cleanDatabase() {
     console.log("📊 Counting records to delete...");
     
     const counts = {
-      bankTransactions: await prisma.bankTransaction.count({
+      accountTransactions: await prisma.accountTransaction.count({
         where: { createdAt: { lt: CUTOFF_DATE } },
       }),
       receivablePayments: await prisma.accountsReceivablePayment.count({
@@ -54,7 +54,7 @@ async function cleanDatabase() {
     };
 
     console.log("\n📋 Records to delete:");
-    console.log(`  - Bank Transactions: ${counts.bankTransactions}`);
+    console.log(`  - Account Transactions: ${counts.accountTransactions}`);
     console.log(`  - Receivable Payments: ${counts.receivablePayments}`);
     console.log(`  - Receivables: ${counts.receivables}`);
     console.log(`  - Sale Payments: ${counts.salePayments}`);
@@ -82,12 +82,12 @@ async function cleanDatabase() {
     await prisma.$transaction(async (tx) => {
       console.log("\n🗑️  Deleting records...");
 
-      // 1. Delete Bank Transactions related to payments/expenses/purchases
-      console.log("  1️⃣  Deleting bank transactions...");
-      const deletedBankTransactions = await tx.bankTransaction.deleteMany({
+      // 1. Delete Account Transactions related to payments/expenses/purchases
+      console.log("  1️⃣  Deleting account transactions...");
+      const deletedAccountTransactions = await tx.accountTransaction.deleteMany({
         where: { createdAt: { lt: CUTOFF_DATE } },
       });
-      console.log(`     ✓ Deleted ${deletedBankTransactions.count} bank transactions`);
+      console.log(`     ✓ Deleted ${deletedAccountTransactions.count} account transactions`);
 
       // 2. Delete Receivable Payments
       console.log("  2️⃣  Deleting receivable payments...");

@@ -77,21 +77,23 @@ export const createExpenseColumns = ({
     header: t("paymentMethod"),
     cell: ({ row }) => {
       const paymentMethod = row.original.paymentMethod;
-      const bank = row.original.bank;
+      const account = row.original.account;
 
       const methodLabels: Record<string, string> = {
         CASH: t("paymentCash"),
-        CARD: t("paymentCard"),
-        TRANSFER: t("paymentTransfer"),
-        DIGITAL: t("paymentDigital"),
+        DEBIT_CARD: t("paymentDebitCard"),
+        CREDIT_CARD: t("paymentCreditCard"),
+        BANK_TRANSFER: t("paymentBankTransfer"),
+        DIGITAL_PAYMENT: t("paymentDigitalPayment"),
+        CHECK: t("paymentCheck"),
         OTHER: t("paymentOther"),
       };
 
       return (
         <div className="text-sm">
           <div>{methodLabels[paymentMethod] || paymentMethod}</div>
-          {paymentMethod === "TRANSFER" && bank && (
-            <div className="text-xs text-muted-foreground">{bank.name}</div>
+          {account && (
+            <div className="text-xs text-muted-foreground">{account.name}</div>
           )}
         </div>
       );

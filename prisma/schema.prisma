@@ -9,6 +9,8 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
+// ==================== AUTH MODELS (better-auth) ====================
+
 model User {
   id            String    @id
   name          String
@@ -26,14 +28,17 @@ model User {
   banExpires    DateTime?
   allowedAccess Boolean   @default(false)
 
-  sales              Sale[]            @relation("SaleCreator")
-  soldSales          Sale[]            @relation("SaleSeller")
+  sales              Sale[]               @relation("SaleCreator")
+  soldSales          Sale[]               @relation("SaleSeller")
   expenses           Expense[]
   purchases          Purchase[]
-  performedSaleItems SaleItem[]        @relation("ServicePerformer")
+  performedSaleItems SaleItem[]           @relation("ServicePerformer")
   payrollEntries     PayrollEntry[]
   payrollRunItems    PayrollRunItem[]
-  bankTransactions   BankTransaction[]
+  accountTransactions  AccountTransaction[]
+  branches             UserBranch[]
+  cashRegisterCloses   CashRegisterClose[]
+  reconciledAccounts   AccountReconciliation[]
 
   @@unique([email])
   @@map("user")
@@ -86,20 +91,32 @@ model Verification {
   @@map("verification")
 }
 
+// ==================== ENUMS ====================
+
 enum ProductType {
   PRODUCT
   SERVICE
 }
 
+enum AccountType {
+  BANK
+  CASH_REGISTER
+  PETTY_CASH
+  DIGITAL_WALLET
+  CREDIT_LINE
+}
+
 enum PaymentMethod {
   CASH
-  CARD
-  TRANSFER
-  DIGITAL
+  DEBIT_CARD
+  CREDIT_CARD
+  BANK_TRANSFER
+  DIGITAL_PAYMENT
+  CHECK
   OTHER
 }
 
-enum BankTransactionType {
+enum AccountTransactionType {
   INCOME
   EXPENSE
   TRANSFER_OUT
@@ -147,6 +164,130 @@ enum PayrollEntryKind {
   PAYMENT
 }
 
+enum SaleStatus {
+  DRAFT
+  COMPLETED
+}
+
+// ==================== ORGANIZATIONAL MODELS ====================
+
+model BusinessLine {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  color     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+  sales    Sale[]
+  expenses Expense[]
+
+  @@unique([name])
+  @@map("business_line")
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  address   String?
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  financialAccounts FinancialAccount[]
+  sales             Sale[]
+  expenses          Expense[]
+  purchases         Purchase[]
+  users             UserBranch[]
+  cashCloses        CashRegisterClose[]
+
+  @@unique([name])
+  @@map("branch")
+}
+
+model UserBranch {
+  id       String  @id @default(cuid())
+  userId   String
+  branchId String
+  role     String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, branchId])
+  @@map("user_branch")
+}
+
+// ==================== FINANCIAL MODELS ====================
+
+model FinancialAccount {
+  id             String      @id @default(cuid())
+  type           AccountType @default(BANK)
+  name           String
+  accountNumber  String?
+  institution    String?
+  initialBalance Decimal     @default(0) @db.Decimal(12, 2)
+  active         Boolean     @default(true)
+  isDefault      Boolean     @default(false)
+  branchId       String?
+  branch         Branch?     @relation(fields: [branchId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  salePayments       SalePayment[]
+  receivablePayments AccountsReceivablePayment[]
+  purchases          Purchase[]
+  expenses           Expense[]
+  transactions       AccountTransaction[]  @relation("AccountMovements")
+  transfersReceived  AccountTransaction[]  @relation("TransferDestination")
+  cashCloses         CashRegisterClose[]
+  reconciliations    AccountReconciliation[]
+
+  @@unique([name])
+  @@index([active])
+  @@index([type])
+  @@index([branchId])
+  @@map("financial_account")
+}
+
+model AccountTransaction {
+  id              String                 @id @default(cuid())
+  accountId       String
+  account         FinancialAccount       @relation("AccountMovements", fields: [accountId], references: [id])
+  type            AccountTransactionType
+  amount          Decimal                @db.Decimal(12, 2)
+  description     String?
+  reference       String?
+  transactionDate DateTime               @default(now())
+  createdById     String?
+  createdBy       User?                  @relation(fields: [createdById], references: [id])
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  salePaymentId       String?                    @unique
+  salePayment         SalePayment?               @relation("FromSalePayment", fields: [salePaymentId], references: [id])
+  receivablePaymentId String?                    @unique
+  receivablePayment   AccountsReceivablePayment? @relation("FromReceivablePayment", fields: [receivablePaymentId], references: [id])
+  expenseId           String?                    @unique
+  expense             Expense?                   @relation("FromExpense", fields: [expenseId], references: [id])
+  purchaseId          String?                    @unique
+  purchase            Purchase?                  @relation("FromPurchase", fields: [purchaseId], references: [id])
+  relatedAccountId    String?
+  relatedAccount      FinancialAccount?          @relation("TransferDestination", fields: [relatedAccountId], references: [id])
+  transferPairId      String?                    @unique
+  reconciliationItems ReconciliationItem[]
+
+  @@index([accountId, transactionDate])
+  @@index([type])
+  @@map("account_transaction")
+}
+
+// ==================== CORE BUSINESS MODELS ====================
+
 model Customer {
   id        String    @id @default(cuid())
   name      String
@@ -163,26 +304,6 @@ model Customer {
 
   @@index([name])
   @@map("customer")
-}
-
-model Bank {
-  id        String   @id @default(cuid())
-  name      String
-  accountNo String?
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  salePayments        SalePayment[]
-  receivablePayments  AccountsReceivablePayment[]
-  purchases           Purchase[]
-  expenses            Expense[]
-  transactions        BankTransaction[]         @relation("BankMovements")
-  transfersReceived   BankTransaction[]         @relation("TransferDestination")
-
-  @@unique([name])
-  @@index([active])
-  @@map("bank")
 }
 
 model ProductCategory {
@@ -209,6 +330,8 @@ model Product {
   commissionPercent Decimal?        @db.Decimal(5, 2)
   categoryId        String
   category          ProductCategory @relation(fields: [categoryId], references: [id])
+  businessLineId    String?
+  businessLine      BusinessLine?   @relation(fields: [businessLineId], references: [id])
   active            Boolean         @default(true)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
@@ -219,32 +342,32 @@ model Product {
 
   @@index([active])
   @@index([categoryId])
+  @@index([businessLineId])
   @@map("product")
 }
 
-enum SaleStatus {
-  DRAFT
-  COMPLETED
-}
-
 model Sale {
-  id            String     @id @default(cuid())
-  saleNumber    Int        @unique @default(autoincrement())
-  createdById   String
-  createdBy     User       @relation("SaleCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  soldById      String?
-  soldBy        User?      @relation("SaleSeller", fields: [soldById], references: [id], onDelete: Restrict)
-  customerId    String
-  customer      Customer   @relation(fields: [customerId], references: [id])
-  currency      String     @default("COP")
-  subtotal      Decimal    @db.Decimal(12, 2)
-  discountTotal Decimal    @db.Decimal(12, 2) @default(0)
-  taxTotal      Decimal    @db.Decimal(12, 2) @default(0)
-  total         Decimal    @db.Decimal(12, 2)
-  status        SaleStatus @default(COMPLETED)
-  note          String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id             String        @id @default(cuid())
+  saleNumber     Int           @unique @default(autoincrement())
+  createdById    String
+  createdBy      User          @relation("SaleCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  soldById       String?
+  soldBy         User?         @relation("SaleSeller", fields: [soldById], references: [id], onDelete: Restrict)
+  customerId     String
+  customer       Customer      @relation(fields: [customerId], references: [id])
+  branchId       String?
+  branch         Branch?       @relation(fields: [branchId], references: [id])
+  businessLineId String?
+  businessLine   BusinessLine? @relation(fields: [businessLineId], references: [id])
+  currency       String        @default("COP")
+  subtotal       Decimal       @db.Decimal(12, 2)
+  discountTotal  Decimal       @db.Decimal(12, 2) @default(0)
+  taxTotal       Decimal       @db.Decimal(12, 2) @default(0)
+  total          Decimal       @db.Decimal(12, 2)
+  status         SaleStatus    @default(COMPLETED)
+  note           String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   items      SaleItem[]
   payments   SalePayment[]
@@ -255,6 +378,8 @@ model Sale {
   @@index([customerId, createdAt])
   @@index([saleNumber])
   @@index([status])
+  @@index([branchId])
+  @@index([businessLineId])
   @@map("sale")
 }
 
@@ -280,23 +405,25 @@ model SaleItem {
 }
 
 model SalePayment {
-  id            String        @id @default(cuid())
+  id            String           @id @default(cuid())
   saleId        String
-  amount        Decimal       @db.Decimal(12, 2)
+  amount        Decimal          @db.Decimal(12, 2)
   method        PaymentMethod
-  paidAt        DateTime      @default(now())
+  paidAt        DateTime         @default(now())
   reference     String?
-  bankId        String?
-  bank          Bank?         @relation(fields: [bankId], references: [id])
-  attachmentUrl String?       // URL del comprobante en S3
+  accountId     String
+  account       FinancialAccount @relation(fields: [accountId], references: [id])
+  attachmentUrl String?
 
-  sale            Sale             @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  bankTransaction BankTransaction? @relation("FromSalePayment")
+  sale               Sale                @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  accountTransaction AccountTransaction? @relation("FromSalePayment")
 
   @@index([saleId, paidAt])
-  @@index([bankId])
+  @@index([accountId])
   @@map("sale_payment")
 }
+
+// ==================== EXPENSE MODELS ====================
 
 model ExpenseCategory {
   id        String   @id @default(cuid())
@@ -333,32 +460,38 @@ model Supplier {
 }
 
 model Expense {
-  id            String           @id @default(cuid())
-  createdById   String?
-  createdBy     User?            @relation(fields: [createdById], references: [id])
-  categoryId    String?
-  category      ExpenseCategory? @relation(fields: [categoryId], references: [id])
-  supplierId    String?
-  supplier      Supplier?        @relation(fields: [supplierId], references: [id])
-  description   String?
-  invoiceNo     String?
-  attachment    String?
-  currency      String           @default("COP")
-  amount        Decimal          @db.Decimal(12, 2)
-  paymentMethod PaymentMethod    @default(CASH)
-  bankId        String?
-  bank          Bank?            @relation(fields: [bankId], references: [id])
-  reference     String?
-  incurredAt    DateTime         @default(now())
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id             String           @id @default(cuid())
+  createdById    String?
+  createdBy      User?            @relation(fields: [createdById], references: [id])
+  categoryId     String?
+  category       ExpenseCategory? @relation(fields: [categoryId], references: [id])
+  supplierId     String?
+  supplier       Supplier?        @relation(fields: [supplierId], references: [id])
+  branchId       String?
+  branch         Branch?          @relation(fields: [branchId], references: [id])
+  businessLineId String?
+  businessLine   BusinessLine?    @relation(fields: [businessLineId], references: [id])
+  description    String?
+  invoiceNo      String?
+  attachment     String?
+  currency       String           @default("COP")
+  amount         Decimal          @db.Decimal(12, 2)
+  paymentMethod  PaymentMethod    @default(CASH)
+  accountId      String?
+  account        FinancialAccount? @relation(fields: [accountId], references: [id])
+  reference      String?
+  incurredAt     DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
-  items           ExpenseItem[]
-  bankTransaction BankTransaction? @relation("FromExpense")
+  items              ExpenseItem[]
+  accountTransaction AccountTransaction? @relation("FromExpense")
 
   @@index([createdById, incurredAt])
   @@index([supplierId, invoiceNo])
-  @@index([bankId])
+  @@index([accountId])
+  @@index([branchId])
+  @@index([businessLineId])
   @@map("expense")
 }
 
@@ -379,36 +512,38 @@ model ExpenseItem {
   @@map("expense_item")
 }
 
-model Purchase {
-  id             String         @id @default(cuid())
-  purchaseNumber Int            @unique @default(autoincrement())
-  supplierId     String?
-  supplier       Supplier?      @relation(fields: [supplierId], references: [id])
-  currency       String         @default("COP")
-  invoiceNo      String?
-  status         PurchaseStatus @default(DRAFT)
-  note           String?
-  
-  // Campos de pago
-  paymentMethod  PaymentMethod  @default(CASH)
-  bankId         String?
-  bank           Bank?          @relation(fields: [bankId], references: [id])
-  reference      String?
-  
-  subtotal       Decimal        @db.Decimal(12, 2)
-  taxTotal       Decimal        @db.Decimal(12, 2) @default(0)
-  total          Decimal        @db.Decimal(12, 2)
-  createdById    String?
-  createdBy      User?          @relation(fields: [createdById], references: [id])
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+// ==================== PURCHASE MODELS ====================
 
-  items           PurchaseItem[]
-  bankTransaction BankTransaction? @relation("FromPurchase")
+model Purchase {
+  id             String           @id @default(cuid())
+  purchaseNumber Int              @unique @default(autoincrement())
+  supplierId     String?
+  supplier       Supplier?        @relation(fields: [supplierId], references: [id])
+  branchId       String?
+  branch         Branch?          @relation(fields: [branchId], references: [id])
+  currency       String           @default("COP")
+  invoiceNo      String?
+  status         PurchaseStatus   @default(DRAFT)
+  note           String?
+  paymentMethod  PaymentMethod    @default(CASH)
+  accountId      String?
+  account        FinancialAccount? @relation(fields: [accountId], references: [id])
+  reference      String?
+  subtotal       Decimal          @db.Decimal(12, 2)
+  taxTotal       Decimal          @db.Decimal(12, 2) @default(0)
+  total          Decimal          @db.Decimal(12, 2)
+  createdById    String?
+  createdBy      User?            @relation(fields: [createdById], references: [id])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  items              PurchaseItem[]
+  accountTransaction AccountTransaction? @relation("FromPurchase")
 
   @@index([supplierId, invoiceNo])
   @@index([status, createdAt])
-  @@index([bankId])
+  @@index([accountId])
+  @@index([branchId])
   @@map("purchase")
 }
 
@@ -428,6 +563,7 @@ model PurchaseItem {
   @@map("purchase_item")
 }
 
+// ==================== INVENTORY ====================
 
 model StockMovement {
   id        String        @id @default(cuid())
@@ -445,6 +581,8 @@ model StockMovement {
   @@index([productId, moveType, createdAt])
   @@map("stock_movement")
 }
+
+// ==================== ACCOUNTS RECEIVABLE ====================
 
 model AccountsReceivable {
   id         String                   @id @default(cuid())
@@ -466,22 +604,24 @@ model AccountsReceivable {
 }
 
 model AccountsReceivablePayment {
-  id           String        @id @default(cuid())
+  id           String           @id @default(cuid())
   receivableId String
-  amount       Decimal       @db.Decimal(12, 2)
-  paidAt       DateTime      @default(now())
+  amount       Decimal          @db.Decimal(12, 2)
+  paidAt       DateTime         @default(now())
   method       PaymentMethod
   note         String?
-  bankId       String?
-  bank         Bank?         @relation(fields: [bankId], references: [id])
+  accountId    String?
+  account      FinancialAccount? @relation(fields: [accountId], references: [id])
 
-  receivable      AccountsReceivable @relation(fields: [receivableId], references: [id], onDelete: Cascade)
-  bankTransaction BankTransaction?   @relation("FromReceivablePayment")
+  receivable         AccountsReceivable  @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+  accountTransaction AccountTransaction? @relation("FromReceivablePayment")
 
   @@index([receivableId, paidAt])
-  @@index([bankId])
+  @@index([accountId])
   @@map("receivable_payment")
 }
+
+// ==================== PAYROLL ====================
 
 model PayrollEntry {
   id          String            @id @default(cuid())
@@ -542,33 +682,74 @@ model PayrollRunItem {
   @@map("payroll_run_item")
 }
 
-model BankTransaction {
-  id              String              @id @default(cuid())
-  bankId          String
-  bank            Bank                @relation("BankMovements", fields: [bankId], references: [id])
-  type            BankTransactionType
-  amount          Decimal             @db.Decimal(12, 2)
-  description     String?
-  reference       String?
-  transactionDate DateTime            @default(now())
-  createdById     String?
-  createdBy       User?               @relation(fields: [createdById], references: [id])
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+// ==================== RECONCILIATION & CASH CLOSE ====================
 
-  salePaymentId       String?                      @unique
-  salePayment         SalePayment?                 @relation("FromSalePayment", fields: [salePaymentId], references: [id])
-  receivablePaymentId String?                      @unique
-  receivablePayment   AccountsReceivablePayment?   @relation("FromReceivablePayment", fields: [receivablePaymentId], references: [id])
-  expenseId           String?                      @unique
-  expense             Expense?                     @relation("FromExpense", fields: [expenseId], references: [id])
-  purchaseId          String?                      @unique
-  purchase            Purchase?                    @relation("FromPurchase", fields: [purchaseId], references: [id])
-  relatedBankId       String?
-  relatedBank         Bank?                        @relation("TransferDestination", fields: [relatedBankId], references: [id])
-  transferPairId      String?                      @unique
+enum ReconciliationStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+}
 
-  @@index([bankId, transactionDate])
-  @@index([type])
-  @@map("bank_transaction")
+model CashRegisterClose {
+  id              String           @id @default(cuid())
+  accountId       String
+  account         FinancialAccount @relation(fields: [accountId], references: [id])
+  branchId        String?
+  branch          Branch?          @relation(fields: [branchId], references: [id])
+  closeDate       DateTime         @default(now())
+  expectedBalance Decimal          @db.Decimal(12, 2)
+  actualBalance   Decimal          @db.Decimal(12, 2)
+  difference      Decimal          @db.Decimal(12, 2)
+  notes           String?
+  closedById      String
+  closedBy        User             @relation(fields: [closedById], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([accountId, closeDate])
+  @@index([branchId])
+  @@map("cash_register_close")
+}
+
+model AccountReconciliation {
+  id               String               @id @default(cuid())
+  accountId        String
+  account          FinancialAccount     @relation(fields: [accountId], references: [id])
+  periodStart      DateTime
+  periodEnd        DateTime
+  openingBalance   Decimal              @db.Decimal(12, 2)
+  closingBalance   Decimal              @db.Decimal(12, 2)
+  statementBalance Decimal              @db.Decimal(12, 2)
+  difference       Decimal              @db.Decimal(12, 2)
+  status           ReconciliationStatus @default(DRAFT)
+  reconciledAt     DateTime?
+  reconciledById   String?
+  reconciledBy     User?                @relation(fields: [reconciledById], references: [id])
+  notes            String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  items ReconciliationItem[]
+
+  @@index([accountId, periodStart])
+  @@index([status])
+  @@map("account_reconciliation")
+}
+
+model ReconciliationItem {
+  id               String   @id @default(cuid())
+  reconciliationId String
+  transactionId    String?
+  externalRef      String?
+  externalAmount   Decimal? @db.Decimal(12, 2)
+  externalDate     DateTime?
+  status           String   @default("UNMATCHED")
+  createdAt        DateTime @default(now())
+
+  reconciliation AccountReconciliation @relation(fields: [reconciliationId], references: [id], onDelete: Cascade)
+  transaction    AccountTransaction?   @relation(fields: [transactionId], references: [id])
+
+  @@index([reconciliationId])
+  @@index([transactionId])
+  @@map("reconciliation_item")
 }

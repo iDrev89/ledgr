@@ -31,6 +31,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getDailySalesReport } from "@/apis/actions/reports";
 import { usePermissions } from "@/hooks/use-permissions";
 import { cn } from "@/lib/utils";
+import { getPaymentMethodLabel } from "@/lib/payment-utils";
 
 export default function DailySalesReportPage() {
   const t = useTranslations("Reports");
@@ -85,16 +86,8 @@ export default function DailySalesReportPage() {
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getPaymentMethodLabel = (method: string) => {
-    const labels: Record<string, string> = {
-      CASH: t("paymentMethodCash"),
-      TRANSFER: t("paymentMethodTransfer"),
-      CARD: t("paymentMethodCard"),
-      CHECK: t("paymentMethodCheck"),
-      OTHER: t("paymentMethodOther"),
-    };
-    return labels[method] || method;
-  };
+  const getPaymentMethodLabelLocalized = (method: string) =>
+    getPaymentMethodLabel(method, t);
 
   const columns = useMemo<ColumnDef<DailySaleDetail>[]>(
     () => [
@@ -148,7 +141,7 @@ export default function DailySalesReportPage() {
             return "-";
           }
           
-          return methods.map((m) => getPaymentMethodLabel(m)).join(", ");
+          return methods.map((m) => getPaymentMethodLabelLocalized(m)).join(", ");
         },
       },
       {
@@ -336,7 +329,7 @@ export default function DailySalesReportPage() {
                     className="flex flex-col gap-1 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
                   >
                     <span className="text-sm font-medium text-muted-foreground">
-                      {getPaymentMethodLabel(pm.method)}
+                      {getPaymentMethodLabelLocalized(pm.method)}
                     </span>
                     <span className="text-2xl font-bold">
                       {formatCurrency(pm.total)}

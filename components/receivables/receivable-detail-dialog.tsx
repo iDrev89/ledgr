@@ -22,10 +22,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
-import {
-  AccountsReceivableStatus,
-  PaymentMethod,
-} from "@/prisma/prisma-client";
+import { AccountsReceivableStatus } from "@/prisma/prisma-client";
+import { getPaymentMethodLabel } from "@/lib/payment-utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ReceivableDetailDialogProps {
@@ -57,16 +55,8 @@ export function ReceivableDetailDialog({
     }).format(numValue);
   };
 
-  const getPaymentMethodLabel = (method: PaymentMethod) => {
-    const labels: Record<PaymentMethod, string> = {
-      [PaymentMethod.CASH]: t("paymentCash"),
-      [PaymentMethod.CARD]: t("paymentCard"),
-      [PaymentMethod.TRANSFER]: t("paymentTransfer"),
-      [PaymentMethod.DIGITAL]: t("paymentDigital"),
-      [PaymentMethod.OTHER]: t("paymentOther"),
-    };
-    return labels[method];
-  };
+  const getMethodLabel = (method: string) =>
+    getPaymentMethodLabel(method, t);
 
   const getStatusBadge = (status: AccountsReceivableStatus) => {
     const config = {
@@ -325,7 +315,7 @@ export function ReceivableDetailDialog({
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="w-fit">
-                            {getPaymentMethodLabel(payment.method)}
+                            {getMethodLabel(payment.method)}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {format(new Date(payment.paidAt), "PPP p", {
@@ -333,11 +323,11 @@ export function ReceivableDetailDialog({
                             })}
                           </span>
                         </div>
-                        {payment.bank && (
+                        {payment.account && (
                           <span className="text-xs text-muted-foreground">
-                            {payment.bank.name}
-                            {payment.bank.accountNo &&
-                              ` - ${payment.bank.accountNo}`}
+                            {payment.account.name}
+                            {payment.account.accountNumber &&
+                              ` - ${payment.account.accountNumber}`}
                           </span>
                         )}
                         {payment.note && (

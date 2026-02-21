@@ -4,13 +4,12 @@ import {
   SalePayment,
   Customer,
   Product,
-  Bank,
+  FinancialAccount,
   SaleStatus,
 } from "@/prisma/prisma-client";
 
 export type { Sale, SaleItem, SalePayment, SaleStatus };
 
-// Serialized version for client (Decimal fields converted to strings)
 export type SaleWithDetails = Omit<
   Sale,
   "subtotal" | "discountTotal" | "taxTotal" | "total"
@@ -51,7 +50,7 @@ export type SaleWithDetails = Omit<
   })[];
   payments: (Omit<SalePayment, "amount"> & {
     amount: string;
-    bank?: Bank | null;
+    account?: FinancialAccount | null;
     attachmentUrl?: string | null;
   })[];
   receivable?: {
