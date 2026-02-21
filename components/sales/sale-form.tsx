@@ -39,8 +39,11 @@ import { CustomerSelector } from "./customer-selector";
 import { UserSelector } from "./user-selector";
 import { SaleItems, type SaleItemRow } from "./sale-items";
 import { SalePayments, type SalePaymentRow } from "./sale-payments";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { useSession } from "@/auth/auth-client";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 
 interface SaleFormProps {
   sale?: SaleWithDetails;
@@ -57,6 +60,7 @@ export function SaleForm({
 }: SaleFormProps) {
   const t = useTranslations("Sales");
   const { data: session } = useSession();
+  const { activeBranchId } = useActiveBranch();
   const isAdmin = session?.user?.role === "admin";
   const isEdit = !!sale;
   const isDraftSale = sale?.status === "DRAFT";
@@ -112,6 +116,8 @@ export function SaleForm({
     defaultValues: {
       customerId: sale?.customerId || "",
       soldById: sale?.soldById || "",
+      branchId: sale?.branchId || activeBranchId || "",
+      businessLineId: sale?.businessLineId || "",
       customDate: sale?.createdAt ? format(new Date(sale.createdAt), "yyyy-MM-dd") : "",
       note: sale?.note || "",
     },
@@ -174,6 +180,8 @@ export function SaleForm({
       const submitData: CreateSaleInput = {
         customerId: data.customerId,
         soldById: data.soldById || undefined,
+        branchId: data.branchId || null,
+        businessLineId: data.businessLineId || null,
         customDate: data.customDate || undefined,
         note: data.note || "",
         items: formattedItems,
@@ -201,6 +209,8 @@ export function SaleForm({
     form.reset({
       customerId: "",
       soldById: "",
+      branchId: activeBranchId || "",
+      businessLineId: "",
       customDate: "",
       note: "",
     });
@@ -333,6 +343,44 @@ export function SaleForm({
               )}
             />
           )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="branchId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("branch")}</FormLabel>
+                <FormControl>
+                  <BranchSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val || "")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="businessLineId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("businessLine")}</FormLabel>
+                <FormControl>
+                  <BusinessLineSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val || "")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <SaleItems

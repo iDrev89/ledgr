@@ -243,6 +243,8 @@ export const createExpense = async (
           createdById: session.user.id,
           categoryId: validated.categoryId || null,
           supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
           description: validated.description || null,
           invoiceNo: validated.invoiceNo || null,
           currency: "COP",
@@ -364,6 +366,8 @@ export const updateExpense = async (
         data: {
           categoryId: validated.categoryId || null,
           supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
           description: validated.description || null,
           invoiceNo: validated.invoiceNo || null,
           amount,

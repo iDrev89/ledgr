@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash, Star } from "lucide-react";
 import type { BranchWithRelations } from "@/lib/types/branch";
 
 interface BranchColumnsProps {
@@ -29,7 +29,18 @@ export const getBranchColumns = ({
     accessorKey: "name",
     header: t("name"),
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("name")}</div>;
+      const branch = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{row.getValue("name")}</span>
+          {(branch as any).isDefault && (
+            <Badge variant="outline" className="text-xs gap-1 text-amber-600 border-amber-300">
+              <Star className="h-3 w-3 fill-amber-500" />
+              {t("default")}
+            </Badge>
+          )}
+        </div>
+      );
     },
   },
   {

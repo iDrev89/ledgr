@@ -33,6 +33,7 @@ import {
 import type { Product } from "@/lib/types/product";
 import { ProductType } from "@/prisma/prisma-client";
 import { useProductCategories } from "@/hooks/use-product-categories";
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
 
 interface ProductFormProps {
   product?: Product;
@@ -65,6 +66,7 @@ export function ProductForm({
         ? product.commissionPercent.toString()
         : "",
       categoryId: product?.categoryId || undefined,
+      businessLineId: product?.businessLineId || null,
       active: product?.active ?? true,
     },
   });
@@ -200,6 +202,27 @@ export function ProductForm({
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="businessLineId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("businessLine")}</FormLabel>
+              <FormControl>
+                <BusinessLineSelector
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isLoading}
+                />
+              </FormControl>
+              <FormDescription className="text-xs">
+                {t("businessLineDescription")}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

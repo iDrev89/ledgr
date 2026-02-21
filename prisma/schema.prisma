@@ -195,6 +195,7 @@ model Branch {
   address   String?
   phone     String?
   active    Boolean  @default(true)
+  isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

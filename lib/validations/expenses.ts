@@ -21,6 +21,8 @@ const createExpenseSchemas = (messages?: {
       .string()
       .min(1, messages?.categoryIdRequired || "Category is required"),
     supplierId: z.string().optional().nullable(),
+    branchId: z.string().optional().nullable(),
+    businessLineId: z.string().optional().nullable(),
     description: z
       .string()
       .max(

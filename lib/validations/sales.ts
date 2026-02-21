@@ -69,6 +69,8 @@ const createSaleSchemas = (messages?: {
       .string()
       .min(1, messages?.customerIdRequired || "Customer is required"),
     soldById: z.string().optional().or(z.literal("")),
+    branchId: z.string().optional().nullable(),
+    businessLineId: z.string().optional().nullable(),
     customDate: z.string().optional().or(z.literal("")),
     items: z
       .array(saleItemSchema)

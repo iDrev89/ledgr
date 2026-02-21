@@ -7,6 +7,7 @@ import {
   MapPin,
   Phone,
   Hash,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,6 +46,12 @@ export function BranchCard({ branch, onEdit, onDelete }: BranchCardProps) {
               >
                 {branch.active ? t("active") : t("inactive")}
               </Badge>
+              {(branch as any).isDefault && (
+                <Badge variant="outline" className="text-xs gap-1 text-amber-600 border-amber-300">
+                  <Star className="h-3 w-3 fill-amber-500" />
+                  {t("default")}
+                </Badge>
+              )}
             </div>
           </div>
           <div className="flex gap-1 shrink-0">

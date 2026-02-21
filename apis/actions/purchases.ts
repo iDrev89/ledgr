@@ -250,6 +250,7 @@ export async function createPurchase(
       const newPurchase = await tx.purchase.create({
         data: {
           supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
           currency: "COP",
           invoiceNo: validated.invoiceNo || null,
           status: "APPROVED",

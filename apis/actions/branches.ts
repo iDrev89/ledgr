@@ -144,14 +144,24 @@ export const createBranch = async (
       return { success: false, error: t("duplicateName") };
     }
 
-    const branch = await prisma.branch.create({
-      data: {
-        name: validated.name,
-        code: validated.code || null,
-        address: validated.address || null,
-        phone: validated.phone || null,
-        active: validated.active,
-      },
+    const branch = await prisma.$transaction(async (tx) => {
+      if (validated.isDefault) {
+        await tx.branch.updateMany({
+          where: { isDefault: true },
+          data: { isDefault: false },
+        });
+      }
+
+      return tx.branch.create({
+        data: {
+          name: validated.name,
+          code: validated.code || null,
+          address: validated.address || null,
+          phone: validated.phone || null,
+          active: validated.active,
+          isDefault: validated.isDefault ?? false,
+        },
+      });
     });
 
     revalidatePath("/branches");
@@ -194,15 +204,25 @@ export const updateBranch = async (
       }
     }
 
-    const branch = await prisma.branch.update({
-      where: { id: validated.id },
-      data: {
-        name: validated.name,
-        code: validated.code || null,
-        address: validated.address || null,
-        phone: validated.phone || null,
-        active: validated.active,
-      },
+    const branch = await prisma.$transaction(async (tx) => {
+      if (validated.isDefault) {
+        await tx.branch.updateMany({
+          where: { isDefault: true, id: { not: validated.id } },
+          data: { isDefault: false },
+        });
+      }
+
+      return tx.branch.update({
+        where: { id: validated.id },
+        data: {
+          name: validated.name,
+          code: validated.code || null,
+          address: validated.address || null,
+          phone: validated.phone || null,
+          active: validated.active,
+          isDefault: validated.isDefault ?? false,
+        },
+      });
     });
 
     revalidatePath("/branches");
@@ -358,6 +378,64 @@ export const getBranchUsers = async (
     return { success: true, data: userBranches };
   } catch (error) {
     console.error("Error fetching branch users:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("fetchFailed"),
+    };
+  }
+};
+
+export const setDefaultBranch = async (
+  branchId: string
+): Promise<ActionResponse<Branch>> => {
+  const t = await getTranslations("Branches.errors");
+
+  try {
+    await requireAuth();
+
+    const branch = await prisma.$transaction(async (tx) => {
+      await tx.branch.updateMany({
+        where: { isDefault: true },
+        data: { isDefault: false },
+      });
+
+      return tx.branch.update({
+        where: { id: branchId },
+        data: { isDefault: true },
+      });
+    });
+
+    revalidatePath("/branches");
+
+    return { success: true, data: branch };
+  } catch (error) {
+    console.error("Error setting default branch:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("updateFailed"),
+    };
+  }
+};
+
+export const getUserBranches = async (
+  userId: string
+): Promise<ActionResponse<UserBranchWithRelations[]>> => {
+  const t = await getTranslations("Branches.errors");
+
+  try {
+    await requireAuth();
+
+    const userBranches = await prisma.userBranch.findMany({
+      where: { userId },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        branch: true,
+      },
+    });
+
+    return { success: true, data: userBranches };
+  } catch (error) {
+    console.error("Error fetching user branches:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : t("fetchFailed"),

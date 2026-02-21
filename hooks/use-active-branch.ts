@@ -24,16 +24,24 @@ export const useActiveBranch = () => {
 
     const branches = branchesData.branches;
 
-    if (branches.length === 1 && !activeBranchId) {
+    if (activeBranchId && branches.find((b) => b.id === activeBranchId)) {
+      return;
+    }
+
+    if (branches.length === 1) {
       setActiveBranchIdState(branches[0].id);
       localStorage.setItem(ACTIVE_BRANCH_KEY, branches[0].id);
       return;
     }
 
-    if (
-      activeBranchId &&
-      !branches.find((b) => b.id === activeBranchId)
-    ) {
+    const systemDefault = branches.find((b: any) => b.isDefault);
+    if (systemDefault) {
+      setActiveBranchIdState(systemDefault.id);
+      localStorage.setItem(ACTIVE_BRANCH_KEY, systemDefault.id);
+      return;
+    }
+
+    if (activeBranchId) {
       setActiveBranchIdState(undefined);
       localStorage.removeItem(ACTIVE_BRANCH_KEY);
     }

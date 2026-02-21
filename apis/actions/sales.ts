@@ -505,6 +505,8 @@ export const createSale = async (
           createdById: session.user.id,
           soldById: validated.soldById || session.user.id || null,
           customerId: validated.customerId,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
           currency: "COP",
           subtotal,
           discountTotal,
@@ -1020,6 +1022,8 @@ export const updateSale = async (
         data: {
           customerId: validated.customerId,
           soldById: validated.soldById || null,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
           subtotal,
           discountTotal,
           taxTotal,

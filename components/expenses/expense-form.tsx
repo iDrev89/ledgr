@@ -42,7 +42,10 @@ import { useAccounts } from "@/hooks/use-accounts";
 import { getDefaultAccountForMethod, getAccountTypeLabel } from "@/lib/payment-utils";
 import { cn } from "@/lib/utils";
 import { AttachmentUpload } from "@/components/shared/attachment-upload";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 
 interface ExpenseFormProps {
   expense?: ExpenseWithDetails;
@@ -61,6 +64,7 @@ export function ExpenseForm({
   const { data } = useAccounts({ activeOnly: true });
   const accounts = data?.accounts || [];
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const { activeBranchId } = useActiveBranch();
 
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
@@ -83,6 +87,8 @@ export function ExpenseForm({
     defaultValues: {
       categoryId: expense?.categoryId || "",
       supplierId: expense?.supplierId || undefined,
+      branchId: expense?.branchId || activeBranchId || null,
+      businessLineId: expense?.businessLineId || null,
       description: expense?.description || "",
       invoiceNo: expense?.invoiceNo || "",
       amount: expense?.amount ? expense.amount.toString() : "",
@@ -155,6 +161,44 @@ export function ExpenseForm({
             </FormItem>
           )}
         />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="branchId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("branch")}</FormLabel>
+                <FormControl>
+                  <BranchSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val)}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="businessLineId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("businessLine")}</FormLabel>
+                <FormControl>
+                  <BusinessLineSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val)}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Amount */}

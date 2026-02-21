@@ -15,6 +15,7 @@ const createBranchSchemas = (messages?: {
     address: z.string().max(300).trim().optional().or(z.literal("")),
     phone: z.string().max(30).trim().optional().or(z.literal("")),
     active: z.boolean(),
+    isDefault: z.boolean().optional().default(false),
   });
 
   const createBranchSchema = baseBranchSchema;

@@ -156,6 +156,7 @@ export const createProduct = async (
           ? new Decimal(validated.commissionPercent)
           : null,
         categoryId: validated.categoryId,
+        businessLineId: validated.businessLineId || null,
         active: validated.active,
       },
     });
@@ -208,6 +209,7 @@ export const updateProduct = async (
           ? new Decimal(validated.commissionPercent)
           : null,
         categoryId: validated.categoryId,
+        businessLineId: validated.businessLineId || null,
         active: validated.active,
       },
     });

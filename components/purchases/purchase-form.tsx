@@ -29,6 +29,8 @@ import { useSuppliers } from "@/hooks/use-suppliers";
 import { useAccounts } from "@/hooks/use-accounts";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { getDefaultAccountForMethod, getAccountTypeLabel } from "@/lib/payment-utils";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 import type { PurchaseItem, CreatePurchaseInput } from "@/lib/types/purchases";
 
 interface PurchaseFormProps {
@@ -45,6 +47,7 @@ export function PurchaseForm({
   const t = useTranslations("Purchases");
   const [items, setItems] = useState<PurchaseItem[]>([]);
   const [taxTotal, setTaxTotal] = useState<number>(0);
+  const { activeBranchId } = useActiveBranch();
 
   const { data: suppliersData } = useSuppliers({
     active: true,
@@ -58,6 +61,7 @@ export function PurchaseForm({
     mode: "onChange",
     defaultValues: {
       supplierId: "",
+      branchId: activeBranchId || "",
       invoiceNo: "",
       note: "",
       paymentMethod: "CASH" as PaymentMethod,
@@ -88,6 +92,7 @@ export function PurchaseForm({
     // Prepare purchase data
     const purchaseData: CreatePurchaseInput = {
       supplierId: data.supplierId || undefined,
+      branchId: data.branchId || null,
       invoiceNo: data.invoiceNo || undefined,
       note: data.note || undefined,
       items: items.map((item) => ({
@@ -152,6 +157,25 @@ export function PurchaseForm({
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Branch */}
+          <FormField
+            control={form.control}
+            name="branchId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("branch")}</FormLabel>
+                <FormControl>
+                  <BranchSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val || "")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

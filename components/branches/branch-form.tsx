@@ -49,6 +49,7 @@ export function BranchForm({
       address: branch?.address || "",
       phone: branch?.phone || "",
       active: branch?.active ?? true,
+      isDefault: (branch as any)?.isDefault ?? false,
     },
   });
 
@@ -150,6 +151,26 @@ export function BranchForm({
               <div className="space-y-0.5">
                 <FormLabel className="text-base">{t("active")}</FormLabel>
                 <FormDescription>{t("activeDescription")}</FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isLoading}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="isDefault"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">{t("isDefault")}</FormLabel>
+                <FormDescription>{t("isDefaultDescription")}</FormDescription>
               </div>
               <FormControl>
                 <Switch

@@ -12,6 +12,7 @@ export const purchaseItemSchema = z.object({
 
 export const createPurchaseSchema = z.object({
   supplierId: z.string().nullable().optional(),
+  branchId: z.string().nullable().optional(),
   invoiceNo: z.string().nullable().optional(),
   note: z.string().nullable().optional(),
   items: z.array(purchaseItemSchema).min(1, "Debe agregar al menos un item"),

@@ -10417,6 +10417,7 @@ export namespace Prisma {
     address: string | null
     phone: string | null
     active: boolean | null
+    isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10428,6 +10429,7 @@ export namespace Prisma {
     address: string | null
     phone: string | null
     active: boolean | null
+    isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10439,6 +10441,7 @@ export namespace Prisma {
     address: number
     phone: number
     active: number
+    isDefault: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -10452,6 +10455,7 @@ export namespace Prisma {
     address?: true
     phone?: true
     active?: true
+    isDefault?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10463,6 +10467,7 @@ export namespace Prisma {
     address?: true
     phone?: true
     active?: true
+    isDefault?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10474,6 +10479,7 @@ export namespace Prisma {
     address?: true
     phone?: true
     active?: true
+    isDefault?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -10558,6 +10564,7 @@ export namespace Prisma {
     address: string | null
     phone: string | null
     active: boolean
+    isDefault: boolean
     createdAt: Date
     updatedAt: Date
     _count: BranchCountAggregateOutputType | null
@@ -10586,6 +10593,7 @@ export namespace Prisma {
     address?: boolean
     phone?: boolean
     active?: boolean
+    isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     financialAccounts?: boolean | Branch$financialAccountsArgs<ExtArgs>
@@ -10604,6 +10612,7 @@ export namespace Prisma {
     address?: boolean
     phone?: boolean
     active?: boolean
+    isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["branch"]>
@@ -10615,6 +10624,7 @@ export namespace Prisma {
     address?: boolean
     phone?: boolean
     active?: boolean
+    isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["branch"]>
@@ -10626,11 +10636,12 @@ export namespace Prisma {
     address?: boolean
     phone?: boolean
     active?: boolean
+    isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BranchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "address" | "phone" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["branch"]>
+  export type BranchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "address" | "phone" | "active" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["branch"]>
   export type BranchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     financialAccounts?: boolean | Branch$financialAccountsArgs<ExtArgs>
     sales?: boolean | Branch$salesArgs<ExtArgs>
@@ -10660,6 +10671,7 @@ export namespace Prisma {
       address: string | null
       phone: string | null
       active: boolean
+      isDefault: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["branch"]>
@@ -11097,6 +11109,7 @@ export namespace Prisma {
     readonly address: FieldRef<"Branch", 'String'>
     readonly phone: FieldRef<"Branch", 'String'>
     readonly active: FieldRef<"Branch", 'Boolean'>
+    readonly isDefault: FieldRef<"Branch", 'Boolean'>
     readonly createdAt: FieldRef<"Branch", 'DateTime'>
     readonly updatedAt: FieldRef<"Branch", 'DateTime'>
   }
@@ -41122,6 +41135,7 @@ export namespace Prisma {
     address: 'address',
     phone: 'phone',
     active: 'active',
+    isDefault: 'isDefault',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -42224,6 +42238,7 @@ export namespace Prisma {
     address?: StringNullableFilter<"Branch"> | string | null
     phone?: StringNullableFilter<"Branch"> | string | null
     active?: BoolFilter<"Branch"> | boolean
+    isDefault?: BoolFilter<"Branch"> | boolean
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
     financialAccounts?: FinancialAccountListRelationFilter
@@ -42241,6 +42256,7 @@ export namespace Prisma {
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     active?: SortOrder
+    isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     financialAccounts?: FinancialAccountOrderByRelationAggregateInput
@@ -42261,6 +42277,7 @@ export namespace Prisma {
     address?: StringNullableFilter<"Branch"> | string | null
     phone?: StringNullableFilter<"Branch"> | string | null
     active?: BoolFilter<"Branch"> | boolean
+    isDefault?: BoolFilter<"Branch"> | boolean
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
     financialAccounts?: FinancialAccountListRelationFilter
@@ -42278,6 +42295,7 @@ export namespace Prisma {
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     active?: SortOrder
+    isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BranchCountOrderByAggregateInput
@@ -42295,6 +42313,7 @@ export namespace Prisma {
     address?: StringNullableWithAggregatesFilter<"Branch"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Branch"> | string | null
     active?: BoolWithAggregatesFilter<"Branch"> | boolean
+    isDefault?: BoolWithAggregatesFilter<"Branch"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
   }
@@ -44946,6 +44965,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -44963,6 +44983,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -44980,6 +45001,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -44997,6 +45019,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
@@ -45014,6 +45037,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -45025,6 +45049,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45036,6 +45061,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47784,6 +47810,7 @@ export namespace Prisma {
     address?: SortOrder
     phone?: SortOrder
     active?: SortOrder
+    isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47795,6 +47822,7 @@ export namespace Prisma {
     address?: SortOrder
     phone?: SortOrder
     active?: SortOrder
+    isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47806,6 +47834,7 @@ export namespace Prisma {
     address?: SortOrder
     phone?: SortOrder
     active?: SortOrder
+    isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -54952,6 +54981,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -54968,6 +54998,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -55065,6 +55096,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -55081,6 +55113,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
@@ -55097,6 +55130,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sales?: SaleCreateNestedManyWithoutBranchInput
@@ -55113,6 +55147,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sales?: SaleUncheckedCreateNestedManyWithoutBranchInput
@@ -55487,6 +55522,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sales?: SaleUpdateManyWithoutBranchNestedInput
@@ -55503,6 +55539,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sales?: SaleUncheckedUpdateManyWithoutBranchNestedInput
@@ -56994,6 +57031,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -57010,6 +57048,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -57331,6 +57370,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -57347,6 +57387,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
@@ -58566,6 +58607,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -58582,6 +58624,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -58896,6 +58939,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -58912,6 +58956,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
@@ -59270,6 +59315,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -59286,6 +59332,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -59528,6 +59575,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -59544,6 +59592,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
@@ -61012,6 +61061,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountCreateNestedManyWithoutBranchInput
@@ -61028,6 +61078,7 @@ export namespace Prisma {
     address?: string | null
     phone?: string | null
     active?: boolean
+    isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     financialAccounts?: FinancialAccountUncheckedCreateNestedManyWithoutBranchInput
@@ -61172,6 +61223,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUpdateManyWithoutBranchNestedInput
@@ -61188,6 +61240,7 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     financialAccounts?: FinancialAccountUncheckedUpdateManyWithoutBranchNestedInput
