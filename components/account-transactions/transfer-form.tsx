@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { format, parseISO } from "date-fns";
-import { Loader2, ArrowRight, ChevronDownIcon, CalendarIcon } from "lucide-react";
+import { Loader2, ChevronDownIcon, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,7 +58,7 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
       amount: "",
       description: "",
       reference: "",
-      transactionDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+      transactionDate: format(new Date(), "yyyy-MM-dd"),
     },
   });
 
@@ -170,7 +170,7 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
                       disabled={isSubmitting}
                     >
                       {field.value ? (
-                        format(parseISO(String(field.value).split("T")[0]), "dd/MM/yyyy")
+                        format(parseISO(String(field.value)), "dd/MM/yyyy")
                       ) : (
                         <span>{t("transactionDatePlaceholder")}</span>
                       )}
@@ -181,13 +181,10 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
                 <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value ? parseISO(String(field.value).split("T")[0]) : undefined}
+                    selected={field.value ? parseISO(String(field.value)) : undefined}
                     onSelect={(date) => {
                       if (date) {
-                        const currentTime = field.value 
-                          ? String(field.value).split("T")[1] || "12:00"
-                          : "12:00";
-                        field.onChange(format(date, "yyyy-MM-dd") + "T" + currentTime);
+                        field.onChange(format(date, "yyyy-MM-dd"));
                       }
                       setCalendarOpen(false);
                     }}
@@ -195,19 +192,6 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
                   />
                 </PopoverContent>
               </Popover>
-              <div className="mt-2">
-                <Input
-                  type="time"
-                  value={field.value ? String(field.value).split("T")[1] || "" : ""}
-                  onChange={(e) => {
-                    const currentDate = field.value
-                      ? String(field.value).split("T")[0]
-                      : format(new Date(), "yyyy-MM-dd");
-                    field.onChange(currentDate + "T" + e.target.value);
-                  }}
-                  disabled={isSubmitting}
-                />
-              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -256,8 +240,7 @@ export const TransferForm = ({ onSubmit, isSubmitting }: TransferFormProps) => {
         <div className="flex gap-2 justify-end">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {!isSubmitting && <ArrowRight className="mr-2 h-4 w-4" />}
-            {isSubmitting ? t("creating") : t("createTransfer")}
+            {isSubmitting ? t("creating") : t("transferAction")}
           </Button>
         </div>
       </form>

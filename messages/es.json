@@ -348,6 +348,8 @@
     "deleteConfirmMessage": "Esta acción no se puede deshacer. Los movimientos de inventario asociados también serán eliminados.",
     "loadError": "Error al cargar las compras",
     "noProducts": "No hay productos disponibles",
+    "destinationAccount": "Cuenta Destino",
+    "selectAccount": "Seleccionar cuenta",
     "validation": {
       "itemsMin": "Debe agregar al menos un item",
       "productIdRequired": "Debe seleccionar un producto"
@@ -933,6 +935,7 @@
     "editDescription": "Actualiza la información de la transacción.",
     "createTransfer": "Nueva Transferencia",
     "createTransferDescription": "Transfiere dinero entre tus cuentas.",
+    "transferAction": "Transferir",
     "account": "Cuenta",
     "accountPlaceholder": "Selecciona una cuenta",
     "fromAccount": "Cuenta Origen",

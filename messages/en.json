@@ -338,6 +338,8 @@
     "deleteConfirmMessage": "This action cannot be undone. Associated inventory movements will also be deleted.",
     "loadError": "Error loading purchases",
     "noProducts": "No products available",
+    "destinationAccount": "Destination Account",
+    "selectAccount": "Select account",
     "validation": {
       "itemsMin": "Must add at least one item",
       "productIdRequired": "Must select a product"
@@ -977,6 +979,7 @@
     "editDescription": "Update transaction information.",
     "createTransfer": "New Transfer",
     "createTransferDescription": "Transfer money between your accounts.",
+    "transferAction": "Transfer",
     "account": "Account",
     "accountPlaceholder": "Select an account",
     "fromAccount": "Source Account",
