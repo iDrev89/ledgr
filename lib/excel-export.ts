@@ -229,6 +229,14 @@ export function exportBusinessSummaryToExcel(
     ["Efectivo Recibido", formatCurrency(data.cashFlow.cashReceived)],
     ["Efectivo Gastado", formatCurrency(data.cashFlow.cashSpent)],
     ["Balance Efectivo", formatCurrency(data.cashFlow.netCash)],
+    [""],
+    ["DESGLOSE POR CUENTA"],
+    ["Cuenta", "Tipo", "Total"],
+    ...(data.cashFlow.byAccount || []).map((a) => [
+      a.accountName,
+      a.accountType,
+      formatCurrency(a.total),
+    ]),
   ];
 
   const wsSummary = utils.aoa_to_sheet(summaryData);
@@ -329,17 +337,6 @@ export function exportDailySalesToExcel(
   // Create workbook
   const wb = utils.book_new();
 
-  // Payment method labels for Excel
-  const paymentMethodLabels: Record<string, string> = {
-    CASH: "Efectivo",
-    DEBIT_CARD: "T. Débito",
-    CREDIT_CARD: "T. Crédito",
-    BANK_TRANSFER: "Transferencia",
-    DIGITAL_PAYMENT: "Pago Digital",
-    CHECK: "Cheque",
-    OTHER: "Otro",
-  };
-
   // Sheet 1: Summary with metrics
   const summaryData = [
     ["REPORTE DE VENTAS DIARIAS"],
@@ -352,10 +349,12 @@ export function exportDailySalesToExcel(
     ["Total Pagado", formatCurrency(data.metrics.totalPaid)],
     ["Saldo Pendiente", formatCurrency(data.metrics.pendingBalance)],
     [""],
-    ["TOTALES POR MÉTODO DE PAGO"],
-    ...data.metrics.byPaymentMethod.map((pm) => [
-      paymentMethodLabels[pm.method] || pm.method,
-      formatCurrency(pm.total),
+    ["INGRESOS POR CUENTA"],
+    ["Cuenta", "Tipo", "Total"],
+    ...(data.metrics.byAccount || []).map((a) => [
+      a.accountName,
+      a.accountType,
+      formatCurrency(a.total),
     ]),
   ];
 

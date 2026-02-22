@@ -42,7 +42,6 @@ import { useAccounts } from "@/hooks/use-accounts";
 import { getDefaultAccountForMethod, getAccountTypeLabel } from "@/lib/payment-utils";
 import { cn } from "@/lib/utils";
 import { AttachmentUpload } from "@/components/shared/attachment-upload";
-import { BranchSelector } from "@/components/ui/branch-selector";
 import { BusinessLineSelector } from "@/components/ui/business-line-selector";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { useActiveBranch } from "@/hooks/use-active-branch";
@@ -164,24 +163,6 @@ export function ExpenseForm({
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="branchId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("branch")}</FormLabel>
-                <FormControl>
-                  <BranchSelector
-                    value={field.value || null}
-                    onValueChange={(val) => field.onChange(val)}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="businessLineId"

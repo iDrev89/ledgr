@@ -15,6 +15,7 @@ export interface PurchaseReportFilters {
   endDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   status?: PurchaseStatus[];
   supplierId?: string;
+  branchId?: string;
 }
 
 export interface PurchaseReportItem {
@@ -51,6 +52,14 @@ export interface BusinessSummaryFilters {
   startDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   endDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   branchId?: string;
+  businessLineId?: string;
+}
+
+export interface AccountBreakdownItem {
+  accountId: string;
+  accountName: string;
+  accountType: string;
+  total: number;
 }
 
 export interface RevenueMetrics {
@@ -93,6 +102,7 @@ export interface CashFlowMetrics {
   cashReceived: number;
   cashSpent: number;
   netCash: number;
+  byAccount: AccountBreakdownItem[];
 }
 
 export interface TimelineDataPoint {
@@ -260,6 +270,8 @@ export interface DailySalesReportFilters {
   startDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   endDate: string; // ISO datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
   sellerId?: string;
+  branchId?: string;
+  businessLineId?: string;
 }
 
 export interface DailySaleDetail {
@@ -281,10 +293,7 @@ export interface DailySalesReportData {
     averageTicket: number;
     totalPaid: number;
     pendingBalance: number;
-    byPaymentMethod: {
-      method: string;
-      total: number;
-    }[];
+    byAccount: AccountBreakdownItem[];
   };
   sales: DailySaleDetail[];
 }

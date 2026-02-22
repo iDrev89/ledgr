@@ -6,25 +6,16 @@ import {
   getLowStockAlerts,
 } from "@/apis/actions/dashboard";
 
-export const useDashboardStats = () => {
-  return useQuery({
-    queryKey: ["dashboard", "stats"],
-    queryFn: async () => {
-      const result = await getDashboardStats();
-      if (!result.success) {
-        throw new Error(result.error);
-      }
-      return result.data;
-    },
-    refetchInterval: 60000, // Refetch every minute
-  });
-};
+interface DashboardFilterParams {
+  branchId?: string;
+  businessLineId?: string;
+}
 
-export const useSalesChartData = () => {
+export const useDashboardStats = (params?: DashboardFilterParams) => {
   return useQuery({
-    queryKey: ["dashboard", "sales-chart"],
+    queryKey: ["dashboard", "stats", params?.branchId, params?.businessLineId],
     queryFn: async () => {
-      const result = await getSalesChartData();
+      const result = await getDashboardStats(params);
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -34,11 +25,25 @@ export const useSalesChartData = () => {
   });
 };
 
-export const useTopProducts = () => {
+export const useSalesChartData = (params?: DashboardFilterParams) => {
   return useQuery({
-    queryKey: ["dashboard", "top-products"],
+    queryKey: ["dashboard", "sales-chart", params?.branchId, params?.businessLineId],
     queryFn: async () => {
-      const result = await getTopProducts();
+      const result = await getSalesChartData(params);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data;
+    },
+    refetchInterval: 60000,
+  });
+};
+
+export const useTopProducts = (params?: DashboardFilterParams) => {
+  return useQuery({
+    queryKey: ["dashboard", "top-products", params?.branchId, params?.businessLineId],
+    queryFn: async () => {
+      const result = await getTopProducts(params);
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -73,6 +78,6 @@ export const useTodaysBirthdays = () => {
       }
       return result.data;
     },
-    refetchInterval: 60000 * 60, // Check hourly
+    refetchInterval: 60000 * 60,
   });
 };

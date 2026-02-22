@@ -13,9 +13,15 @@ import {
   ShoppingCart,
   Receipt,
   Wallet,
+  Building2,
+  Landmark,
+  Banknote,
+  Smartphone,
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { DateRangePicker } from "@/components/reports/date-range-picker";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
 import { ViewToggle } from "@/components/reports/view-toggle";
 import { ExportButton } from "@/components/reports/export-button";
 import { MetricCard } from "@/components/reports/metric-card";
@@ -42,6 +48,8 @@ export default function BusinessSummaryPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
   const [salesModalOpen, setSalesModalOpen] = useState(false);
   const [expensesModalOpen, setExpensesModalOpen] = useState(false);
+  const [branchId, setBranchId] = useState<string | null>(null);
+  const [businessLineId, setBusinessLineId] = useState<string | null>(null);
 
   const {
     data: reportData,
@@ -52,22 +60,34 @@ export default function BusinessSummaryPage() {
       "business-summary-enhanced",
       format(dateRange.start, "yyyy-MM-dd"),
       format(dateRange.end, "yyyy-MM-dd"),
+      branchId,
+      businessLineId,
     ],
     queryFn: async () => {
-      // Calculate start and end of day in local timezone and send as ISO strings
       const startDate = new Date(dateRange.start);
       startDate.setHours(0, 0, 0, 0);
       const endDate = new Date(dateRange.end);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const response = await getBusinessSummaryEnhanced({
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
+        branchId: branchId || undefined,
+        businessLineId: businessLineId || undefined,
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;
     },
   });
+
+  const getAccountIcon = (accountType: string) => {
+    switch (accountType) {
+      case "BANK": return <Landmark className="h-5 w-5 text-blue-500" />;
+      case "CASH_REGISTER": return <Banknote className="h-5 w-5 text-green-500" />;
+      case "DIGITAL_WALLET": return <Smartphone className="h-5 w-5 text-purple-500" />;
+      default: return <Building2 className="h-5 w-5 text-gray-500" />;
+    }
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -125,23 +145,51 @@ export default function BusinessSummaryPage() {
       />
 
       {/* Controls */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <Card className="flex-1">
-          <CardContent className="pt-6">
-            <DateRangePicker
-              value={dateRange}
-              onChange={setDateRange}
-              locale={locale}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <Card className="flex-1">
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    locale={locale}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-4 sm:gap-6">
+                  <div className="w-48 space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {t("filterByBranch")}
+                    </label>
+                    <BranchSelector
+                      value={branchId}
+                      onValueChange={setBranchId}
+                      allowNone
+                    />
+                  </div>
+                  <div className="w-48 space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {t("filterByBusinessLine")}
+                    </label>
+                    <BusinessLineSelector
+                      value={businessLineId}
+                      onValueChange={setBusinessLineId}
+                      allowNone
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto shrink-0">
+            <ViewToggle view={viewMode} onChange={setViewMode} />
+            <ExportButton
+              type="business"
+              data={reportData || null}
+              dateRange={dateRange}
             />
-          </CardContent>
-        </Card>
-        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <ViewToggle view={viewMode} onChange={setViewMode} />
-          <ExportButton
-            type="business"
-            data={reportData || null}
-            dateRange={dateRange}
-          />
+          </div>
         </div>
       </div>
 
@@ -238,6 +286,36 @@ export default function BusinessSummaryPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Account Breakdown */}
+          {reportData.cashFlow.byAccount && reportData.cashFlow.byAccount.length > 0 && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Landmark className="h-5 w-5" />
+                  <h3 className="text-lg font-semibold">{t("accountBreakdown")}</h3>
+                </div>
+                <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+                  {reportData.cashFlow.byAccount.map((account) => (
+                    <div
+                      key={account.accountId}
+                      className="flex flex-col gap-1 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        {getAccountIcon(account.accountType)}
+                        <span className="text-sm font-medium text-muted-foreground truncate">
+                          {account.accountName}
+                        </span>
+                      </div>
+                      <span className="text-2xl font-bold">
+                        {formatCurrency(account.total)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Summary View */}
           {viewMode === "summary" && (
