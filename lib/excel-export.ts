@@ -383,12 +383,7 @@ export function exportDailySalesToExcel(
 
       const paymentMethodLabels: Record<string, string> = {
         CASH: "Efectivo",
-        DEBIT_CARD: "T. Débito",
-        CREDIT_CARD: "T. Crédito",
         BANK_TRANSFER: "Transferencia",
-        DIGITAL_PAYMENT: "Pago Digital",
-        CHECK: "Cheque",
-        OTHER: "Otro",
       };
 
       const methodsText = s.paymentMethods && s.paymentMethods.length > 0

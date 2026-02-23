@@ -18,10 +18,15 @@ export const isEmailAllowed = async (email: string): Promise<boolean> => {
   return user?.allowedAccess ?? false;
 };
 
+const trustedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : [];
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  trustedOrigins,
   emailAndPassword: {
     enabled: true,
   },

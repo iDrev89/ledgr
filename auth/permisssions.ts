@@ -23,7 +23,7 @@ const statements = {
   dashboard: ["read"],
   "business-lines": ["create", "read", "update", "delete"],
   branches: ["create", "read", "update", "delete"],
-  "cash-close": ["create", "read", "delete"],
+  "cash-register": ["create", "read", "delete"],
   reconciliation: ["create", "read", "update", "delete"],
 } as const;
 
@@ -58,6 +58,6 @@ export const admin = accessControl.newRole({
   dashboard: ["read"],
   "business-lines": ["create", "read", "update", "delete"],
   branches: ["create", "read", "update", "delete"],
-  "cash-close": ["create", "read", "delete"],
+  "cash-register": ["create", "read", "delete"],
   reconciliation: ["create", "read", "update", "delete"],
 });

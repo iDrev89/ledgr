@@ -149,10 +149,10 @@ export type PayrollRun = $Result.DefaultSelection<Prisma.$PayrollRunPayload>
  */
 export type PayrollRunItem = $Result.DefaultSelection<Prisma.$PayrollRunItemPayload>
 /**
- * Model CashRegisterClose
+ * Model CashSession
  * 
  */
-export type CashRegisterClose = $Result.DefaultSelection<Prisma.$CashRegisterClosePayload>
+export type CashSession = $Result.DefaultSelection<Prisma.$CashSessionPayload>
 /**
  * Model AccountReconciliation
  * 
@@ -278,6 +278,14 @@ export const SaleStatus: {
 export type SaleStatus = (typeof SaleStatus)[keyof typeof SaleStatus]
 
 
+export const CashSessionStatus: {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+export type CashSessionStatus = (typeof CashSessionStatus)[keyof typeof CashSessionStatus]
+
+
 export const ReconciliationStatus: {
   DRAFT: 'DRAFT',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -331,6 +339,10 @@ export const PayrollEntryKind: typeof $Enums.PayrollEntryKind
 export type SaleStatus = $Enums.SaleStatus
 
 export const SaleStatus: typeof $Enums.SaleStatus
+
+export type CashSessionStatus = $Enums.CashSessionStatus
+
+export const CashSessionStatus: typeof $Enums.CashSessionStatus
 
 export type ReconciliationStatus = $Enums.ReconciliationStatus
 
@@ -725,14 +737,14 @@ export class PrismaClient<
   get payrollRunItem(): Prisma.PayrollRunItemDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.cashRegisterClose`: Exposes CRUD operations for the **CashRegisterClose** model.
+   * `prisma.cashSession`: Exposes CRUD operations for the **CashSession** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CashRegisterCloses
-    * const cashRegisterCloses = await prisma.cashRegisterClose.findMany()
+    * // Fetch zero or more CashSessions
+    * const cashSessions = await prisma.cashSession.findMany()
     * ```
     */
-  get cashRegisterClose(): Prisma.CashRegisterCloseDelegate<ExtArgs, ClientOptions>;
+  get cashSession(): Prisma.CashSessionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.accountReconciliation`: Exposes CRUD operations for the **AccountReconciliation** model.
@@ -1220,7 +1232,7 @@ export namespace Prisma {
     PayrollEntry: 'PayrollEntry',
     PayrollRun: 'PayrollRun',
     PayrollRunItem: 'PayrollRunItem',
-    CashRegisterClose: 'CashRegisterClose',
+    CashSession: 'CashSession',
     AccountReconciliation: 'AccountReconciliation',
     ReconciliationItem: 'ReconciliationItem'
   };
@@ -1241,7 +1253,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "businessLine" | "branch" | "userBranch" | "financialAccount" | "accountTransaction" | "customer" | "productCategory" | "product" | "sale" | "saleItem" | "salePayment" | "expenseCategory" | "supplier" | "expense" | "expenseItem" | "purchase" | "purchaseItem" | "stockMovement" | "accountsReceivable" | "accountsReceivablePayment" | "payrollEntry" | "payrollRun" | "payrollRunItem" | "cashRegisterClose" | "accountReconciliation" | "reconciliationItem"
+      modelProps: "user" | "session" | "account" | "verification" | "businessLine" | "branch" | "userBranch" | "financialAccount" | "accountTransaction" | "customer" | "productCategory" | "product" | "sale" | "saleItem" | "salePayment" | "expenseCategory" | "supplier" | "expense" | "expenseItem" | "purchase" | "purchaseItem" | "stockMovement" | "accountsReceivable" | "accountsReceivablePayment" | "payrollEntry" | "payrollRun" | "payrollRunItem" | "cashSession" | "accountReconciliation" | "reconciliationItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3243,77 +3255,77 @@ export namespace Prisma {
           }
         }
       }
-      CashRegisterClose: {
-        payload: Prisma.$CashRegisterClosePayload<ExtArgs>
-        fields: Prisma.CashRegisterCloseFieldRefs
+      CashSession: {
+        payload: Prisma.$CashSessionPayload<ExtArgs>
+        fields: Prisma.CashSessionFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CashRegisterCloseFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload> | null
+            args: Prisma.CashSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CashRegisterCloseFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           findFirst: {
-            args: Prisma.CashRegisterCloseFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload> | null
+            args: Prisma.CashSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CashRegisterCloseFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           findMany: {
-            args: Prisma.CashRegisterCloseFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>[]
+            args: Prisma.CashSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>[]
           }
           create: {
-            args: Prisma.CashRegisterCloseCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           createMany: {
-            args: Prisma.CashRegisterCloseCreateManyArgs<ExtArgs>
+            args: Prisma.CashSessionCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CashRegisterCloseCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>[]
+            args: Prisma.CashSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>[]
           }
           delete: {
-            args: Prisma.CashRegisterCloseDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           update: {
-            args: Prisma.CashRegisterCloseUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           deleteMany: {
-            args: Prisma.CashRegisterCloseDeleteManyArgs<ExtArgs>
+            args: Prisma.CashSessionDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CashRegisterCloseUpdateManyArgs<ExtArgs>
+            args: Prisma.CashSessionUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CashRegisterCloseUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>[]
+            args: Prisma.CashSessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>[]
           }
           upsert: {
-            args: Prisma.CashRegisterCloseUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CashRegisterClosePayload>
+            args: Prisma.CashSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CashSessionPayload>
           }
           aggregate: {
-            args: Prisma.CashRegisterCloseAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCashRegisterClose>
+            args: Prisma.CashSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCashSession>
           }
           groupBy: {
-            args: Prisma.CashRegisterCloseGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CashRegisterCloseGroupByOutputType>[]
+            args: Prisma.CashSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CashSessionGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CashRegisterCloseCountArgs<ExtArgs>
-            result: $Utils.Optional<CashRegisterCloseCountAggregateOutputType> | number
+            args: Prisma.CashSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<CashSessionCountAggregateOutputType> | number
           }
         }
       }
@@ -3588,7 +3600,7 @@ export namespace Prisma {
     payrollEntry?: PayrollEntryOmit
     payrollRun?: PayrollRunOmit
     payrollRunItem?: PayrollRunItemOmit
-    cashRegisterClose?: CashRegisterCloseOmit
+    cashSession?: CashSessionOmit
     accountReconciliation?: AccountReconciliationOmit
     reconciliationItem?: ReconciliationItemOmit
   }
@@ -3682,7 +3694,8 @@ export namespace Prisma {
     payrollRunItems: number
     accountTransactions: number
     branches: number
-    cashRegisterCloses: number
+    cashSessionsOpened: number
+    cashSessionsClosed: number
     reconciledAccounts: number
   }
 
@@ -3698,7 +3711,8 @@ export namespace Prisma {
     payrollRunItems?: boolean | UserCountOutputTypeCountPayrollRunItemsArgs
     accountTransactions?: boolean | UserCountOutputTypeCountAccountTransactionsArgs
     branches?: boolean | UserCountOutputTypeCountBranchesArgs
-    cashRegisterCloses?: boolean | UserCountOutputTypeCountCashRegisterClosesArgs
+    cashSessionsOpened?: boolean | UserCountOutputTypeCountCashSessionsOpenedArgs
+    cashSessionsClosed?: boolean | UserCountOutputTypeCountCashSessionsClosedArgs
     reconciledAccounts?: boolean | UserCountOutputTypeCountReconciledAccountsArgs
   }
 
@@ -3793,8 +3807,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountCashRegisterClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashRegisterCloseWhereInput
+  export type UserCountOutputTypeCountCashSessionsOpenedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCashSessionsClosedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
   }
 
   /**
@@ -3811,13 +3832,11 @@ export namespace Prisma {
 
   export type BusinessLineCountOutputType = {
     products: number
-    sales: number
     expenses: number
   }
 
   export type BusinessLineCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | BusinessLineCountOutputTypeCountProductsArgs
-    sales?: boolean | BusinessLineCountOutputTypeCountSalesArgs
     expenses?: boolean | BusinessLineCountOutputTypeCountExpensesArgs
   }
 
@@ -3842,13 +3861,6 @@ export namespace Prisma {
   /**
    * BusinessLineCountOutputType without action
    */
-  export type BusinessLineCountOutputTypeCountSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SaleWhereInput
-  }
-
-  /**
-   * BusinessLineCountOutputType without action
-   */
   export type BusinessLineCountOutputTypeCountExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ExpenseWhereInput
   }
@@ -3864,7 +3876,7 @@ export namespace Prisma {
     expenses: number
     purchases: number
     users: number
-    cashCloses: number
+    cashSessions: number
     stockMoves: number
   }
 
@@ -3874,7 +3886,7 @@ export namespace Prisma {
     expenses?: boolean | BranchCountOutputTypeCountExpensesArgs
     purchases?: boolean | BranchCountOutputTypeCountPurchasesArgs
     users?: boolean | BranchCountOutputTypeCountUsersArgs
-    cashCloses?: boolean | BranchCountOutputTypeCountCashClosesArgs
+    cashSessions?: boolean | BranchCountOutputTypeCountCashSessionsArgs
     stockMoves?: boolean | BranchCountOutputTypeCountStockMovesArgs
   }
 
@@ -3927,8 +3939,8 @@ export namespace Prisma {
   /**
    * BranchCountOutputType without action
    */
-  export type BranchCountOutputTypeCountCashClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashRegisterCloseWhereInput
+  export type BranchCountOutputTypeCountCashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
   }
 
   /**
@@ -3950,7 +3962,8 @@ export namespace Prisma {
     expenses: number
     transactions: number
     transfersReceived: number
-    cashCloses: number
+    cashSessions: number
+    cashSessionDeposits: number
     reconciliations: number
   }
 
@@ -3961,7 +3974,8 @@ export namespace Prisma {
     expenses?: boolean | FinancialAccountCountOutputTypeCountExpensesArgs
     transactions?: boolean | FinancialAccountCountOutputTypeCountTransactionsArgs
     transfersReceived?: boolean | FinancialAccountCountOutputTypeCountTransfersReceivedArgs
-    cashCloses?: boolean | FinancialAccountCountOutputTypeCountCashClosesArgs
+    cashSessions?: boolean | FinancialAccountCountOutputTypeCountCashSessionsArgs
+    cashSessionDeposits?: boolean | FinancialAccountCountOutputTypeCountCashSessionDepositsArgs
     reconciliations?: boolean | FinancialAccountCountOutputTypeCountReconciliationsArgs
   }
 
@@ -4021,8 +4035,15 @@ export namespace Prisma {
   /**
    * FinancialAccountCountOutputType without action
    */
-  export type FinancialAccountCountOutputTypeCountCashClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashRegisterCloseWhereInput
+  export type FinancialAccountCountOutputTypeCountCashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
+  }
+
+  /**
+   * FinancialAccountCountOutputType without action
+   */
+  export type FinancialAccountCountOutputTypeCountCashSessionDepositsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
   }
 
   /**
@@ -4712,7 +4733,8 @@ export namespace Prisma {
     payrollRunItems?: boolean | User$payrollRunItemsArgs<ExtArgs>
     accountTransactions?: boolean | User$accountTransactionsArgs<ExtArgs>
     branches?: boolean | User$branchesArgs<ExtArgs>
-    cashRegisterCloses?: boolean | User$cashRegisterClosesArgs<ExtArgs>
+    cashSessionsOpened?: boolean | User$cashSessionsOpenedArgs<ExtArgs>
+    cashSessionsClosed?: boolean | User$cashSessionsClosedArgs<ExtArgs>
     reconciledAccounts?: boolean | User$reconciledAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -4775,7 +4797,8 @@ export namespace Prisma {
     payrollRunItems?: boolean | User$payrollRunItemsArgs<ExtArgs>
     accountTransactions?: boolean | User$accountTransactionsArgs<ExtArgs>
     branches?: boolean | User$branchesArgs<ExtArgs>
-    cashRegisterCloses?: boolean | User$cashRegisterClosesArgs<ExtArgs>
+    cashSessionsOpened?: boolean | User$cashSessionsOpenedArgs<ExtArgs>
+    cashSessionsClosed?: boolean | User$cashSessionsClosedArgs<ExtArgs>
     reconciledAccounts?: boolean | User$reconciledAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -4796,7 +4819,8 @@ export namespace Prisma {
       payrollRunItems: Prisma.$PayrollRunItemPayload<ExtArgs>[]
       accountTransactions: Prisma.$AccountTransactionPayload<ExtArgs>[]
       branches: Prisma.$UserBranchPayload<ExtArgs>[]
-      cashRegisterCloses: Prisma.$CashRegisterClosePayload<ExtArgs>[]
+      cashSessionsOpened: Prisma.$CashSessionPayload<ExtArgs>[]
+      cashSessionsClosed: Prisma.$CashSessionPayload<ExtArgs>[]
       reconciledAccounts: Prisma.$AccountReconciliationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5217,7 +5241,8 @@ export namespace Prisma {
     payrollRunItems<T extends User$payrollRunItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$payrollRunItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayrollRunItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accountTransactions<T extends User$accountTransactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branches<T extends User$branchesArgs<ExtArgs> = {}>(args?: Subset<T, User$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    cashRegisterCloses<T extends User$cashRegisterClosesArgs<ExtArgs> = {}>(args?: Subset<T, User$cashRegisterClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashSessionsOpened<T extends User$cashSessionsOpenedArgs<ExtArgs> = {}>(args?: Subset<T, User$cashSessionsOpenedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashSessionsClosed<T extends User$cashSessionsClosedArgs<ExtArgs> = {}>(args?: Subset<T, User$cashSessionsClosedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reconciledAccounts<T extends User$reconciledAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$reconciledAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountReconciliationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5912,27 +5937,51 @@ export namespace Prisma {
   }
 
   /**
-   * User.cashRegisterCloses
+   * User.cashSessionsOpened
    */
-  export type User$cashRegisterClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$cashSessionsOpenedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
-    where?: CashRegisterCloseWhereInput
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
-    cursor?: CashRegisterCloseWhereUniqueInput
+    include?: CashSessionInclude<ExtArgs> | null
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
+    cursor?: CashSessionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.cashSessionsClosed
+   */
+  export type User$cashSessionsClosedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CashSession
+     */
+    select?: CashSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CashSession
+     */
+    omit?: CashSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CashSessionInclude<ExtArgs> | null
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
+    cursor?: CashSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
@@ -9439,7 +9488,6 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     products?: boolean | BusinessLine$productsArgs<ExtArgs>
-    sales?: boolean | BusinessLine$salesArgs<ExtArgs>
     expenses?: boolean | BusinessLine$expensesArgs<ExtArgs>
     _count?: boolean | BusinessLineCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["businessLine"]>
@@ -9477,7 +9525,6 @@ export namespace Prisma {
   export type BusinessLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "color" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["businessLine"]>
   export type BusinessLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | BusinessLine$productsArgs<ExtArgs>
-    sales?: boolean | BusinessLine$salesArgs<ExtArgs>
     expenses?: boolean | BusinessLine$expensesArgs<ExtArgs>
     _count?: boolean | BusinessLineCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9488,7 +9535,6 @@ export namespace Prisma {
     name: "BusinessLine"
     objects: {
       products: Prisma.$ProductPayload<ExtArgs>[]
-      sales: Prisma.$SalePayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9894,7 +9940,6 @@ export namespace Prisma {
   export interface Prisma__BusinessLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     products<T extends BusinessLine$productsArgs<ExtArgs> = {}>(args?: Subset<T, BusinessLine$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sales<T extends BusinessLine$salesArgs<ExtArgs> = {}>(args?: Subset<T, BusinessLine$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends BusinessLine$expensesArgs<ExtArgs> = {}>(args?: Subset<T, BusinessLine$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10344,30 +10389,6 @@ export namespace Prisma {
   }
 
   /**
-   * BusinessLine.sales
-   */
-  export type BusinessLine$salesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sale
-     */
-    select?: SaleSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sale
-     */
-    omit?: SaleOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SaleInclude<ExtArgs> | null
-    where?: SaleWhereInput
-    orderBy?: SaleOrderByWithRelationInput | SaleOrderByWithRelationInput[]
-    cursor?: SaleWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SaleScalarFieldEnum | SaleScalarFieldEnum[]
-  }
-
-  /**
    * BusinessLine.expenses
    */
   export type BusinessLine$expensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10611,7 +10632,7 @@ export namespace Prisma {
     expenses?: boolean | Branch$expensesArgs<ExtArgs>
     purchases?: boolean | Branch$purchasesArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
-    cashCloses?: boolean | Branch$cashClosesArgs<ExtArgs>
+    cashSessions?: boolean | Branch$cashSessionsArgs<ExtArgs>
     stockMoves?: boolean | Branch$stockMovesArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
@@ -10659,7 +10680,7 @@ export namespace Prisma {
     expenses?: boolean | Branch$expensesArgs<ExtArgs>
     purchases?: boolean | Branch$purchasesArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
-    cashCloses?: boolean | Branch$cashClosesArgs<ExtArgs>
+    cashSessions?: boolean | Branch$cashSessionsArgs<ExtArgs>
     stockMoves?: boolean | Branch$stockMovesArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -10674,7 +10695,7 @@ export namespace Prisma {
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       purchases: Prisma.$PurchasePayload<ExtArgs>[]
       users: Prisma.$UserBranchPayload<ExtArgs>[]
-      cashCloses: Prisma.$CashRegisterClosePayload<ExtArgs>[]
+      cashSessions: Prisma.$CashSessionPayload<ExtArgs>[]
       stockMoves: Prisma.$StockMovementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -11086,7 +11107,7 @@ export namespace Prisma {
     expenses<T extends Branch$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     purchases<T extends Branch$purchasesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$purchasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Branch$usersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    cashCloses<T extends Branch$cashClosesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$cashClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashSessions<T extends Branch$cashSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$cashSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockMoves<T extends Branch$stockMovesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$stockMovesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11634,27 +11655,27 @@ export namespace Prisma {
   }
 
   /**
-   * Branch.cashCloses
+   * Branch.cashSessions
    */
-  export type Branch$cashClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Branch$cashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
-    where?: CashRegisterCloseWhereInput
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
-    cursor?: CashRegisterCloseWhereUniqueInput
+    include?: CashSessionInclude<ExtArgs> | null
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
+    cursor?: CashSessionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
@@ -13006,7 +13027,8 @@ export namespace Prisma {
     expenses?: boolean | FinancialAccount$expensesArgs<ExtArgs>
     transactions?: boolean | FinancialAccount$transactionsArgs<ExtArgs>
     transfersReceived?: boolean | FinancialAccount$transfersReceivedArgs<ExtArgs>
-    cashCloses?: boolean | FinancialAccount$cashClosesArgs<ExtArgs>
+    cashSessions?: boolean | FinancialAccount$cashSessionsArgs<ExtArgs>
+    cashSessionDeposits?: boolean | FinancialAccount$cashSessionDepositsArgs<ExtArgs>
     reconciliations?: boolean | FinancialAccount$reconciliationsArgs<ExtArgs>
     _count?: boolean | FinancialAccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["financialAccount"]>
@@ -13064,7 +13086,8 @@ export namespace Prisma {
     expenses?: boolean | FinancialAccount$expensesArgs<ExtArgs>
     transactions?: boolean | FinancialAccount$transactionsArgs<ExtArgs>
     transfersReceived?: boolean | FinancialAccount$transfersReceivedArgs<ExtArgs>
-    cashCloses?: boolean | FinancialAccount$cashClosesArgs<ExtArgs>
+    cashSessions?: boolean | FinancialAccount$cashSessionsArgs<ExtArgs>
+    cashSessionDeposits?: boolean | FinancialAccount$cashSessionDepositsArgs<ExtArgs>
     reconciliations?: boolean | FinancialAccount$reconciliationsArgs<ExtArgs>
     _count?: boolean | FinancialAccountCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -13085,7 +13108,8 @@ export namespace Prisma {
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       transactions: Prisma.$AccountTransactionPayload<ExtArgs>[]
       transfersReceived: Prisma.$AccountTransactionPayload<ExtArgs>[]
-      cashCloses: Prisma.$CashRegisterClosePayload<ExtArgs>[]
+      cashSessions: Prisma.$CashSessionPayload<ExtArgs>[]
+      cashSessionDeposits: Prisma.$CashSessionPayload<ExtArgs>[]
       reconciliations: Prisma.$AccountReconciliationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -13501,7 +13525,8 @@ export namespace Prisma {
     expenses<T extends FinancialAccount$expensesArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends FinancialAccount$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfersReceived<T extends FinancialAccount$transfersReceivedArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$transfersReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    cashCloses<T extends FinancialAccount$cashClosesArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$cashClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashSessions<T extends FinancialAccount$cashSessionsArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$cashSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashSessionDeposits<T extends FinancialAccount$cashSessionDepositsArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$cashSessionDepositsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reconciliations<T extends FinancialAccount$reconciliationsArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccount$reconciliationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountReconciliationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -14102,27 +14127,51 @@ export namespace Prisma {
   }
 
   /**
-   * FinancialAccount.cashCloses
+   * FinancialAccount.cashSessions
    */
-  export type FinancialAccount$cashClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FinancialAccount$cashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
-    where?: CashRegisterCloseWhereInput
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
-    cursor?: CashRegisterCloseWhereUniqueInput
+    include?: CashSessionInclude<ExtArgs> | null
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
+    cursor?: CashSessionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialAccount.cashSessionDeposits
+   */
+  export type FinancialAccount$cashSessionDepositsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CashSession
+     */
+    select?: CashSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CashSession
+     */
+    omit?: CashSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CashSessionInclude<ExtArgs> | null
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
+    cursor?: CashSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
@@ -19167,7 +19216,6 @@ export namespace Prisma {
     soldById: string | null
     customerId: string | null
     branchId: string | null
-    businessLineId: string | null
     currency: string | null
     subtotal: Decimal | null
     discountTotal: Decimal | null
@@ -19186,7 +19234,6 @@ export namespace Prisma {
     soldById: string | null
     customerId: string | null
     branchId: string | null
-    businessLineId: string | null
     currency: string | null
     subtotal: Decimal | null
     discountTotal: Decimal | null
@@ -19205,7 +19252,6 @@ export namespace Prisma {
     soldById: number
     customerId: number
     branchId: number
-    businessLineId: number
     currency: number
     subtotal: number
     discountTotal: number
@@ -19242,7 +19288,6 @@ export namespace Prisma {
     soldById?: true
     customerId?: true
     branchId?: true
-    businessLineId?: true
     currency?: true
     subtotal?: true
     discountTotal?: true
@@ -19261,7 +19306,6 @@ export namespace Prisma {
     soldById?: true
     customerId?: true
     branchId?: true
-    businessLineId?: true
     currency?: true
     subtotal?: true
     discountTotal?: true
@@ -19280,7 +19324,6 @@ export namespace Prisma {
     soldById?: true
     customerId?: true
     branchId?: true
-    businessLineId?: true
     currency?: true
     subtotal?: true
     discountTotal?: true
@@ -19386,7 +19429,6 @@ export namespace Prisma {
     soldById: string | null
     customerId: string
     branchId: string | null
-    businessLineId: string | null
     currency: string
     subtotal: Decimal
     discountTotal: Decimal
@@ -19424,7 +19466,6 @@ export namespace Prisma {
     soldById?: boolean
     customerId?: boolean
     branchId?: boolean
-    businessLineId?: boolean
     currency?: boolean
     subtotal?: boolean
     discountTotal?: boolean
@@ -19438,7 +19479,6 @@ export namespace Prisma {
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
     items?: boolean | Sale$itemsArgs<ExtArgs>
     payments?: boolean | Sale$paymentsArgs<ExtArgs>
     receivable?: boolean | Sale$receivableArgs<ExtArgs>
@@ -19452,7 +19492,6 @@ export namespace Prisma {
     soldById?: boolean
     customerId?: boolean
     branchId?: boolean
-    businessLineId?: boolean
     currency?: boolean
     subtotal?: boolean
     discountTotal?: boolean
@@ -19466,7 +19505,6 @@ export namespace Prisma {
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
   export type SaleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19476,7 +19514,6 @@ export namespace Prisma {
     soldById?: boolean
     customerId?: boolean
     branchId?: boolean
-    businessLineId?: boolean
     currency?: boolean
     subtotal?: boolean
     discountTotal?: boolean
@@ -19490,7 +19527,6 @@ export namespace Prisma {
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
   export type SaleSelectScalar = {
@@ -19500,7 +19536,6 @@ export namespace Prisma {
     soldById?: boolean
     customerId?: boolean
     branchId?: boolean
-    businessLineId?: boolean
     currency?: boolean
     subtotal?: boolean
     discountTotal?: boolean
@@ -19512,13 +19547,12 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "soldById" | "customerId" | "branchId" | "businessLineId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "status" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
+  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "soldById" | "customerId" | "branchId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "status" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
   export type SaleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
     items?: boolean | Sale$itemsArgs<ExtArgs>
     payments?: boolean | Sale$paymentsArgs<ExtArgs>
     receivable?: boolean | Sale$receivableArgs<ExtArgs>
@@ -19529,14 +19563,12 @@ export namespace Prisma {
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
   }
   export type SaleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     branch?: boolean | Sale$branchArgs<ExtArgs>
-    businessLine?: boolean | Sale$businessLineArgs<ExtArgs>
   }
 
   export type $SalePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19546,7 +19578,6 @@ export namespace Prisma {
       soldBy: Prisma.$UserPayload<ExtArgs> | null
       customer: Prisma.$CustomerPayload<ExtArgs>
       branch: Prisma.$BranchPayload<ExtArgs> | null
-      businessLine: Prisma.$BusinessLinePayload<ExtArgs> | null
       items: Prisma.$SaleItemPayload<ExtArgs>[]
       payments: Prisma.$SalePaymentPayload<ExtArgs>[]
       receivable: Prisma.$AccountsReceivablePayload<ExtArgs> | null
@@ -19558,7 +19589,6 @@ export namespace Prisma {
       soldById: string | null
       customerId: string
       branchId: string | null
-      businessLineId: string | null
       currency: string
       subtotal: Prisma.Decimal
       discountTotal: Prisma.Decimal
@@ -19966,7 +19996,6 @@ export namespace Prisma {
     soldBy<T extends Sale$soldByArgs<ExtArgs> = {}>(args?: Subset<T, Sale$soldByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     branch<T extends Sale$branchArgs<ExtArgs> = {}>(args?: Subset<T, Sale$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    businessLine<T extends Sale$businessLineArgs<ExtArgs> = {}>(args?: Subset<T, Sale$businessLineArgs<ExtArgs>>): Prisma__BusinessLineClient<$Result.GetResult<Prisma.$BusinessLinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends Sale$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Sale$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends Sale$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Sale$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivable<T extends Sale$receivableArgs<ExtArgs> = {}>(args?: Subset<T, Sale$receivableArgs<ExtArgs>>): Prisma__AccountsReceivableClient<$Result.GetResult<Prisma.$AccountsReceivablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -20005,7 +20034,6 @@ export namespace Prisma {
     readonly soldById: FieldRef<"Sale", 'String'>
     readonly customerId: FieldRef<"Sale", 'String'>
     readonly branchId: FieldRef<"Sale", 'String'>
-    readonly businessLineId: FieldRef<"Sale", 'String'>
     readonly currency: FieldRef<"Sale", 'String'>
     readonly subtotal: FieldRef<"Sale", 'Decimal'>
     readonly discountTotal: FieldRef<"Sale", 'Decimal'>
@@ -20446,25 +20474,6 @@ export namespace Prisma {
      */
     include?: BranchInclude<ExtArgs> | null
     where?: BranchWhereInput
-  }
-
-  /**
-   * Sale.businessLine
-   */
-  export type Sale$businessLineArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BusinessLine
-     */
-    select?: BusinessLineSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BusinessLine
-     */
-    omit?: BusinessLineOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BusinessLineInclude<ExtArgs> | null
-    where?: BusinessLineWhereInput
   }
 
   /**
@@ -37467,478 +37476,600 @@ export namespace Prisma {
 
 
   /**
-   * Model CashRegisterClose
+   * Model CashSession
    */
 
-  export type AggregateCashRegisterClose = {
-    _count: CashRegisterCloseCountAggregateOutputType | null
-    _avg: CashRegisterCloseAvgAggregateOutputType | null
-    _sum: CashRegisterCloseSumAggregateOutputType | null
-    _min: CashRegisterCloseMinAggregateOutputType | null
-    _max: CashRegisterCloseMaxAggregateOutputType | null
+  export type AggregateCashSession = {
+    _count: CashSessionCountAggregateOutputType | null
+    _avg: CashSessionAvgAggregateOutputType | null
+    _sum: CashSessionSumAggregateOutputType | null
+    _min: CashSessionMinAggregateOutputType | null
+    _max: CashSessionMaxAggregateOutputType | null
   }
 
-  export type CashRegisterCloseAvgAggregateOutputType = {
+  export type CashSessionAvgAggregateOutputType = {
+    openingBalance: Decimal | null
     expectedBalance: Decimal | null
     actualBalance: Decimal | null
     difference: Decimal | null
+    retainedAmount: Decimal | null
+    depositAmount: Decimal | null
   }
 
-  export type CashRegisterCloseSumAggregateOutputType = {
+  export type CashSessionSumAggregateOutputType = {
+    openingBalance: Decimal | null
     expectedBalance: Decimal | null
     actualBalance: Decimal | null
     difference: Decimal | null
+    retainedAmount: Decimal | null
+    depositAmount: Decimal | null
   }
 
-  export type CashRegisterCloseMinAggregateOutputType = {
+  export type CashSessionMinAggregateOutputType = {
     id: string | null
     accountId: string | null
     branchId: string | null
-    closeDate: Date | null
+    status: $Enums.CashSessionStatus | null
+    openedAt: Date | null
+    openedById: string | null
+    openingBalance: Decimal | null
+    openingNotes: string | null
+    closedAt: Date | null
+    closedById: string | null
     expectedBalance: Decimal | null
     actualBalance: Decimal | null
     difference: Decimal | null
-    notes: string | null
-    closedById: string | null
+    retainedAmount: Decimal | null
+    depositAmount: Decimal | null
+    depositAccountId: string | null
+    closingNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type CashRegisterCloseMaxAggregateOutputType = {
+  export type CashSessionMaxAggregateOutputType = {
     id: string | null
     accountId: string | null
     branchId: string | null
-    closeDate: Date | null
+    status: $Enums.CashSessionStatus | null
+    openedAt: Date | null
+    openedById: string | null
+    openingBalance: Decimal | null
+    openingNotes: string | null
+    closedAt: Date | null
+    closedById: string | null
     expectedBalance: Decimal | null
     actualBalance: Decimal | null
     difference: Decimal | null
-    notes: string | null
-    closedById: string | null
+    retainedAmount: Decimal | null
+    depositAmount: Decimal | null
+    depositAccountId: string | null
+    closingNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type CashRegisterCloseCountAggregateOutputType = {
+  export type CashSessionCountAggregateOutputType = {
     id: number
     accountId: number
     branchId: number
-    closeDate: number
+    status: number
+    openedAt: number
+    openedById: number
+    openingBalance: number
+    openingNotes: number
+    closedAt: number
+    closedById: number
     expectedBalance: number
     actualBalance: number
     difference: number
-    notes: number
-    closedById: number
+    retainedAmount: number
+    depositAmount: number
+    depositAccountId: number
+    closingNotes: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
-  export type CashRegisterCloseAvgAggregateInputType = {
+  export type CashSessionAvgAggregateInputType = {
+    openingBalance?: true
     expectedBalance?: true
     actualBalance?: true
     difference?: true
+    retainedAmount?: true
+    depositAmount?: true
   }
 
-  export type CashRegisterCloseSumAggregateInputType = {
+  export type CashSessionSumAggregateInputType = {
+    openingBalance?: true
     expectedBalance?: true
     actualBalance?: true
     difference?: true
+    retainedAmount?: true
+    depositAmount?: true
   }
 
-  export type CashRegisterCloseMinAggregateInputType = {
+  export type CashSessionMinAggregateInputType = {
     id?: true
     accountId?: true
     branchId?: true
-    closeDate?: true
+    status?: true
+    openedAt?: true
+    openedById?: true
+    openingBalance?: true
+    openingNotes?: true
+    closedAt?: true
+    closedById?: true
     expectedBalance?: true
     actualBalance?: true
     difference?: true
-    notes?: true
-    closedById?: true
+    retainedAmount?: true
+    depositAmount?: true
+    depositAccountId?: true
+    closingNotes?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type CashRegisterCloseMaxAggregateInputType = {
+  export type CashSessionMaxAggregateInputType = {
     id?: true
     accountId?: true
     branchId?: true
-    closeDate?: true
+    status?: true
+    openedAt?: true
+    openedById?: true
+    openingBalance?: true
+    openingNotes?: true
+    closedAt?: true
+    closedById?: true
     expectedBalance?: true
     actualBalance?: true
     difference?: true
-    notes?: true
-    closedById?: true
+    retainedAmount?: true
+    depositAmount?: true
+    depositAccountId?: true
+    closingNotes?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type CashRegisterCloseCountAggregateInputType = {
+  export type CashSessionCountAggregateInputType = {
     id?: true
     accountId?: true
     branchId?: true
-    closeDate?: true
+    status?: true
+    openedAt?: true
+    openedById?: true
+    openingBalance?: true
+    openingNotes?: true
+    closedAt?: true
+    closedById?: true
     expectedBalance?: true
     actualBalance?: true
     difference?: true
-    notes?: true
-    closedById?: true
+    retainedAmount?: true
+    depositAmount?: true
+    depositAccountId?: true
+    closingNotes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
   }
 
-  export type CashRegisterCloseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CashRegisterClose to aggregate.
+     * Filter which CashSession to aggregate.
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CashRegisterCloses to fetch.
+     * Determine the order of CashSessions to fetch.
      */
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CashRegisterCloseWhereUniqueInput
+    cursor?: CashSessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CashRegisterCloses from the position of the cursor.
+     * Take `±n` CashSessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CashRegisterCloses.
+     * Skip the first `n` CashSessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned CashRegisterCloses
+     * Count returned CashSessions
     **/
-    _count?: true | CashRegisterCloseCountAggregateInputType
+    _count?: true | CashSessionCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: CashRegisterCloseAvgAggregateInputType
+    _avg?: CashSessionAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: CashRegisterCloseSumAggregateInputType
+    _sum?: CashSessionSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CashRegisterCloseMinAggregateInputType
+    _min?: CashSessionMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CashRegisterCloseMaxAggregateInputType
+    _max?: CashSessionMaxAggregateInputType
   }
 
-  export type GetCashRegisterCloseAggregateType<T extends CashRegisterCloseAggregateArgs> = {
-        [P in keyof T & keyof AggregateCashRegisterClose]: P extends '_count' | 'count'
+  export type GetCashSessionAggregateType<T extends CashSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCashSession]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCashRegisterClose[P]>
-      : GetScalarType<T[P], AggregateCashRegisterClose[P]>
+        : GetScalarType<T[P], AggregateCashSession[P]>
+      : GetScalarType<T[P], AggregateCashSession[P]>
   }
 
 
 
 
-  export type CashRegisterCloseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashRegisterCloseWhereInput
-    orderBy?: CashRegisterCloseOrderByWithAggregationInput | CashRegisterCloseOrderByWithAggregationInput[]
-    by: CashRegisterCloseScalarFieldEnum[] | CashRegisterCloseScalarFieldEnum
-    having?: CashRegisterCloseScalarWhereWithAggregatesInput
+  export type CashSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CashSessionWhereInput
+    orderBy?: CashSessionOrderByWithAggregationInput | CashSessionOrderByWithAggregationInput[]
+    by: CashSessionScalarFieldEnum[] | CashSessionScalarFieldEnum
+    having?: CashSessionScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CashRegisterCloseCountAggregateInputType | true
-    _avg?: CashRegisterCloseAvgAggregateInputType
-    _sum?: CashRegisterCloseSumAggregateInputType
-    _min?: CashRegisterCloseMinAggregateInputType
-    _max?: CashRegisterCloseMaxAggregateInputType
+    _count?: CashSessionCountAggregateInputType | true
+    _avg?: CashSessionAvgAggregateInputType
+    _sum?: CashSessionSumAggregateInputType
+    _min?: CashSessionMinAggregateInputType
+    _max?: CashSessionMaxAggregateInputType
   }
 
-  export type CashRegisterCloseGroupByOutputType = {
+  export type CashSessionGroupByOutputType = {
     id: string
     accountId: string
     branchId: string | null
-    closeDate: Date
-    expectedBalance: Decimal
-    actualBalance: Decimal
-    difference: Decimal
-    notes: string | null
-    closedById: string
+    status: $Enums.CashSessionStatus
+    openedAt: Date
+    openedById: string
+    openingBalance: Decimal
+    openingNotes: string | null
+    closedAt: Date | null
+    closedById: string | null
+    expectedBalance: Decimal | null
+    actualBalance: Decimal | null
+    difference: Decimal | null
+    retainedAmount: Decimal | null
+    depositAmount: Decimal | null
+    depositAccountId: string | null
+    closingNotes: string | null
     createdAt: Date
     updatedAt: Date
-    _count: CashRegisterCloseCountAggregateOutputType | null
-    _avg: CashRegisterCloseAvgAggregateOutputType | null
-    _sum: CashRegisterCloseSumAggregateOutputType | null
-    _min: CashRegisterCloseMinAggregateOutputType | null
-    _max: CashRegisterCloseMaxAggregateOutputType | null
+    _count: CashSessionCountAggregateOutputType | null
+    _avg: CashSessionAvgAggregateOutputType | null
+    _sum: CashSessionSumAggregateOutputType | null
+    _min: CashSessionMinAggregateOutputType | null
+    _max: CashSessionMaxAggregateOutputType | null
   }
 
-  type GetCashRegisterCloseGroupByPayload<T extends CashRegisterCloseGroupByArgs> = Prisma.PrismaPromise<
+  type GetCashSessionGroupByPayload<T extends CashSessionGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CashRegisterCloseGroupByOutputType, T['by']> &
+      PickEnumerable<CashSessionGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CashRegisterCloseGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof CashSessionGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CashRegisterCloseGroupByOutputType[P]>
-            : GetScalarType<T[P], CashRegisterCloseGroupByOutputType[P]>
+              : GetScalarType<T[P], CashSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], CashSessionGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CashRegisterCloseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CashSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     accountId?: boolean
     branchId?: boolean
-    closeDate?: boolean
+    status?: boolean
+    openedAt?: boolean
+    openedById?: boolean
+    openingBalance?: boolean
+    openingNotes?: boolean
+    closedAt?: boolean
+    closedById?: boolean
     expectedBalance?: boolean
     actualBalance?: boolean
     difference?: boolean
-    notes?: boolean
-    closedById?: boolean
+    retainedAmount?: boolean
+    depositAmount?: boolean
+    depositAccountId?: boolean
+    closingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["cashRegisterClose"]>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
+  }, ExtArgs["result"]["cashSession"]>
 
-  export type CashRegisterCloseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CashSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     accountId?: boolean
     branchId?: boolean
-    closeDate?: boolean
+    status?: boolean
+    openedAt?: boolean
+    openedById?: boolean
+    openingBalance?: boolean
+    openingNotes?: boolean
+    closedAt?: boolean
+    closedById?: boolean
     expectedBalance?: boolean
     actualBalance?: boolean
     difference?: boolean
-    notes?: boolean
-    closedById?: boolean
+    retainedAmount?: boolean
+    depositAmount?: boolean
+    depositAccountId?: boolean
+    closingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["cashRegisterClose"]>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
+  }, ExtArgs["result"]["cashSession"]>
 
-  export type CashRegisterCloseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CashSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     accountId?: boolean
     branchId?: boolean
-    closeDate?: boolean
+    status?: boolean
+    openedAt?: boolean
+    openedById?: boolean
+    openingBalance?: boolean
+    openingNotes?: boolean
+    closedAt?: boolean
+    closedById?: boolean
     expectedBalance?: boolean
     actualBalance?: boolean
     difference?: boolean
-    notes?: boolean
-    closedById?: boolean
+    retainedAmount?: boolean
+    depositAmount?: boolean
+    depositAccountId?: boolean
+    closingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["cashRegisterClose"]>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
+  }, ExtArgs["result"]["cashSession"]>
 
-  export type CashRegisterCloseSelectScalar = {
+  export type CashSessionSelectScalar = {
     id?: boolean
     accountId?: boolean
     branchId?: boolean
-    closeDate?: boolean
+    status?: boolean
+    openedAt?: boolean
+    openedById?: boolean
+    openingBalance?: boolean
+    openingNotes?: boolean
+    closedAt?: boolean
+    closedById?: boolean
     expectedBalance?: boolean
     actualBalance?: boolean
     difference?: boolean
-    notes?: boolean
-    closedById?: boolean
+    retainedAmount?: boolean
+    depositAmount?: boolean
+    depositAccountId?: boolean
+    closingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CashRegisterCloseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accountId" | "branchId" | "closeDate" | "expectedBalance" | "actualBalance" | "difference" | "notes" | "closedById" | "createdAt" | "updatedAt", ExtArgs["result"]["cashRegisterClose"]>
-  export type CashRegisterCloseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accountId" | "branchId" | "status" | "openedAt" | "openedById" | "openingBalance" | "openingNotes" | "closedAt" | "closedById" | "expectedBalance" | "actualBalance" | "difference" | "retainedAmount" | "depositAmount" | "depositAccountId" | "closingNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["cashSession"]>
+  export type CashSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
   }
-  export type CashRegisterCloseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
   }
-  export type CashRegisterCloseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | FinancialAccountDefaultArgs<ExtArgs>
-    branch?: boolean | CashRegisterClose$branchArgs<ExtArgs>
-    closedBy?: boolean | UserDefaultArgs<ExtArgs>
+    branch?: boolean | CashSession$branchArgs<ExtArgs>
+    openedBy?: boolean | UserDefaultArgs<ExtArgs>
+    closedBy?: boolean | CashSession$closedByArgs<ExtArgs>
+    depositAccount?: boolean | CashSession$depositAccountArgs<ExtArgs>
   }
 
-  export type $CashRegisterClosePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CashRegisterClose"
+  export type $CashSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CashSession"
     objects: {
       account: Prisma.$FinancialAccountPayload<ExtArgs>
       branch: Prisma.$BranchPayload<ExtArgs> | null
-      closedBy: Prisma.$UserPayload<ExtArgs>
+      openedBy: Prisma.$UserPayload<ExtArgs>
+      closedBy: Prisma.$UserPayload<ExtArgs> | null
+      depositAccount: Prisma.$FinancialAccountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       accountId: string
       branchId: string | null
-      closeDate: Date
-      expectedBalance: Prisma.Decimal
-      actualBalance: Prisma.Decimal
-      difference: Prisma.Decimal
-      notes: string | null
-      closedById: string
+      status: $Enums.CashSessionStatus
+      openedAt: Date
+      openedById: string
+      openingBalance: Prisma.Decimal
+      openingNotes: string | null
+      closedAt: Date | null
+      closedById: string | null
+      expectedBalance: Prisma.Decimal | null
+      actualBalance: Prisma.Decimal | null
+      difference: Prisma.Decimal | null
+      retainedAmount: Prisma.Decimal | null
+      depositAmount: Prisma.Decimal | null
+      depositAccountId: string | null
+      closingNotes: string | null
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["cashRegisterClose"]>
+    }, ExtArgs["result"]["cashSession"]>
     composites: {}
   }
 
-  type CashRegisterCloseGetPayload<S extends boolean | null | undefined | CashRegisterCloseDefaultArgs> = $Result.GetResult<Prisma.$CashRegisterClosePayload, S>
+  type CashSessionGetPayload<S extends boolean | null | undefined | CashSessionDefaultArgs> = $Result.GetResult<Prisma.$CashSessionPayload, S>
 
-  type CashRegisterCloseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CashRegisterCloseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CashRegisterCloseCountAggregateInputType | true
+  type CashSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CashSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CashSessionCountAggregateInputType | true
     }
 
-  export interface CashRegisterCloseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CashRegisterClose'], meta: { name: 'CashRegisterClose' } }
+  export interface CashSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CashSession'], meta: { name: 'CashSession' } }
     /**
-     * Find zero or one CashRegisterClose that matches the filter.
-     * @param {CashRegisterCloseFindUniqueArgs} args - Arguments to find a CashRegisterClose
+     * Find zero or one CashSession that matches the filter.
+     * @param {CashSessionFindUniqueArgs} args - Arguments to find a CashSession
      * @example
-     * // Get one CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.findUnique({
+     * // Get one CashSession
+     * const cashSession = await prisma.cashSession.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CashRegisterCloseFindUniqueArgs>(args: SelectSubset<T, CashRegisterCloseFindUniqueArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends CashSessionFindUniqueArgs>(args: SelectSubset<T, CashSessionFindUniqueArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one CashRegisterClose that matches the filter or throw an error with `error.code='P2025'`
+     * Find one CashSession that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {CashRegisterCloseFindUniqueOrThrowArgs} args - Arguments to find a CashRegisterClose
+     * @param {CashSessionFindUniqueOrThrowArgs} args - Arguments to find a CashSession
      * @example
-     * // Get one CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.findUniqueOrThrow({
+     * // Get one CashSession
+     * const cashSession = await prisma.cashSession.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CashRegisterCloseFindUniqueOrThrowArgs>(args: SelectSubset<T, CashRegisterCloseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends CashSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, CashSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CashRegisterClose that matches the filter.
+     * Find the first CashSession that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseFindFirstArgs} args - Arguments to find a CashRegisterClose
+     * @param {CashSessionFindFirstArgs} args - Arguments to find a CashSession
      * @example
-     * // Get one CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.findFirst({
+     * // Get one CashSession
+     * const cashSession = await prisma.cashSession.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CashRegisterCloseFindFirstArgs>(args?: SelectSubset<T, CashRegisterCloseFindFirstArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends CashSessionFindFirstArgs>(args?: SelectSubset<T, CashSessionFindFirstArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CashRegisterClose that matches the filter or
+     * Find the first CashSession that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseFindFirstOrThrowArgs} args - Arguments to find a CashRegisterClose
+     * @param {CashSessionFindFirstOrThrowArgs} args - Arguments to find a CashSession
      * @example
-     * // Get one CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.findFirstOrThrow({
+     * // Get one CashSession
+     * const cashSession = await prisma.cashSession.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CashRegisterCloseFindFirstOrThrowArgs>(args?: SelectSubset<T, CashRegisterCloseFindFirstOrThrowArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends CashSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, CashSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more CashRegisterCloses that matches the filter.
+     * Find zero or more CashSessions that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {CashSessionFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all CashRegisterCloses
-     * const cashRegisterCloses = await prisma.cashRegisterClose.findMany()
+     * // Get all CashSessions
+     * const cashSessions = await prisma.cashSession.findMany()
      * 
-     * // Get first 10 CashRegisterCloses
-     * const cashRegisterCloses = await prisma.cashRegisterClose.findMany({ take: 10 })
+     * // Get first 10 CashSessions
+     * const cashSessions = await prisma.cashSession.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const cashRegisterCloseWithIdOnly = await prisma.cashRegisterClose.findMany({ select: { id: true } })
+     * const cashSessionWithIdOnly = await prisma.cashSession.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends CashRegisterCloseFindManyArgs>(args?: SelectSubset<T, CashRegisterCloseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends CashSessionFindManyArgs>(args?: SelectSubset<T, CashSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a CashRegisterClose.
-     * @param {CashRegisterCloseCreateArgs} args - Arguments to create a CashRegisterClose.
+     * Create a CashSession.
+     * @param {CashSessionCreateArgs} args - Arguments to create a CashSession.
      * @example
-     * // Create one CashRegisterClose
-     * const CashRegisterClose = await prisma.cashRegisterClose.create({
+     * // Create one CashSession
+     * const CashSession = await prisma.cashSession.create({
      *   data: {
-     *     // ... data to create a CashRegisterClose
+     *     // ... data to create a CashSession
      *   }
      * })
      * 
      */
-    create<T extends CashRegisterCloseCreateArgs>(args: SelectSubset<T, CashRegisterCloseCreateArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends CashSessionCreateArgs>(args: SelectSubset<T, CashSessionCreateArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many CashRegisterCloses.
-     * @param {CashRegisterCloseCreateManyArgs} args - Arguments to create many CashRegisterCloses.
+     * Create many CashSessions.
+     * @param {CashSessionCreateManyArgs} args - Arguments to create many CashSessions.
      * @example
-     * // Create many CashRegisterCloses
-     * const cashRegisterClose = await prisma.cashRegisterClose.createMany({
+     * // Create many CashSessions
+     * const cashSession = await prisma.cashSession.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CashRegisterCloseCreateManyArgs>(args?: SelectSubset<T, CashRegisterCloseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends CashSessionCreateManyArgs>(args?: SelectSubset<T, CashSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many CashRegisterCloses and returns the data saved in the database.
-     * @param {CashRegisterCloseCreateManyAndReturnArgs} args - Arguments to create many CashRegisterCloses.
+     * Create many CashSessions and returns the data saved in the database.
+     * @param {CashSessionCreateManyAndReturnArgs} args - Arguments to create many CashSessions.
      * @example
-     * // Create many CashRegisterCloses
-     * const cashRegisterClose = await prisma.cashRegisterClose.createManyAndReturn({
+     * // Create many CashSessions
+     * const cashSession = await prisma.cashSession.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many CashRegisterCloses and only return the `id`
-     * const cashRegisterCloseWithIdOnly = await prisma.cashRegisterClose.createManyAndReturn({
+     * // Create many CashSessions and only return the `id`
+     * const cashSessionWithIdOnly = await prisma.cashSession.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -37948,28 +38079,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends CashRegisterCloseCreateManyAndReturnArgs>(args?: SelectSubset<T, CashRegisterCloseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends CashSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, CashSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a CashRegisterClose.
-     * @param {CashRegisterCloseDeleteArgs} args - Arguments to delete one CashRegisterClose.
+     * Delete a CashSession.
+     * @param {CashSessionDeleteArgs} args - Arguments to delete one CashSession.
      * @example
-     * // Delete one CashRegisterClose
-     * const CashRegisterClose = await prisma.cashRegisterClose.delete({
+     * // Delete one CashSession
+     * const CashSession = await prisma.cashSession.delete({
      *   where: {
-     *     // ... filter to delete one CashRegisterClose
+     *     // ... filter to delete one CashSession
      *   }
      * })
      * 
      */
-    delete<T extends CashRegisterCloseDeleteArgs>(args: SelectSubset<T, CashRegisterCloseDeleteArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends CashSessionDeleteArgs>(args: SelectSubset<T, CashSessionDeleteArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one CashRegisterClose.
-     * @param {CashRegisterCloseUpdateArgs} args - Arguments to update one CashRegisterClose.
+     * Update one CashSession.
+     * @param {CashSessionUpdateArgs} args - Arguments to update one CashSession.
      * @example
-     * // Update one CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.update({
+     * // Update one CashSession
+     * const cashSession = await prisma.cashSession.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -37979,30 +38110,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CashRegisterCloseUpdateArgs>(args: SelectSubset<T, CashRegisterCloseUpdateArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends CashSessionUpdateArgs>(args: SelectSubset<T, CashSessionUpdateArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more CashRegisterCloses.
-     * @param {CashRegisterCloseDeleteManyArgs} args - Arguments to filter CashRegisterCloses to delete.
+     * Delete zero or more CashSessions.
+     * @param {CashSessionDeleteManyArgs} args - Arguments to filter CashSessions to delete.
      * @example
-     * // Delete a few CashRegisterCloses
-     * const { count } = await prisma.cashRegisterClose.deleteMany({
+     * // Delete a few CashSessions
+     * const { count } = await prisma.cashSession.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CashRegisterCloseDeleteManyArgs>(args?: SelectSubset<T, CashRegisterCloseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends CashSessionDeleteManyArgs>(args?: SelectSubset<T, CashSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CashRegisterCloses.
+     * Update zero or more CashSessions.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {CashSessionUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many CashRegisterCloses
-     * const cashRegisterClose = await prisma.cashRegisterClose.updateMany({
+     * // Update many CashSessions
+     * const cashSession = await prisma.cashSession.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -38012,14 +38143,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CashRegisterCloseUpdateManyArgs>(args: SelectSubset<T, CashRegisterCloseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends CashSessionUpdateManyArgs>(args: SelectSubset<T, CashSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CashRegisterCloses and returns the data updated in the database.
-     * @param {CashRegisterCloseUpdateManyAndReturnArgs} args - Arguments to update many CashRegisterCloses.
+     * Update zero or more CashSessions and returns the data updated in the database.
+     * @param {CashSessionUpdateManyAndReturnArgs} args - Arguments to update many CashSessions.
      * @example
-     * // Update many CashRegisterCloses
-     * const cashRegisterClose = await prisma.cashRegisterClose.updateManyAndReturn({
+     * // Update many CashSessions
+     * const cashSession = await prisma.cashSession.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -38028,8 +38159,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more CashRegisterCloses and only return the `id`
-     * const cashRegisterCloseWithIdOnly = await prisma.cashRegisterClose.updateManyAndReturn({
+     * // Update zero or more CashSessions and only return the `id`
+     * const cashSessionWithIdOnly = await prisma.cashSession.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -38042,56 +38173,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends CashRegisterCloseUpdateManyAndReturnArgs>(args: SelectSubset<T, CashRegisterCloseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends CashSessionUpdateManyAndReturnArgs>(args: SelectSubset<T, CashSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one CashRegisterClose.
-     * @param {CashRegisterCloseUpsertArgs} args - Arguments to update or create a CashRegisterClose.
+     * Create or update one CashSession.
+     * @param {CashSessionUpsertArgs} args - Arguments to update or create a CashSession.
      * @example
-     * // Update or create a CashRegisterClose
-     * const cashRegisterClose = await prisma.cashRegisterClose.upsert({
+     * // Update or create a CashSession
+     * const cashSession = await prisma.cashSession.upsert({
      *   create: {
-     *     // ... data to create a CashRegisterClose
+     *     // ... data to create a CashSession
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the CashRegisterClose we want to update
+     *     // ... the filter for the CashSession we want to update
      *   }
      * })
      */
-    upsert<T extends CashRegisterCloseUpsertArgs>(args: SelectSubset<T, CashRegisterCloseUpsertArgs<ExtArgs>>): Prisma__CashRegisterCloseClient<$Result.GetResult<Prisma.$CashRegisterClosePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends CashSessionUpsertArgs>(args: SelectSubset<T, CashSessionUpsertArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of CashRegisterCloses.
+     * Count the number of CashSessions.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseCountArgs} args - Arguments to filter CashRegisterCloses to count.
+     * @param {CashSessionCountArgs} args - Arguments to filter CashSessions to count.
      * @example
-     * // Count the number of CashRegisterCloses
-     * const count = await prisma.cashRegisterClose.count({
+     * // Count the number of CashSessions
+     * const count = await prisma.cashSession.count({
      *   where: {
-     *     // ... the filter for the CashRegisterCloses we want to count
+     *     // ... the filter for the CashSessions we want to count
      *   }
      * })
     **/
-    count<T extends CashRegisterCloseCountArgs>(
-      args?: Subset<T, CashRegisterCloseCountArgs>,
+    count<T extends CashSessionCountArgs>(
+      args?: Subset<T, CashSessionCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CashRegisterCloseCountAggregateOutputType>
+          : GetScalarType<T['select'], CashSessionCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a CashRegisterClose.
+     * Allows you to perform aggregations operations on a CashSession.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {CashSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -38111,13 +38242,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CashRegisterCloseAggregateArgs>(args: Subset<T, CashRegisterCloseAggregateArgs>): Prisma.PrismaPromise<GetCashRegisterCloseAggregateType<T>>
+    aggregate<T extends CashSessionAggregateArgs>(args: Subset<T, CashSessionAggregateArgs>): Prisma.PrismaPromise<GetCashSessionAggregateType<T>>
 
     /**
-     * Group by CashRegisterClose.
+     * Group by CashSession.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CashRegisterCloseGroupByArgs} args - Group by arguments.
+     * @param {CashSessionGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -38132,14 +38263,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CashRegisterCloseGroupByArgs,
+      T extends CashSessionGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CashRegisterCloseGroupByArgs['orderBy'] }
-        : { orderBy?: CashRegisterCloseGroupByArgs['orderBy'] },
+        ? { orderBy: CashSessionGroupByArgs['orderBy'] }
+        : { orderBy?: CashSessionGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -38188,24 +38319,26 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CashRegisterCloseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCashRegisterCloseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, CashSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCashSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the CashRegisterClose model
+   * Fields of the CashSession model
    */
-  readonly fields: CashRegisterCloseFieldRefs;
+  readonly fields: CashSessionFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for CashRegisterClose.
+   * The delegate class that acts as a "Promise-like" for CashSession.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CashRegisterCloseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__CashSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     account<T extends FinancialAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FinancialAccountDefaultArgs<ExtArgs>>): Prisma__FinancialAccountClient<$Result.GetResult<Prisma.$FinancialAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    branch<T extends CashRegisterClose$branchArgs<ExtArgs> = {}>(args?: Subset<T, CashRegisterClose$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    closedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    branch<T extends CashSession$branchArgs<ExtArgs> = {}>(args?: Subset<T, CashSession$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    openedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    closedBy<T extends CashSession$closedByArgs<ExtArgs> = {}>(args?: Subset<T, CashSession$closedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    depositAccount<T extends CashSession$depositAccountArgs<ExtArgs> = {}>(args?: Subset<T, CashSession$depositAccountArgs<ExtArgs>>): Prisma__FinancialAccountClient<$Result.GetResult<Prisma.$FinancialAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -38232,419 +38365,427 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the CashRegisterClose model
+   * Fields of the CashSession model
    */
-  interface CashRegisterCloseFieldRefs {
-    readonly id: FieldRef<"CashRegisterClose", 'String'>
-    readonly accountId: FieldRef<"CashRegisterClose", 'String'>
-    readonly branchId: FieldRef<"CashRegisterClose", 'String'>
-    readonly closeDate: FieldRef<"CashRegisterClose", 'DateTime'>
-    readonly expectedBalance: FieldRef<"CashRegisterClose", 'Decimal'>
-    readonly actualBalance: FieldRef<"CashRegisterClose", 'Decimal'>
-    readonly difference: FieldRef<"CashRegisterClose", 'Decimal'>
-    readonly notes: FieldRef<"CashRegisterClose", 'String'>
-    readonly closedById: FieldRef<"CashRegisterClose", 'String'>
-    readonly createdAt: FieldRef<"CashRegisterClose", 'DateTime'>
-    readonly updatedAt: FieldRef<"CashRegisterClose", 'DateTime'>
+  interface CashSessionFieldRefs {
+    readonly id: FieldRef<"CashSession", 'String'>
+    readonly accountId: FieldRef<"CashSession", 'String'>
+    readonly branchId: FieldRef<"CashSession", 'String'>
+    readonly status: FieldRef<"CashSession", 'CashSessionStatus'>
+    readonly openedAt: FieldRef<"CashSession", 'DateTime'>
+    readonly openedById: FieldRef<"CashSession", 'String'>
+    readonly openingBalance: FieldRef<"CashSession", 'Decimal'>
+    readonly openingNotes: FieldRef<"CashSession", 'String'>
+    readonly closedAt: FieldRef<"CashSession", 'DateTime'>
+    readonly closedById: FieldRef<"CashSession", 'String'>
+    readonly expectedBalance: FieldRef<"CashSession", 'Decimal'>
+    readonly actualBalance: FieldRef<"CashSession", 'Decimal'>
+    readonly difference: FieldRef<"CashSession", 'Decimal'>
+    readonly retainedAmount: FieldRef<"CashSession", 'Decimal'>
+    readonly depositAmount: FieldRef<"CashSession", 'Decimal'>
+    readonly depositAccountId: FieldRef<"CashSession", 'String'>
+    readonly closingNotes: FieldRef<"CashSession", 'String'>
+    readonly createdAt: FieldRef<"CashSession", 'DateTime'>
+    readonly updatedAt: FieldRef<"CashSession", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * CashRegisterClose findUnique
+   * CashSession findUnique
    */
-  export type CashRegisterCloseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter, which CashRegisterClose to fetch.
+     * Filter, which CashSession to fetch.
      */
-    where: CashRegisterCloseWhereUniqueInput
+    where: CashSessionWhereUniqueInput
   }
 
   /**
-   * CashRegisterClose findUniqueOrThrow
+   * CashSession findUniqueOrThrow
    */
-  export type CashRegisterCloseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter, which CashRegisterClose to fetch.
+     * Filter, which CashSession to fetch.
      */
-    where: CashRegisterCloseWhereUniqueInput
+    where: CashSessionWhereUniqueInput
   }
 
   /**
-   * CashRegisterClose findFirst
+   * CashSession findFirst
    */
-  export type CashRegisterCloseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter, which CashRegisterClose to fetch.
+     * Filter, which CashSession to fetch.
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CashRegisterCloses to fetch.
+     * Determine the order of CashSessions to fetch.
      */
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CashRegisterCloses.
+     * Sets the position for searching for CashSessions.
      */
-    cursor?: CashRegisterCloseWhereUniqueInput
+    cursor?: CashSessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CashRegisterCloses from the position of the cursor.
+     * Take `±n` CashSessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CashRegisterCloses.
+     * Skip the first `n` CashSessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CashRegisterCloses.
+     * Filter by unique combinations of CashSessions.
      */
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
-   * CashRegisterClose findFirstOrThrow
+   * CashSession findFirstOrThrow
    */
-  export type CashRegisterCloseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter, which CashRegisterClose to fetch.
+     * Filter, which CashSession to fetch.
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CashRegisterCloses to fetch.
+     * Determine the order of CashSessions to fetch.
      */
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CashRegisterCloses.
+     * Sets the position for searching for CashSessions.
      */
-    cursor?: CashRegisterCloseWhereUniqueInput
+    cursor?: CashSessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CashRegisterCloses from the position of the cursor.
+     * Take `±n` CashSessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CashRegisterCloses.
+     * Skip the first `n` CashSessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CashRegisterCloses.
+     * Filter by unique combinations of CashSessions.
      */
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
-   * CashRegisterClose findMany
+   * CashSession findMany
    */
-  export type CashRegisterCloseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter, which CashRegisterCloses to fetch.
+     * Filter, which CashSessions to fetch.
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CashRegisterCloses to fetch.
+     * Determine the order of CashSessions to fetch.
      */
-    orderBy?: CashRegisterCloseOrderByWithRelationInput | CashRegisterCloseOrderByWithRelationInput[]
+    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing CashRegisterCloses.
+     * Sets the position for listing CashSessions.
      */
-    cursor?: CashRegisterCloseWhereUniqueInput
+    cursor?: CashSessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CashRegisterCloses from the position of the cursor.
+     * Take `±n` CashSessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CashRegisterCloses.
+     * Skip the first `n` CashSessions.
      */
     skip?: number
-    distinct?: CashRegisterCloseScalarFieldEnum | CashRegisterCloseScalarFieldEnum[]
+    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
   }
 
   /**
-   * CashRegisterClose create
+   * CashSession create
    */
-  export type CashRegisterCloseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * The data needed to create a CashRegisterClose.
+     * The data needed to create a CashSession.
      */
-    data: XOR<CashRegisterCloseCreateInput, CashRegisterCloseUncheckedCreateInput>
+    data: XOR<CashSessionCreateInput, CashSessionUncheckedCreateInput>
   }
 
   /**
-   * CashRegisterClose createMany
+   * CashSession createMany
    */
-  export type CashRegisterCloseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many CashRegisterCloses.
+     * The data used to create many CashSessions.
      */
-    data: CashRegisterCloseCreateManyInput | CashRegisterCloseCreateManyInput[]
+    data: CashSessionCreateManyInput | CashSessionCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * CashRegisterClose createManyAndReturn
+   * CashSession createManyAndReturn
    */
-  export type CashRegisterCloseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelectCreateManyAndReturn<ExtArgs> | null
+    select?: CashSessionSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * The data used to create many CashRegisterCloses.
+     * The data used to create many CashSessions.
      */
-    data: CashRegisterCloseCreateManyInput | CashRegisterCloseCreateManyInput[]
+    data: CashSessionCreateManyInput | CashSessionCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: CashSessionIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CashRegisterClose update
+   * CashSession update
    */
-  export type CashRegisterCloseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * The data needed to update a CashRegisterClose.
+     * The data needed to update a CashSession.
      */
-    data: XOR<CashRegisterCloseUpdateInput, CashRegisterCloseUncheckedUpdateInput>
+    data: XOR<CashSessionUpdateInput, CashSessionUncheckedUpdateInput>
     /**
-     * Choose, which CashRegisterClose to update.
+     * Choose, which CashSession to update.
      */
-    where: CashRegisterCloseWhereUniqueInput
+    where: CashSessionWhereUniqueInput
   }
 
   /**
-   * CashRegisterClose updateMany
+   * CashSession updateMany
    */
-  export type CashRegisterCloseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update CashRegisterCloses.
+     * The data used to update CashSessions.
      */
-    data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyInput>
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyInput>
     /**
-     * Filter which CashRegisterCloses to update
+     * Filter which CashSessions to update
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
-     * Limit how many CashRegisterCloses to update.
+     * Limit how many CashSessions to update.
      */
     limit?: number
   }
 
   /**
-   * CashRegisterClose updateManyAndReturn
+   * CashSession updateManyAndReturn
    */
-  export type CashRegisterCloseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: CashSessionSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * The data used to update CashRegisterCloses.
+     * The data used to update CashSessions.
      */
-    data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyInput>
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyInput>
     /**
-     * Filter which CashRegisterCloses to update
+     * Filter which CashSessions to update
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
-     * Limit how many CashRegisterCloses to update.
+     * Limit how many CashSessions to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: CashSessionIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CashRegisterClose upsert
+   * CashSession upsert
    */
-  export type CashRegisterCloseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * The filter to search for the CashRegisterClose to update in case it exists.
+     * The filter to search for the CashSession to update in case it exists.
      */
-    where: CashRegisterCloseWhereUniqueInput
+    where: CashSessionWhereUniqueInput
     /**
-     * In case the CashRegisterClose found by the `where` argument doesn't exist, create a new CashRegisterClose with this data.
+     * In case the CashSession found by the `where` argument doesn't exist, create a new CashSession with this data.
      */
-    create: XOR<CashRegisterCloseCreateInput, CashRegisterCloseUncheckedCreateInput>
+    create: XOR<CashSessionCreateInput, CashSessionUncheckedCreateInput>
     /**
-     * In case the CashRegisterClose was found with the provided `where` argument, update it with this data.
+     * In case the CashSession was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<CashRegisterCloseUpdateInput, CashRegisterCloseUncheckedUpdateInput>
+    update: XOR<CashSessionUpdateInput, CashSessionUncheckedUpdateInput>
   }
 
   /**
-   * CashRegisterClose delete
+   * CashSession delete
    */
-  export type CashRegisterCloseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the CashSession
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: CashSessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the CashSession
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: CashSessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: CashSessionInclude<ExtArgs> | null
     /**
-     * Filter which CashRegisterClose to delete.
+     * Filter which CashSession to delete.
      */
-    where: CashRegisterCloseWhereUniqueInput
+    where: CashSessionWhereUniqueInput
   }
 
   /**
-   * CashRegisterClose deleteMany
+   * CashSession deleteMany
    */
-  export type CashRegisterCloseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CashRegisterCloses to delete
+     * Filter which CashSessions to delete
      */
-    where?: CashRegisterCloseWhereInput
+    where?: CashSessionWhereInput
     /**
-     * Limit how many CashRegisterCloses to delete.
+     * Limit how many CashSessions to delete.
      */
     limit?: number
   }
 
   /**
-   * CashRegisterClose.branch
+   * CashSession.branch
    */
-  export type CashRegisterClose$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSession$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Branch
      */
@@ -38661,21 +38802,59 @@ export namespace Prisma {
   }
 
   /**
-   * CashRegisterClose without action
+   * CashSession.closedBy
    */
-  export type CashRegisterCloseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CashSession$closedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CashRegisterClose
+     * Select specific fields to fetch from the User
      */
-    select?: CashRegisterCloseSelect<ExtArgs> | null
+    select?: UserSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CashRegisterClose
+     * Omit specific fields from the User
      */
-    omit?: CashRegisterCloseOmit<ExtArgs> | null
+    omit?: UserOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CashRegisterCloseInclude<ExtArgs> | null
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CashSession.depositAccount
+   */
+  export type CashSession$depositAccountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialAccount
+     */
+    select?: FinancialAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialAccount
+     */
+    omit?: FinancialAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialAccountInclude<ExtArgs> | null
+    where?: FinancialAccountWhereInput
+  }
+
+  /**
+   * CashSession without action
+   */
+  export type CashSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CashSession
+     */
+    select?: CashSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CashSession
+     */
+    omit?: CashSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CashSessionInclude<ExtArgs> | null
   }
 
 
@@ -41322,7 +41501,6 @@ export namespace Prisma {
     soldById: 'soldById',
     customerId: 'customerId',
     branchId: 'branchId',
-    businessLineId: 'businessLineId',
     currency: 'currency',
     subtotal: 'subtotal',
     discountTotal: 'discountTotal',
@@ -41555,21 +41733,29 @@ export namespace Prisma {
   export type PayrollRunItemScalarFieldEnum = (typeof PayrollRunItemScalarFieldEnum)[keyof typeof PayrollRunItemScalarFieldEnum]
 
 
-  export const CashRegisterCloseScalarFieldEnum: {
+  export const CashSessionScalarFieldEnum: {
     id: 'id',
     accountId: 'accountId',
     branchId: 'branchId',
-    closeDate: 'closeDate',
+    status: 'status',
+    openedAt: 'openedAt',
+    openedById: 'openedById',
+    openingBalance: 'openingBalance',
+    openingNotes: 'openingNotes',
+    closedAt: 'closedAt',
+    closedById: 'closedById',
     expectedBalance: 'expectedBalance',
     actualBalance: 'actualBalance',
     difference: 'difference',
-    notes: 'notes',
-    closedById: 'closedById',
+    retainedAmount: 'retainedAmount',
+    depositAmount: 'depositAmount',
+    depositAccountId: 'depositAccountId',
+    closingNotes: 'closingNotes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
-  export type CashRegisterCloseScalarFieldEnum = (typeof CashRegisterCloseScalarFieldEnum)[keyof typeof CashRegisterCloseScalarFieldEnum]
+  export type CashSessionScalarFieldEnum = (typeof CashSessionScalarFieldEnum)[keyof typeof CashSessionScalarFieldEnum]
 
 
   export const AccountReconciliationScalarFieldEnum: {
@@ -41853,6 +42039,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CashSessionStatus'
+   */
+  export type EnumCashSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CashSessionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CashSessionStatus[]'
+   */
+  export type ListEnumCashSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CashSessionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ReconciliationStatus'
    */
   export type EnumReconciliationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReconciliationStatus'>
@@ -41910,7 +42110,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemListRelationFilter
     accountTransactions?: AccountTransactionListRelationFilter
     branches?: UserBranchListRelationFilter
-    cashRegisterCloses?: CashRegisterCloseListRelationFilter
+    cashSessionsOpened?: CashSessionListRelationFilter
+    cashSessionsClosed?: CashSessionListRelationFilter
     reconciledAccounts?: AccountReconciliationListRelationFilter
   }
 
@@ -41938,7 +42139,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemOrderByRelationAggregateInput
     accountTransactions?: AccountTransactionOrderByRelationAggregateInput
     branches?: UserBranchOrderByRelationAggregateInput
-    cashRegisterCloses?: CashRegisterCloseOrderByRelationAggregateInput
+    cashSessionsOpened?: CashSessionOrderByRelationAggregateInput
+    cashSessionsClosed?: CashSessionOrderByRelationAggregateInput
     reconciledAccounts?: AccountReconciliationOrderByRelationAggregateInput
   }
 
@@ -41969,7 +42171,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemListRelationFilter
     accountTransactions?: AccountTransactionListRelationFilter
     branches?: UserBranchListRelationFilter
-    cashRegisterCloses?: CashRegisterCloseListRelationFilter
+    cashSessionsOpened?: CashSessionListRelationFilter
+    cashSessionsClosed?: CashSessionListRelationFilter
     reconciledAccounts?: AccountReconciliationListRelationFilter
   }, "id" | "email">
 
@@ -42248,7 +42451,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"BusinessLine"> | Date | string
     updatedAt?: DateTimeFilter<"BusinessLine"> | Date | string
     products?: ProductListRelationFilter
-    sales?: SaleListRelationFilter
     expenses?: ExpenseListRelationFilter
   }
 
@@ -42261,7 +42463,6 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     products?: ProductOrderByRelationAggregateInput
-    sales?: SaleOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
   }
 
@@ -42277,7 +42478,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"BusinessLine"> | Date | string
     updatedAt?: DateTimeFilter<"BusinessLine"> | Date | string
     products?: ProductListRelationFilter
-    sales?: SaleListRelationFilter
     expenses?: ExpenseListRelationFilter
   }, "id" | "name">
 
@@ -42325,7 +42525,7 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     purchases?: PurchaseListRelationFilter
     users?: UserBranchListRelationFilter
-    cashCloses?: CashRegisterCloseListRelationFilter
+    cashSessions?: CashSessionListRelationFilter
     stockMoves?: StockMovementListRelationFilter
   }
 
@@ -42344,7 +42544,7 @@ export namespace Prisma {
     expenses?: ExpenseOrderByRelationAggregateInput
     purchases?: PurchaseOrderByRelationAggregateInput
     users?: UserBranchOrderByRelationAggregateInput
-    cashCloses?: CashRegisterCloseOrderByRelationAggregateInput
+    cashSessions?: CashSessionOrderByRelationAggregateInput
     stockMoves?: StockMovementOrderByRelationAggregateInput
   }
 
@@ -42366,7 +42566,7 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     purchases?: PurchaseListRelationFilter
     users?: UserBranchListRelationFilter
-    cashCloses?: CashRegisterCloseListRelationFilter
+    cashSessions?: CashSessionListRelationFilter
     stockMoves?: StockMovementListRelationFilter
   }, "id" | "name">
 
@@ -42476,7 +42676,8 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     transactions?: AccountTransactionListRelationFilter
     transfersReceived?: AccountTransactionListRelationFilter
-    cashCloses?: CashRegisterCloseListRelationFilter
+    cashSessions?: CashSessionListRelationFilter
+    cashSessionDeposits?: CashSessionListRelationFilter
     reconciliations?: AccountReconciliationListRelationFilter
   }
 
@@ -42499,7 +42700,8 @@ export namespace Prisma {
     expenses?: ExpenseOrderByRelationAggregateInput
     transactions?: AccountTransactionOrderByRelationAggregateInput
     transfersReceived?: AccountTransactionOrderByRelationAggregateInput
-    cashCloses?: CashRegisterCloseOrderByRelationAggregateInput
+    cashSessions?: CashSessionOrderByRelationAggregateInput
+    cashSessionDeposits?: CashSessionOrderByRelationAggregateInput
     reconciliations?: AccountReconciliationOrderByRelationAggregateInput
   }
 
@@ -42525,7 +42727,8 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     transactions?: AccountTransactionListRelationFilter
     transfersReceived?: AccountTransactionListRelationFilter
-    cashCloses?: CashRegisterCloseListRelationFilter
+    cashSessions?: CashSessionListRelationFilter
+    cashSessionDeposits?: CashSessionListRelationFilter
     reconciliations?: AccountReconciliationListRelationFilter
   }, "id" | "name">
 
@@ -42950,7 +43153,6 @@ export namespace Prisma {
     soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     branchId?: StringNullableFilter<"Sale"> | string | null
-    businessLineId?: StringNullableFilter<"Sale"> | string | null
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -42964,7 +43166,6 @@ export namespace Prisma {
     soldBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
-    businessLine?: XOR<BusinessLineNullableScalarRelationFilter, BusinessLineWhereInput> | null
     items?: SaleItemListRelationFilter
     payments?: SalePaymentListRelationFilter
     receivable?: XOR<AccountsReceivableNullableScalarRelationFilter, AccountsReceivableWhereInput> | null
@@ -42977,7 +43178,6 @@ export namespace Prisma {
     soldById?: SortOrderInput | SortOrder
     customerId?: SortOrder
     branchId?: SortOrderInput | SortOrder
-    businessLineId?: SortOrderInput | SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
@@ -42991,7 +43191,6 @@ export namespace Prisma {
     soldBy?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     branch?: BranchOrderByWithRelationInput
-    businessLine?: BusinessLineOrderByWithRelationInput
     items?: SaleItemOrderByRelationAggregateInput
     payments?: SalePaymentOrderByRelationAggregateInput
     receivable?: AccountsReceivableOrderByWithRelationInput
@@ -43007,7 +43206,6 @@ export namespace Prisma {
     soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     branchId?: StringNullableFilter<"Sale"> | string | null
-    businessLineId?: StringNullableFilter<"Sale"> | string | null
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -43021,7 +43219,6 @@ export namespace Prisma {
     soldBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
-    businessLine?: XOR<BusinessLineNullableScalarRelationFilter, BusinessLineWhereInput> | null
     items?: SaleItemListRelationFilter
     payments?: SalePaymentListRelationFilter
     receivable?: XOR<AccountsReceivableNullableScalarRelationFilter, AccountsReceivableWhereInput> | null
@@ -43034,7 +43231,6 @@ export namespace Prisma {
     soldById?: SortOrderInput | SortOrder
     customerId?: SortOrder
     branchId?: SortOrderInput | SortOrder
-    businessLineId?: SortOrderInput | SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
@@ -43061,7 +43257,6 @@ export namespace Prisma {
     soldById?: StringNullableWithAggregatesFilter<"Sale"> | string | null
     customerId?: StringWithAggregatesFilter<"Sale"> | string
     branchId?: StringNullableWithAggregatesFilter<"Sale"> | string | null
-    businessLineId?: StringNullableWithAggregatesFilter<"Sale"> | string | null
     currency?: StringWithAggregatesFilter<"Sale"> | string
     subtotal?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -44276,97 +44471,143 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"PayrollRunItem"> | Date | string
   }
 
-  export type CashRegisterCloseWhereInput = {
-    AND?: CashRegisterCloseWhereInput | CashRegisterCloseWhereInput[]
-    OR?: CashRegisterCloseWhereInput[]
-    NOT?: CashRegisterCloseWhereInput | CashRegisterCloseWhereInput[]
-    id?: StringFilter<"CashRegisterClose"> | string
-    accountId?: StringFilter<"CashRegisterClose"> | string
-    branchId?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closeDate?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    expectedBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    notes?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closedById?: StringFilter<"CashRegisterClose"> | string
-    createdAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    updatedAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
+  export type CashSessionWhereInput = {
+    AND?: CashSessionWhereInput | CashSessionWhereInput[]
+    OR?: CashSessionWhereInput[]
+    NOT?: CashSessionWhereInput | CashSessionWhereInput[]
+    id?: StringFilter<"CashSession"> | string
+    accountId?: StringFilter<"CashSession"> | string
+    branchId?: StringNullableFilter<"CashSession"> | string | null
+    status?: EnumCashSessionStatusFilter<"CashSession"> | $Enums.CashSessionStatus
+    openedAt?: DateTimeFilter<"CashSession"> | Date | string
+    openedById?: StringFilter<"CashSession"> | string
+    openingBalance?: DecimalFilter<"CashSession"> | Decimal | DecimalJsLike | number | string
+    openingNotes?: StringNullableFilter<"CashSession"> | string | null
+    closedAt?: DateTimeNullableFilter<"CashSession"> | Date | string | null
+    closedById?: StringNullableFilter<"CashSession"> | string | null
+    expectedBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    difference?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: StringNullableFilter<"CashSession"> | string | null
+    closingNotes?: StringNullableFilter<"CashSession"> | string | null
+    createdAt?: DateTimeFilter<"CashSession"> | Date | string
+    updatedAt?: DateTimeFilter<"CashSession"> | Date | string
     account?: XOR<FinancialAccountScalarRelationFilter, FinancialAccountWhereInput>
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
-    closedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    openedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    closedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    depositAccount?: XOR<FinancialAccountNullableScalarRelationFilter, FinancialAccountWhereInput> | null
   }
 
-  export type CashRegisterCloseOrderByWithRelationInput = {
+  export type CashSessionOrderByWithRelationInput = {
     id?: SortOrder
     accountId?: SortOrder
     branchId?: SortOrderInput | SortOrder
-    closeDate?: SortOrder
-    expectedBalance?: SortOrder
-    actualBalance?: SortOrder
-    difference?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    closedById?: SortOrder
+    status?: SortOrder
+    openedAt?: SortOrder
+    openedById?: SortOrder
+    openingBalance?: SortOrder
+    openingNotes?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    closedById?: SortOrderInput | SortOrder
+    expectedBalance?: SortOrderInput | SortOrder
+    actualBalance?: SortOrderInput | SortOrder
+    difference?: SortOrderInput | SortOrder
+    retainedAmount?: SortOrderInput | SortOrder
+    depositAmount?: SortOrderInput | SortOrder
+    depositAccountId?: SortOrderInput | SortOrder
+    closingNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     account?: FinancialAccountOrderByWithRelationInput
     branch?: BranchOrderByWithRelationInput
+    openedBy?: UserOrderByWithRelationInput
     closedBy?: UserOrderByWithRelationInput
+    depositAccount?: FinancialAccountOrderByWithRelationInput
   }
 
-  export type CashRegisterCloseWhereUniqueInput = Prisma.AtLeast<{
+  export type CashSessionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: CashRegisterCloseWhereInput | CashRegisterCloseWhereInput[]
-    OR?: CashRegisterCloseWhereInput[]
-    NOT?: CashRegisterCloseWhereInput | CashRegisterCloseWhereInput[]
-    accountId?: StringFilter<"CashRegisterClose"> | string
-    branchId?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closeDate?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    expectedBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    notes?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closedById?: StringFilter<"CashRegisterClose"> | string
-    createdAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    updatedAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
+    AND?: CashSessionWhereInput | CashSessionWhereInput[]
+    OR?: CashSessionWhereInput[]
+    NOT?: CashSessionWhereInput | CashSessionWhereInput[]
+    accountId?: StringFilter<"CashSession"> | string
+    branchId?: StringNullableFilter<"CashSession"> | string | null
+    status?: EnumCashSessionStatusFilter<"CashSession"> | $Enums.CashSessionStatus
+    openedAt?: DateTimeFilter<"CashSession"> | Date | string
+    openedById?: StringFilter<"CashSession"> | string
+    openingBalance?: DecimalFilter<"CashSession"> | Decimal | DecimalJsLike | number | string
+    openingNotes?: StringNullableFilter<"CashSession"> | string | null
+    closedAt?: DateTimeNullableFilter<"CashSession"> | Date | string | null
+    closedById?: StringNullableFilter<"CashSession"> | string | null
+    expectedBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    difference?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: StringNullableFilter<"CashSession"> | string | null
+    closingNotes?: StringNullableFilter<"CashSession"> | string | null
+    createdAt?: DateTimeFilter<"CashSession"> | Date | string
+    updatedAt?: DateTimeFilter<"CashSession"> | Date | string
     account?: XOR<FinancialAccountScalarRelationFilter, FinancialAccountWhereInput>
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
-    closedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    openedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    closedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    depositAccount?: XOR<FinancialAccountNullableScalarRelationFilter, FinancialAccountWhereInput> | null
   }, "id">
 
-  export type CashRegisterCloseOrderByWithAggregationInput = {
+  export type CashSessionOrderByWithAggregationInput = {
     id?: SortOrder
     accountId?: SortOrder
     branchId?: SortOrderInput | SortOrder
-    closeDate?: SortOrder
-    expectedBalance?: SortOrder
-    actualBalance?: SortOrder
-    difference?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    closedById?: SortOrder
+    status?: SortOrder
+    openedAt?: SortOrder
+    openedById?: SortOrder
+    openingBalance?: SortOrder
+    openingNotes?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    closedById?: SortOrderInput | SortOrder
+    expectedBalance?: SortOrderInput | SortOrder
+    actualBalance?: SortOrderInput | SortOrder
+    difference?: SortOrderInput | SortOrder
+    retainedAmount?: SortOrderInput | SortOrder
+    depositAmount?: SortOrderInput | SortOrder
+    depositAccountId?: SortOrderInput | SortOrder
+    closingNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: CashRegisterCloseCountOrderByAggregateInput
-    _avg?: CashRegisterCloseAvgOrderByAggregateInput
-    _max?: CashRegisterCloseMaxOrderByAggregateInput
-    _min?: CashRegisterCloseMinOrderByAggregateInput
-    _sum?: CashRegisterCloseSumOrderByAggregateInput
+    _count?: CashSessionCountOrderByAggregateInput
+    _avg?: CashSessionAvgOrderByAggregateInput
+    _max?: CashSessionMaxOrderByAggregateInput
+    _min?: CashSessionMinOrderByAggregateInput
+    _sum?: CashSessionSumOrderByAggregateInput
   }
 
-  export type CashRegisterCloseScalarWhereWithAggregatesInput = {
-    AND?: CashRegisterCloseScalarWhereWithAggregatesInput | CashRegisterCloseScalarWhereWithAggregatesInput[]
-    OR?: CashRegisterCloseScalarWhereWithAggregatesInput[]
-    NOT?: CashRegisterCloseScalarWhereWithAggregatesInput | CashRegisterCloseScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CashRegisterClose"> | string
-    accountId?: StringWithAggregatesFilter<"CashRegisterClose"> | string
-    branchId?: StringNullableWithAggregatesFilter<"CashRegisterClose"> | string | null
-    closeDate?: DateTimeWithAggregatesFilter<"CashRegisterClose"> | Date | string
-    expectedBalance?: DecimalWithAggregatesFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalWithAggregatesFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    difference?: DecimalWithAggregatesFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    notes?: StringNullableWithAggregatesFilter<"CashRegisterClose"> | string | null
-    closedById?: StringWithAggregatesFilter<"CashRegisterClose"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"CashRegisterClose"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"CashRegisterClose"> | Date | string
+  export type CashSessionScalarWhereWithAggregatesInput = {
+    AND?: CashSessionScalarWhereWithAggregatesInput | CashSessionScalarWhereWithAggregatesInput[]
+    OR?: CashSessionScalarWhereWithAggregatesInput[]
+    NOT?: CashSessionScalarWhereWithAggregatesInput | CashSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CashSession"> | string
+    accountId?: StringWithAggregatesFilter<"CashSession"> | string
+    branchId?: StringNullableWithAggregatesFilter<"CashSession"> | string | null
+    status?: EnumCashSessionStatusWithAggregatesFilter<"CashSession"> | $Enums.CashSessionStatus
+    openedAt?: DateTimeWithAggregatesFilter<"CashSession"> | Date | string
+    openedById?: StringWithAggregatesFilter<"CashSession"> | string
+    openingBalance?: DecimalWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string
+    openingNotes?: StringNullableWithAggregatesFilter<"CashSession"> | string | null
+    closedAt?: DateTimeNullableWithAggregatesFilter<"CashSession"> | Date | string | null
+    closedById?: StringNullableWithAggregatesFilter<"CashSession"> | string | null
+    expectedBalance?: DecimalNullableWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: DecimalNullableWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    difference?: DecimalNullableWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: DecimalNullableWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: DecimalNullableWithAggregatesFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: StringNullableWithAggregatesFilter<"CashSession"> | string | null
+    closingNotes?: StringNullableWithAggregatesFilter<"CashSession"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CashSession"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CashSession"> | Date | string
   }
 
   export type AccountReconciliationWhereInput = {
@@ -44576,7 +44817,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -44604,7 +44846,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -44632,7 +44875,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -44660,7 +44904,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -44975,7 +45220,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutBusinessLineInput
-    sales?: SaleCreateNestedManyWithoutBusinessLineInput
     expenses?: ExpenseCreateNestedManyWithoutBusinessLineInput
   }
 
@@ -44988,7 +45232,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutBusinessLineInput
-    sales?: SaleUncheckedCreateNestedManyWithoutBusinessLineInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBusinessLineInput
   }
 
@@ -45001,7 +45244,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutBusinessLineNestedInput
-    sales?: SaleUpdateManyWithoutBusinessLineNestedInput
     expenses?: ExpenseUpdateManyWithoutBusinessLineNestedInput
   }
 
@@ -45014,7 +45256,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutBusinessLineNestedInput
-    sales?: SaleUncheckedUpdateManyWithoutBusinessLineNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutBusinessLineNestedInput
   }
 
@@ -45063,7 +45304,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -45082,7 +45323,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
@@ -45101,7 +45342,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -45120,7 +45361,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
@@ -45225,7 +45466,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -45247,7 +45489,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -45269,7 +45512,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -45291,7 +45535,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -45756,7 +46001,6 @@ export namespace Prisma {
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -45769,7 +46013,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -45799,7 +46042,6 @@ export namespace Prisma {
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -45812,7 +46054,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -45834,7 +46075,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -45866,7 +46106,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -47134,97 +47373,151 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashRegisterCloseCreateInput = {
+  export type CashSessionCreateInput = {
     id?: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    account: FinancialAccountCreateNestedOneWithoutCashClosesInput
-    branch?: BranchCreateNestedOneWithoutCashClosesInput
-    closedBy: UserCreateNestedOneWithoutCashRegisterClosesInput
+    account: FinancialAccountCreateNestedOneWithoutCashSessionsInput
+    branch?: BranchCreateNestedOneWithoutCashSessionsInput
+    openedBy: UserCreateNestedOneWithoutCashSessionsOpenedInput
+    closedBy?: UserCreateNestedOneWithoutCashSessionsClosedInput
+    depositAccount?: FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput
   }
 
-  export type CashRegisterCloseUncheckedCreateInput = {
-    id?: string
-    accountId: string
-    branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CashRegisterCloseUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    account?: FinancialAccountUpdateOneRequiredWithoutCashClosesNestedInput
-    branch?: BranchUpdateOneWithoutCashClosesNestedInput
-    closedBy?: UserUpdateOneRequiredWithoutCashRegisterClosesNestedInput
-  }
-
-  export type CashRegisterCloseUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    accountId?: StringFieldUpdateOperationsInput | string
-    branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CashRegisterCloseCreateManyInput = {
+  export type CashSessionUncheckedCreateInput = {
     id?: string
     accountId: string
     branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CashRegisterCloseUpdateManyMutationInput = {
+  export type CashSessionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput
+    branch?: BranchUpdateOneWithoutCashSessionsNestedInput
+    openedBy?: UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput
+    closedBy?: UserUpdateOneWithoutCashSessionsClosedNestedInput
+    depositAccount?: FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput
+  }
+
+  export type CashSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyInput = {
+  export type CashSessionCreateManyInput = {
+    id?: string
+    accountId: string
+    branchId?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CashSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CashSessionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47547,10 +47840,10 @@ export namespace Prisma {
     none?: UserBranchWhereInput
   }
 
-  export type CashRegisterCloseListRelationFilter = {
-    every?: CashRegisterCloseWhereInput
-    some?: CashRegisterCloseWhereInput
-    none?: CashRegisterCloseWhereInput
+  export type CashSessionListRelationFilter = {
+    every?: CashSessionWhereInput
+    some?: CashSessionWhereInput
+    none?: CashSessionWhereInput
   }
 
   export type AccountReconciliationListRelationFilter = {
@@ -47604,7 +47897,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type CashRegisterCloseOrderByRelationAggregateInput = {
+  export type CashSessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -48455,7 +48748,6 @@ export namespace Prisma {
     soldById?: SortOrder
     customerId?: SortOrder
     branchId?: SortOrder
-    businessLineId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
@@ -48482,7 +48774,6 @@ export namespace Prisma {
     soldById?: SortOrder
     customerId?: SortOrder
     branchId?: SortOrder
-    businessLineId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
@@ -48501,7 +48792,6 @@ export namespace Prisma {
     soldById?: SortOrder
     customerId?: SortOrder
     branchId?: SortOrder
-    businessLineId?: SortOrder
     currency?: SortOrder
     subtotal?: SortOrder
     discountTotal?: SortOrder
@@ -49402,58 +49692,105 @@ export namespace Prisma {
     balance?: SortOrder
   }
 
-  export type CashRegisterCloseCountOrderByAggregateInput = {
+  export type EnumCashSessionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CashSessionStatus | EnumCashSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCashSessionStatusFilter<$PrismaModel> | $Enums.CashSessionStatus
+  }
+
+  export type CashSessionCountOrderByAggregateInput = {
     id?: SortOrder
     accountId?: SortOrder
     branchId?: SortOrder
-    closeDate?: SortOrder
+    status?: SortOrder
+    openedAt?: SortOrder
+    openedById?: SortOrder
+    openingBalance?: SortOrder
+    openingNotes?: SortOrder
+    closedAt?: SortOrder
+    closedById?: SortOrder
     expectedBalance?: SortOrder
     actualBalance?: SortOrder
     difference?: SortOrder
-    notes?: SortOrder
-    closedById?: SortOrder
+    retainedAmount?: SortOrder
+    depositAmount?: SortOrder
+    depositAccountId?: SortOrder
+    closingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CashRegisterCloseAvgOrderByAggregateInput = {
+  export type CashSessionAvgOrderByAggregateInput = {
+    openingBalance?: SortOrder
     expectedBalance?: SortOrder
     actualBalance?: SortOrder
     difference?: SortOrder
+    retainedAmount?: SortOrder
+    depositAmount?: SortOrder
   }
 
-  export type CashRegisterCloseMaxOrderByAggregateInput = {
+  export type CashSessionMaxOrderByAggregateInput = {
     id?: SortOrder
     accountId?: SortOrder
     branchId?: SortOrder
-    closeDate?: SortOrder
+    status?: SortOrder
+    openedAt?: SortOrder
+    openedById?: SortOrder
+    openingBalance?: SortOrder
+    openingNotes?: SortOrder
+    closedAt?: SortOrder
+    closedById?: SortOrder
     expectedBalance?: SortOrder
     actualBalance?: SortOrder
     difference?: SortOrder
-    notes?: SortOrder
-    closedById?: SortOrder
+    retainedAmount?: SortOrder
+    depositAmount?: SortOrder
+    depositAccountId?: SortOrder
+    closingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CashRegisterCloseMinOrderByAggregateInput = {
+  export type CashSessionMinOrderByAggregateInput = {
     id?: SortOrder
     accountId?: SortOrder
     branchId?: SortOrder
-    closeDate?: SortOrder
+    status?: SortOrder
+    openedAt?: SortOrder
+    openedById?: SortOrder
+    openingBalance?: SortOrder
+    openingNotes?: SortOrder
+    closedAt?: SortOrder
+    closedById?: SortOrder
     expectedBalance?: SortOrder
     actualBalance?: SortOrder
     difference?: SortOrder
-    notes?: SortOrder
-    closedById?: SortOrder
+    retainedAmount?: SortOrder
+    depositAmount?: SortOrder
+    depositAccountId?: SortOrder
+    closingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CashRegisterCloseSumOrderByAggregateInput = {
+  export type CashSessionSumOrderByAggregateInput = {
+    openingBalance?: SortOrder
     expectedBalance?: SortOrder
     actualBalance?: SortOrder
     difference?: SortOrder
+    retainedAmount?: SortOrder
+    depositAmount?: SortOrder
+  }
+
+  export type EnumCashSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CashSessionStatus | EnumCashSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCashSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.CashSessionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCashSessionStatusFilter<$PrismaModel>
+    _max?: NestedEnumCashSessionStatusFilter<$PrismaModel>
   }
 
   export type EnumReconciliationStatusFilter<$PrismaModel = never> = {
@@ -49661,11 +49998,18 @@ export namespace Prisma {
     connect?: UserBranchWhereUniqueInput | UserBranchWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseCreateNestedManyWithoutClosedByInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput> | CashRegisterCloseCreateWithoutClosedByInput[] | CashRegisterCloseUncheckedCreateWithoutClosedByInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutClosedByInput | CashRegisterCloseCreateOrConnectWithoutClosedByInput[]
-    createMany?: CashRegisterCloseCreateManyClosedByInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionCreateNestedManyWithoutOpenedByInput = {
+    create?: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput> | CashSessionCreateWithoutOpenedByInput[] | CashSessionUncheckedCreateWithoutOpenedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutOpenedByInput | CashSessionCreateOrConnectWithoutOpenedByInput[]
+    createMany?: CashSessionCreateManyOpenedByInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+  }
+
+  export type CashSessionCreateNestedManyWithoutClosedByInput = {
+    create?: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput> | CashSessionCreateWithoutClosedByInput[] | CashSessionUncheckedCreateWithoutClosedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutClosedByInput | CashSessionCreateOrConnectWithoutClosedByInput[]
+    createMany?: CashSessionCreateManyClosedByInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type AccountReconciliationCreateNestedManyWithoutReconciledByInput = {
@@ -49752,11 +50096,18 @@ export namespace Prisma {
     connect?: UserBranchWhereUniqueInput | UserBranchWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput> | CashRegisterCloseCreateWithoutClosedByInput[] | CashRegisterCloseUncheckedCreateWithoutClosedByInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutClosedByInput | CashRegisterCloseCreateOrConnectWithoutClosedByInput[]
-    createMany?: CashRegisterCloseCreateManyClosedByInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionUncheckedCreateNestedManyWithoutOpenedByInput = {
+    create?: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput> | CashSessionCreateWithoutOpenedByInput[] | CashSessionUncheckedCreateWithoutOpenedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutOpenedByInput | CashSessionCreateOrConnectWithoutOpenedByInput[]
+    createMany?: CashSessionCreateManyOpenedByInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+  }
+
+  export type CashSessionUncheckedCreateNestedManyWithoutClosedByInput = {
+    create?: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput> | CashSessionCreateWithoutClosedByInput[] | CashSessionUncheckedCreateWithoutClosedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutClosedByInput | CashSessionCreateOrConnectWithoutClosedByInput[]
+    createMany?: CashSessionCreateManyClosedByInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput = {
@@ -49944,18 +50295,32 @@ export namespace Prisma {
     deleteMany?: UserBranchScalarWhereInput | UserBranchScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUpdateManyWithoutClosedByNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput> | CashRegisterCloseCreateWithoutClosedByInput[] | CashRegisterCloseUncheckedCreateWithoutClosedByInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutClosedByInput | CashRegisterCloseCreateOrConnectWithoutClosedByInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutClosedByInput | CashRegisterCloseUpsertWithWhereUniqueWithoutClosedByInput[]
-    createMany?: CashRegisterCloseCreateManyClosedByInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutClosedByInput | CashRegisterCloseUpdateWithWhereUniqueWithoutClosedByInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutClosedByInput | CashRegisterCloseUpdateManyWithWhereWithoutClosedByInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUpdateManyWithoutOpenedByNestedInput = {
+    create?: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput> | CashSessionCreateWithoutOpenedByInput[] | CashSessionUncheckedCreateWithoutOpenedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutOpenedByInput | CashSessionCreateOrConnectWithoutOpenedByInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutOpenedByInput | CashSessionUpsertWithWhereUniqueWithoutOpenedByInput[]
+    createMany?: CashSessionCreateManyOpenedByInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutOpenedByInput | CashSessionUpdateWithWhereUniqueWithoutOpenedByInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutOpenedByInput | CashSessionUpdateManyWithWhereWithoutOpenedByInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+  }
+
+  export type CashSessionUpdateManyWithoutClosedByNestedInput = {
+    create?: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput> | CashSessionCreateWithoutClosedByInput[] | CashSessionUncheckedCreateWithoutClosedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutClosedByInput | CashSessionCreateOrConnectWithoutClosedByInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutClosedByInput | CashSessionUpsertWithWhereUniqueWithoutClosedByInput[]
+    createMany?: CashSessionCreateManyClosedByInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutClosedByInput | CashSessionUpdateWithWhereUniqueWithoutClosedByInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutClosedByInput | CashSessionUpdateManyWithWhereWithoutClosedByInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type AccountReconciliationUpdateManyWithoutReconciledByNestedInput = {
@@ -50126,18 +50491,32 @@ export namespace Prisma {
     deleteMany?: UserBranchScalarWhereInput | UserBranchScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput> | CashRegisterCloseCreateWithoutClosedByInput[] | CashRegisterCloseUncheckedCreateWithoutClosedByInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutClosedByInput | CashRegisterCloseCreateOrConnectWithoutClosedByInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutClosedByInput | CashRegisterCloseUpsertWithWhereUniqueWithoutClosedByInput[]
-    createMany?: CashRegisterCloseCreateManyClosedByInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutClosedByInput | CashRegisterCloseUpdateWithWhereUniqueWithoutClosedByInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutClosedByInput | CashRegisterCloseUpdateManyWithWhereWithoutClosedByInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput = {
+    create?: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput> | CashSessionCreateWithoutOpenedByInput[] | CashSessionUncheckedCreateWithoutOpenedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutOpenedByInput | CashSessionCreateOrConnectWithoutOpenedByInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutOpenedByInput | CashSessionUpsertWithWhereUniqueWithoutOpenedByInput[]
+    createMany?: CashSessionCreateManyOpenedByInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutOpenedByInput | CashSessionUpdateWithWhereUniqueWithoutOpenedByInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutOpenedByInput | CashSessionUpdateManyWithWhereWithoutOpenedByInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+  }
+
+  export type CashSessionUncheckedUpdateManyWithoutClosedByNestedInput = {
+    create?: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput> | CashSessionCreateWithoutClosedByInput[] | CashSessionUncheckedCreateWithoutClosedByInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutClosedByInput | CashSessionCreateOrConnectWithoutClosedByInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutClosedByInput | CashSessionUpsertWithWhereUniqueWithoutClosedByInput[]
+    createMany?: CashSessionCreateManyClosedByInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutClosedByInput | CashSessionUpdateWithWhereUniqueWithoutClosedByInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutClosedByInput | CashSessionUpdateManyWithWhereWithoutClosedByInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput = {
@@ -50189,13 +50568,6 @@ export namespace Prisma {
     connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
   }
 
-  export type SaleCreateNestedManyWithoutBusinessLineInput = {
-    create?: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput> | SaleCreateWithoutBusinessLineInput[] | SaleUncheckedCreateWithoutBusinessLineInput[]
-    connectOrCreate?: SaleCreateOrConnectWithoutBusinessLineInput | SaleCreateOrConnectWithoutBusinessLineInput[]
-    createMany?: SaleCreateManyBusinessLineInputEnvelope
-    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-  }
-
   export type ExpenseCreateNestedManyWithoutBusinessLineInput = {
     create?: XOR<ExpenseCreateWithoutBusinessLineInput, ExpenseUncheckedCreateWithoutBusinessLineInput> | ExpenseCreateWithoutBusinessLineInput[] | ExpenseUncheckedCreateWithoutBusinessLineInput[]
     connectOrCreate?: ExpenseCreateOrConnectWithoutBusinessLineInput | ExpenseCreateOrConnectWithoutBusinessLineInput[]
@@ -50208,13 +50580,6 @@ export namespace Prisma {
     connectOrCreate?: ProductCreateOrConnectWithoutBusinessLineInput | ProductCreateOrConnectWithoutBusinessLineInput[]
     createMany?: ProductCreateManyBusinessLineInputEnvelope
     connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-  }
-
-  export type SaleUncheckedCreateNestedManyWithoutBusinessLineInput = {
-    create?: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput> | SaleCreateWithoutBusinessLineInput[] | SaleUncheckedCreateWithoutBusinessLineInput[]
-    connectOrCreate?: SaleCreateOrConnectWithoutBusinessLineInput | SaleCreateOrConnectWithoutBusinessLineInput[]
-    createMany?: SaleCreateManyBusinessLineInputEnvelope
-    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
   export type ExpenseUncheckedCreateNestedManyWithoutBusinessLineInput = {
@@ -50236,20 +50601,6 @@ export namespace Prisma {
     update?: ProductUpdateWithWhereUniqueWithoutBusinessLineInput | ProductUpdateWithWhereUniqueWithoutBusinessLineInput[]
     updateMany?: ProductUpdateManyWithWhereWithoutBusinessLineInput | ProductUpdateManyWithWhereWithoutBusinessLineInput[]
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
-  }
-
-  export type SaleUpdateManyWithoutBusinessLineNestedInput = {
-    create?: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput> | SaleCreateWithoutBusinessLineInput[] | SaleUncheckedCreateWithoutBusinessLineInput[]
-    connectOrCreate?: SaleCreateOrConnectWithoutBusinessLineInput | SaleCreateOrConnectWithoutBusinessLineInput[]
-    upsert?: SaleUpsertWithWhereUniqueWithoutBusinessLineInput | SaleUpsertWithWhereUniqueWithoutBusinessLineInput[]
-    createMany?: SaleCreateManyBusinessLineInputEnvelope
-    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    update?: SaleUpdateWithWhereUniqueWithoutBusinessLineInput | SaleUpdateWithWhereUniqueWithoutBusinessLineInput[]
-    updateMany?: SaleUpdateManyWithWhereWithoutBusinessLineInput | SaleUpdateManyWithWhereWithoutBusinessLineInput[]
-    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
   export type ExpenseUpdateManyWithoutBusinessLineNestedInput = {
@@ -50278,20 +50629,6 @@ export namespace Prisma {
     update?: ProductUpdateWithWhereUniqueWithoutBusinessLineInput | ProductUpdateWithWhereUniqueWithoutBusinessLineInput[]
     updateMany?: ProductUpdateManyWithWhereWithoutBusinessLineInput | ProductUpdateManyWithWhereWithoutBusinessLineInput[]
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
-  }
-
-  export type SaleUncheckedUpdateManyWithoutBusinessLineNestedInput = {
-    create?: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput> | SaleCreateWithoutBusinessLineInput[] | SaleUncheckedCreateWithoutBusinessLineInput[]
-    connectOrCreate?: SaleCreateOrConnectWithoutBusinessLineInput | SaleCreateOrConnectWithoutBusinessLineInput[]
-    upsert?: SaleUpsertWithWhereUniqueWithoutBusinessLineInput | SaleUpsertWithWhereUniqueWithoutBusinessLineInput[]
-    createMany?: SaleCreateManyBusinessLineInputEnvelope
-    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
-    update?: SaleUpdateWithWhereUniqueWithoutBusinessLineInput | SaleUpdateWithWhereUniqueWithoutBusinessLineInput[]
-    updateMany?: SaleUpdateManyWithWhereWithoutBusinessLineInput | SaleUpdateManyWithWhereWithoutBusinessLineInput[]
-    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
   export type ExpenseUncheckedUpdateManyWithoutBusinessLineNestedInput = {
@@ -50343,11 +50680,11 @@ export namespace Prisma {
     connect?: UserBranchWhereUniqueInput | UserBranchWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseCreateNestedManyWithoutBranchInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput> | CashRegisterCloseCreateWithoutBranchInput[] | CashRegisterCloseUncheckedCreateWithoutBranchInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutBranchInput | CashRegisterCloseCreateOrConnectWithoutBranchInput[]
-    createMany?: CashRegisterCloseCreateManyBranchInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionCreateNestedManyWithoutBranchInput = {
+    create?: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput> | CashSessionCreateWithoutBranchInput[] | CashSessionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutBranchInput | CashSessionCreateOrConnectWithoutBranchInput[]
+    createMany?: CashSessionCreateManyBranchInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type StockMovementCreateNestedManyWithoutBranchInput = {
@@ -50392,11 +50729,11 @@ export namespace Prisma {
     connect?: UserBranchWhereUniqueInput | UserBranchWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput> | CashRegisterCloseCreateWithoutBranchInput[] | CashRegisterCloseUncheckedCreateWithoutBranchInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutBranchInput | CashRegisterCloseCreateOrConnectWithoutBranchInput[]
-    createMany?: CashRegisterCloseCreateManyBranchInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput> | CashSessionCreateWithoutBranchInput[] | CashSessionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutBranchInput | CashSessionCreateOrConnectWithoutBranchInput[]
+    createMany?: CashSessionCreateManyBranchInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type StockMovementUncheckedCreateNestedManyWithoutBranchInput = {
@@ -50476,18 +50813,18 @@ export namespace Prisma {
     deleteMany?: UserBranchScalarWhereInput | UserBranchScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUpdateManyWithoutBranchNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput> | CashRegisterCloseCreateWithoutBranchInput[] | CashRegisterCloseUncheckedCreateWithoutBranchInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutBranchInput | CashRegisterCloseCreateOrConnectWithoutBranchInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutBranchInput | CashRegisterCloseUpsertWithWhereUniqueWithoutBranchInput[]
-    createMany?: CashRegisterCloseCreateManyBranchInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput | CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutBranchInput | CashRegisterCloseUpdateManyWithWhereWithoutBranchInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput> | CashSessionCreateWithoutBranchInput[] | CashSessionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutBranchInput | CashSessionCreateOrConnectWithoutBranchInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutBranchInput | CashSessionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: CashSessionCreateManyBranchInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutBranchInput | CashSessionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutBranchInput | CashSessionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type StockMovementUpdateManyWithoutBranchNestedInput = {
@@ -50574,18 +50911,18 @@ export namespace Prisma {
     deleteMany?: UserBranchScalarWhereInput | UserBranchScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput> | CashRegisterCloseCreateWithoutBranchInput[] | CashRegisterCloseUncheckedCreateWithoutBranchInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutBranchInput | CashRegisterCloseCreateOrConnectWithoutBranchInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutBranchInput | CashRegisterCloseUpsertWithWhereUniqueWithoutBranchInput[]
-    createMany?: CashRegisterCloseCreateManyBranchInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput | CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutBranchInput | CashRegisterCloseUpdateManyWithWhereWithoutBranchInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput> | CashSessionCreateWithoutBranchInput[] | CashSessionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutBranchInput | CashSessionCreateOrConnectWithoutBranchInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutBranchInput | CashSessionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: CashSessionCreateManyBranchInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutBranchInput | CashSessionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutBranchInput | CashSessionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type StockMovementUncheckedUpdateManyWithoutBranchNestedInput = {
@@ -50678,11 +51015,18 @@ export namespace Prisma {
     connect?: AccountTransactionWhereUniqueInput | AccountTransactionWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseCreateNestedManyWithoutAccountInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput> | CashRegisterCloseCreateWithoutAccountInput[] | CashRegisterCloseUncheckedCreateWithoutAccountInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutAccountInput | CashRegisterCloseCreateOrConnectWithoutAccountInput[]
-    createMany?: CashRegisterCloseCreateManyAccountInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionCreateNestedManyWithoutAccountInput = {
+    create?: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput> | CashSessionCreateWithoutAccountInput[] | CashSessionUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutAccountInput | CashSessionCreateOrConnectWithoutAccountInput[]
+    createMany?: CashSessionCreateManyAccountInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+  }
+
+  export type CashSessionCreateNestedManyWithoutDepositAccountInput = {
+    create?: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput> | CashSessionCreateWithoutDepositAccountInput[] | CashSessionUncheckedCreateWithoutDepositAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutDepositAccountInput | CashSessionCreateOrConnectWithoutDepositAccountInput[]
+    createMany?: CashSessionCreateManyDepositAccountInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type AccountReconciliationCreateNestedManyWithoutAccountInput = {
@@ -50734,11 +51078,18 @@ export namespace Prisma {
     connect?: AccountTransactionWhereUniqueInput | AccountTransactionWhereUniqueInput[]
   }
 
-  export type CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput> | CashRegisterCloseCreateWithoutAccountInput[] | CashRegisterCloseUncheckedCreateWithoutAccountInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutAccountInput | CashRegisterCloseCreateOrConnectWithoutAccountInput[]
-    createMany?: CashRegisterCloseCreateManyAccountInputEnvelope
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
+  export type CashSessionUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput> | CashSessionCreateWithoutAccountInput[] | CashSessionUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutAccountInput | CashSessionCreateOrConnectWithoutAccountInput[]
+    createMany?: CashSessionCreateManyAccountInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+  }
+
+  export type CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput = {
+    create?: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput> | CashSessionCreateWithoutDepositAccountInput[] | CashSessionUncheckedCreateWithoutDepositAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutDepositAccountInput | CashSessionCreateOrConnectWithoutDepositAccountInput[]
+    createMany?: CashSessionCreateManyDepositAccountInputEnvelope
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
   }
 
   export type AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput = {
@@ -50854,18 +51205,32 @@ export namespace Prisma {
     deleteMany?: AccountTransactionScalarWhereInput | AccountTransactionScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUpdateManyWithoutAccountNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput> | CashRegisterCloseCreateWithoutAccountInput[] | CashRegisterCloseUncheckedCreateWithoutAccountInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutAccountInput | CashRegisterCloseCreateOrConnectWithoutAccountInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutAccountInput | CashRegisterCloseUpsertWithWhereUniqueWithoutAccountInput[]
-    createMany?: CashRegisterCloseCreateManyAccountInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutAccountInput | CashRegisterCloseUpdateWithWhereUniqueWithoutAccountInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutAccountInput | CashRegisterCloseUpdateManyWithWhereWithoutAccountInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput> | CashSessionCreateWithoutAccountInput[] | CashSessionUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutAccountInput | CashSessionCreateOrConnectWithoutAccountInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutAccountInput | CashSessionUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: CashSessionCreateManyAccountInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutAccountInput | CashSessionUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutAccountInput | CashSessionUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+  }
+
+  export type CashSessionUpdateManyWithoutDepositAccountNestedInput = {
+    create?: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput> | CashSessionCreateWithoutDepositAccountInput[] | CashSessionUncheckedCreateWithoutDepositAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutDepositAccountInput | CashSessionCreateOrConnectWithoutDepositAccountInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutDepositAccountInput | CashSessionUpsertWithWhereUniqueWithoutDepositAccountInput[]
+    createMany?: CashSessionCreateManyDepositAccountInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutDepositAccountInput | CashSessionUpdateWithWhereUniqueWithoutDepositAccountInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutDepositAccountInput | CashSessionUpdateManyWithWhereWithoutDepositAccountInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type AccountReconciliationUpdateManyWithoutAccountNestedInput = {
@@ -50966,18 +51331,32 @@ export namespace Prisma {
     deleteMany?: AccountTransactionScalarWhereInput | AccountTransactionScalarWhereInput[]
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput = {
-    create?: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput> | CashRegisterCloseCreateWithoutAccountInput[] | CashRegisterCloseUncheckedCreateWithoutAccountInput[]
-    connectOrCreate?: CashRegisterCloseCreateOrConnectWithoutAccountInput | CashRegisterCloseCreateOrConnectWithoutAccountInput[]
-    upsert?: CashRegisterCloseUpsertWithWhereUniqueWithoutAccountInput | CashRegisterCloseUpsertWithWhereUniqueWithoutAccountInput[]
-    createMany?: CashRegisterCloseCreateManyAccountInputEnvelope
-    set?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    disconnect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    delete?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    connect?: CashRegisterCloseWhereUniqueInput | CashRegisterCloseWhereUniqueInput[]
-    update?: CashRegisterCloseUpdateWithWhereUniqueWithoutAccountInput | CashRegisterCloseUpdateWithWhereUniqueWithoutAccountInput[]
-    updateMany?: CashRegisterCloseUpdateManyWithWhereWithoutAccountInput | CashRegisterCloseUpdateManyWithWhereWithoutAccountInput[]
-    deleteMany?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
+  export type CashSessionUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput> | CashSessionCreateWithoutAccountInput[] | CashSessionUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutAccountInput | CashSessionCreateOrConnectWithoutAccountInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutAccountInput | CashSessionUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: CashSessionCreateManyAccountInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutAccountInput | CashSessionUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutAccountInput | CashSessionUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+  }
+
+  export type CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput = {
+    create?: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput> | CashSessionCreateWithoutDepositAccountInput[] | CashSessionUncheckedCreateWithoutDepositAccountInput[]
+    connectOrCreate?: CashSessionCreateOrConnectWithoutDepositAccountInput | CashSessionCreateOrConnectWithoutDepositAccountInput[]
+    upsert?: CashSessionUpsertWithWhereUniqueWithoutDepositAccountInput | CashSessionUpsertWithWhereUniqueWithoutDepositAccountInput[]
+    createMany?: CashSessionCreateManyDepositAccountInputEnvelope
+    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
+    update?: CashSessionUpdateWithWhereUniqueWithoutDepositAccountInput | CashSessionUpdateWithWhereUniqueWithoutDepositAccountInput[]
+    updateMany?: CashSessionUpdateManyWithWhereWithoutDepositAccountInput | CashSessionUpdateManyWithWhereWithoutDepositAccountInput[]
+    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput = {
@@ -51468,12 +51847,6 @@ export namespace Prisma {
     connect?: BranchWhereUniqueInput
   }
 
-  export type BusinessLineCreateNestedOneWithoutSalesInput = {
-    create?: XOR<BusinessLineCreateWithoutSalesInput, BusinessLineUncheckedCreateWithoutSalesInput>
-    connectOrCreate?: BusinessLineCreateOrConnectWithoutSalesInput
-    connect?: BusinessLineWhereUniqueInput
-  }
-
   export type SaleItemCreateNestedManyWithoutSaleInput = {
     create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
@@ -51552,16 +51925,6 @@ export namespace Prisma {
     delete?: BranchWhereInput | boolean
     connect?: BranchWhereUniqueInput
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutSalesInput, BranchUpdateWithoutSalesInput>, BranchUncheckedUpdateWithoutSalesInput>
-  }
-
-  export type BusinessLineUpdateOneWithoutSalesNestedInput = {
-    create?: XOR<BusinessLineCreateWithoutSalesInput, BusinessLineUncheckedCreateWithoutSalesInput>
-    connectOrCreate?: BusinessLineCreateOrConnectWithoutSalesInput
-    upsert?: BusinessLineUpsertWithoutSalesInput
-    disconnect?: BusinessLineWhereInput | boolean
-    delete?: BusinessLineWhereInput | boolean
-    connect?: BusinessLineWhereUniqueInput
-    update?: XOR<XOR<BusinessLineUpdateToOneWithWhereWithoutSalesInput, BusinessLineUpdateWithoutSalesInput>, BusinessLineUncheckedUpdateWithoutSalesInput>
   }
 
   export type SaleItemUpdateManyWithoutSaleNestedInput = {
@@ -52678,48 +53041,84 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPayrollRunItemsInput, UserUpdateWithoutPayrollRunItemsInput>, UserUncheckedUpdateWithoutPayrollRunItemsInput>
   }
 
-  export type FinancialAccountCreateNestedOneWithoutCashClosesInput = {
-    create?: XOR<FinancialAccountCreateWithoutCashClosesInput, FinancialAccountUncheckedCreateWithoutCashClosesInput>
-    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashClosesInput
+  export type FinancialAccountCreateNestedOneWithoutCashSessionsInput = {
+    create?: XOR<FinancialAccountCreateWithoutCashSessionsInput, FinancialAccountUncheckedCreateWithoutCashSessionsInput>
+    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashSessionsInput
     connect?: FinancialAccountWhereUniqueInput
   }
 
-  export type BranchCreateNestedOneWithoutCashClosesInput = {
-    create?: XOR<BranchCreateWithoutCashClosesInput, BranchUncheckedCreateWithoutCashClosesInput>
-    connectOrCreate?: BranchCreateOrConnectWithoutCashClosesInput
+  export type BranchCreateNestedOneWithoutCashSessionsInput = {
+    create?: XOR<BranchCreateWithoutCashSessionsInput, BranchUncheckedCreateWithoutCashSessionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutCashSessionsInput
     connect?: BranchWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutCashRegisterClosesInput = {
-    create?: XOR<UserCreateWithoutCashRegisterClosesInput, UserUncheckedCreateWithoutCashRegisterClosesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCashRegisterClosesInput
+  export type UserCreateNestedOneWithoutCashSessionsOpenedInput = {
+    create?: XOR<UserCreateWithoutCashSessionsOpenedInput, UserUncheckedCreateWithoutCashSessionsOpenedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsOpenedInput
     connect?: UserWhereUniqueInput
   }
 
-  export type FinancialAccountUpdateOneRequiredWithoutCashClosesNestedInput = {
-    create?: XOR<FinancialAccountCreateWithoutCashClosesInput, FinancialAccountUncheckedCreateWithoutCashClosesInput>
-    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashClosesInput
-    upsert?: FinancialAccountUpsertWithoutCashClosesInput
-    connect?: FinancialAccountWhereUniqueInput
-    update?: XOR<XOR<FinancialAccountUpdateToOneWithWhereWithoutCashClosesInput, FinancialAccountUpdateWithoutCashClosesInput>, FinancialAccountUncheckedUpdateWithoutCashClosesInput>
+  export type UserCreateNestedOneWithoutCashSessionsClosedInput = {
+    create?: XOR<UserCreateWithoutCashSessionsClosedInput, UserUncheckedCreateWithoutCashSessionsClosedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsClosedInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type BranchUpdateOneWithoutCashClosesNestedInput = {
-    create?: XOR<BranchCreateWithoutCashClosesInput, BranchUncheckedCreateWithoutCashClosesInput>
-    connectOrCreate?: BranchCreateOrConnectWithoutCashClosesInput
-    upsert?: BranchUpsertWithoutCashClosesInput
+  export type FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput = {
+    create?: XOR<FinancialAccountCreateWithoutCashSessionDepositsInput, FinancialAccountUncheckedCreateWithoutCashSessionDepositsInput>
+    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashSessionDepositsInput
+    connect?: FinancialAccountWhereUniqueInput
+  }
+
+  export type EnumCashSessionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CashSessionStatus
+  }
+
+  export type FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput = {
+    create?: XOR<FinancialAccountCreateWithoutCashSessionsInput, FinancialAccountUncheckedCreateWithoutCashSessionsInput>
+    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashSessionsInput
+    upsert?: FinancialAccountUpsertWithoutCashSessionsInput
+    connect?: FinancialAccountWhereUniqueInput
+    update?: XOR<XOR<FinancialAccountUpdateToOneWithWhereWithoutCashSessionsInput, FinancialAccountUpdateWithoutCashSessionsInput>, FinancialAccountUncheckedUpdateWithoutCashSessionsInput>
+  }
+
+  export type BranchUpdateOneWithoutCashSessionsNestedInput = {
+    create?: XOR<BranchCreateWithoutCashSessionsInput, BranchUncheckedCreateWithoutCashSessionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutCashSessionsInput
+    upsert?: BranchUpsertWithoutCashSessionsInput
     disconnect?: BranchWhereInput | boolean
     delete?: BranchWhereInput | boolean
     connect?: BranchWhereUniqueInput
-    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutCashClosesInput, BranchUpdateWithoutCashClosesInput>, BranchUncheckedUpdateWithoutCashClosesInput>
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutCashSessionsInput, BranchUpdateWithoutCashSessionsInput>, BranchUncheckedUpdateWithoutCashSessionsInput>
   }
 
-  export type UserUpdateOneRequiredWithoutCashRegisterClosesNestedInput = {
-    create?: XOR<UserCreateWithoutCashRegisterClosesInput, UserUncheckedCreateWithoutCashRegisterClosesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCashRegisterClosesInput
-    upsert?: UserUpsertWithoutCashRegisterClosesInput
+  export type UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput = {
+    create?: XOR<UserCreateWithoutCashSessionsOpenedInput, UserUncheckedCreateWithoutCashSessionsOpenedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsOpenedInput
+    upsert?: UserUpsertWithoutCashSessionsOpenedInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCashRegisterClosesInput, UserUpdateWithoutCashRegisterClosesInput>, UserUncheckedUpdateWithoutCashRegisterClosesInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCashSessionsOpenedInput, UserUpdateWithoutCashSessionsOpenedInput>, UserUncheckedUpdateWithoutCashSessionsOpenedInput>
+  }
+
+  export type UserUpdateOneWithoutCashSessionsClosedNestedInput = {
+    create?: XOR<UserCreateWithoutCashSessionsClosedInput, UserUncheckedCreateWithoutCashSessionsClosedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsClosedInput
+    upsert?: UserUpsertWithoutCashSessionsClosedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCashSessionsClosedInput, UserUpdateWithoutCashSessionsClosedInput>, UserUncheckedUpdateWithoutCashSessionsClosedInput>
+  }
+
+  export type FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput = {
+    create?: XOR<FinancialAccountCreateWithoutCashSessionDepositsInput, FinancialAccountUncheckedCreateWithoutCashSessionDepositsInput>
+    connectOrCreate?: FinancialAccountCreateOrConnectWithoutCashSessionDepositsInput
+    upsert?: FinancialAccountUpsertWithoutCashSessionDepositsInput
+    disconnect?: FinancialAccountWhereInput | boolean
+    delete?: FinancialAccountWhereInput | boolean
+    connect?: FinancialAccountWhereUniqueInput
+    update?: XOR<XOR<FinancialAccountUpdateToOneWithWhereWithoutCashSessionDepositsInput, FinancialAccountUpdateWithoutCashSessionDepositsInput>, FinancialAccountUncheckedUpdateWithoutCashSessionDepositsInput>
   }
 
   export type FinancialAccountCreateNestedOneWithoutReconciliationsInput = {
@@ -53256,6 +53655,23 @@ export namespace Prisma {
     _max?: NestedEnumPayrollRunStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumCashSessionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CashSessionStatus | EnumCashSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCashSessionStatusFilter<$PrismaModel> | $Enums.CashSessionStatus
+  }
+
+  export type NestedEnumCashSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CashSessionStatus | EnumCashSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CashSessionStatus[] | ListEnumCashSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCashSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.CashSessionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCashSessionStatusFilter<$PrismaModel>
+    _max?: NestedEnumCashSessionStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumReconciliationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ReconciliationStatus | EnumReconciliationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ReconciliationStatus[] | ListEnumReconciliationStatusFieldRefInput<$PrismaModel>
@@ -53360,7 +53776,6 @@ export namespace Prisma {
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -53372,7 +53787,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -53412,7 +53826,6 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -53424,7 +53837,6 @@ export namespace Prisma {
     createdById: string
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -53725,39 +54137,107 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CashRegisterCloseCreateWithoutClosedByInput = {
+  export type CashSessionCreateWithoutOpenedByInput = {
     id?: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    account: FinancialAccountCreateNestedOneWithoutCashClosesInput
-    branch?: BranchCreateNestedOneWithoutCashClosesInput
+    account: FinancialAccountCreateNestedOneWithoutCashSessionsInput
+    branch?: BranchCreateNestedOneWithoutCashSessionsInput
+    closedBy?: UserCreateNestedOneWithoutCashSessionsClosedInput
+    depositAccount?: FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput
   }
 
-  export type CashRegisterCloseUncheckedCreateWithoutClosedByInput = {
+  export type CashSessionUncheckedCreateWithoutOpenedByInput = {
     id?: string
     accountId: string
     branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CashRegisterCloseCreateOrConnectWithoutClosedByInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    create: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput>
+  export type CashSessionCreateOrConnectWithoutOpenedByInput = {
+    where: CashSessionWhereUniqueInput
+    create: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput>
   }
 
-  export type CashRegisterCloseCreateManyClosedByInputEnvelope = {
-    data: CashRegisterCloseCreateManyClosedByInput | CashRegisterCloseCreateManyClosedByInput[]
+  export type CashSessionCreateManyOpenedByInputEnvelope = {
+    data: CashSessionCreateManyOpenedByInput | CashSessionCreateManyOpenedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CashSessionCreateWithoutClosedByInput = {
+    id?: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account: FinancialAccountCreateNestedOneWithoutCashSessionsInput
+    branch?: BranchCreateNestedOneWithoutCashSessionsInput
+    openedBy: UserCreateNestedOneWithoutCashSessionsOpenedInput
+    depositAccount?: FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput
+  }
+
+  export type CashSessionUncheckedCreateWithoutClosedByInput = {
+    id?: string
+    accountId: string
+    branchId?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CashSessionCreateOrConnectWithoutClosedByInput = {
+    where: CashSessionWhereUniqueInput
+    create: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput>
+  }
+
+  export type CashSessionCreateManyClosedByInputEnvelope = {
+    data: CashSessionCreateManyClosedByInput | CashSessionCreateManyClosedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -53897,7 +54377,6 @@ export namespace Prisma {
     soldById?: StringNullableFilter<"Sale"> | string | null
     customerId?: StringFilter<"Sale"> | string
     branchId?: StringNullableFilter<"Sale"> | string | null
-    businessLineId?: StringNullableFilter<"Sale"> | string | null
     currency?: StringFilter<"Sale"> | string
     subtotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
@@ -54163,37 +54642,61 @@ export namespace Prisma {
     role?: StringNullableFilter<"UserBranch"> | string | null
   }
 
-  export type CashRegisterCloseUpsertWithWhereUniqueWithoutClosedByInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    update: XOR<CashRegisterCloseUpdateWithoutClosedByInput, CashRegisterCloseUncheckedUpdateWithoutClosedByInput>
-    create: XOR<CashRegisterCloseCreateWithoutClosedByInput, CashRegisterCloseUncheckedCreateWithoutClosedByInput>
+  export type CashSessionUpsertWithWhereUniqueWithoutOpenedByInput = {
+    where: CashSessionWhereUniqueInput
+    update: XOR<CashSessionUpdateWithoutOpenedByInput, CashSessionUncheckedUpdateWithoutOpenedByInput>
+    create: XOR<CashSessionCreateWithoutOpenedByInput, CashSessionUncheckedCreateWithoutOpenedByInput>
   }
 
-  export type CashRegisterCloseUpdateWithWhereUniqueWithoutClosedByInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    data: XOR<CashRegisterCloseUpdateWithoutClosedByInput, CashRegisterCloseUncheckedUpdateWithoutClosedByInput>
+  export type CashSessionUpdateWithWhereUniqueWithoutOpenedByInput = {
+    where: CashSessionWhereUniqueInput
+    data: XOR<CashSessionUpdateWithoutOpenedByInput, CashSessionUncheckedUpdateWithoutOpenedByInput>
   }
 
-  export type CashRegisterCloseUpdateManyWithWhereWithoutClosedByInput = {
-    where: CashRegisterCloseScalarWhereInput
-    data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyWithoutClosedByInput>
+  export type CashSessionUpdateManyWithWhereWithoutOpenedByInput = {
+    where: CashSessionScalarWhereInput
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutOpenedByInput>
   }
 
-  export type CashRegisterCloseScalarWhereInput = {
-    AND?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
-    OR?: CashRegisterCloseScalarWhereInput[]
-    NOT?: CashRegisterCloseScalarWhereInput | CashRegisterCloseScalarWhereInput[]
-    id?: StringFilter<"CashRegisterClose"> | string
-    accountId?: StringFilter<"CashRegisterClose"> | string
-    branchId?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closeDate?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    expectedBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFilter<"CashRegisterClose"> | Decimal | DecimalJsLike | number | string
-    notes?: StringNullableFilter<"CashRegisterClose"> | string | null
-    closedById?: StringFilter<"CashRegisterClose"> | string
-    createdAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
-    updatedAt?: DateTimeFilter<"CashRegisterClose"> | Date | string
+  export type CashSessionScalarWhereInput = {
+    AND?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+    OR?: CashSessionScalarWhereInput[]
+    NOT?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
+    id?: StringFilter<"CashSession"> | string
+    accountId?: StringFilter<"CashSession"> | string
+    branchId?: StringNullableFilter<"CashSession"> | string | null
+    status?: EnumCashSessionStatusFilter<"CashSession"> | $Enums.CashSessionStatus
+    openedAt?: DateTimeFilter<"CashSession"> | Date | string
+    openedById?: StringFilter<"CashSession"> | string
+    openingBalance?: DecimalFilter<"CashSession"> | Decimal | DecimalJsLike | number | string
+    openingNotes?: StringNullableFilter<"CashSession"> | string | null
+    closedAt?: DateTimeNullableFilter<"CashSession"> | Date | string | null
+    closedById?: StringNullableFilter<"CashSession"> | string | null
+    expectedBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    difference?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: StringNullableFilter<"CashSession"> | string | null
+    closingNotes?: StringNullableFilter<"CashSession"> | string | null
+    createdAt?: DateTimeFilter<"CashSession"> | Date | string
+    updatedAt?: DateTimeFilter<"CashSession"> | Date | string
+  }
+
+  export type CashSessionUpsertWithWhereUniqueWithoutClosedByInput = {
+    where: CashSessionWhereUniqueInput
+    update: XOR<CashSessionUpdateWithoutClosedByInput, CashSessionUncheckedUpdateWithoutClosedByInput>
+    create: XOR<CashSessionCreateWithoutClosedByInput, CashSessionUncheckedCreateWithoutClosedByInput>
+  }
+
+  export type CashSessionUpdateWithWhereUniqueWithoutClosedByInput = {
+    where: CashSessionWhereUniqueInput
+    data: XOR<CashSessionUpdateWithoutClosedByInput, CashSessionUncheckedUpdateWithoutClosedByInput>
+  }
+
+  export type CashSessionUpdateManyWithWhereWithoutClosedByInput = {
+    where: CashSessionScalarWhereInput
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutClosedByInput>
   }
 
   export type AccountReconciliationUpsertWithWhereUniqueWithoutReconciledByInput = {
@@ -54255,7 +54758,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -54282,7 +54786,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -54325,7 +54830,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -54352,7 +54858,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -54379,7 +54886,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -54406,7 +54914,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -54449,7 +54958,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -54476,7 +54986,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -54523,58 +55034,6 @@ export namespace Prisma {
 
   export type ProductCreateManyBusinessLineInputEnvelope = {
     data: ProductCreateManyBusinessLineInput | ProductCreateManyBusinessLineInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SaleCreateWithoutBusinessLineInput = {
-    id?: string
-    saleNumber?: number
-    currency?: string
-    subtotal: Decimal | DecimalJsLike | number | string
-    discountTotal?: Decimal | DecimalJsLike | number | string
-    taxTotal?: Decimal | DecimalJsLike | number | string
-    total: Decimal | DecimalJsLike | number | string
-    status?: $Enums.SaleStatus
-    note?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdBy: UserCreateNestedOneWithoutSalesInput
-    soldBy?: UserCreateNestedOneWithoutSoldSalesInput
-    customer: CustomerCreateNestedOneWithoutSalesInput
-    branch?: BranchCreateNestedOneWithoutSalesInput
-    items?: SaleItemCreateNestedManyWithoutSaleInput
-    payments?: SalePaymentCreateNestedManyWithoutSaleInput
-    receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
-  }
-
-  export type SaleUncheckedCreateWithoutBusinessLineInput = {
-    id?: string
-    saleNumber?: number
-    createdById: string
-    soldById?: string | null
-    customerId: string
-    branchId?: string | null
-    currency?: string
-    subtotal: Decimal | DecimalJsLike | number | string
-    discountTotal?: Decimal | DecimalJsLike | number | string
-    taxTotal?: Decimal | DecimalJsLike | number | string
-    total: Decimal | DecimalJsLike | number | string
-    status?: $Enums.SaleStatus
-    note?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    items?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
-    payments?: SalePaymentUncheckedCreateNestedManyWithoutSaleInput
-    receivable?: AccountsReceivableUncheckedCreateNestedOneWithoutSaleInput
-  }
-
-  export type SaleCreateOrConnectWithoutBusinessLineInput = {
-    where: SaleWhereUniqueInput
-    create: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput>
-  }
-
-  export type SaleCreateManyBusinessLineInputEnvelope = {
-    data: SaleCreateManyBusinessLineInput | SaleCreateManyBusinessLineInput[]
     skipDuplicates?: boolean
   }
 
@@ -54665,22 +55124,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
 
-  export type SaleUpsertWithWhereUniqueWithoutBusinessLineInput = {
-    where: SaleWhereUniqueInput
-    update: XOR<SaleUpdateWithoutBusinessLineInput, SaleUncheckedUpdateWithoutBusinessLineInput>
-    create: XOR<SaleCreateWithoutBusinessLineInput, SaleUncheckedCreateWithoutBusinessLineInput>
-  }
-
-  export type SaleUpdateWithWhereUniqueWithoutBusinessLineInput = {
-    where: SaleWhereUniqueInput
-    data: XOR<SaleUpdateWithoutBusinessLineInput, SaleUncheckedUpdateWithoutBusinessLineInput>
-  }
-
-  export type SaleUpdateManyWithWhereWithoutBusinessLineInput = {
-    where: SaleScalarWhereInput
-    data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutBusinessLineInput>
-  }
-
   export type ExpenseUpsertWithWhereUniqueWithoutBusinessLineInput = {
     where: ExpenseWhereUniqueInput
     update: XOR<ExpenseUpdateWithoutBusinessLineInput, ExpenseUncheckedUpdateWithoutBusinessLineInput>
@@ -54714,7 +55157,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -54735,7 +55179,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -54764,7 +55209,6 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSalesInput
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -54776,7 +55220,6 @@ export namespace Prisma {
     createdById: string
     soldById?: string | null
     customerId: string
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -54927,39 +55370,55 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CashRegisterCloseCreateWithoutBranchInput = {
+  export type CashSessionCreateWithoutBranchInput = {
     id?: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    account: FinancialAccountCreateNestedOneWithoutCashClosesInput
-    closedBy: UserCreateNestedOneWithoutCashRegisterClosesInput
+    account: FinancialAccountCreateNestedOneWithoutCashSessionsInput
+    openedBy: UserCreateNestedOneWithoutCashSessionsOpenedInput
+    closedBy?: UserCreateNestedOneWithoutCashSessionsClosedInput
+    depositAccount?: FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput
   }
 
-  export type CashRegisterCloseUncheckedCreateWithoutBranchInput = {
+  export type CashSessionUncheckedCreateWithoutBranchInput = {
     id?: string
     accountId: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CashRegisterCloseCreateOrConnectWithoutBranchInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    create: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput>
+  export type CashSessionCreateOrConnectWithoutBranchInput = {
+    where: CashSessionWhereUniqueInput
+    create: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput>
   }
 
-  export type CashRegisterCloseCreateManyBranchInputEnvelope = {
-    data: CashRegisterCloseCreateManyBranchInput | CashRegisterCloseCreateManyBranchInput[]
+  export type CashSessionCreateManyBranchInputEnvelope = {
+    data: CashSessionCreateManyBranchInput | CashSessionCreateManyBranchInput[]
     skipDuplicates?: boolean
   }
 
@@ -55094,20 +55553,20 @@ export namespace Prisma {
     data: XOR<UserBranchUpdateManyMutationInput, UserBranchUncheckedUpdateManyWithoutBranchInput>
   }
 
-  export type CashRegisterCloseUpsertWithWhereUniqueWithoutBranchInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    update: XOR<CashRegisterCloseUpdateWithoutBranchInput, CashRegisterCloseUncheckedUpdateWithoutBranchInput>
-    create: XOR<CashRegisterCloseCreateWithoutBranchInput, CashRegisterCloseUncheckedCreateWithoutBranchInput>
+  export type CashSessionUpsertWithWhereUniqueWithoutBranchInput = {
+    where: CashSessionWhereUniqueInput
+    update: XOR<CashSessionUpdateWithoutBranchInput, CashSessionUncheckedUpdateWithoutBranchInput>
+    create: XOR<CashSessionCreateWithoutBranchInput, CashSessionUncheckedCreateWithoutBranchInput>
   }
 
-  export type CashRegisterCloseUpdateWithWhereUniqueWithoutBranchInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    data: XOR<CashRegisterCloseUpdateWithoutBranchInput, CashRegisterCloseUncheckedUpdateWithoutBranchInput>
+  export type CashSessionUpdateWithWhereUniqueWithoutBranchInput = {
+    where: CashSessionWhereUniqueInput
+    data: XOR<CashSessionUpdateWithoutBranchInput, CashSessionUncheckedUpdateWithoutBranchInput>
   }
 
-  export type CashRegisterCloseUpdateManyWithWhereWithoutBranchInput = {
-    where: CashRegisterCloseScalarWhereInput
-    data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyWithoutBranchInput>
+  export type CashSessionUpdateManyWithWhereWithoutBranchInput = {
+    where: CashSessionScalarWhereInput
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutBranchInput>
   }
 
   export type StockMovementUpsertWithWhereUniqueWithoutBranchInput = {
@@ -55165,7 +55624,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -55192,7 +55652,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -55215,7 +55676,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutBranchInput
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -55233,7 +55694,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutBranchInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
@@ -55276,7 +55737,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -55303,7 +55765,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -55332,7 +55795,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutBranchNestedInput
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -55350,7 +55813,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutBranchNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
@@ -55368,7 +55831,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -55386,7 +55849,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
@@ -55657,39 +56120,107 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CashRegisterCloseCreateWithoutAccountInput = {
+  export type CashSessionCreateWithoutAccountInput = {
     id?: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    branch?: BranchCreateNestedOneWithoutCashClosesInput
-    closedBy: UserCreateNestedOneWithoutCashRegisterClosesInput
+    branch?: BranchCreateNestedOneWithoutCashSessionsInput
+    openedBy: UserCreateNestedOneWithoutCashSessionsOpenedInput
+    closedBy?: UserCreateNestedOneWithoutCashSessionsClosedInput
+    depositAccount?: FinancialAccountCreateNestedOneWithoutCashSessionDepositsInput
   }
 
-  export type CashRegisterCloseUncheckedCreateWithoutAccountInput = {
+  export type CashSessionUncheckedCreateWithoutAccountInput = {
     id?: string
     branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CashRegisterCloseCreateOrConnectWithoutAccountInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    create: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput>
+  export type CashSessionCreateOrConnectWithoutAccountInput = {
+    where: CashSessionWhereUniqueInput
+    create: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput>
   }
 
-  export type CashRegisterCloseCreateManyAccountInputEnvelope = {
-    data: CashRegisterCloseCreateManyAccountInput | CashRegisterCloseCreateManyAccountInput[]
+  export type CashSessionCreateManyAccountInputEnvelope = {
+    data: CashSessionCreateManyAccountInput | CashSessionCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CashSessionCreateWithoutDepositAccountInput = {
+    id?: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account: FinancialAccountCreateNestedOneWithoutCashSessionsInput
+    branch?: BranchCreateNestedOneWithoutCashSessionsInput
+    openedBy: UserCreateNestedOneWithoutCashSessionsOpenedInput
+    closedBy?: UserCreateNestedOneWithoutCashSessionsClosedInput
+  }
+
+  export type CashSessionUncheckedCreateWithoutDepositAccountInput = {
+    id?: string
+    accountId: string
+    branchId?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CashSessionCreateOrConnectWithoutDepositAccountInput = {
+    where: CashSessionWhereUniqueInput
+    create: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput>
+  }
+
+  export type CashSessionCreateManyDepositAccountInputEnvelope = {
+    data: CashSessionCreateManyDepositAccountInput | CashSessionCreateManyDepositAccountInput[]
     skipDuplicates?: boolean
   }
 
@@ -55762,7 +56293,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -55780,7 +56311,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
@@ -55907,20 +56438,36 @@ export namespace Prisma {
     data: XOR<AccountTransactionUpdateManyMutationInput, AccountTransactionUncheckedUpdateManyWithoutRelatedAccountInput>
   }
 
-  export type CashRegisterCloseUpsertWithWhereUniqueWithoutAccountInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    update: XOR<CashRegisterCloseUpdateWithoutAccountInput, CashRegisterCloseUncheckedUpdateWithoutAccountInput>
-    create: XOR<CashRegisterCloseCreateWithoutAccountInput, CashRegisterCloseUncheckedCreateWithoutAccountInput>
+  export type CashSessionUpsertWithWhereUniqueWithoutAccountInput = {
+    where: CashSessionWhereUniqueInput
+    update: XOR<CashSessionUpdateWithoutAccountInput, CashSessionUncheckedUpdateWithoutAccountInput>
+    create: XOR<CashSessionCreateWithoutAccountInput, CashSessionUncheckedCreateWithoutAccountInput>
   }
 
-  export type CashRegisterCloseUpdateWithWhereUniqueWithoutAccountInput = {
-    where: CashRegisterCloseWhereUniqueInput
-    data: XOR<CashRegisterCloseUpdateWithoutAccountInput, CashRegisterCloseUncheckedUpdateWithoutAccountInput>
+  export type CashSessionUpdateWithWhereUniqueWithoutAccountInput = {
+    where: CashSessionWhereUniqueInput
+    data: XOR<CashSessionUpdateWithoutAccountInput, CashSessionUncheckedUpdateWithoutAccountInput>
   }
 
-  export type CashRegisterCloseUpdateManyWithWhereWithoutAccountInput = {
-    where: CashRegisterCloseScalarWhereInput
-    data: XOR<CashRegisterCloseUpdateManyMutationInput, CashRegisterCloseUncheckedUpdateManyWithoutAccountInput>
+  export type CashSessionUpdateManyWithWhereWithoutAccountInput = {
+    where: CashSessionScalarWhereInput
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type CashSessionUpsertWithWhereUniqueWithoutDepositAccountInput = {
+    where: CashSessionWhereUniqueInput
+    update: XOR<CashSessionUpdateWithoutDepositAccountInput, CashSessionUncheckedUpdateWithoutDepositAccountInput>
+    create: XOR<CashSessionCreateWithoutDepositAccountInput, CashSessionUncheckedCreateWithoutDepositAccountInput>
+  }
+
+  export type CashSessionUpdateWithWhereUniqueWithoutDepositAccountInput = {
+    where: CashSessionWhereUniqueInput
+    data: XOR<CashSessionUpdateWithoutDepositAccountInput, CashSessionUncheckedUpdateWithoutDepositAccountInput>
+  }
+
+  export type CashSessionUpdateManyWithWhereWithoutDepositAccountInput = {
+    where: CashSessionScalarWhereInput
+    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutDepositAccountInput>
   }
 
   export type AccountReconciliationUpsertWithWhereUniqueWithoutAccountInput = {
@@ -55956,7 +56503,8 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutAccountInput
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -55977,7 +56525,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutAccountInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -56009,7 +56558,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -56036,7 +56586,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -56208,7 +56759,8 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutAccountInput
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -56229,7 +56781,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutAccountInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -56296,7 +56849,8 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutAccountNestedInput
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -56317,7 +56871,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutAccountNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -56355,7 +56910,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -56382,7 +56938,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -56583,7 +57140,8 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutAccountNestedInput
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -56604,7 +57162,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutAccountNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -56653,7 +57212,6 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSalesInput
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
@@ -56665,7 +57223,6 @@ export namespace Prisma {
     createdById: string
     soldById?: string | null
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -56862,7 +57419,6 @@ export namespace Prisma {
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    sales?: SaleCreateNestedManyWithoutBusinessLineInput
     expenses?: ExpenseCreateNestedManyWithoutBusinessLineInput
   }
 
@@ -56874,7 +57430,6 @@ export namespace Prisma {
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    sales?: SaleUncheckedCreateNestedManyWithoutBusinessLineInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBusinessLineInput
   }
 
@@ -57021,7 +57576,6 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sales?: SaleUpdateManyWithoutBusinessLineNestedInput
     expenses?: ExpenseUpdateManyWithoutBusinessLineNestedInput
   }
 
@@ -57033,7 +57587,6 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sales?: SaleUncheckedUpdateManyWithoutBusinessLineNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutBusinessLineNestedInput
   }
 
@@ -57120,7 +57673,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57147,7 +57701,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57179,7 +57734,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57206,7 +57762,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57260,7 +57817,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -57278,42 +57835,13 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesInput = {
     where: BranchWhereUniqueInput
     create: XOR<BranchCreateWithoutSalesInput, BranchUncheckedCreateWithoutSalesInput>
-  }
-
-  export type BusinessLineCreateWithoutSalesInput = {
-    id?: string
-    name: string
-    code?: string | null
-    color?: string | null
-    active?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    products?: ProductCreateNestedManyWithoutBusinessLineInput
-    expenses?: ExpenseCreateNestedManyWithoutBusinessLineInput
-  }
-
-  export type BusinessLineUncheckedCreateWithoutSalesInput = {
-    id?: string
-    name: string
-    code?: string | null
-    color?: string | null
-    active?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    products?: ProductUncheckedCreateNestedManyWithoutBusinessLineInput
-    expenses?: ExpenseUncheckedCreateNestedManyWithoutBusinessLineInput
-  }
-
-  export type BusinessLineCreateOrConnectWithoutSalesInput = {
-    where: BusinessLineWhereUniqueInput
-    create: XOR<BusinessLineCreateWithoutSalesInput, BusinessLineUncheckedCreateWithoutSalesInput>
   }
 
   export type SaleItemCreateWithoutSaleInput = {
@@ -57443,7 +57971,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -57470,7 +57999,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -57508,7 +58038,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -57535,7 +58066,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -57601,7 +58133,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -57619,43 +58151,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
-  }
-
-  export type BusinessLineUpsertWithoutSalesInput = {
-    update: XOR<BusinessLineUpdateWithoutSalesInput, BusinessLineUncheckedUpdateWithoutSalesInput>
-    create: XOR<BusinessLineCreateWithoutSalesInput, BusinessLineUncheckedCreateWithoutSalesInput>
-    where?: BusinessLineWhereInput
-  }
-
-  export type BusinessLineUpdateToOneWithWhereWithoutSalesInput = {
-    where?: BusinessLineWhereInput
-    data: XOR<BusinessLineUpdateWithoutSalesInput, BusinessLineUncheckedUpdateWithoutSalesInput>
-  }
-
-  export type BusinessLineUpdateWithoutSalesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    active?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    products?: ProductUpdateManyWithoutBusinessLineNestedInput
-    expenses?: ExpenseUpdateManyWithoutBusinessLineNestedInput
-  }
-
-  export type BusinessLineUncheckedUpdateWithoutSalesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    active?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    products?: ProductUncheckedUpdateManyWithoutBusinessLineNestedInput
-    expenses?: ExpenseUncheckedUpdateManyWithoutBusinessLineNestedInput
   }
 
   export type SaleItemUpsertWithWhereUniqueWithoutSaleInput = {
@@ -57741,7 +58238,6 @@ export namespace Prisma {
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
   }
@@ -57753,7 +58249,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -57836,7 +58331,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57863,7 +58359,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -57898,7 +58395,6 @@ export namespace Prisma {
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
   }
@@ -57910,7 +58406,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -58005,7 +58500,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -58032,7 +58528,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -58053,7 +58550,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -58074,7 +58572,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -58099,7 +58598,6 @@ export namespace Prisma {
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     receivable?: AccountsReceivableCreateNestedOneWithoutSaleInput
   }
@@ -58111,7 +58609,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -58201,7 +58698,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -58222,7 +58720,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -58252,7 +58751,6 @@ export namespace Prisma {
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
   }
@@ -58264,7 +58762,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -58734,7 +59231,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -58761,7 +59259,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -58840,7 +59339,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -58858,7 +59357,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
@@ -58876,7 +59375,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutBusinessLineInput
-    sales?: SaleCreateNestedManyWithoutBusinessLineInput
   }
 
   export type BusinessLineUncheckedCreateWithoutExpensesInput = {
@@ -58888,7 +59386,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutBusinessLineInput
-    sales?: SaleUncheckedCreateNestedManyWithoutBusinessLineInput
   }
 
   export type BusinessLineCreateOrConnectWithoutExpensesInput = {
@@ -58913,7 +59410,8 @@ export namespace Prisma {
     purchases?: PurchaseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -58934,7 +59432,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -59050,7 +59549,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -59077,7 +59577,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -59174,7 +59675,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -59192,7 +59693,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
@@ -59216,7 +59717,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutBusinessLineNestedInput
-    sales?: SaleUpdateManyWithoutBusinessLineNestedInput
   }
 
   export type BusinessLineUncheckedUpdateWithoutExpensesInput = {
@@ -59228,7 +59728,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutBusinessLineNestedInput
-    sales?: SaleUncheckedUpdateManyWithoutBusinessLineNestedInput
   }
 
   export type FinancialAccountUpsertWithoutExpensesInput = {
@@ -59259,7 +59758,8 @@ export namespace Prisma {
     purchases?: PurchaseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -59280,7 +59780,8 @@ export namespace Prisma {
     purchases?: PurchaseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -59552,7 +60053,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutBranchInput
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
@@ -59570,7 +60071,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutBranchInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
@@ -59596,7 +60097,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -59617,7 +60119,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -59649,7 +60152,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -59676,7 +60180,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -59814,7 +60319,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutBranchNestedInput
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
@@ -59832,7 +60337,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutBranchNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
@@ -59864,7 +60369,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -59885,7 +60391,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -59923,7 +60430,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -59950,7 +60458,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -60221,7 +60730,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutBranchInput
     purchases?: PurchaseCreateNestedManyWithoutBranchInput
     users?: UserBranchCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutStockMovesInput = {
@@ -60239,7 +60748,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutBranchInput
     purchases?: PurchaseUncheckedCreateNestedManyWithoutBranchInput
     users?: UserBranchUncheckedCreateNestedManyWithoutBranchInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutBranchInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutStockMovesInput = {
@@ -60314,7 +60823,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUpdateManyWithoutBranchNestedInput
     users?: UserBranchUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutStockMovesInput = {
@@ -60332,7 +60841,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutBranchNestedInput
     purchases?: PurchaseUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserBranchUncheckedUpdateManyWithoutBranchNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutBranchNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type ProductUpsertWithoutStockMovesInput = {
@@ -60429,7 +60938,6 @@ export namespace Prisma {
     soldBy?: UserCreateNestedOneWithoutSoldSalesInput
     customer: CustomerCreateNestedOneWithoutSalesInput
     branch?: BranchCreateNestedOneWithoutSalesInput
-    businessLine?: BusinessLineCreateNestedOneWithoutSalesInput
     items?: SaleItemCreateNestedManyWithoutSaleInput
     payments?: SalePaymentCreateNestedManyWithoutSaleInput
   }
@@ -60441,7 +60949,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -60553,7 +61060,6 @@ export namespace Prisma {
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
   }
@@ -60565,7 +61071,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -60612,7 +61117,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
@@ -60633,7 +61139,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -60742,7 +61249,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -60763,7 +61271,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -60874,7 +61383,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -60901,7 +61411,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -60973,7 +61484,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -61000,7 +61512,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -61193,7 +61706,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
@@ -61220,7 +61734,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
@@ -61298,7 +61813,8 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
@@ -61325,11 +61841,12 @@ export namespace Prisma {
     payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
   }
 
-  export type FinancialAccountCreateWithoutCashClosesInput = {
+  export type FinancialAccountCreateWithoutCashSessionsInput = {
     id?: string
     type?: $Enums.AccountType
     name: string
@@ -61347,10 +61864,11 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
   }
 
-  export type FinancialAccountUncheckedCreateWithoutCashClosesInput = {
+  export type FinancialAccountUncheckedCreateWithoutCashSessionsInput = {
     id?: string
     type?: $Enums.AccountType
     name: string
@@ -61368,15 +61886,16 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
     reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
   }
 
-  export type FinancialAccountCreateOrConnectWithoutCashClosesInput = {
+  export type FinancialAccountCreateOrConnectWithoutCashSessionsInput = {
     where: FinancialAccountWhereUniqueInput
-    create: XOR<FinancialAccountCreateWithoutCashClosesInput, FinancialAccountUncheckedCreateWithoutCashClosesInput>
+    create: XOR<FinancialAccountCreateWithoutCashSessionsInput, FinancialAccountUncheckedCreateWithoutCashSessionsInput>
   }
 
-  export type BranchCreateWithoutCashClosesInput = {
+  export type BranchCreateWithoutCashSessionsInput = {
     id?: string
     name: string
     code?: string | null
@@ -61394,7 +61913,7 @@ export namespace Prisma {
     stockMoves?: StockMovementCreateNestedManyWithoutBranchInput
   }
 
-  export type BranchUncheckedCreateWithoutCashClosesInput = {
+  export type BranchUncheckedCreateWithoutCashSessionsInput = {
     id?: string
     name: string
     code?: string | null
@@ -61412,12 +61931,12 @@ export namespace Prisma {
     stockMoves?: StockMovementUncheckedCreateNestedManyWithoutBranchInput
   }
 
-  export type BranchCreateOrConnectWithoutCashClosesInput = {
+  export type BranchCreateOrConnectWithoutCashSessionsInput = {
     where: BranchWhereUniqueInput
-    create: XOR<BranchCreateWithoutCashClosesInput, BranchUncheckedCreateWithoutCashClosesInput>
+    create: XOR<BranchCreateWithoutCashSessionsInput, BranchUncheckedCreateWithoutCashSessionsInput>
   }
 
-  export type UserCreateWithoutCashRegisterClosesInput = {
+  export type UserCreateWithoutCashSessionsOpenedInput = {
     id: string
     name: string
     email: string
@@ -61441,10 +61960,11 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
   }
 
-  export type UserUncheckedCreateWithoutCashRegisterClosesInput = {
+  export type UserUncheckedCreateWithoutCashSessionsOpenedInput = {
     id: string
     name: string
     email: string
@@ -61468,26 +61988,137 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
     reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
   }
 
-  export type UserCreateOrConnectWithoutCashRegisterClosesInput = {
+  export type UserCreateOrConnectWithoutCashSessionsOpenedInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCashRegisterClosesInput, UserUncheckedCreateWithoutCashRegisterClosesInput>
+    create: XOR<UserCreateWithoutCashSessionsOpenedInput, UserUncheckedCreateWithoutCashSessionsOpenedInput>
   }
 
-  export type FinancialAccountUpsertWithoutCashClosesInput = {
-    update: XOR<FinancialAccountUpdateWithoutCashClosesInput, FinancialAccountUncheckedUpdateWithoutCashClosesInput>
-    create: XOR<FinancialAccountCreateWithoutCashClosesInput, FinancialAccountUncheckedCreateWithoutCashClosesInput>
+  export type UserCreateWithoutCashSessionsClosedInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    allowedAccess?: boolean
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sales?: SaleCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleCreateNestedManyWithoutSoldByInput
+    expenses?: ExpenseCreateNestedManyWithoutCreatedByInput
+    purchases?: PurchaseCreateNestedManyWithoutCreatedByInput
+    performedSaleItems?: SaleItemCreateNestedManyWithoutPerformedByInput
+    payrollEntries?: PayrollEntryCreateNestedManyWithoutUserInput
+    payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
+    accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
+    branches?: UserBranchCreateNestedManyWithoutUserInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    reconciledAccounts?: AccountReconciliationCreateNestedManyWithoutReconciledByInput
+  }
+
+  export type UserUncheckedCreateWithoutCashSessionsClosedInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    allowedAccess?: boolean
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sales?: SaleUncheckedCreateNestedManyWithoutCreatedByInput
+    soldSales?: SaleUncheckedCreateNestedManyWithoutSoldByInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
+    performedSaleItems?: SaleItemUncheckedCreateNestedManyWithoutPerformedByInput
+    payrollEntries?: PayrollEntryUncheckedCreateNestedManyWithoutUserInput
+    payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
+    accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    reconciledAccounts?: AccountReconciliationUncheckedCreateNestedManyWithoutReconciledByInput
+  }
+
+  export type UserCreateOrConnectWithoutCashSessionsClosedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCashSessionsClosedInput, UserUncheckedCreateWithoutCashSessionsClosedInput>
+  }
+
+  export type FinancialAccountCreateWithoutCashSessionDepositsInput = {
+    id?: string
+    type?: $Enums.AccountType
+    name: string
+    accountNumber?: string | null
+    institution?: string | null
+    initialBalance?: Decimal | DecimalJsLike | number | string
+    active?: boolean
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutFinancialAccountsInput
+    salePayments?: SalePaymentCreateNestedManyWithoutAccountInput
+    receivablePayments?: AccountsReceivablePaymentCreateNestedManyWithoutAccountInput
+    purchases?: PurchaseCreateNestedManyWithoutAccountInput
+    expenses?: ExpenseCreateNestedManyWithoutAccountInput
+    transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
+    transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    reconciliations?: AccountReconciliationCreateNestedManyWithoutAccountInput
+  }
+
+  export type FinancialAccountUncheckedCreateWithoutCashSessionDepositsInput = {
+    id?: string
+    type?: $Enums.AccountType
+    name: string
+    accountNumber?: string | null
+    institution?: string | null
+    initialBalance?: Decimal | DecimalJsLike | number | string
+    active?: boolean
+    isDefault?: boolean
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salePayments?: SalePaymentUncheckedCreateNestedManyWithoutAccountInput
+    receivablePayments?: AccountsReceivablePaymentUncheckedCreateNestedManyWithoutAccountInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutAccountInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
+    transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
+    transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    reconciliations?: AccountReconciliationUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type FinancialAccountCreateOrConnectWithoutCashSessionDepositsInput = {
+    where: FinancialAccountWhereUniqueInput
+    create: XOR<FinancialAccountCreateWithoutCashSessionDepositsInput, FinancialAccountUncheckedCreateWithoutCashSessionDepositsInput>
+  }
+
+  export type FinancialAccountUpsertWithoutCashSessionsInput = {
+    update: XOR<FinancialAccountUpdateWithoutCashSessionsInput, FinancialAccountUncheckedUpdateWithoutCashSessionsInput>
+    create: XOR<FinancialAccountCreateWithoutCashSessionsInput, FinancialAccountUncheckedCreateWithoutCashSessionsInput>
     where?: FinancialAccountWhereInput
   }
 
-  export type FinancialAccountUpdateToOneWithWhereWithoutCashClosesInput = {
+  export type FinancialAccountUpdateToOneWithWhereWithoutCashSessionsInput = {
     where?: FinancialAccountWhereInput
-    data: XOR<FinancialAccountUpdateWithoutCashClosesInput, FinancialAccountUncheckedUpdateWithoutCashClosesInput>
+    data: XOR<FinancialAccountUpdateWithoutCashSessionsInput, FinancialAccountUncheckedUpdateWithoutCashSessionsInput>
   }
 
-  export type FinancialAccountUpdateWithoutCashClosesInput = {
+  export type FinancialAccountUpdateWithoutCashSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
     name?: StringFieldUpdateOperationsInput | string
@@ -61505,10 +62136,11 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
-  export type FinancialAccountUncheckedUpdateWithoutCashClosesInput = {
+  export type FinancialAccountUncheckedUpdateWithoutCashSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
     name?: StringFieldUpdateOperationsInput | string
@@ -61526,21 +62158,22 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
-  export type BranchUpsertWithoutCashClosesInput = {
-    update: XOR<BranchUpdateWithoutCashClosesInput, BranchUncheckedUpdateWithoutCashClosesInput>
-    create: XOR<BranchCreateWithoutCashClosesInput, BranchUncheckedCreateWithoutCashClosesInput>
+  export type BranchUpsertWithoutCashSessionsInput = {
+    update: XOR<BranchUpdateWithoutCashSessionsInput, BranchUncheckedUpdateWithoutCashSessionsInput>
+    create: XOR<BranchCreateWithoutCashSessionsInput, BranchUncheckedCreateWithoutCashSessionsInput>
     where?: BranchWhereInput
   }
 
-  export type BranchUpdateToOneWithWhereWithoutCashClosesInput = {
+  export type BranchUpdateToOneWithWhereWithoutCashSessionsInput = {
     where?: BranchWhereInput
-    data: XOR<BranchUpdateWithoutCashClosesInput, BranchUncheckedUpdateWithoutCashClosesInput>
+    data: XOR<BranchUpdateWithoutCashSessionsInput, BranchUncheckedUpdateWithoutCashSessionsInput>
   }
 
-  export type BranchUpdateWithoutCashClosesInput = {
+  export type BranchUpdateWithoutCashSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61558,7 +62191,7 @@ export namespace Prisma {
     stockMoves?: StockMovementUpdateManyWithoutBranchNestedInput
   }
 
-  export type BranchUncheckedUpdateWithoutCashClosesInput = {
+  export type BranchUncheckedUpdateWithoutCashSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61576,18 +62209,18 @@ export namespace Prisma {
     stockMoves?: StockMovementUncheckedUpdateManyWithoutBranchNestedInput
   }
 
-  export type UserUpsertWithoutCashRegisterClosesInput = {
-    update: XOR<UserUpdateWithoutCashRegisterClosesInput, UserUncheckedUpdateWithoutCashRegisterClosesInput>
-    create: XOR<UserCreateWithoutCashRegisterClosesInput, UserUncheckedCreateWithoutCashRegisterClosesInput>
+  export type UserUpsertWithoutCashSessionsOpenedInput = {
+    update: XOR<UserUpdateWithoutCashSessionsOpenedInput, UserUncheckedUpdateWithoutCashSessionsOpenedInput>
+    create: XOR<UserCreateWithoutCashSessionsOpenedInput, UserUncheckedCreateWithoutCashSessionsOpenedInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutCashRegisterClosesInput = {
+  export type UserUpdateToOneWithWhereWithoutCashSessionsOpenedInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCashRegisterClosesInput, UserUncheckedUpdateWithoutCashRegisterClosesInput>
+    data: XOR<UserUpdateWithoutCashSessionsOpenedInput, UserUncheckedUpdateWithoutCashSessionsOpenedInput>
   }
 
-  export type UserUpdateWithoutCashRegisterClosesInput = {
+  export type UserUpdateWithoutCashSessionsOpenedInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -61611,10 +62244,11 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutCashRegisterClosesInput = {
+  export type UserUncheckedUpdateWithoutCashSessionsOpenedInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -61638,7 +62272,130 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
     reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
+  }
+
+  export type UserUpsertWithoutCashSessionsClosedInput = {
+    update: XOR<UserUpdateWithoutCashSessionsClosedInput, UserUncheckedUpdateWithoutCashSessionsClosedInput>
+    create: XOR<UserCreateWithoutCashSessionsClosedInput, UserUncheckedCreateWithoutCashSessionsClosedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCashSessionsClosedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCashSessionsClosedInput, UserUncheckedUpdateWithoutCashSessionsClosedInput>
+  }
+
+  export type UserUpdateWithoutCashSessionsClosedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedAccess?: BoolFieldUpdateOperationsInput | boolean
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sales?: SaleUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUpdateManyWithoutSoldByNestedInput
+    expenses?: ExpenseUpdateManyWithoutCreatedByNestedInput
+    purchases?: PurchaseUpdateManyWithoutCreatedByNestedInput
+    performedSaleItems?: SaleItemUpdateManyWithoutPerformedByNestedInput
+    payrollEntries?: PayrollEntryUpdateManyWithoutUserNestedInput
+    payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
+    accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
+    branches?: UserBranchUpdateManyWithoutUserNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    reconciledAccounts?: AccountReconciliationUpdateManyWithoutReconciledByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCashSessionsClosedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedAccess?: BoolFieldUpdateOperationsInput | boolean
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutCreatedByNestedInput
+    soldSales?: SaleUncheckedUpdateManyWithoutSoldByNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    performedSaleItems?: SaleItemUncheckedUpdateManyWithoutPerformedByNestedInput
+    payrollEntries?: PayrollEntryUncheckedUpdateManyWithoutUserNestedInput
+    payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
+    accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    reconciledAccounts?: AccountReconciliationUncheckedUpdateManyWithoutReconciledByNestedInput
+  }
+
+  export type FinancialAccountUpsertWithoutCashSessionDepositsInput = {
+    update: XOR<FinancialAccountUpdateWithoutCashSessionDepositsInput, FinancialAccountUncheckedUpdateWithoutCashSessionDepositsInput>
+    create: XOR<FinancialAccountCreateWithoutCashSessionDepositsInput, FinancialAccountUncheckedCreateWithoutCashSessionDepositsInput>
+    where?: FinancialAccountWhereInput
+  }
+
+  export type FinancialAccountUpdateToOneWithWhereWithoutCashSessionDepositsInput = {
+    where?: FinancialAccountWhereInput
+    data: XOR<FinancialAccountUpdateWithoutCashSessionDepositsInput, FinancialAccountUncheckedUpdateWithoutCashSessionDepositsInput>
+  }
+
+  export type FinancialAccountUpdateWithoutCashSessionDepositsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    name?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    institution?: NullableStringFieldUpdateOperationsInput | string | null
+    initialBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutFinancialAccountsNestedInput
+    salePayments?: SalePaymentUpdateManyWithoutAccountNestedInput
+    receivablePayments?: AccountsReceivablePaymentUpdateManyWithoutAccountNestedInput
+    purchases?: PurchaseUpdateManyWithoutAccountNestedInput
+    expenses?: ExpenseUpdateManyWithoutAccountNestedInput
+    transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
+    transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
+  }
+
+  export type FinancialAccountUncheckedUpdateWithoutCashSessionDepositsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    name?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    institution?: NullableStringFieldUpdateOperationsInput | string | null
+    initialBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salePayments?: SalePaymentUncheckedUpdateManyWithoutAccountNestedInput
+    receivablePayments?: AccountsReceivablePaymentUncheckedUpdateManyWithoutAccountNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutAccountNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
+    transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
+    transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type FinancialAccountCreateWithoutReconciliationsInput = {
@@ -61659,7 +62416,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionCreateNestedManyWithoutDepositAccountInput
   }
 
   export type FinancialAccountUncheckedCreateWithoutReconciliationsInput = {
@@ -61680,7 +62438,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutAccountInput
     transactions?: AccountTransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersReceived?: AccountTransactionUncheckedCreateNestedManyWithoutRelatedAccountInput
-    cashCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutAccountInput
+    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutAccountInput
+    cashSessionDeposits?: CashSessionUncheckedCreateNestedManyWithoutDepositAccountInput
   }
 
   export type FinancialAccountCreateOrConnectWithoutReconciliationsInput = {
@@ -61712,7 +62471,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionCreateNestedManyWithoutClosedByInput
   }
 
   export type UserUncheckedCreateWithoutReconciledAccountsInput = {
@@ -61739,7 +62499,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedCreateNestedManyWithoutUserInput
     accountTransactions?: AccountTransactionUncheckedCreateNestedManyWithoutCreatedByInput
     branches?: UserBranchUncheckedCreateNestedManyWithoutUserInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedCreateNestedManyWithoutClosedByInput
+    cashSessionsOpened?: CashSessionUncheckedCreateNestedManyWithoutOpenedByInput
+    cashSessionsClosed?: CashSessionUncheckedCreateNestedManyWithoutClosedByInput
   }
 
   export type UserCreateOrConnectWithoutReconciledAccountsInput = {
@@ -61806,7 +62567,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
   }
 
   export type FinancialAccountUncheckedUpdateWithoutReconciliationsInput = {
@@ -61827,7 +62589,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
   }
 
   export type UserUpsertWithoutReconciledAccountsInput = {
@@ -61865,7 +62628,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUpdateManyWithoutClosedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReconciledAccountsInput = {
@@ -61892,7 +62656,8 @@ export namespace Prisma {
     payrollRunItems?: PayrollRunItemUncheckedUpdateManyWithoutUserNestedInput
     accountTransactions?: AccountTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
     branches?: UserBranchUncheckedUpdateManyWithoutUserNestedInput
-    cashRegisterCloses?: CashRegisterCloseUncheckedUpdateManyWithoutClosedByNestedInput
+    cashSessionsOpened?: CashSessionUncheckedUpdateManyWithoutOpenedByNestedInput
+    cashSessionsClosed?: CashSessionUncheckedUpdateManyWithoutClosedByNestedInput
   }
 
   export type ReconciliationItemUpsertWithWhereUniqueWithoutReconciliationInput = {
@@ -62119,7 +62884,6 @@ export namespace Prisma {
     soldById?: string | null
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -62137,7 +62901,6 @@ export namespace Prisma {
     createdById: string
     customerId: string
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -62247,15 +63010,44 @@ export namespace Prisma {
     role?: string | null
   }
 
-  export type CashRegisterCloseCreateManyClosedByInput = {
+  export type CashSessionCreateManyOpenedByInput = {
     id?: string
     accountId: string
     branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CashSessionCreateManyClosedByInput = {
+    id?: string
+    accountId: string
+    branchId?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62368,7 +63160,6 @@ export namespace Prisma {
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -62380,7 +63171,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -62401,7 +63191,6 @@ export namespace Prisma {
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -62427,7 +63216,6 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -62439,7 +63227,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -62460,7 +63247,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -62775,41 +63561,128 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CashRegisterCloseUpdateWithoutClosedByInput = {
+  export type CashSessionUpdateWithoutOpenedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    account?: FinancialAccountUpdateOneRequiredWithoutCashClosesNestedInput
-    branch?: BranchUpdateOneWithoutCashClosesNestedInput
+    account?: FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput
+    branch?: BranchUpdateOneWithoutCashSessionsNestedInput
+    closedBy?: UserUpdateOneWithoutCashSessionsClosedNestedInput
+    depositAccount?: FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput
   }
 
-  export type CashRegisterCloseUncheckedUpdateWithoutClosedByInput = {
+  export type CashSessionUncheckedUpdateWithoutOpenedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutClosedByInput = {
+  export type CashSessionUncheckedUpdateManyWithoutOpenedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CashSessionUpdateWithoutClosedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput
+    branch?: BranchUpdateOneWithoutCashSessionsNestedInput
+    openedBy?: UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput
+    depositAccount?: FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput
+  }
+
+  export type CashSessionUncheckedUpdateWithoutClosedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CashSessionUncheckedUpdateManyWithoutClosedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62875,24 +63748,6 @@ export namespace Prisma {
     commissionPercent?: Decimal | DecimalJsLike | number | string | null
     categoryId: string
     active?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type SaleCreateManyBusinessLineInput = {
-    id?: string
-    saleNumber?: number
-    createdById: string
-    soldById?: string | null
-    customerId: string
-    branchId?: string | null
-    currency?: string
-    subtotal: Decimal | DecimalJsLike | number | string
-    discountTotal?: Decimal | DecimalJsLike | number | string
-    taxTotal?: Decimal | DecimalJsLike | number | string
-    total: Decimal | DecimalJsLike | number | string
-    status?: $Enums.SaleStatus
-    note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62963,65 +63818,6 @@ export namespace Prisma {
     commissionPercent?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     categoryId?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SaleUpdateWithoutBusinessLineInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    currency?: StringFieldUpdateOperationsInput | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
-    note?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
-    soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
-    customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
-    branch?: BranchUpdateOneWithoutSalesNestedInput
-    items?: SaleItemUpdateManyWithoutSaleNestedInput
-    payments?: SalePaymentUpdateManyWithoutSaleNestedInput
-    receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
-  }
-
-  export type SaleUncheckedUpdateWithoutBusinessLineInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    saleNumber?: IntFieldUpdateOperationsInput | number
-    createdById?: StringFieldUpdateOperationsInput | string
-    soldById?: NullableStringFieldUpdateOperationsInput | string | null
-    customerId?: StringFieldUpdateOperationsInput | string
-    branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
-    note?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    items?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
-    payments?: SalePaymentUncheckedUpdateManyWithoutSaleNestedInput
-    receivable?: AccountsReceivableUncheckedUpdateOneWithoutSaleNestedInput
-  }
-
-  export type SaleUncheckedUpdateManyWithoutBusinessLineInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    saleNumber?: IntFieldUpdateOperationsInput | number
-    createdById?: StringFieldUpdateOperationsInput | string
-    soldById?: NullableStringFieldUpdateOperationsInput | string | null
-    customerId?: StringFieldUpdateOperationsInput | string
-    branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
-    note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63106,7 +63902,6 @@ export namespace Prisma {
     createdById: string
     soldById?: string | null
     customerId: string
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -63162,15 +63957,23 @@ export namespace Prisma {
     role?: string | null
   }
 
-  export type CashRegisterCloseCreateManyBranchInput = {
+  export type CashSessionCreateManyBranchInput = {
     id?: string
     accountId: string
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63204,7 +64007,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUpdateManyWithoutAccountNestedInput
   }
 
@@ -63225,7 +64029,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: AccountTransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersReceived?: AccountTransactionUncheckedUpdateManyWithoutRelatedAccountNestedInput
-    cashCloses?: CashRegisterCloseUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessions?: CashSessionUncheckedUpdateManyWithoutAccountNestedInput
+    cashSessionDeposits?: CashSessionUncheckedUpdateManyWithoutDepositAccountNestedInput
     reconciliations?: AccountReconciliationUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -63256,7 +64061,6 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     customer?: CustomerUpdateOneRequiredWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -63268,7 +64072,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -63289,7 +64092,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -63440,41 +64242,65 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CashRegisterCloseUpdateWithoutBranchInput = {
+  export type CashSessionUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    account?: FinancialAccountUpdateOneRequiredWithoutCashClosesNestedInput
-    closedBy?: UserUpdateOneRequiredWithoutCashRegisterClosesNestedInput
+    account?: FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput
+    openedBy?: UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput
+    closedBy?: UserUpdateOneWithoutCashSessionsClosedNestedInput
+    depositAccount?: FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput
   }
 
-  export type CashRegisterCloseUncheckedUpdateWithoutBranchInput = {
+  export type CashSessionUncheckedUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutBranchInput = {
+  export type CashSessionUncheckedUpdateManyWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63608,15 +64434,44 @@ export namespace Prisma {
     transferPairId?: string | null
   }
 
-  export type CashRegisterCloseCreateManyAccountInput = {
+  export type CashSessionCreateManyAccountInput = {
     id?: string
     branchId?: string | null
-    closeDate?: Date | string
-    expectedBalance: Decimal | DecimalJsLike | number | string
-    actualBalance: Decimal | DecimalJsLike | number | string
-    difference: Decimal | DecimalJsLike | number | string
-    notes?: string | null
-    closedById: string
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: string | null
+    closingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CashSessionCreateManyDepositAccountInput = {
+    id?: string
+    accountId: string
+    branchId?: string | null
+    status?: $Enums.CashSessionStatus
+    openedAt?: Date | string
+    openedById: string
+    openingBalance: Decimal | DecimalJsLike | number | string
+    openingNotes?: string | null
+    closedAt?: Date | string | null
+    closedById?: string | null
+    expectedBalance?: Decimal | DecimalJsLike | number | string | null
+    actualBalance?: Decimal | DecimalJsLike | number | string | null
+    difference?: Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: Decimal | DecimalJsLike | number | string | null
+    depositAmount?: Decimal | DecimalJsLike | number | string | null
+    closingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63931,41 +64786,128 @@ export namespace Prisma {
     transferPairId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CashRegisterCloseUpdateWithoutAccountInput = {
+  export type CashSessionUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    branch?: BranchUpdateOneWithoutCashClosesNestedInput
-    closedBy?: UserUpdateOneRequiredWithoutCashRegisterClosesNestedInput
+    branch?: BranchUpdateOneWithoutCashSessionsNestedInput
+    openedBy?: UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput
+    closedBy?: UserUpdateOneWithoutCashSessionsClosedNestedInput
+    depositAccount?: FinancialAccountUpdateOneWithoutCashSessionDepositsNestedInput
   }
 
-  export type CashRegisterCloseUncheckedUpdateWithoutAccountInput = {
+  export type CashSessionUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashRegisterCloseUncheckedUpdateManyWithoutAccountInput = {
+  export type CashSessionUncheckedUpdateManyWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    expectedBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    difference?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    closedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CashSessionUpdateWithoutDepositAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: FinancialAccountUpdateOneRequiredWithoutCashSessionsNestedInput
+    branch?: BranchUpdateOneWithoutCashSessionsNestedInput
+    openedBy?: UserUpdateOneRequiredWithoutCashSessionsOpenedNestedInput
+    closedBy?: UserUpdateOneWithoutCashSessionsClosedNestedInput
+  }
+
+  export type CashSessionUncheckedUpdateWithoutDepositAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CashSessionUncheckedUpdateManyWithoutDepositAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCashSessionStatusFieldUpdateOperationsInput | $Enums.CashSessionStatus
+    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    openedById?: StringFieldUpdateOperationsInput | string
+    openingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    openingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    actualBalance?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    difference?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    retainedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    depositAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    closingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64066,7 +65008,6 @@ export namespace Prisma {
     createdById: string
     soldById?: string | null
     branchId?: string | null
-    businessLineId?: string | null
     currency?: string
     subtotal: Decimal | DecimalJsLike | number | string
     discountTotal?: Decimal | DecimalJsLike | number | string
@@ -64103,7 +65044,6 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSalesNestedInput
     soldBy?: UserUpdateOneWithoutSoldSalesNestedInput
     branch?: BranchUpdateOneWithoutSalesNestedInput
-    businessLine?: BusinessLineUpdateOneWithoutSalesNestedInput
     items?: SaleItemUpdateManyWithoutSaleNestedInput
     payments?: SalePaymentUpdateManyWithoutSaleNestedInput
     receivable?: AccountsReceivableUpdateOneWithoutSaleNestedInput
@@ -64115,7 +65055,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -64136,7 +65075,6 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     soldById?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLineId?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string

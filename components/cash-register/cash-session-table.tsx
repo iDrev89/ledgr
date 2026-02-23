@@ -14,25 +14,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteCashClose } from "@/hooks/use-cash-close";
-import type { CashCloseWithRelations } from "@/lib/types/cash-close";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { CashCloseCard } from "./cash-close-card";
-import { createCashCloseColumns } from "./cash-close-columns";
+import { useDeleteCashSession } from "@/hooks/use-cash-session";
+import type { CashSessionWithRelations } from "@/lib/types/cash-session";
+import { createCashSessionColumns } from "./cash-session-columns";
+import { CashSessionCard } from "./cash-session-card";
+import { CashSessionDetailDialog } from "./cash-session-detail-dialog";
 
-interface CashCloseTableProps {
-  cashCloses: CashCloseWithRelations[];
-  enablePagination?: boolean;
+interface CashSessionTableProps {
+  sessions: CashSessionWithRelations[];
 }
 
-export function CashCloseTable({
-  cashCloses,
-  enablePagination = true,
-}: CashCloseTableProps) {
-  const t = useTranslations("CashClose");
+export const CashSessionTable = ({ sessions }: CashSessionTableProps) => {
+  const t = useTranslations("CashRegister");
   const [itemToDelete, setItemToDelete] =
-    useState<CashCloseWithRelations | null>(null);
-  const deleteMutation = useDeleteCashClose();
+    useState<CashSessionWithRelations | null>(null);
+  const [itemToView, setItemToView] =
+    useState<CashSessionWithRelations | null>(null);
+  const deleteMutation = useDeleteCashSession();
 
   const handleDelete = async () => {
     if (!itemToDelete) return;
@@ -43,32 +42,40 @@ export function CashCloseTable({
       toast.success(t("deleteSuccess"));
     } catch (error) {
       toast.error(t("deleteError"), {
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: error instanceof Error ? error.message : undefined,
       });
     }
   };
 
-  const columns = createCashCloseColumns({
+  const columns = createCashSessionColumns({
+    onView: setItemToView,
     onDelete: setItemToDelete,
-    t,
   });
 
   return (
     <>
       <ResponsiveDataView
         columns={columns}
-        renderCard={(cashClose) => (
-          <CashCloseCard
-            cashClose={cashClose}
-            onDelete={() => setItemToDelete(cashClose)}
+        data={sessions}
+        renderCard={(session) => (
+          <CashSessionCard
+            session={session}
+            onView={() => setItemToView(session)}
+            onDelete={() => setItemToDelete(session)}
           />
         )}
-        data={cashCloses}
         showPagination
-        enablePagination={enablePagination}
+        enablePagination
         pageSize={10}
-        emptyMessage={t("noCashCloses")}
-        onDelete={setItemToDelete}
+        emptyMessage={t("noSessions")}
+      />
+
+      <CashSessionDetailDialog
+        open={!!itemToView}
+        onOpenChange={(open) => {
+          if (!open) setItemToView(null);
+        }}
+        session={itemToView}
       />
 
       <AlertDialog
@@ -105,4 +112,4 @@ export function CashCloseTable({
       </AlertDialog>
     </>
   );
-}
+};

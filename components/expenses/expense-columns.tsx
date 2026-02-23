@@ -81,12 +81,7 @@ export const createExpenseColumns = ({
 
       const methodLabels: Record<string, string> = {
         CASH: t("paymentCash"),
-        DEBIT_CARD: t("paymentDebitCard"),
-        CREDIT_CARD: t("paymentCreditCard"),
         BANK_TRANSFER: t("paymentBankTransfer"),
-        DIGITAL_PAYMENT: t("paymentDigitalPayment"),
-        CHECK: t("paymentCheck"),
-        OTHER: t("paymentOther"),
       };
 
       return (

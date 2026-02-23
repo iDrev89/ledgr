@@ -216,10 +216,13 @@ export function SaleForm({
     setTouchedItems(false);
   };
 
-  // Calculate total from items
-  const total = items.reduce((sum, item) => {
-    return sum + item.lineTotal;
-  }, 0);
+  // Calculate totals
+  const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
+  const totalPaid = payments.reduce(
+    (sum, p) => sum + (parseFloat(p.amount) || 0),
+    0,
+  );
+  const balance = total - totalPaid;
 
   // Check if form is valid for better UX
   const customerId = form.watch("customerId");
@@ -242,7 +245,7 @@ export function SaleForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pb-28 md:pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -326,7 +329,6 @@ export function SaleForm({
                           setCalendarOpen(false);
                         }}
                         disabled={(date) => date > new Date()}
-                        autoFocus
                       />
                     </PopoverContent>
                   </Popover>
@@ -414,32 +416,32 @@ export function SaleForm({
             !isFormValid &&
             ((touchedCustomer && !customerId) ||
               (touchedItems && (!hasItems || !allItemsHaveProducts))) && (
-              <div className="text-sm space-y-1 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-                <p className="font-medium text-amber-900 dark:text-amber-100 mb-2">
+              <div className="text-sm space-y-1 rounded-md border border-l-2 border-l-warning px-4 py-3">
+                <p className="font-medium mb-2">
                   {t("validation.requiredFields")}:
                 </p>
                 {/* Only show customer error if user tried to submit and customer is still empty */}
                 {touchedCustomer && !customerId && (
-                  <p className="text-amber-700 dark:text-amber-300">
+                  <p className="text-muted-foreground">
                     • {t("validation.customerIdRequired")}
                   </p>
                 )}
                 {/* Only show items error if user tried to submit and there are no items */}
                 {touchedItems && !hasItems && (
-                  <p className="text-amber-700 dark:text-amber-300">
+                  <p className="text-muted-foreground">
                     • {t("validation.itemsMin")}
                   </p>
                 )}
                 {/* Only show product error if user tried to submit and items exist but some don't have products */}
                 {touchedItems && hasItems && !allItemsHaveProducts && (
-                  <p className="text-amber-700 dark:text-amber-300">
+                  <p className="text-muted-foreground">
                     • {t("validation.productIdRequired")}
                   </p>
                 )}
               </div>
             )}
 
-          <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+          <div className="hidden md:flex md:flex-row md:justify-end gap-3">
             {!sale && (
               <Button
                 type="button"
@@ -473,6 +475,37 @@ export function SaleForm({
               {sale ? t("updateSale") : t("createSale")}
             </Button>
           </div>
+        </div>
+        {/* Sticky footer — mobile only */}
+        <div className="fixed bottom-0 inset-x-0 z-40 border-t bg-card/95 backdrop-blur-sm px-4 py-3 flex items-center justify-between gap-4 md:hidden">
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground">{t("balance")}</p>
+            <p
+              className={cn(
+                "font-mono text-sm font-semibold tabular-nums",
+                balance > 0
+                  ? "text-warning"
+                  : balance < 0
+                    ? "text-destructive"
+                    : "text-success",
+              )}
+            >
+              {new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }).format(balance)}
+            </p>
+          </div>
+          <Button
+            type="submit"
+            disabled={isLoading || !isFormValid}
+            className="h-11 shrink-0"
+          >
+            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {sale ? t("updateSale") : t("createSale")}
+          </Button>
         </div>
       </form>
     </Form>

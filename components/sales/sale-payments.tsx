@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, CreditCard, ChevronRight } from "lucide-react";
+import { Trash2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -33,6 +29,7 @@ import {
   getPaymentMethodLabel as getMethodLabel,
   getAccountTypeLabel,
 } from "@/lib/payment-utils";
+import { cn } from "@/lib/utils";
 
 export type SalePaymentRow = SalePaymentInput & {
   tempId: string;
@@ -44,6 +41,20 @@ interface SalePaymentsProps {
   total: number;
   disabled?: boolean;
 }
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+
+// Payment methods shown as quick-add chips
+const QUICK_METHODS = [
+  PaymentMethod.CASH,
+  PaymentMethod.BANK_TRANSFER,
+];
 
 export function SalePayments({
   payments,
@@ -57,12 +68,22 @@ export function SalePayments({
   const accounts = accountsData?.accounts || [];
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
 
-  const handleAddPayment = () => {
+  const totalPaid = payments.reduce(
+    (sum, p) => sum + (parseFloat(p.amount) || 0),
+    0,
+  );
+  const balance = total - totalPaid;
+  const editingPayment = payments.find((p) => p.tempId === editingPaymentId);
+
+  const addPayment = (method: PaymentMethod) => {
+    // Default amount = remaining balance (if positive), else empty
+    const defaultAmount = balance > 0 ? balance.toString() : "";
     const newPayment: SalePaymentRow = {
       tempId: `temp-${Date.now()}`,
-      amount: "",
-      method: PaymentMethod.CASH,
-      accountId: getDefaultAccountForMethod(PaymentMethod.CASH, accounts) || "",
+      amount: defaultAmount,
+      method,
+      accountId:
+        getDefaultAccountForMethod(method, accounts) || "",
       reference: "",
       attachmentUrl: "",
     };
@@ -72,15 +93,10 @@ export function SalePayments({
 
   const handleCloseSheet = (open: boolean) => {
     if (!open && editingPaymentId) {
-      // Si se cierra el sheet sin haber agregado un monto, eliminar el pago vacío
-      const editingPayment = payments.find(
-        (p) => p.tempId === editingPaymentId,
-      );
-      if (
-        editingPayment &&
-        (!editingPayment.amount || editingPayment.amount.trim() === "")
-      ) {
-        handleRemovePayment(editingPaymentId);
+      // Remove empty payments when sheet closes without saving
+      const editing = payments.find((p) => p.tempId === editingPaymentId);
+      if (editing && (!editing.amount || editing.amount.trim() === "")) {
+        onPaymentsChange(payments.filter((p) => p.tempId !== editingPaymentId));
       }
       setEditingPaymentId(null);
     }
@@ -88,9 +104,7 @@ export function SalePayments({
 
   const handleRemovePayment = (tempId: string) => {
     onPaymentsChange(payments.filter((p) => p.tempId !== tempId));
-    if (editingPaymentId === tempId) {
-      setEditingPaymentId(null);
-    }
+    if (editingPaymentId === tempId) setEditingPaymentId(null);
   };
 
   const handlePaymentChange = (
@@ -100,210 +114,161 @@ export function SalePayments({
   ) => {
     onPaymentsChange(
       payments.map((p) => {
-        if (p.tempId === tempId) {
-          const updated = { ...p, [field]: value };
-          if (field === "method") {
-            updated.accountId =
-              getDefaultAccountForMethod(value as PaymentMethod, accounts) || "";
-            if (
-              value !== PaymentMethod.BANK_TRANSFER &&
-              value !== PaymentMethod.DIGITAL_PAYMENT
-            ) {
-              updated.attachmentUrl = "";
-            }
+        if (p.tempId !== tempId) return p;
+        const updated = { ...p, [field]: value };
+        if (field === "method") {
+          updated.accountId =
+            getDefaultAccountForMethod(value as PaymentMethod, accounts) || "";
+          if (value !== PaymentMethod.BANK_TRANSFER) {
+            updated.attachmentUrl = "";
           }
-          return updated;
         }
-        return p;
+        return updated;
       }),
     );
   };
 
-  const getPaymentMethodLabelLocal = (method: PaymentMethod) =>
+  const getPaymentMethodLabel = (method: PaymentMethod) =>
     getMethodLabel(method, t);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
+  // Short chip labels
+  const getChipLabel = (method: PaymentMethod): string => {
+    const labels: Partial<Record<PaymentMethod, string>> = {
+      [PaymentMethod.CASH]: t("paymentCash"),
+      [PaymentMethod.BANK_TRANSFER]: t("paymentBankTransfer"),
+    };
+    return labels[method] ?? method;
   };
 
-  const totalPaid = payments.reduce((sum, payment) => {
-    const amount = parseFloat(payment.amount) || 0;
-    return sum + amount;
-  }, 0);
-
-  const balance = total - totalPaid;
-  const editingPayment = payments.find((p) => p.tempId === editingPaymentId);
-
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-muted-foreground" />
-          <h3 className="text-base font-semibold">
-            {t("payments")} ({payments.length})
-          </h3>
-        </div>
-        <Button
-          type="button"
-          size="sm"
-          onClick={handleAddPayment}
-          disabled={disabled}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("addPayment")}
-        </Button>
+    <div className="space-y-3">
+      {/* Section header */}
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {t("payments")}
+        {payments.length > 0 && ` (${payments.length})`}
+      </h3>
+
+      {/* Quick-add method chips */}
+      <div className="flex flex-wrap gap-2">
+        {QUICK_METHODS.map((method) => (
+          <button
+            key={method}
+            type="button"
+            onClick={() => addPayment(method)}
+            disabled={disabled}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground hover:border-foreground/20 active:bg-accent transition-colors disabled:opacity-50 disabled:pointer-events-none"
+          >
+            + {getChipLabel(method)}
+          </button>
+        ))}
       </div>
 
-      {/* Payments List */}
-      {payments.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <CreditCard className="h-12 w-12 text-muted-foreground mb-3 opacity-50" />
-            <p className="text-sm text-muted-foreground">{t("noPayments")}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {t("tapAddPaymentToStart")}
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {payments.map((payment, index) => {
+      {/* Payment list — ledger rows */}
+      {payments.length > 0 && (
+        <div className="rounded-md border overflow-hidden">
+          {payments.map((payment) => {
             const amount = parseFloat(payment.amount) || 0;
-            const hasAttachment =
-              payment.method === PaymentMethod.BANK_TRANSFER ||
-              payment.method === PaymentMethod.DIGITAL_PAYMENT;
-
             return (
-              <Card
+              <button
                 key={payment.tempId}
-                className="cursor-pointer hover:bg-accent/50 transition-all border-2 hover:border-primary/50 shadow-sm hover:shadow-md"
+                type="button"
                 onClick={() => setEditingPaymentId(payment.tempId)}
+                disabled={disabled}
+                className="flex items-center gap-3 w-full px-3 py-3 border-b border-border/40 last:border-0 hover:bg-accent/50 active:bg-accent transition-colors text-left"
               >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary">
-                          {getPaymentMethodLabelLocal(payment.method)}
-                        </Badge>
-                        {hasAttachment && payment.attachmentUrl && (
-                          <Badge variant="outline" className="text-xs">
-                            📎
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Pago #{index + 1}
-                      </p>
-                      {payment.reference && (
-                        <p className="text-xs text-muted-foreground truncate">
-                          Ref: {payment.reference}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <div className="text-right">
-                        <p className="text-lg font-bold">
-                          {amount > 0 ? formatCurrency(amount) : "-"}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium leading-tight">
+                    {getPaymentMethodLabel(payment.method)}
+                  </p>
+                  {payment.reference && (
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                      {payment.reference}
+                    </p>
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "font-mono text-sm font-medium tabular-nums shrink-0 w-24 text-right",
+                    amount === 0 && "text-muted-foreground",
+                  )}
+                >
+                  {amount > 0 ? formatCurrency(amount) : "—"}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              </button>
             );
           })}
         </div>
       )}
 
-      {/* Summary */}
-      <Card
-        className={`border-2 shadow-md ${
-          balance > 0
-            ? "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800"
-            : balance < 0
-              ? "bg-destructive/5 border-destructive/20"
-              : "bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-800"
-        }`}
-      >
-        <CardContent className="p-4 space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground font-medium">
+      {/* Balance summary — ledger rows */}
+      {total > 0 && (
+        <div className="rounded-md border overflow-hidden divide-y divide-border">
+          <div className="flex items-center justify-between px-3 py-2">
+            <span className="text-xs text-muted-foreground">
               {t("totalSale")}
             </span>
-            <span className="font-semibold">{formatCurrency(total)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground font-medium">
-              {t("totalPaid")}
+            <span className="font-mono text-xs font-medium tabular-nums">
+              {formatCurrency(total)}
             </span>
-            <span className="font-semibold">{formatCurrency(totalPaid)}</span>
           </div>
-          <Separator
-            className={
-              balance > 0
-                ? "bg-amber-200 dark:bg-amber-800"
-                : balance < 0
-                  ? "bg-destructive/20"
-                  : "bg-green-200 dark:bg-green-800"
-            }
-          />
-          <div className="flex justify-between pt-1">
-            <span className="text-base font-bold">{t("balance")}</span>
+          {totalPaid > 0 && (
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="text-xs text-muted-foreground">
+                {t("totalPaid")}
+              </span>
+              <span className="font-mono text-xs font-medium tabular-nums">
+                {formatCurrency(totalPaid)}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center justify-between px-3 py-3">
+            <span className="text-sm font-semibold">{t("balance")}</span>
             <span
-              className={`text-2xl font-bold ${
+              className={cn(
+                "font-mono text-base font-bold tabular-nums",
                 balance > 0
-                  ? "text-amber-600 dark:text-amber-400"
+                  ? "text-warning"
                   : balance < 0
                     ? "text-destructive"
-                    : "text-green-600 dark:text-green-400"
-              }`}
+                    : "text-success",
+              )}
             >
               {formatCurrency(balance)}
             </span>
           </div>
           {balance < 0 && (
-            <p className="text-xs text-destructive pt-2 font-medium">
-              {t("validation.paymentsExceedTotal")}
-            </p>
+            <div className="px-3 py-2 bg-destructive/5">
+              <p className="text-xs text-destructive font-medium">
+                {t("validation.paymentsExceedTotal")}
+              </p>
+            </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      )}
 
-      {/* Edit Payment Sheet */}
+      {/* Edit payment sheet */}
       <Sheet open={editingPaymentId !== null} onOpenChange={handleCloseSheet}>
-        <SheetContent side="bottom" className="h-[85vh] px-6 sm:px-8">
-          <SheetHeader>
+        <SheetContent side="bottom" className="h-[85vh] flex flex-col">
+          <SheetHeader className="shrink-0">
             <SheetTitle>{t("paymentDetails")}</SheetTitle>
-            <SheetDescription>{t("editPaymentDescription")}</SheetDescription>
           </SheetHeader>
 
           {editingPayment && (
-            <ScrollArea className="h-[calc(85vh-140px)] mt-6">
-              <div className="space-y-4 pb-6 px-1">
-                {/* Payment Method */}
+            <ScrollArea className="flex-1 mt-6">
+              <div className="space-y-5 pb-8 px-1">
+                {/* Payment method */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="payment-method"
-                    className="text-sm font-medium"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     {t("paymentMethod")}
                   </Label>
                   <Select
                     value={editingPayment.method}
                     onValueChange={(value) =>
-                      handlePaymentChange(
-                        editingPayment.tempId,
-                        "method",
-                        value,
-                      )
+                      handlePaymentChange(editingPayment.tempId, "method", value)
                     }
                     disabled={disabled}
                   >
@@ -314,23 +279,8 @@ export function SalePayments({
                       <SelectItem value={PaymentMethod.CASH}>
                         {t("paymentCash")}
                       </SelectItem>
-                      <SelectItem value={PaymentMethod.DEBIT_CARD}>
-                        {t("paymentDebitCard")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.CREDIT_CARD}>
-                        {t("paymentCreditCard")}
-                      </SelectItem>
                       <SelectItem value={PaymentMethod.BANK_TRANSFER}>
                         {t("paymentBankTransfer")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.DIGITAL_PAYMENT}>
-                        {t("paymentDigitalPayment")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.CHECK}>
-                        {t("paymentCheck")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.OTHER}>
-                        {t("paymentOther")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -340,7 +290,7 @@ export function SalePayments({
                 <div className="space-y-2">
                   <Label
                     htmlFor="payment-amount"
-                    className="text-sm font-medium"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     {t("paymentAmount")} *
                   </Label>
@@ -359,13 +309,13 @@ export function SalePayments({
                     }
                     placeholder={t("paymentAmountPlaceholder")}
                     disabled={disabled}
-                    required
-                    className={`h-12 text-base ${
+                    className={cn(
+                      "h-12 text-base font-mono tabular-nums",
                       !editingPayment.amount ||
-                      editingPayment.amount.trim() === ""
+                        editingPayment.amount.trim() === ""
                         ? "border-destructive"
-                        : ""
-                    }`}
+                        : "",
+                    )}
                   />
                   {(!editingPayment.amount ||
                     editingPayment.amount.trim() === "") && (
@@ -375,11 +325,11 @@ export function SalePayments({
                   )}
                 </div>
 
-                {/* Destination Account */}
+                {/* Destination account */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="payment-account"
-                    className="text-sm font-medium"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     {t("paymentDestinationAccount")}
                   </Label>
@@ -403,13 +353,10 @@ export function SalePayments({
                           <div className="flex items-center gap-2">
                             <span>{account.name}</span>
                             {account.accountNumber && (
-                              <span className="text-muted-foreground">
-                                - {account.accountNumber}
+                              <span className="text-muted-foreground text-xs">
+                                — {account.accountNumber}
                               </span>
                             )}
-                            <Badge variant="outline" className="text-[10px] ml-1">
-                              {getAccountTypeLabel(account.type, tAccounts)}
-                            </Badge>
                           </div>
                         </SelectItem>
                       ))}
@@ -421,7 +368,7 @@ export function SalePayments({
                 <div className="space-y-2">
                   <Label
                     htmlFor="payment-reference"
-                    className="text-sm font-medium"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     {t("paymentReference")}
                   </Label>
@@ -441,11 +388,10 @@ export function SalePayments({
                   />
                 </div>
 
-                {/* Attachment (for transfers and digital payments) */}
-                {(editingPayment.method === PaymentMethod.BANK_TRANSFER ||
-                  editingPayment.method === PaymentMethod.DIGITAL_PAYMENT) && (
+                {/* Attachment for transfers */}
+                {editingPayment.method === PaymentMethod.BANK_TRANSFER && (
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">
+                    <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {t("paymentAttachmentLabel")}
                     </Label>
                     <AttachmentUpload
@@ -463,24 +409,25 @@ export function SalePayments({
                 )}
 
                 {/* Actions */}
-                <div className="pt-4 space-y-2">
+                <div className="flex gap-3 pt-2">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-12"
-                    onClick={() => setEditingPaymentId(null)}
+                    className="h-12 w-12 shrink-0 text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() =>
+                      handleRemovePayment(editingPayment.tempId)
+                    }
+                    disabled={disabled}
+                    aria-label={t("removePayment")}
                   >
-                    {t("done")}
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                   <Button
                     type="button"
-                    variant="destructive"
-                    className="w-full h-12"
-                    onClick={() => handleRemovePayment(editingPayment.tempId)}
-                    disabled={disabled}
+                    className="h-12 flex-1"
+                    onClick={() => setEditingPaymentId(null)}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    {t("removePayment")}
+                    {t("done")}
                   </Button>
                 </div>
               </div>

@@ -277,7 +277,6 @@ exports.Prisma.SaleScalarFieldEnum = {
   soldById: 'soldById',
   customerId: 'customerId',
   branchId: 'branchId',
-  businessLineId: 'businessLineId',
   currency: 'currency',
   subtotal: 'subtotal',
   discountTotal: 'discountTotal',
@@ -465,16 +464,24 @@ exports.Prisma.PayrollRunItemScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.CashRegisterCloseScalarFieldEnum = {
+exports.Prisma.CashSessionScalarFieldEnum = {
   id: 'id',
   accountId: 'accountId',
   branchId: 'branchId',
-  closeDate: 'closeDate',
+  status: 'status',
+  openedAt: 'openedAt',
+  openedById: 'openedById',
+  openingBalance: 'openingBalance',
+  openingNotes: 'openingNotes',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
   expectedBalance: 'expectedBalance',
   actualBalance: 'actualBalance',
   difference: 'difference',
-  notes: 'notes',
-  closedById: 'closedById',
+  retainedAmount: 'retainedAmount',
+  depositAmount: 'depositAmount',
+  depositAccountId: 'depositAccountId',
+  closingNotes: 'closingNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -598,6 +605,11 @@ exports.PayrollRunStatus = exports.$Enums.PayrollRunStatus = {
   PAID: 'PAID'
 };
 
+exports.CashSessionStatus = exports.$Enums.CashSessionStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
 exports.ReconciliationStatus = exports.$Enums.ReconciliationStatus = {
   DRAFT: 'DRAFT',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -632,7 +644,7 @@ exports.Prisma.ModelName = {
   PayrollEntry: 'PayrollEntry',
   PayrollRun: 'PayrollRun',
   PayrollRunItem: 'PayrollRunItem',
-  CashRegisterClose: 'CashRegisterClose',
+  CashSession: 'CashSession',
   AccountReconciliation: 'AccountReconciliation',
   ReconciliationItem: 'ReconciliationItem'
 };

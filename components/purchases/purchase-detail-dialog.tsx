@@ -113,12 +113,7 @@ export function PurchaseDetailDialog({
           <div className="bg-muted rounded-lg p-3">
             <Badge>
               {purchase.paymentMethod === "CASH" && t("paymentCash")}
-              {purchase.paymentMethod === "DEBIT_CARD" && t("paymentDebitCard")}
-              {purchase.paymentMethod === "CREDIT_CARD" && t("paymentCreditCard")}
               {purchase.paymentMethod === "BANK_TRANSFER" && t("paymentBankTransfer")}
-              {purchase.paymentMethod === "DIGITAL_PAYMENT" && t("paymentDigitalPayment")}
-              {purchase.paymentMethod === "CHECK" && t("paymentCheck")}
-              {purchase.paymentMethod === "OTHER" && t("paymentOther")}
             </Badge>
           </div>
         </div>

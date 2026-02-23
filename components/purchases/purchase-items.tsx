@@ -268,7 +268,11 @@ export function PurchaseItems({
 
       {/* Product Selection Sheet */}
       <Sheet open={openProductSheet} onOpenChange={handleCloseSheet}>
-        <SheetContent side="bottom" className="h-[90vh]">
+        <SheetContent
+          side="bottom"
+          className="h-[90vh]"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <SheetHeader>
             <SheetTitle>{t("selectProduct")}</SheetTitle>
             <SheetDescription>{t("selectProduct")}</SheetDescription>
@@ -279,7 +283,6 @@ export function PurchaseItems({
               placeholder={t("searchPlaceholder")}
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
-              autoFocus
             />
 
             <ScrollArea className="h-[calc(90vh-180px)]">

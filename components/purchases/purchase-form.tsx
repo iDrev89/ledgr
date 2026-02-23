@@ -239,23 +239,8 @@ export function PurchaseForm({
                     <SelectItem value={PaymentMethod.CASH}>
                       {t("paymentCash")}
                     </SelectItem>
-                    <SelectItem value={PaymentMethod.DEBIT_CARD}>
-                      {t("paymentDebitCard")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.CREDIT_CARD}>
-                      {t("paymentCreditCard")}
-                    </SelectItem>
                     <SelectItem value={PaymentMethod.BANK_TRANSFER}>
                       {t("paymentBankTransfer")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.DIGITAL_PAYMENT}>
-                      {t("paymentDigitalPayment")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.CHECK}>
-                      {t("paymentCheck")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.OTHER}>
-                      {t("paymentOther")}
                     </SelectItem>
                   </SelectContent>
                 </Select>

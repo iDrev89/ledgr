@@ -37,7 +37,8 @@ model User {
   payrollRunItems    PayrollRunItem[]
   accountTransactions  AccountTransaction[]
   branches             UserBranch[]
-  cashRegisterCloses   CashRegisterClose[]
+  cashSessionsOpened   CashSession[]            @relation("CashSessionOpener")
+  cashSessionsClosed   CashSession[]            @relation("CashSessionCloser")
   reconciledAccounts   AccountReconciliation[]
 
   @@unique([email])
@@ -108,12 +109,7 @@ enum AccountType {
 
 enum PaymentMethod {
   CASH
-  DEBIT_CARD
-  CREDIT_CARD
   BANK_TRANSFER
-  DIGITAL_PAYMENT
-  CHECK
-  OTHER
 }
 
 enum AccountTransactionType {
@@ -204,7 +200,7 @@ model Branch {
   expenses          Expense[]
   purchases         Purchase[]
   users             UserBranch[]
-  cashCloses        CashRegisterClose[]
+  cashSessions      CashSession[]
   stockMoves        StockMovement[]
 
   @@unique([name])
@@ -246,7 +242,8 @@ model FinancialAccount {
   expenses           Expense[]
   transactions       AccountTransaction[]  @relation("AccountMovements")
   transfersReceived  AccountTransaction[]  @relation("TransferDestination")
-  cashCloses         CashRegisterClose[]
+  cashSessions       CashSession[]             @relation("CashSessionAccount")
+  cashSessionDeposits CashSession[]            @relation("CashSessionDeposit")
   reconciliations    AccountReconciliation[]
 
   @@unique([name])
@@ -683,7 +680,12 @@ model PayrollRunItem {
   @@map("payroll_run_item")
 }
 
-// ==================== RECONCILIATION & CASH CLOSE ====================
+// ==================== CASH SESSION & RECONCILIATION ====================
+
+enum CashSessionStatus {
+  OPEN
+  CLOSED
+}
 
 enum ReconciliationStatus {
   DRAFT
@@ -691,25 +693,38 @@ enum ReconciliationStatus {
   COMPLETED
 }
 
-model CashRegisterClose {
-  id              String           @id @default(cuid())
-  accountId       String
-  account         FinancialAccount @relation(fields: [accountId], references: [id])
-  branchId        String?
-  branch          Branch?          @relation(fields: [branchId], references: [id])
-  closeDate       DateTime         @default(now())
-  expectedBalance Decimal          @db.Decimal(12, 2)
-  actualBalance   Decimal          @db.Decimal(12, 2)
-  difference      Decimal          @db.Decimal(12, 2)
-  notes           String?
-  closedById      String
-  closedBy        User             @relation(fields: [closedById], references: [id])
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+model CashSession {
+  id               String             @id @default(cuid())
+  accountId        String
+  account          FinancialAccount   @relation("CashSessionAccount", fields: [accountId], references: [id])
+  branchId         String?
+  branch           Branch?            @relation(fields: [branchId], references: [id])
+  status           CashSessionStatus  @default(OPEN)
 
-  @@index([accountId, closeDate])
+  openedAt         DateTime           @default(now())
+  openedById       String
+  openedBy         User               @relation("CashSessionOpener", fields: [openedById], references: [id])
+  openingBalance   Decimal            @db.Decimal(12, 2)
+  openingNotes     String?
+
+  closedAt         DateTime?
+  closedById       String?
+  closedBy         User?              @relation("CashSessionCloser", fields: [closedById], references: [id])
+  expectedBalance  Decimal?           @db.Decimal(12, 2)
+  actualBalance    Decimal?           @db.Decimal(12, 2)
+  difference       Decimal?           @db.Decimal(12, 2)
+  retainedAmount   Decimal?           @db.Decimal(12, 2)
+  depositAmount    Decimal?           @db.Decimal(12, 2)
+  depositAccountId String?
+  depositAccount   FinancialAccount?  @relation("CashSessionDeposit", fields: [depositAccountId], references: [id])
+  closingNotes     String?
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([accountId, status])
   @@index([branchId])
-  @@map("cash_register_close")
+  @@map("cash_session")
 }
 
 model AccountReconciliation {

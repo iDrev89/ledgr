@@ -3,13 +3,12 @@
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { CustomerForm } from "./customer-form";
 import { useCreateCustomer, useUpdateCustomer } from "@/hooks/use-customers";
 import type { Customer } from "@/lib/types/customer";
@@ -61,20 +60,34 @@ export function CustomerDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 gap-0">
-        <div className="px-6 pt-6">
-          <DialogHeader>
-            <DialogTitle>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="h-[92vh] flex flex-col p-0 gap-0"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
+        <div className="px-6 pt-6 pb-4 shrink-0 border-b">
+          <SheetHeader>
+            <SheetTitle>
               {customer ? t("editCustomer") : t("createCustomer")}
-            </DialogTitle>
-            <DialogDescription>
+            </SheetTitle>
+            <SheetDescription>
               {customer ? t("editDescription") : t("createDescription")}
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
         </div>
-        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
-          <div className="pb-6">
+        <div
+          className="flex-1 overflow-y-auto overscroll-contain"
+          onFocus={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+              setTimeout(() => {
+                target.scrollIntoView({ block: "center", behavior: "smooth" });
+              }, 50);
+            }
+          }}
+        >
+          <div className="px-6 py-5">
             <CustomerForm
               customer={customer}
               onSubmit={handleSubmit}
@@ -82,8 +95,8 @@ export function CustomerDialog({
               isLoading={isLoading}
             />
           </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

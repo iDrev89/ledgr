@@ -20,7 +20,7 @@ import {
   Wallet,
   Building,
   GitBranch,
-  Lock,
+  Vault,
   Scale,
   Receipt,
   ShoppingBag,
@@ -143,10 +143,10 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/accounts"],
         },
         {
-          titleKey: "cashClose",
-          icon: Lock,
-          href: "/cash-close",
-          requiredPermission: ROUTE_PERMISSIONS["/cash-close"],
+          titleKey: "cashRegister",
+          icon: Vault,
+          href: "/cash-register",
+          requiredPermission: ROUTE_PERMISSIONS["/cash-register"],
         },
         {
           titleKey: "reconciliation",
