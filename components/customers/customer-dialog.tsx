@@ -3,12 +3,12 @@
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { CustomerForm } from "./customer-form";
 import { useCreateCustomer, useUpdateCustomer } from "@/hooks/use-customers";
 import type { Customer } from "@/lib/types/customer";
@@ -60,21 +60,20 @@ export function CustomerDialog({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="bottom"
+    <Drawer open={open} onOpenChange={onOpenChange} shouldScaleBackground={false}>
+      <DrawerContent
         className="h-[92vh] flex flex-col p-0 gap-0"
-        onOpenAutoFocus={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e: Event) => e.preventDefault()}
       >
-        <div className="px-6 pt-6 pb-4 shrink-0 border-b">
-          <SheetHeader>
-            <SheetTitle>
+        <div className="px-6 pt-3 pb-4 shrink-0 border-b">
+          <DrawerHeader className="p-0 text-left">
+            <DrawerTitle>
               {customer ? t("editCustomer") : t("createCustomer")}
-            </SheetTitle>
-            <SheetDescription>
+            </DrawerTitle>
+            <DrawerDescription>
               {customer ? t("editDescription") : t("createDescription")}
-            </SheetDescription>
-          </SheetHeader>
+            </DrawerDescription>
+          </DrawerHeader>
         </div>
         <div
           className="flex-1 overflow-y-auto overscroll-contain"
@@ -96,7 +95,7 @@ export function CustomerDialog({
             />
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, Trash2, Edit, Check } from "lucide-react";
+import { MoreHorizontal, Eye, Trash2, Edit, Check, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -69,9 +69,14 @@ export const createSaleColumns = ({
     cell: ({ row }) => {
       const saleNumber = row.getValue("saleNumber") as number;
       return (
-        <span className="font-mono font-semibold">
-          #{String(saleNumber).padStart(4, "0")}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-mono font-semibold">
+            #{String(saleNumber).padStart(4, "0")}
+          </span>
+          {row.original.note && (
+            <StickyNote className="h-3 w-3 text-muted-foreground/60 shrink-0" />
+          )}
+        </div>
       );
     },
   },
@@ -144,7 +149,7 @@ export const createSaleColumns = ({
             {payments.length} {t("payments")}
           </Badge>
           {hasReceivable && sale.receivable && (
-            <span className="text-xs text-amber-600 dark:text-amber-400">
+            <span className="text-xs text-warning font-mono tabular-nums">
               {t("balance")}: {formatCurrency(sale.receivable.balance)}
             </span>
           )}
@@ -158,7 +163,7 @@ export const createSaleColumns = ({
     cell: ({ row }) => {
       const total = row.getValue("total") as string;
       return (
-        <div className="text-right font-medium">{formatCurrency(total)}</div>
+        <div className="text-right font-mono tabular-nums font-medium">{formatCurrency(total)}</div>
       );
     },
   },

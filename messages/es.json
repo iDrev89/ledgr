@@ -658,6 +658,7 @@
       "paymentAmountInvalid": "El monto del pago debe ser un número positivo válido",
       "paymentAmountMin": "El monto del pago debe ser mayor a 0",
       "paymentsExceedTotal": "El total de pagos no puede exceder el total de la venta",
+      "accountRequired": "La cuenta destino es obligatoria",
       "noteMax": "La nota debe tener menos de 500 caracteres",
       "idRequired": "El ID de la venta es requerido"
     },

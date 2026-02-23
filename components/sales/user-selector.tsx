@@ -6,11 +6,11 @@ import { Search, User, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { useUsers } from "@/hooks/use-users";
 
 interface UserSelectorProps {
@@ -109,21 +109,19 @@ export function UserSelector({
         </div>
       </button>
 
-      {/* Picker sheet */}
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent
-          side="bottom"
-          className="h-[80vh] flex flex-col p-0 gap-0"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+      {/* Picker drawer — vaul, swipe-to-dismiss */}
+      <Drawer open={open} onOpenChange={setOpen} shouldScaleBackground={false}>
+        <DrawerContent
+          className="h-[80vh] flex flex-col"
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
         >
-          {/* Header — pr-12 deja espacio para el botón X del SheetContent */}
-          <div className="px-5 pt-5 pb-3 pr-12 shrink-0">
-            <SheetHeader>
-              <SheetTitle>{placeholder || t("selectSeller")}</SheetTitle>
-            </SheetHeader>
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{placeholder || t("selectSeller")}</DrawerTitle>
+            </DrawerHeader>
           </div>
 
-          <div className="px-5 pb-3 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="px-4 pb-4 flex flex-col gap-3 flex-1 min-h-0">
             {/* Search */}
             <div className="relative shrink-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -190,8 +188,8 @@ export function UserSelector({
               </div>
             </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

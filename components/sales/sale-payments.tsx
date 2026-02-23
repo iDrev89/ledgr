@@ -7,12 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import {
   Select,
   SelectContent,
@@ -26,6 +25,7 @@ import { AttachmentUpload } from "@/components/shared/attachment-upload";
 import type { SalePaymentInput } from "@/lib/validations/sales";
 import {
   getDefaultAccountForMethod,
+  getAccountsForMethod,
   getPaymentMethodLabel as getMethodLabel,
   getAccountTypeLabel,
 } from "@/lib/payment-utils";
@@ -247,16 +247,18 @@ export function SalePayments({
         </div>
       )}
 
-      {/* Edit payment sheet */}
-      <Sheet open={editingPaymentId !== null} onOpenChange={handleCloseSheet}>
-        <SheetContent side="bottom" className="h-[85vh] flex flex-col">
-          <SheetHeader className="shrink-0">
-            <SheetTitle>{t("paymentDetails")}</SheetTitle>
-          </SheetHeader>
+      {/* Edit payment drawer — vaul, swipe-to-dismiss */}
+      <Drawer open={editingPaymentId !== null} onOpenChange={handleCloseSheet} shouldScaleBackground={false}>
+        <DrawerContent className="h-[85vh] flex flex-col">
+          <div className="shrink-0 px-4 pb-2">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("paymentDetails")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
 
           {editingPayment && (
-            <ScrollArea className="flex-1 mt-6">
-              <div className="space-y-5 pb-8 px-1">
+            <div className="flex-1 overflow-y-auto px-4">
+              <div className="space-y-5 pb-8">
                 {/* Payment method */}
                 <div className="space-y-2">
                   <Label
@@ -326,43 +328,62 @@ export function SalePayments({
                 </div>
 
                 {/* Destination account */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="payment-account"
-                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                  >
-                    {t("paymentDestinationAccount")}
-                  </Label>
-                  <Select
-                    value={editingPayment.accountId || ""}
-                    onValueChange={(value) =>
-                      handlePaymentChange(
-                        editingPayment.tempId,
-                        "accountId",
-                        value,
-                      )
-                    }
-                    disabled={disabled}
-                  >
-                    <SelectTrigger id="payment-account" className="h-12">
-                      <SelectValue placeholder={t("selectAccount")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {accounts.map((account) => (
-                        <SelectItem key={account.id} value={account.id}>
-                          <div className="flex items-center gap-2">
-                            <span>{account.name}</span>
-                            {account.accountNumber && (
-                              <span className="text-muted-foreground text-xs">
-                                — {account.accountNumber}
-                              </span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {(() => {
+                  const isCash = editingPayment.method === PaymentMethod.CASH;
+                  const filteredAccounts = getAccountsForMethod(editingPayment.method, accounts);
+                  const accountMissing = !editingPayment.accountId;
+
+                  return (
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="payment-account"
+                        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                      >
+                        {t("paymentDestinationAccount")} *
+                      </Label>
+                      <Select
+                        value={editingPayment.accountId || ""}
+                        onValueChange={(value) =>
+                          handlePaymentChange(
+                            editingPayment.tempId,
+                            "accountId",
+                            value,
+                          )
+                        }
+                        disabled={disabled || isCash}
+                      >
+                        <SelectTrigger
+                          id="payment-account"
+                          className={cn(
+                            "h-12",
+                            accountMissing && "border-destructive",
+                          )}
+                        >
+                          <SelectValue placeholder={t("selectAccount")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filteredAccounts.map((account) => (
+                            <SelectItem key={account.id} value={account.id}>
+                              <div className="flex items-center gap-2">
+                                <span>{account.name}</span>
+                                {account.accountNumber && (
+                                  <span className="text-muted-foreground text-xs">
+                                    — {account.accountNumber}
+                                  </span>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {accountMissing && (
+                        <p className="text-xs text-destructive">
+                          {t("validation.accountRequired")}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Reference */}
                 <div className="space-y-2">
@@ -431,10 +452,10 @@ export function SalePayments({
                   </Button>
                 </div>
               </div>
-            </ScrollArea>
+            </div>
           )}
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

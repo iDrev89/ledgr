@@ -8,14 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useProducts } from "@/hooks/use-products";
 import type { Product } from "@/lib/types/product";
@@ -266,26 +264,27 @@ export function PurchaseItems({
         )}
       </div>
 
-      {/* Product Selection Sheet */}
-      <Sheet open={openProductSheet} onOpenChange={handleCloseSheet}>
-        <SheetContent
-          side="bottom"
-          className="h-[90vh]"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+      {/* Product Selection Drawer — vaul, swipe-to-dismiss */}
+      <Drawer open={openProductSheet} onOpenChange={handleCloseSheet} shouldScaleBackground={false}>
+        <DrawerContent
+          className="h-[90vh] flex flex-col"
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
         >
-          <SheetHeader>
-            <SheetTitle>{t("selectProduct")}</SheetTitle>
-            <SheetDescription>{t("selectProduct")}</SheetDescription>
-          </SheetHeader>
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("selectProduct")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
 
-          <div className="mt-4 space-y-4">
+          <div className="px-4 flex flex-col gap-3 flex-1 min-h-0 pb-4">
             <Input
               placeholder={t("searchPlaceholder")}
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
+              className="shrink-0"
             />
 
-            <ScrollArea className="h-[calc(90vh-180px)]">
+            <div className="flex-1 overflow-y-auto">
               <div className="space-y-2">
                 {products.length === 0 ? (
                   <div className="text-center text-muted-foreground py-8">
@@ -329,10 +328,10 @@ export function PurchaseItems({
                   ))
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

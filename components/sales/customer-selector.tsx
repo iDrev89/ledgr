@@ -6,12 +6,11 @@ import { Plus, Search, Loader2, Cake, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -137,18 +136,19 @@ export function CustomerSelector({
         <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
       </button>
 
-      {/* Customer picker sheet — full bottom sheet, keyboard-safe */}
-      <Sheet open={open} onOpenChange={handleSheetOpenChange}>
-        <SheetContent
-          side="bottom"
+      {/* Customer picker drawer — vaul, swipe-to-dismiss */}
+      <Drawer open={open} onOpenChange={handleSheetOpenChange} shouldScaleBackground={false}>
+        <DrawerContent
           className="h-[85vh] flex flex-col"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
         >
-          <SheetHeader className="shrink-0">
-            <SheetTitle>{t("selectCustomer")}</SheetTitle>
-          </SheetHeader>
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("selectCustomer")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
 
-          <div className="mt-4 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="px-4 flex flex-col gap-3 flex-1 min-h-0 pb-4">
             {/* Search input */}
             <div className="relative shrink-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -170,7 +170,7 @@ export function CustomerSelector({
             </div>
 
             {/* List */}
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <div className="rounded-md border overflow-hidden">
                 {/* Create customer — pinned at top, always visible */}
                 <button
@@ -246,10 +246,10 @@ export function CustomerSelector({
                     );
                   })}
               </div>
-            </ScrollArea>
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
 
       <CustomerDialog
         open={dialogOpen}

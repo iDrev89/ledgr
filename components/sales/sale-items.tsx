@@ -7,12 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { useProducts } from "@/hooks/use-products";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
@@ -209,30 +208,32 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
         </div>
       )}
 
-      {/* Product picker sheet */}
-      <Sheet
+      {/* Product picker drawer — vaul, swipe-to-dismiss */}
+      <Drawer
         open={productPickerOpen}
         onOpenChange={(open) => {
           setProductPickerOpen(open);
           if (!open) setProductSearch("");
         }}
+        shouldScaleBackground={false}
       >
-        <SheetContent
-          side="bottom"
+        <DrawerContent
           className="h-[85vh] flex flex-col"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
         >
-          <SheetHeader className="shrink-0">
-            <SheetTitle>{t("selectProduct")}</SheetTitle>
-          </SheetHeader>
-          <div className="mt-4 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("selectProduct")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
+          <div className="px-4 flex flex-col gap-3 flex-1 min-h-0 pb-4">
             <Input
               placeholder={t("searchProduct")}
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
               className="h-11 shrink-0"
             />
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <div className="rounded-md border overflow-hidden">
                 {products.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-10">
@@ -263,26 +264,29 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                   ))
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
 
-      {/* Item edit sheet */}
-      <Sheet
+      {/* Item edit drawer — vaul, swipe-to-dismiss */}
+      <Drawer
         open={editingItemId !== null}
         onOpenChange={(open) => {
           if (!open) setEditingItemId(null);
         }}
+        shouldScaleBackground={false}
       >
-        <SheetContent side="bottom" className="h-auto">
+        <DrawerContent className="flex flex-col">
           {editingItem && (
-            <div className="flex flex-col gap-5 pb-6">
-              <SheetHeader>
-                <SheetTitle className="text-base truncate pr-4">
-                  {editingItem.productName}
-                </SheetTitle>
-              </SheetHeader>
+            <div className="flex flex-col gap-5 px-4 pb-8">
+              <div className="shrink-0 pb-1">
+                <DrawerHeader className="p-0 pt-1 text-left">
+                  <DrawerTitle className="text-base truncate">
+                    {editingItem.productName}
+                  </DrawerTitle>
+                </DrawerHeader>
+              </div>
 
               {/* Quantity stepper */}
               <div className="space-y-2">
@@ -402,8 +406,8 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
               </div>
             </div>
           )}
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

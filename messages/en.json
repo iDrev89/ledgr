@@ -642,6 +642,9 @@
       "unitPriceInvalid": "Unit price must be a valid positive number",
       "discountInvalid": "Discount must be a valid positive number",
       "paymentMethodRequired": "Payment method is required",
+      "paymentAmountRequired": "All payments must have an amount specified",
+      "accountRequired": "Destination account is required",
+      "paymentsExceedTotal": "Total payments cannot exceed the sale total",
       "noteMax": "Note must be less than 500 characters",
       "idRequired": "Sale ID is required"
     },

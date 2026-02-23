@@ -9,13 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -90,30 +89,27 @@ export function ResponsiveDialog({
     full: "max-w-[95vw]",
   };
 
-  // Renderizar Sheet en mobile
+  // Renderizar Drawer en mobile (vaul — soporta swipe-to-dismiss)
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent 
-          side="bottom" 
-          className={cn("h-[90vh] flex flex-col p-0", className)}
+      <Drawer open={open} onOpenChange={onOpenChange} shouldScaleBackground={false}>
+        <DrawerContent
+          className={cn("flex flex-col max-h-[90vh] p-0", className)}
         >
           {/* Header fijo */}
-          <div className="flex-shrink-0 px-6 pt-6 pb-4">
-            <SheetHeader>
-              <SheetTitle>{title}</SheetTitle>
-              {description && <SheetDescription>{description}</SheetDescription>}
-            </SheetHeader>
+          <div className="flex-shrink-0 px-6 pt-2 pb-4">
+            <DrawerHeader className="p-0 text-left">
+              <DrawerTitle>{title}</DrawerTitle>
+              {description && <DrawerDescription>{description}</DrawerDescription>}
+            </DrawerHeader>
           </div>
-          
-          {/* Contenido scrollable con ScrollArea */}
-          <ScrollArea className="flex-1 px-6">
-            <div className="pb-6">
-              {children}
-            </div>
-          </ScrollArea>
-        </SheetContent>
-      </Sheet>
+
+          {/* Contenido scrollable — div nativo para compatibilidad con vaul */}
+          <div className="flex-1 overflow-y-auto px-6 pb-6">
+            {children}
+          </div>
+        </DrawerContent>
+      </Drawer>
     );
   }
 

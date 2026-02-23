@@ -11,11 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -283,13 +283,15 @@ export function CustomerForm({
                 </Button>
               </div>
               <FormMessage />
-              {/* Calendar as bottom sheet — keyboard-safe on mobile */}
-              <Sheet open={calendarOpen} onOpenChange={setCalendarOpen}>
-                <SheetContent side="bottom" className="h-auto pb-8">
-                  <SheetHeader className="mb-4">
-                    <SheetTitle>{t("birthdate")}</SheetTitle>
-                  </SheetHeader>
-                  <div className="flex justify-center">
+              {/* Calendar as bottom drawer — vaul, swipe-to-dismiss, keyboard-safe on mobile */}
+              <Drawer open={calendarOpen} onOpenChange={setCalendarOpen} shouldScaleBackground={false}>
+                <DrawerContent className="flex flex-col">
+                  <div className="shrink-0 px-4 pb-2">
+                    <DrawerHeader className="p-0 pt-1 text-left">
+                      <DrawerTitle>{t("birthdate")}</DrawerTitle>
+                    </DrawerHeader>
+                  </div>
+                  <div className="flex justify-center px-4 pb-8">
                     <Calendar
                       mode="single"
                       selected={birthdate}
@@ -300,8 +302,8 @@ export function CustomerForm({
                       onSelect={handleCalendarSelect}
                     />
                   </div>
-                </SheetContent>
-              </Sheet>
+                </DrawerContent>
+              </Drawer>
             </FormItem>
           )}
         />

@@ -64,5 +64,12 @@ export const getAccountsForMethod = (
   method: PaymentMethod | string,
   accounts: FinancialAccount[],
 ): FinancialAccount[] => {
-  return accounts;
+  switch (method) {
+    case "CASH":
+      return accounts.filter((a) => a.type === "CASH_REGISTER");
+    case "BANK_TRANSFER":
+      return accounts.filter((a) => a.type !== "CASH_REGISTER");
+    default:
+      return accounts;
+  }
 };
