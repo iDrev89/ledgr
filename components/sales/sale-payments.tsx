@@ -39,6 +39,7 @@ interface SalePaymentsProps {
   payments: SalePaymentRow[];
   onPaymentsChange: (payments: SalePaymentRow[]) => void;
   total: number;
+  tip?: number;
   disabled?: boolean;
 }
 
@@ -60,6 +61,7 @@ export function SalePayments({
   payments,
   onPaymentsChange,
   total,
+  tip = 0,
   disabled,
 }: SalePaymentsProps) {
   const t = useTranslations("Sales");
@@ -212,6 +214,16 @@ export function SalePayments({
               {formatCurrency(total)}
             </span>
           </div>
+          {tip > 0 && (
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="text-xs text-muted-foreground">
+                {t("tip")}
+              </span>
+              <span className="font-mono text-xs font-medium tabular-nums">
+                {formatCurrency(tip)}
+              </span>
+            </div>
+          )}
           {totalPaid > 0 && (
             <div className="flex items-center justify-between px-3 py-2">
               <span className="text-xs text-muted-foreground">
@@ -229,15 +241,15 @@ export function SalePayments({
                 "font-mono text-base font-bold tabular-nums",
                 balance > 0
                   ? "text-warning"
-                  : balance < 0
+                  : balance < 0 && Math.abs(balance) > tip
                     ? "text-destructive"
                     : "text-success",
               )}
             >
-              {formatCurrency(balance)}
+              {formatCurrency(Math.max(balance, 0))}
             </span>
           </div>
-          {balance < 0 && (
+          {balance < 0 && Math.abs(balance) > tip && (
             <div className="px-3 py-2 bg-destructive/5">
               <p className="text-xs text-destructive font-medium">
                 {t("validation.paymentsExceedTotal")}

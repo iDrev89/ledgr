@@ -86,14 +86,10 @@ export function BusinessLineCard({
         )}
 
         {businessLine._count && (
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="text-center p-2 rounded bg-muted/50">
               <p className="font-medium">{businessLine._count.products}</p>
               <p className="text-muted-foreground">{t("products")}</p>
-            </div>
-            <div className="text-center p-2 rounded bg-muted/50">
-              <p className="font-medium">{businessLine._count.sales}</p>
-              <p className="text-muted-foreground">{t("sales")}</p>
             </div>
             <div className="text-center p-2 rounded bg-muted/50">
               <p className="font-medium">{businessLine._count.expenses}</p>

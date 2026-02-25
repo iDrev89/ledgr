@@ -20,7 +20,6 @@ type ActionResponse<T = unknown> =
 type BusinessLineWithRelations = BusinessLine & {
   _count?: {
     products: number;
-    sales: number;
     expenses: number;
   };
 };
@@ -71,7 +70,6 @@ export const getBusinessLines = async (params?: {
           _count: {
             select: {
               products: true,
-              sales: true,
               expenses: true,
             },
           },
@@ -104,7 +102,6 @@ export const getBusinessLine = async (
         _count: {
           select: {
             products: true,
-            sales: true,
             expenses: true,
           },
         },
@@ -228,7 +225,6 @@ export const deleteBusinessLine = async (
         _count: {
           select: {
             products: true,
-            sales: true,
             expenses: true,
           },
         },
@@ -241,7 +237,6 @@ export const deleteBusinessLine = async (
 
     const totalUsage =
       businessLine._count.products +
-      businessLine._count.sales +
       businessLine._count.expenses;
 
     if (totalUsage > 0) {

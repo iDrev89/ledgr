@@ -97,9 +97,9 @@ export function SaleForm({
         tempId: payment.id,
         amount: payment.amount.toString(),
         method: payment.method,
-        bankId: payment.bankId || "",
+        accountId: payment.accountId || "",
         reference: payment.reference || "",
-        attachmentUrl: (payment as any).attachmentUrl || "",
+        attachmentUrl: payment.attachmentUrl || "",
       }));
     }
     return [];
@@ -116,6 +116,7 @@ export function SaleForm({
       soldById: sale?.soldById || "",
       branchId: sale?.branchId || activeBranchId || "",
       customDate: sale?.createdAt ? format(new Date(sale.createdAt), "yyyy-MM-dd") : "",
+      tip: sale?.tip && parseFloat(sale.tip) > 0 ? sale.tip : "",
       note: sale?.note || "",
     },
   });
@@ -169,7 +170,7 @@ export function SaleForm({
       const formattedPayments = payments.map((payment) => ({
         amount: payment.amount,
         method: payment.method,
-        bankId: payment.bankId || undefined,
+        accountId: payment.accountId,
         reference: payment.reference || undefined,
         attachmentUrl: payment.attachmentUrl || undefined,
       }));
@@ -179,6 +180,7 @@ export function SaleForm({
         soldById: data.soldById || undefined,
         branchId: data.branchId || null,
         customDate: data.customDate || undefined,
+        tip: data.tip || "0",
         note: data.note || "",
         items: formattedItems,
         payments: formattedPayments,
@@ -207,6 +209,7 @@ export function SaleForm({
       soldById: "",
       branchId: activeBranchId || "",
       customDate: "",
+      tip: "",
       note: "",
     });
     setItems([]);
@@ -218,6 +221,7 @@ export function SaleForm({
 
   // Calculate totals
   const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
+  const tipValue = parseFloat(form.watch("tip") || "0") || 0;
   const totalPaid = payments.reduce(
     (sum, p) => sum + (parseFloat(p.amount) || 0),
     0,
@@ -352,7 +356,32 @@ export function SaleForm({
           payments={payments}
           onPaymentsChange={setPayments}
           total={total}
+          tip={tipValue}
           disabled={isLoading}
+        />
+
+        <FormField
+          control={form.control}
+          name="tip"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("tip")}</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  step="1"
+                  min="0"                
+                  disabled={isLoading}
+                  className="font-mono tabular-nums"
+                />
+              </FormControl>
+              <FormDescription className="text-xs">
+                {t("tipDescription")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         {/* Leave Open Toggle - Only for new sales */}
@@ -485,7 +514,7 @@ export function SaleForm({
                 "font-mono text-sm font-semibold tabular-nums",
                 balance > 0
                   ? "text-warning"
-                  : balance < 0
+                  : balance < 0 && Math.abs(balance) > tipValue
                     ? "text-destructive"
                     : "text-success",
               )}
@@ -495,7 +524,7 @@ export function SaleForm({
                 currency: "COP",
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
-              }).format(balance)}
+              }).format(Math.max(balance, 0))}
             </p>
           </div>
           <Button

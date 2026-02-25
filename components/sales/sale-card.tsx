@@ -11,6 +11,7 @@ import {
   Check,
   User,
   StickyNote,
+  HandCoins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -118,6 +119,9 @@ export function SaleCard({
             </span>
             {sale.note && (
               <StickyNote className="h-3 w-3 text-muted-foreground/60" />
+            )}
+            {parseFloat(sale.tip || "0") > 0 && (
+              <HandCoins className="h-3 w-3 text-muted-foreground/60" />
             )}
           </div>
 

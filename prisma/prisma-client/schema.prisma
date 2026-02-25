@@ -109,12 +109,7 @@ enum AccountType {
 
 enum PaymentMethod {
   CASH
-  DEBIT_CARD
-  CREDIT_CARD
   BANK_TRANSFER
-  DIGITAL_PAYMENT
-  CHECK
-  OTHER
 }
 
 enum AccountTransactionType {
@@ -366,6 +361,7 @@ model Sale {
   discountTotal Decimal    @default(0) @db.Decimal(12, 2)
   taxTotal      Decimal    @default(0) @db.Decimal(12, 2)
   total         Decimal    @db.Decimal(12, 2)
+  tip           Decimal    @default(0) @db.Decimal(12, 2)
   status        SaleStatus @default(COMPLETED)
   note          String?
   createdAt     DateTime   @default(now())

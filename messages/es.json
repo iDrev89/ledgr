@@ -598,6 +598,9 @@
     "paymentDigitalPayment": "Pago Digital",
     "paymentCheck": "Cheque",
     "paymentOther": "Otro",
+    "tip": "Propina",
+    "tipPlaceholder": "Monto de propina incluido en el pago",
+    "tipDescription": "Opcional - Registra el monto de propina incluido en el pago",
     "note": "Nota",
     "notePlaceholder": "Notas adicionales sobre esta venta",
     "noteDescription": "Opcional - Agrega cualquier información relevante",
@@ -666,7 +669,8 @@
       "daySales": "Ventas del Día",
       "transactions": "Transacciones",
       "cashTotal": "Efectivo",
-      "transferTotal": "Transferencias"
+      "transferTotal": "Transferencias",
+      "tipTotal": "Propinas"
     },
     "errors": {
       "fetchFailed": "Error al obtener ventas",
@@ -714,7 +718,7 @@
     "signingIn": "Iniciando sesión...",
     "or": "o",
     "orContinueWith": "O continúa con",
-    "continueWithGoogle": "Inicia sesión con Google",
+    "continueWithGoogle": "Continuar con Google",
     "newToApp": "¿Eres nuevo en Ledgrly?",
     "createAccount": "Crea una cuenta",
     "failedToSignIn": "Error al iniciar sesión",
@@ -1267,6 +1271,8 @@
     "selectFortnight": "Quincena",
     "firstFortnight": "Primera",
     "secondFortnight": "Segunda",
+    "selectCustomDateRange": "Rango de fechas",
+    "selectDateRange": "Selecciona un rango de fechas",
     "searchUsers": "Buscar empleado...",
     "noUsersFound": "No se encontraron empleados.",
     "employeesHelpText": "Si no seleccionas empleados, se liquidará para todos los que tengan comisiones en el periodo.",

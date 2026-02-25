@@ -57,7 +57,7 @@ export function AccountForm({
 
   const { createAccountSchema } = useMemo(() => getAccountSchemas(t), [t]);
 
-  const form = useForm<CreateAccountInput>({
+  const form = useForm({
     resolver: zodResolver(createAccountSchema),
     defaultValues: {
       name: account?.name || "",

@@ -41,7 +41,7 @@ export function BranchForm({
 
   const { createBranchSchema } = useMemo(() => getBranchSchemas(t), [t]);
 
-  const form = useForm<CreateBranchInput>({
+  const form = useForm({
     resolver: zodResolver(createBranchSchema),
     defaultValues: {
       name: branch?.name || "",

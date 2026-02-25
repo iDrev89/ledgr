@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, Trash2, Edit, Check, StickyNote } from "lucide-react";
+import { MoreHorizontal, Eye, Trash2, Edit, Check, StickyNote, HandCoins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -162,8 +162,14 @@ export const createSaleColumns = ({
     header: () => <div className="text-right">{t("total")}</div>,
     cell: ({ row }) => {
       const total = row.getValue("total") as string;
+      const hasTip = parseFloat(row.original.tip || "0") > 0;
       return (
-        <div className="text-right font-mono tabular-nums font-medium">{formatCurrency(total)}</div>
+        <div className="flex items-center justify-end gap-1.5">
+          {hasTip && (
+            <HandCoins className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" aria-label={t("tip")} />
+          )}
+          <span className="font-mono tabular-nums font-medium">{formatCurrency(total)}</span>
+        </div>
       );
     },
   },

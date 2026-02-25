@@ -26,9 +26,9 @@ export function SalesStatsCards({ sellerId }: SalesStatsCardsProps) {
     return (
       <Card>
         <CardContent className="p-0">
-          <div className="grid grid-cols-2 lg:grid-cols-4 divide-y divide-border lg:divide-y-0 lg:divide-x divide-border">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="px-5 py-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 divide-y divide-border lg:divide-y-0 lg:divide-x divide-border">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={`px-5 py-4 ${i === 4 ? "col-span-2 lg:col-span-1" : ""}`}>
                 <Skeleton className="h-3 w-20" />
                 <Skeleton className="h-6 w-28 mt-2" />
               </div>
@@ -60,14 +60,22 @@ export function SalesStatsCards({ sellerId }: SalesStatsCardsProps) {
       value: formatCurrency(stats?.transferAmount || "0"),
       valueClass: "text-foreground",
     },
+    {
+      label: t("stats.tipTotal"),
+      value: formatCurrency(stats?.tipAmount || "0"),
+      valueClass: "text-foreground",
+    },
   ];
 
   return (
     <Card>
       <CardContent className="p-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y divide-border lg:divide-y-0 lg:divide-x divide-border">
-          {cells.map((cell) => (
-            <div key={cell.label} className="px-5 py-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 divide-y divide-border lg:divide-y-0 lg:divide-x divide-border">
+          {cells.map((cell, i) => (
+            <div
+              key={cell.label}
+              className={`px-5 py-4 ${i === cells.length - 1 && cells.length % 2 !== 0 ? "col-span-2 lg:col-span-1" : ""}`}
+            >
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {cell.label}
               </p>

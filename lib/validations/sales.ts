@@ -75,6 +75,13 @@ const createSaleSchemas = (messages?: {
       .array(saleItemSchema)
       .min(1, messages?.itemsMin || "At least one item is required"),
     payments: z.array(salePaymentSchema).optional().default([]),
+    tip: z
+      .string()
+      .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
+        message: "Tip must be a valid positive number",
+      })
+      .optional()
+      .default("0"),
     note: z
       .string()
       .max(500, messages?.noteMax || "Note must be less than 500 characters")

@@ -588,6 +588,9 @@
     "paymentDigitalPayment": "Digital Payment",
     "paymentCheck": "Check",
     "paymentOther": "Other",
+    "tip": "Tip",
+    "tipPlaceholder": "Tip amount included in payment",
+    "tipDescription": "Optional - Record the tip amount included in the payment",
     "note": "Note",
     "notePlaceholder": "Additional notes about this sale",
     "noteDescription": "Optional - Add any relevant information",
@@ -652,7 +655,8 @@
       "daySales": "Today's Sales",
       "transactions": "Transactions",
       "cashTotal": "Cash",
-      "transferTotal": "Transfers"
+      "transferTotal": "Transfers",
+      "tipTotal": "Tips"
     },
     "errors": {
       "fetchFailed": "Failed to fetch sales",
@@ -699,7 +703,7 @@
     "signingIn": "Signing in...",
     "or": "or",
     "orContinueWith": "Or continue with",
-    "continueWithGoogle": "Sign in with Google",
+    "continueWithGoogle": "Continue with Google",
     "newToApp": "New to Ledgrly?",
     "createAccount": "Create an account",
     "failedToSignIn": "Failed to sign in",
@@ -1247,6 +1251,8 @@
     "selectFortnight": "Fortnight",
     "firstFortnight": "First",
     "secondFortnight": "Second",
+    "selectCustomDateRange": "Date Range",
+    "selectDateRange": "Select a date range",
     "searchUsers": "Search employees...",
     "noUsersFound": "No employees found.",
     "employeesHelpText": "If you don't select employees, the payroll will be processed for all who have commissions in the period.",

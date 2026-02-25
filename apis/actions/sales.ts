@@ -51,6 +51,7 @@ const serializeSale = (sale: any): SaleWithDetails => {
     discountTotal: sale.discountTotal.toString(),
     taxTotal: sale.taxTotal.toString(),
     total: sale.total.toString(),
+    tip: sale.tip.toString(),
     customer: sale.customer
       ? {
           ...sale.customer,
@@ -466,6 +467,7 @@ export const createSale = async (
 
     const taxTotal = new Decimal(0); // TODO: Implement tax calculation in future
     const total = subtotal.minus(discountTotal).plus(taxTotal);
+    const tip = new Decimal(validated.tip || "0");
 
     // Calculate total paid and validate
     let totalPaid = new Decimal(0);
@@ -481,16 +483,16 @@ export const createSale = async (
       };
     });
 
-    // Validate that payments don't exceed total
-    if (totalPaid.gt(total)) {
+    // Validate that payments don't exceed total + tip
+    if (totalPaid.gt(total.plus(tip))) {
       return {
         success: false,
         error: t("paymentsExceedTotal"),
       };
     }
 
-    // Calculate balance for receivable
-    const balance = total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(total.minus(totalPaid), 0);
 
     // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
@@ -511,6 +513,7 @@ export const createSale = async (
           discountTotal,
           taxTotal,
           total,
+          tip,
           status: isDraft ? "DRAFT" : "COMPLETED",
           note: validated.note || null,
           ...(customDate && { createdAt: customDate }),
@@ -684,13 +687,14 @@ export const completeSale = async (
       };
     }
 
-    // Calculate balance
+    // Calculate balance (tip not included — receivable is only for sale total)
     let totalPaid = new Decimal(0);
     existingSale.payments.forEach((payment) => {
       totalPaid = totalPaid.plus(payment.amount);
     });
 
-    const balance = existingSale.total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(existingSale.total.minus(totalPaid), 0);
 
     // Complete the sale in a transaction
     const completedSale = await prisma.$transaction(async (tx) => {
@@ -940,6 +944,7 @@ export const updateSale = async (
 
     const taxTotal = new Decimal(0);
     const total = subtotal.minus(discountTotal).plus(taxTotal);
+    const tip = new Decimal(validated.tip || "0");
 
     // Calculate total paid and validate
     let totalPaid = new Decimal(0);
@@ -955,16 +960,16 @@ export const updateSale = async (
       };
     });
 
-    // Validate that payments don't exceed total
-    if (totalPaid.gt(total)) {
+    // Validate that payments don't exceed total + tip
+    if (totalPaid.gt(total.plus(tip))) {
       return {
         success: false,
         error: t("paymentsExceedTotal"),
       };
     }
 
-    // Calculate balance for receivable
-    const balance = total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(total.minus(totalPaid), 0);
 
     // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
@@ -1028,6 +1033,7 @@ export const updateSale = async (
           discountTotal,
           taxTotal,
           total,
+          tip,
           note: validated.note || null,
           ...(customDate && { createdAt: customDate }),
           items: {
@@ -1257,10 +1263,7 @@ export type EmployeeSalesStats = {
   transactionCount: number;
   cashAmount: string;
   transferAmount: string;
-  cardAmount: string;
-  digitalAmount: string;
-  creditCardAmount: string;
-  checkAmount: string;
+  tipAmount: string;
 };
 
 export const getEmployeeSalesStats = async (params?: {
@@ -1321,13 +1324,11 @@ export const getEmployeeSalesStats = async (params?: {
     let totalAmount = new Decimal(0);
     let cashAmount = new Decimal(0);
     let transferAmount = new Decimal(0);
-    let cardAmount = new Decimal(0);
-    let digitalAmount = new Decimal(0);
-    let creditCardAmount = new Decimal(0);
-    let checkAmount = new Decimal(0);
+    let tipAmount = new Decimal(0);
 
     for (const sale of sales) {
       totalAmount = totalAmount.plus(sale.total);
+      tipAmount = tipAmount.plus(sale.tip || 0);
 
       for (const payment of sale.payments) {
         switch (payment.method) {
@@ -1336,18 +1337,6 @@ export const getEmployeeSalesStats = async (params?: {
             break;
           case "BANK_TRANSFER":
             transferAmount = transferAmount.plus(payment.amount);
-            break;
-          case "DEBIT_CARD":
-            cardAmount = cardAmount.plus(payment.amount);
-            break;
-          case "CREDIT_CARD":
-            creditCardAmount = creditCardAmount.plus(payment.amount);
-            break;
-          case "DIGITAL_PAYMENT":
-            digitalAmount = digitalAmount.plus(payment.amount);
-            break;
-          case "CHECK":
-            checkAmount = checkAmount.plus(payment.amount);
             break;
         }
       }
@@ -1360,10 +1349,7 @@ export const getEmployeeSalesStats = async (params?: {
         transactionCount: sales.length,
         cashAmount: cashAmount.toString(),
         transferAmount: transferAmount.toString(),
-        cardAmount: cardAmount.toString(),
-        digitalAmount: digitalAmount.toString(),
-        creditCardAmount: creditCardAmount.toString(),
-        checkAmount: checkAmount.toString(),
+        tipAmount: tipAmount.toString(),
       },
     };
   } catch (error) {

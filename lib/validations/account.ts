@@ -29,8 +29,8 @@ const createAccountSchemas = (messages?: {
       .optional()
       .or(z.literal("")),
     institution: z.string().max(100).trim().optional().or(z.literal("")),
-    initialBalance: z.string().optional().default("0"),
-    isDefault: z.boolean().optional().default(false),
+    initialBalance: z.string().default("0"),
+    isDefault: z.boolean().default(false),
     active: z.boolean(),
   });
 

@@ -12,12 +12,13 @@ export type { Sale, SaleItem, SalePayment, SaleStatus };
 
 export type SaleWithDetails = Omit<
   Sale,
-  "subtotal" | "discountTotal" | "taxTotal" | "total"
+  "subtotal" | "discountTotal" | "taxTotal" | "total" | "tip"
 > & {
   subtotal: string;
   discountTotal: string;
   taxTotal: string;
   total: string;
+  tip: string;
   customer: Customer;
   createdBy: {
     id: string;

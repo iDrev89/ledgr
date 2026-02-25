@@ -282,6 +282,7 @@ exports.Prisma.SaleScalarFieldEnum = {
   discountTotal: 'discountTotal',
   taxTotal: 'taxTotal',
   total: 'total',
+  tip: 'tip',
   status: 'status',
   note: 'note',
   createdAt: 'createdAt',
@@ -556,12 +557,7 @@ exports.SaleStatus = exports.$Enums.SaleStatus = {
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   CASH: 'CASH',
-  DEBIT_CARD: 'DEBIT_CARD',
-  CREDIT_CARD: 'CREDIT_CARD',
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  DIGITAL_PAYMENT: 'DIGITAL_PAYMENT',
-  CHECK: 'CHECK',
-  OTHER: 'OTHER'
+  BANK_TRANSFER: 'BANK_TRANSFER'
 };
 
 exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {

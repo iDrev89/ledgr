@@ -222,6 +222,14 @@ export function SaleDetailDialog({
             {formatCurrency(sale.total)}
           </span>
         </div>
+        {parseFloat(sale.tip) > 0 && (
+          <div className="flex justify-between items-center text-sm px-3 py-2 bg-muted/30">
+            <span className="text-muted-foreground">{t("tip")}:</span>
+            <span className="font-mono tabular-nums font-medium text-muted-foreground">
+              {formatCurrency(sale.tip)}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Nota */}

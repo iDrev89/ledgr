@@ -55,6 +55,7 @@ export interface PurchaseWithDetails {
 
 export interface CreatePurchaseInput {
   supplierId?: string | null;
+  branchId?: string | null;
   invoiceNo?: string | null;
   note?: string | null;
   items: PurchaseItem[];

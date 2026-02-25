@@ -361,6 +361,7 @@ model Sale {
   discountTotal  Decimal       @db.Decimal(12, 2) @default(0)
   taxTotal       Decimal       @db.Decimal(12, 2) @default(0)
   total          Decimal       @db.Decimal(12, 2)
+  tip            Decimal       @db.Decimal(12, 2) @default(0)
   status         SaleStatus    @default(COMPLETED)
   note           String?
   createdAt      DateTime      @default(now())

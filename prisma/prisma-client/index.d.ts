@@ -189,12 +189,7 @@ export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
 export const PaymentMethod: {
   CASH: 'CASH',
-  DEBIT_CARD: 'DEBIT_CARD',
-  CREDIT_CARD: 'CREDIT_CARD',
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  DIGITAL_PAYMENT: 'DIGITAL_PAYMENT',
-  CHECK: 'CHECK',
-  OTHER: 'OTHER'
+  BANK_TRANSFER: 'BANK_TRANSFER'
 };
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
@@ -19199,6 +19194,7 @@ export namespace Prisma {
     discountTotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
+    tip: Decimal | null
   }
 
   export type SaleSumAggregateOutputType = {
@@ -19207,6 +19203,7 @@ export namespace Prisma {
     discountTotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
+    tip: Decimal | null
   }
 
   export type SaleMinAggregateOutputType = {
@@ -19221,6 +19218,7 @@ export namespace Prisma {
     discountTotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
+    tip: Decimal | null
     status: $Enums.SaleStatus | null
     note: string | null
     createdAt: Date | null
@@ -19239,6 +19237,7 @@ export namespace Prisma {
     discountTotal: Decimal | null
     taxTotal: Decimal | null
     total: Decimal | null
+    tip: Decimal | null
     status: $Enums.SaleStatus | null
     note: string | null
     createdAt: Date | null
@@ -19257,6 +19256,7 @@ export namespace Prisma {
     discountTotal: number
     taxTotal: number
     total: number
+    tip: number
     status: number
     note: number
     createdAt: number
@@ -19271,6 +19271,7 @@ export namespace Prisma {
     discountTotal?: true
     taxTotal?: true
     total?: true
+    tip?: true
   }
 
   export type SaleSumAggregateInputType = {
@@ -19279,6 +19280,7 @@ export namespace Prisma {
     discountTotal?: true
     taxTotal?: true
     total?: true
+    tip?: true
   }
 
   export type SaleMinAggregateInputType = {
@@ -19293,6 +19295,7 @@ export namespace Prisma {
     discountTotal?: true
     taxTotal?: true
     total?: true
+    tip?: true
     status?: true
     note?: true
     createdAt?: true
@@ -19311,6 +19314,7 @@ export namespace Prisma {
     discountTotal?: true
     taxTotal?: true
     total?: true
+    tip?: true
     status?: true
     note?: true
     createdAt?: true
@@ -19329,6 +19333,7 @@ export namespace Prisma {
     discountTotal?: true
     taxTotal?: true
     total?: true
+    tip?: true
     status?: true
     note?: true
     createdAt?: true
@@ -19434,6 +19439,7 @@ export namespace Prisma {
     discountTotal: Decimal
     taxTotal: Decimal
     total: Decimal
+    tip: Decimal
     status: $Enums.SaleStatus
     note: string | null
     createdAt: Date
@@ -19471,6 +19477,7 @@ export namespace Prisma {
     discountTotal?: boolean
     taxTotal?: boolean
     total?: boolean
+    tip?: boolean
     status?: boolean
     note?: boolean
     createdAt?: boolean
@@ -19497,6 +19504,7 @@ export namespace Prisma {
     discountTotal?: boolean
     taxTotal?: boolean
     total?: boolean
+    tip?: boolean
     status?: boolean
     note?: boolean
     createdAt?: boolean
@@ -19519,6 +19527,7 @@ export namespace Prisma {
     discountTotal?: boolean
     taxTotal?: boolean
     total?: boolean
+    tip?: boolean
     status?: boolean
     note?: boolean
     createdAt?: boolean
@@ -19541,13 +19550,14 @@ export namespace Prisma {
     discountTotal?: boolean
     taxTotal?: boolean
     total?: boolean
+    tip?: boolean
     status?: boolean
     note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "soldById" | "customerId" | "branchId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "status" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
+  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleNumber" | "createdById" | "soldById" | "customerId" | "branchId" | "currency" | "subtotal" | "discountTotal" | "taxTotal" | "total" | "tip" | "status" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
   export type SaleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     soldBy?: boolean | Sale$soldByArgs<ExtArgs>
@@ -19594,6 +19604,7 @@ export namespace Prisma {
       discountTotal: Prisma.Decimal
       taxTotal: Prisma.Decimal
       total: Prisma.Decimal
+      tip: Prisma.Decimal
       status: $Enums.SaleStatus
       note: string | null
       createdAt: Date
@@ -20039,6 +20050,7 @@ export namespace Prisma {
     readonly discountTotal: FieldRef<"Sale", 'Decimal'>
     readonly taxTotal: FieldRef<"Sale", 'Decimal'>
     readonly total: FieldRef<"Sale", 'Decimal'>
+    readonly tip: FieldRef<"Sale", 'Decimal'>
     readonly status: FieldRef<"Sale", 'SaleStatus'>
     readonly note: FieldRef<"Sale", 'String'>
     readonly createdAt: FieldRef<"Sale", 'DateTime'>
@@ -41506,6 +41518,7 @@ export namespace Prisma {
     discountTotal: 'discountTotal',
     taxTotal: 'taxTotal',
     total: 'total',
+    tip: 'tip',
     status: 'status',
     note: 'note',
     createdAt: 'createdAt',
@@ -43158,6 +43171,7 @@ export namespace Prisma {
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFilter<"Sale"> | $Enums.SaleStatus
     note?: StringNullableFilter<"Sale"> | string | null
     createdAt?: DateTimeFilter<"Sale"> | Date | string
@@ -43183,6 +43197,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
     status?: SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -43211,6 +43226,7 @@ export namespace Prisma {
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFilter<"Sale"> | $Enums.SaleStatus
     note?: StringNullableFilter<"Sale"> | string | null
     createdAt?: DateTimeFilter<"Sale"> | Date | string
@@ -43236,6 +43252,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
     status?: SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -43262,6 +43279,7 @@ export namespace Prisma {
     discountTotal?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     total?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
+    tip?: DecimalWithAggregatesFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusWithAggregatesFilter<"Sale"> | $Enums.SaleStatus
     note?: StringNullableWithAggregatesFilter<"Sale"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Sale"> | Date | string
@@ -45993,6 +46011,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -46018,6 +46037,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -46034,6 +46054,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46059,6 +46080,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46080,6 +46102,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -46093,6 +46116,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46111,6 +46135,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48753,6 +48778,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
     status?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
@@ -48765,6 +48791,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
   }
 
   export type SaleMaxOrderByAggregateInput = {
@@ -48779,6 +48806,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
     status?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
@@ -48797,6 +48825,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
     status?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
@@ -48809,6 +48838,7 @@ export namespace Prisma {
     discountTotal?: SortOrder
     taxTotal?: SortOrder
     total?: SortOrder
+    tip?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -53769,6 +53799,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -53792,6 +53823,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -53819,6 +53851,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -53842,6 +53875,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -54382,6 +54416,7 @@ export namespace Prisma {
     discountTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFilter<"Sale"> | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFilter<"Sale"> | $Enums.SaleStatus
     note?: StringNullableFilter<"Sale"> | string | null
     createdAt?: DateTimeFilter<"Sale"> | Date | string
@@ -55202,6 +55237,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -55225,6 +55261,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -57205,6 +57242,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -57228,6 +57266,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -58230,6 +58269,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -58254,6 +58294,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -58387,6 +58428,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58411,6 +58453,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58590,6 +58633,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -58614,6 +58658,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -58743,6 +58788,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58767,6 +58813,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60930,6 +60977,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -60954,6 +61002,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -61052,6 +61101,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61076,6 +61126,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62889,6 +62940,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -62906,6 +62958,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -63153,6 +63206,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63176,6 +63230,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63196,6 +63251,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63209,6 +63265,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63232,6 +63289,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63252,6 +63310,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63907,6 +63966,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -64054,6 +64114,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64077,6 +64138,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64097,6 +64159,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65013,6 +65076,7 @@ export namespace Prisma {
     discountTotal?: Decimal | DecimalJsLike | number | string
     taxTotal?: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    tip?: Decimal | DecimalJsLike | number | string
     status?: $Enums.SaleStatus
     note?: string | null
     createdAt?: Date | string
@@ -65037,6 +65101,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65060,6 +65125,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65080,6 +65146,7 @@ export namespace Prisma {
     discountTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: EnumSaleStatusFieldUpdateOperationsInput | $Enums.SaleStatus
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
