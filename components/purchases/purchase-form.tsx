@@ -321,6 +321,7 @@ export function PurchaseForm({
               step="0.01"
               value={taxTotal}
               onChange={(e) => setTaxTotal(parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               placeholder="0"
               disabled={isLoading}
             />

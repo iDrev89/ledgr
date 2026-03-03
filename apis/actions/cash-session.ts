@@ -145,15 +145,31 @@ export const closeCashSession = async (
       return { success: false, error: t("sessionAlreadyClosed") };
     }
 
+    // Find the previous closed session for this account to determine
+    // the start of the "unaccounted" period. If none exists, all transactions
+    // on the account are counted (e.g. first session ever).
+    const previousSession = await prisma.cashSession.findFirst({
+      where: {
+        accountId: cashSession.accountId,
+        status: "CLOSED",
+        id: { not: validated.sessionId },
+      },
+      orderBy: { closedAt: "desc" },
+      select: { closedAt: true },
+    });
+
     const transactions = await prisma.accountTransaction.aggregate({
-      where: { accountId: cashSession.accountId },
+      where: {
+        accountId: cashSession.accountId,
+        ...(previousSession?.closedAt && {
+          transactionDate: { gt: previousSession.closedAt },
+        }),
+      },
       _sum: { amount: true },
     });
 
     const transactionTotal = transactions._sum.amount ?? new Decimal(0);
-    const initialBalance =
-      cashSession.account.initialBalance ?? new Decimal(0);
-    const expectedBalance = initialBalance.add(transactionTotal);
+    const expectedBalance = cashSession.openingBalance.add(transactionTotal);
 
     const actualBalance = new Decimal(validated.actualBalance);
     const retainedAmount = new Decimal(validated.retainedAmount);
@@ -165,12 +181,17 @@ export const closeCashSession = async (
       validated.depositAccountId &&
       validated.depositAccountId.trim() !== "";
 
+    // Capture a single timestamp so that closedAt and deposit transactionDates
+    // are identical — this ensures the next session's { gt: closedAt } filter
+    // correctly excludes the deposit transactions created at close time.
+    const now = new Date();
+
     const result = await prisma.$transaction(async (tx) => {
       const updatedSession = await tx.cashSession.update({
         where: { id: validated.sessionId },
         data: {
           status: "CLOSED",
-          closedAt: new Date(),
+          closedAt: now,
           closedById: authSession.user.id,
           expectedBalance,
           actualBalance,
@@ -200,7 +221,7 @@ export const closeCashSession = async (
             type: AccountTransactionType.TRANSFER_OUT,
             amount: depositAmount.negated(),
             description: `Depósito cierre de caja - ${cashSession.account.name}`,
-            transactionDate: new Date(),
+            transactionDate: now,
             relatedAccountId: validated.depositAccountId!,
             createdById: authSession.user.id,
           },
@@ -212,7 +233,7 @@ export const closeCashSession = async (
             type: AccountTransactionType.TRANSFER_IN,
             amount: depositAmount,
             description: `Depósito cierre de caja desde ${cashSession.account.name}`,
-            transactionDate: new Date(),
+            transactionDate: now,
             relatedAccountId: cashSession.accountId,
             transferPairId: outTransaction.id,
             createdById: authSession.user.id,
@@ -388,29 +409,43 @@ export const getSessionTurnSummary = async (
 };
 
 export const getExpectedBalance = async (
-  accountId: string,
+  sessionId: string,
 ): Promise<ActionResponse<{ expectedBalance: string }>> => {
   const t = await getTranslations("CashRegister.errors");
 
   try {
     await requireAuth();
 
-    const account = await prisma.financialAccount.findUnique({
-      where: { id: accountId },
+    const session = await prisma.cashSession.findUnique({
+      where: { id: sessionId },
     });
 
-    if (!account) {
-      return { success: false, error: t("accountNotFound") };
+    if (!session) {
+      return { success: false, error: t("notFound") };
     }
 
+    const previousSession = await prisma.cashSession.findFirst({
+      where: {
+        accountId: session.accountId,
+        status: "CLOSED",
+        id: { not: sessionId },
+      },
+      orderBy: { closedAt: "desc" },
+      select: { closedAt: true },
+    });
+
     const transactions = await prisma.accountTransaction.aggregate({
-      where: { accountId },
+      where: {
+        accountId: session.accountId,
+        ...(previousSession?.closedAt && {
+          transactionDate: { gt: previousSession.closedAt },
+        }),
+      },
       _sum: { amount: true },
     });
 
     const transactionTotal = transactions._sum.amount ?? new Decimal(0);
-    const initialBalance = account.initialBalance ?? new Decimal(0);
-    const expectedBalance = initialBalance.add(transactionTotal);
+    const expectedBalance = session.openingBalance.add(transactionTotal);
 
     return {
       success: true,

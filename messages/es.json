@@ -1152,6 +1152,7 @@
       "amountInvalid": "El monto debe ser un número positivo válido",
       "amountMin": "El monto debe ser mayor a 0",
       "paymentMethodRequired": "El método de pago es requerido",
+      "accountIdRequired": "La cuenta es requerida",
       "idRequired": "El ID es requerido"
     },
     "errors": {
@@ -1756,7 +1757,8 @@
       "completeFailed": "Error al completar conciliación",
       "importFailed": "Error al importar extracto",
       "deleteFailed": "Error al eliminar conciliación",
-      "cannotDeleteCompleted": "No se puede eliminar una conciliación completada"
+      "cannotDeleteCompleted": "No se puede eliminar una conciliación completada",
+      "hasUnmatchedItems": "Existen ítems sin conciliar. Revisa todos los ítems antes de completar."
     }
   },
   "pwa": {

@@ -239,6 +239,7 @@ export function PurchaseItems({
                               parseFloat(e.target.value) || 0,
                             )
                           }
+                          onFocus={(e) => e.target.select()}
                           disabled={disabled || !item.productId}
                         />
                       </div>

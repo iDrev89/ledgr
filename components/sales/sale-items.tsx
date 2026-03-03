@@ -367,6 +367,7 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                   onChange={(e) =>
                     handleUpdateEditingItem("discount", e.target.value)
                   }
+                  onFocus={(e) => e.target.select()}
                   disabled={disabled}
                   className="h-12 text-base font-mono tabular-nums"
                 />

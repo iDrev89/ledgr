@@ -18,6 +18,7 @@ import type {
   ReconciliationItemWithRelations,
 } from "@/lib/types/reconciliation";
 import { Decimal } from "@prisma/client/runtime/library";
+import { getBusinessDayStart, getBusinessDayEnd } from "@/lib/date-utils";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -75,10 +76,17 @@ export const createReconciliation = async (
       return { success: false, error: t("accountNotFound") };
     }
 
+    // Convert to Colombia business day boundaries to avoid UTC/timezone mismatch.
+    // A transaction at 20:00 Colombia (= 01:00 next day UTC) must be included
+    // when the user selects that calendar day.
+    const toDateStr = (d: Date) => d.toISOString().slice(0, 10);
+    const periodStartUtc = getBusinessDayStart(toDateStr(validated.periodStart));
+    const periodEndUtc = getBusinessDayEnd(toDateStr(validated.periodEnd));
+
     const transactionsBefore = await prisma.accountTransaction.aggregate({
       where: {
         accountId: validated.accountId,
-        transactionDate: { lt: validated.periodStart },
+        transactionDate: { lt: periodStartUtc },
       },
       _sum: { amount: true },
     });
@@ -87,8 +95,8 @@ export const createReconciliation = async (
       where: {
         accountId: validated.accountId,
         transactionDate: {
-          gte: validated.periodStart,
-          lte: validated.periodEnd,
+          gte: periodStartUtc,
+          lte: periodEndUtc,
         },
       },
       _sum: { amount: true },
@@ -108,8 +116,8 @@ export const createReconciliation = async (
       where: {
         accountId: validated.accountId,
         transactionDate: {
-          gte: validated.periodStart,
-          lte: validated.periodEnd,
+          gte: periodStartUtc,
+          lte: periodEndUtc,
         },
       },
       select: { id: true },
@@ -118,8 +126,8 @@ export const createReconciliation = async (
     const reconciliation = await prisma.accountReconciliation.create({
       data: {
         accountId: validated.accountId,
-        periodStart: validated.periodStart,
-        periodEnd: validated.periodEnd,
+        periodStart: periodStartUtc,
+        periodEnd: periodEndUtc,
         openingBalance,
         closingBalance,
         statementBalance,
@@ -270,11 +278,20 @@ export const updateReconciliationItem = async (
     await requireAuth();
     const validated = updateReconciliationItemSchema.parse(data);
 
+    const existingItem = await prisma.reconciliationItem.findUnique({
+      where: { id: validated.id },
+      select: { reconciliationId: true, reconciliation: { select: { status: true } } },
+    });
+
     const item = await prisma.reconciliationItem.update({
       where: { id: validated.id },
       data: {
         status: validated.status,
-        transactionId: validated.transactionId ?? null,
+        // Only update transactionId if explicitly provided — undefined means
+        // "keep existing", null means "unlink", string means "link to this id"
+        ...(validated.transactionId !== undefined && {
+          transactionId: validated.transactionId,
+        }),
       },
       include: {
         transaction: {
@@ -290,6 +307,14 @@ export const updateReconciliationItem = async (
       },
     });
 
+    // Auto-transition reconciliation from DRAFT to IN_PROGRESS when work begins
+    if (existingItem?.reconciliation.status === "DRAFT") {
+      await prisma.accountReconciliation.update({
+        where: { id: existingItem.reconciliationId },
+        data: { status: "IN_PROGRESS" },
+      });
+    }
+
     revalidatePath("/reconciliation");
     return { success: true, data: serializeItem(item) };
   } catch {
@@ -304,6 +329,14 @@ export const completeReconciliation = async (
 
   try {
     const session = await requireAuth();
+
+    const unmatchedCount = await prisma.reconciliationItem.count({
+      where: { reconciliationId: id, status: "UNMATCHED" },
+    });
+
+    if (unmatchedCount > 0) {
+      return { success: false, error: t("hasUnmatchedItems") };
+    }
 
     const reconciliation = await prisma.accountReconciliation.update({
       where: { id },

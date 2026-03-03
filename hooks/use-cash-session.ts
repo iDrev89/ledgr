@@ -72,15 +72,15 @@ export const useSessionTurnSummary = (sessionId: string) =>
     refetchInterval: 30000,
   });
 
-export const useExpectedBalance = (accountId: string) =>
+export const useExpectedBalance = (sessionId: string) =>
   useQuery({
-    queryKey: ["cash-sessions", "expected-balance", accountId],
+    queryKey: ["cash-sessions", "expected-balance", sessionId],
     queryFn: async () => {
-      const result = await getExpectedBalance(accountId);
+      const result = await getExpectedBalance(sessionId);
       if (!result.success) throw new Error(result.error);
       return result.data;
     },
-    enabled: !!accountId,
+    enabled: !!sessionId,
   });
 
 export const useOpenCashSession = () => {

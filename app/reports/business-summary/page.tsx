@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,8 @@ import PageHeader from "@/components/shared/PageHeader";
 import { DateRangePicker } from "@/components/reports/date-range-picker";
 import { BranchSelector } from "@/components/ui/branch-selector";
 import { BusinessLineSelector } from "@/components/ui/business-line-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
+import { useBusinessLines } from "@/hooks/use-business-lines";
 import { ViewToggle } from "@/components/reports/view-toggle";
 import { ExportButton } from "@/components/reports/export-button";
 import { MetricCard } from "@/components/reports/metric-card";
@@ -48,8 +50,25 @@ export default function BusinessSummaryPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
   const [salesModalOpen, setSalesModalOpen] = useState(false);
   const [expensesModalOpen, setExpensesModalOpen] = useState(false);
+  const { activeBranchId } = useActiveBranch();
+  const { data: blData } = useBusinessLines({ activeOnly: true });
   const [branchId, setBranchId] = useState<string | null>(null);
   const [businessLineId, setBusinessLineId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    if (!activeBranchId) return;
+
+    setBranchId(activeBranchId);
+
+    const lines = blData?.businessLines;
+    if (lines?.length === 1) {
+      setBusinessLineId(lines[0].id);
+    }
+
+    setInitialized(true);
+  }, [activeBranchId, blData, initialized]);
 
   const {
     data: reportData,

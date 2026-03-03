@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { format, parseISO } from "date-fns";
 import { es, enUS } from "date-fns/locale";
@@ -27,6 +27,8 @@ import PageHeader from "@/components/shared/PageHeader";
 import { ExportButton } from "@/components/reports/export-button";
 import { BranchSelector } from "@/components/ui/branch-selector";
 import { BusinessLineSelector } from "@/components/ui/business-line-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
+import { useBusinessLines } from "@/hooks/use-business-lines";
 import { MetricCard } from "@/components/reports/metric-card";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -48,8 +50,25 @@ export default function DailySalesReportPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sellerId, setSellerId] = useState<string | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const { activeBranchId } = useActiveBranch();
+  const { data: blData } = useBusinessLines({ activeOnly: true });
   const [branchId, setBranchId] = useState<string | null>(null);
   const [businessLineId, setBusinessLineId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    if (!activeBranchId) return;
+
+    setBranchId(activeBranchId);
+
+    const lines = blData?.businessLines;
+    if (lines?.length === 1) {
+      setBusinessLineId(lines[0].id);
+    }
+
+    setInitialized(true);
+  }, [activeBranchId, blData, initialized]);
 
   const {
     data: reportData,

@@ -186,6 +186,7 @@ export function AccountForm({
                   type="number"
                   step="0.01"
                   placeholder={t("initialBalancePlaceholder")}
+                  onFocus={(e) => e.target.select()}
                   disabled={isLoading}
                 />
               </FormControl>

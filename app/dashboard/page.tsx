@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SalesChart } from "@/components/dashboard/sales-chart";
 import { TopProductsCard } from "@/components/dashboard/top-products-card";
@@ -8,14 +8,31 @@ import { LowStockCard } from "@/components/dashboard/low-stock-card";
 import { ReportFilters } from "@/components/reports/report-filters";
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { useActiveBranch } from "@/hooks/use-active-branch";
+import { useBusinessLines } from "@/hooks/use-business-lines";
 import { useTranslations } from "next-intl";
 import { DollarSign, ShoppingCart, TrendingDown, Users } from "lucide-react";
 
 export default function DashboardPage() {
   const t = useTranslations("Dashboard");
   const { activeBranchId } = useActiveBranch();
+  const { data: blData } = useBusinessLines({ activeOnly: true });
   const [branchId, setBranchId] = useState<string | null>(null);
   const [businessLineId, setBusinessLineId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    if (!activeBranchId) return;
+
+    setBranchId(activeBranchId);
+
+    const lines = blData?.businessLines;
+    if (lines?.length === 1) {
+      setBusinessLineId(lines[0].id);
+    }
+
+    setInitialized(true);
+  }, [activeBranchId, blData, initialized]);
 
   const filterParams = {
     branchId: branchId || undefined,

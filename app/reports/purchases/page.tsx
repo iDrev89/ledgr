@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
@@ -17,6 +17,7 @@ import {
 import PageHeader from "@/components/shared/PageHeader";
 import { DateRangePicker } from "@/components/reports/date-range-picker";
 import { BranchSelector } from "@/components/ui/branch-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 import { ViewToggle } from "@/components/reports/view-toggle";
 import { ExportButton } from "@/components/reports/export-button";
 import { MetricCard } from "@/components/reports/metric-card";
@@ -43,7 +44,16 @@ export default function PurchasesReportPage() {
     end: endOfMonth(new Date()),
   });
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
+  const { activeBranchId } = useActiveBranch();
   const [branchId, setBranchId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!initialized && activeBranchId) {
+      setBranchId(activeBranchId);
+      setInitialized(true);
+    }
+  }, [activeBranchId, initialized]);
 
   const {
     data: reportData,

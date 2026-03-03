@@ -86,8 +86,13 @@ export const useUpdateReconciliationItem = () => {
       }
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["reconciliations"] });
+      if (data?.reconciliationId) {
+        queryClient.invalidateQueries({
+          queryKey: ["reconciliations", data.reconciliationId],
+        });
+      }
     },
   });
 };

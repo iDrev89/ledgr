@@ -255,6 +255,7 @@ export function ReconciliationForm({
                   placeholder="0.00"
                   {...field}
                   onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                  onFocus={(e) => e.target.select()}
                   disabled={isLoading}
                 />
               </FormControl>

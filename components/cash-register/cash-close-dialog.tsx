@@ -66,7 +66,7 @@ export const CashCloseDialog = ({
   const t = useTranslations("CashRegister");
   const tAccounts = useTranslations("Accounts");
   const { data: expectedData, isLoading: isLoadingExpected } = useExpectedBalance(
-    session.accountId,
+    session.id,
   );
   const { data: accountsData } = useAccounts({ activeOnly: true });
   const closeMutation = useCloseCashSession();
@@ -190,6 +190,7 @@ export const CashCloseDialog = ({
                           v === "" ? 0 : parseFloat(v) || 0,
                         );
                       }}
+                      onFocus={(e) => e.target.select()}
                       disabled={closeMutation.isPending}
                     />
                   </FormControl>
@@ -216,6 +217,7 @@ export const CashCloseDialog = ({
                           v === "" ? 0 : parseFloat(v) || 0,
                         );
                       }}
+                      onFocus={(e) => e.target.select()}
                       disabled={closeMutation.isPending}
                     />
                   </FormControl>

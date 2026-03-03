@@ -222,6 +222,7 @@ export const CashOpenDialog = ({ open, onOpenChange }: CashOpenDialogProps) => {
                           e.target.value === "" ? 0 : Number(e.target.value)
                         )
                       }
+                      onFocus={(e) => e.target.select()}
                       disabled={openMutation.isPending}
                     />
                   </FormControl>

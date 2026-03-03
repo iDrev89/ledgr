@@ -371,7 +371,8 @@ export function SaleForm({
                   {...field}
                   type="number"
                   step="1"
-                  min="0"                
+                  min="0"
+                  onFocus={(e) => e.target.select()}
                   disabled={isLoading}
                   className="font-mono tabular-nums"
                 />

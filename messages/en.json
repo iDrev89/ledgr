@@ -1736,7 +1736,8 @@
       "completeFailed": "Failed to complete reconciliation",
       "importFailed": "Failed to import statement",
       "deleteFailed": "Failed to delete reconciliation",
-      "cannotDeleteCompleted": "Cannot delete a completed reconciliation"
+      "cannotDeleteCompleted": "Cannot delete a completed reconciliation",
+      "hasUnmatchedItems": "There are unmatched items. Review all items before completing."
     }
   },
   "pwa": {

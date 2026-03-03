@@ -184,6 +184,7 @@ export function StockMovementForm({
                   onChange={(e) =>
                     field.onChange(parseInt(e.target.value) || 0)
                   }
+                  onFocus={(e) => e.target.select()}
                   placeholder={t("quantityPlaceholder")}
                   disabled={isLoading}
                 />
