@@ -1,4 +1,4 @@
-import { Database } from "lucide-react";
+import { Layers } from "lucide-react";
 
 const Loading = () => {
   return (
@@ -6,9 +6,9 @@ const Loading = () => {
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
           <div className="absolute inset-0 animate-ping opacity-20">
-            <Database className="h-10 w-10 text-primary" />
+            <Layers className="h-10 w-10 text-primary" />
           </div>
-          <Database className="h-10 w-10 text-primary relative" />
+          <Layers className="h-10 w-10 text-primary relative" />
         </div>
 
         <div className="flex gap-2">

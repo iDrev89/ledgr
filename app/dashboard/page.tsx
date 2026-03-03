@@ -1,16 +1,45 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SalesChart } from "@/components/dashboard/sales-chart";
 import { TopProductsCard } from "@/components/dashboard/top-products-card";
 import { LowStockCard } from "@/components/dashboard/low-stock-card";
+import { ReportFilters } from "@/components/reports/report-filters";
 import { useDashboardStats } from "@/hooks/use-dashboard";
+import { useActiveBranch } from "@/hooks/use-active-branch";
+import { useBusinessLines } from "@/hooks/use-business-lines";
 import { useTranslations } from "next-intl";
 import { DollarSign, ShoppingCart, TrendingDown, Users } from "lucide-react";
 
 export default function DashboardPage() {
   const t = useTranslations("Dashboard");
-  const { data: stats, isLoading } = useDashboardStats();
+  const { activeBranchId } = useActiveBranch();
+  const { data: blData } = useBusinessLines({ activeOnly: true });
+  const [branchId, setBranchId] = useState<string | null>(null);
+  const [businessLineId, setBusinessLineId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    if (!activeBranchId) return;
+
+    setBranchId(activeBranchId);
+
+    const lines = blData?.businessLines;
+    if (lines?.length === 1) {
+      setBusinessLineId(lines[0].id);
+    }
+
+    setInitialized(true);
+  }, [activeBranchId, blData, initialized]);
+
+  const filterParams = {
+    branchId: branchId || undefined,
+    businessLineId: businessLineId || undefined,
+  };
+
+  const { data: stats, isLoading } = useDashboardStats(filterParams);
 
   const formatCurrency = (value: string) => {
     return new Intl.NumberFormat("es-CO", {
@@ -22,11 +51,19 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-          {t("title")}
-        </h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground">{t("description")}</p>
+        </div>
+        <ReportFilters
+          branchId={branchId}
+          onBranchChange={setBranchId}
+          businessLineId={businessLineId}
+          onBusinessLineChange={setBusinessLineId}
+        />
       </div>
 
       {/* Stats Grid */}
@@ -66,10 +103,10 @@ export default function DashboardPage() {
       {/* Charts Row */}
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <SalesChart />
+          <SalesChart branchId={filterParams.branchId} businessLineId={filterParams.businessLineId} />
         </div>
         <div className="lg:col-span-1">
-          <TopProductsCard />
+          <TopProductsCard branchId={filterParams.branchId} businessLineId={filterParams.businessLineId} />
         </div>
       </div>
 

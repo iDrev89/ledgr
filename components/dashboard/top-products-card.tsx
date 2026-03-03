@@ -7,10 +7,15 @@ import { Package, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
-export const TopProductsCard = () => {
+interface TopProductsCardProps {
+  branchId?: string;
+  businessLineId?: string;
+}
+
+export const TopProductsCard = ({ branchId, businessLineId }: TopProductsCardProps = {}) => {
   const t = useTranslations("Dashboard");
   const tProducts = useTranslations("Products");
-  const { data, isLoading } = useTopProducts();
+  const { data, isLoading } = useTopProducts({ branchId, businessLineId });
 
   const formatCurrency = (value: string) => {
     return new Intl.NumberFormat("es-CO", {

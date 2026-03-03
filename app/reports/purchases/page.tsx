@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { DateRangePicker } from "@/components/reports/date-range-picker";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 import { ViewToggle } from "@/components/reports/view-toggle";
 import { ExportButton } from "@/components/reports/export-button";
 import { MetricCard } from "@/components/reports/metric-card";
@@ -42,6 +44,16 @@ export default function PurchasesReportPage() {
     end: endOfMonth(new Date()),
   });
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
+  const { activeBranchId } = useActiveBranch();
+  const [branchId, setBranchId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!initialized && activeBranchId) {
+      setBranchId(activeBranchId);
+      setInitialized(true);
+    }
+  }, [activeBranchId, initialized]);
 
   const {
     data: reportData,
@@ -52,17 +64,18 @@ export default function PurchasesReportPage() {
       "purchase-report-enhanced",
       format(dateRange.start, "yyyy-MM-dd"),
       format(dateRange.end, "yyyy-MM-dd"),
+      branchId,
     ],
     queryFn: async () => {
-      // Calculate start and end of day in local timezone and send as ISO strings
       const startDate = new Date(dateRange.start);
       startDate.setHours(0, 0, 0, 0);
       const endDate = new Date(dateRange.end);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const response = await getPurchaseReportEnhanced({
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
+        branchId: branchId || undefined,
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;
@@ -277,23 +290,39 @@ export default function PurchasesReportPage() {
       <PageHeader pageTitle={t("purchasesTitle")} pageDes={t("description")} />
 
       {/* Controls */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <Card className="flex-1">
-          <CardContent className="pt-6">
-            <DateRangePicker
-              value={dateRange}
-              onChange={setDateRange}
-              locale={locale}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <Card className="flex-1">
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:gap-6">
+                <div className="min-w-0 flex-1">
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    locale={locale}
+                  />
+                </div>
+                <div className="w-48 space-y-2 shrink-0">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    {t("filterByBranch")}
+                  </label>
+                  <BranchSelector
+                    value={branchId}
+                    onValueChange={setBranchId}
+                    allowNone
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto shrink-0">
+            <ViewToggle view={viewMode} onChange={setViewMode} />
+            <ExportButton
+              type="purchases"
+              data={reportData || null}
+              dateRange={dateRange}
             />
-          </CardContent>
-        </Card>
-        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <ViewToggle view={viewMode} onChange={setViewMode} />
-          <ExportButton
-            type="purchases"
-            data={reportData || null}
-            dateRange={dateRange}
-          />
+          </div>
         </div>
       </div>
 

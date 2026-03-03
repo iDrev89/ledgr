@@ -18,12 +18,14 @@ interface StockMovementDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   productId?: string;
+  branchId?: string;
 }
 
 export function StockMovementDialog({
   open,
   onOpenChange,
   productId,
+  branchId,
 }: StockMovementDialogProps) {
   const t = useTranslations("Inventory");
   const createMutation = useCreateStockMovement();
@@ -55,6 +57,7 @@ export function StockMovementDialog({
           <div className="pb-6">
             <StockMovementForm
               productId={productId}
+              branchId={branchId}
               onSubmit={handleSubmit}
               onCancel={() => onOpenChange(false)}
               isLoading={isLoading}

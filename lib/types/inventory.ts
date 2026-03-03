@@ -4,6 +4,7 @@ export type { StockMovement };
 
 export type StockMovementWithProduct = StockMovement & {
   product: Product;
+  branch?: { id: string; name: string } | null;
 };
 
 export type ProductStock = {

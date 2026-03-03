@@ -18,7 +18,6 @@ type ActionResponse<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-// Serialize Decimal fields to strings for client components
 const serializeExpense = (expense: any): any => {
   return {
     ...expense,
@@ -115,7 +114,14 @@ export const getExpenses = async (params?: {
         include: {
           category: true,
           supplier: true,
-          bank: true,
+          account: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              accountNumber: true,
+            },
+          },
           createdBy: {
             select: {
               id: true,
@@ -154,7 +160,14 @@ export const getExpense = async (
       include: {
         category: true,
         supplier: true,
-        bank: true,
+        account: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            accountNumber: true,
+          },
+        },
         createdBy: {
           select: {
             id: true,
@@ -194,7 +207,6 @@ export const createExpense = async (
 
     const validated = createExpenseSchema.parse(input);
 
-    // Verify category exists if provided
     if (validated.categoryId) {
       const category = await prisma.expenseCategory.findUnique({
         where: { id: validated.categoryId },
@@ -209,7 +221,6 @@ export const createExpense = async (
       }
     }
 
-    // Verify supplier exists if provided
     if (validated.supplierId) {
       const supplier = await prisma.supplier.findUnique({
         where: { id: validated.supplierId },
@@ -232,12 +243,14 @@ export const createExpense = async (
           createdById: session.user.id,
           categoryId: validated.categoryId || null,
           supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
           description: validated.description || null,
           invoiceNo: validated.invoiceNo || null,
           currency: "COP",
           amount,
           paymentMethod: validated.paymentMethod,
-          bankId: validated.bankId || null,
+          accountId: validated.accountId,
           reference: validated.reference || null,
           incurredAt,
           attachment: validated.attachment || null,
@@ -245,6 +258,14 @@ export const createExpense = async (
         include: {
           category: true,
           supplier: true,
+          account: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              accountNumber: true,
+            },
+          },
           createdBy: {
             select: {
               id: true,
@@ -256,28 +277,25 @@ export const createExpense = async (
         },
       });
 
-      // Create bank transaction if payment method is TRANSFER and bank is provided
-      if (validated.paymentMethod === "TRANSFER" && validated.bankId) {
-        await tx.bankTransaction.create({
-          data: {
-            bankId: validated.bankId,
-            type: "EXPENSE" as any,
-            amount: amount.negated(), // Negative because it's an expense
-            description: `Gasto${validated.description ? `: ${validated.description}` : ""}${validated.invoiceNo ? ` (Factura: ${validated.invoiceNo})` : ""}`,
-            reference: validated.reference || null,
-            transactionDate: incurredAt,
-            expenseId: expense.id,
-            createdById: session.user.id,
-          },
-        });
-      }
+      await tx.accountTransaction.create({
+        data: {
+          accountId: validated.accountId,
+          type: "EXPENSE" as any,
+          amount: amount.negated(),
+          description: `Gasto${validated.description ? `: ${validated.description}` : ""}${validated.invoiceNo ? ` (Factura: ${validated.invoiceNo})` : ""}`,
+          reference: validated.reference || null,
+          transactionDate: incurredAt,
+          expenseId: expense.id,
+          createdById: session.user.id,
+        },
+      });
 
       return expense;
     });
 
     revalidatePath("/expenses");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return { success: true, data: serializeExpense(result) };
@@ -296,11 +314,10 @@ export const updateExpense = async (
   const t = await getTranslations("Expenses.errors");
 
   try {
-    await requireAuth();
+    const session = await requireAuth();
 
     const validated = updateExpenseSchema.parse(input);
 
-    // Check if expense exists
     const existing = await prisma.expense.findUnique({
       where: { id: validated.id },
     });
@@ -309,7 +326,6 @@ export const updateExpense = async (
       return { success: false, error: t("notFound") };
     }
 
-    // Verify category exists if provided
     if (validated.categoryId) {
       const category = await prisma.expenseCategory.findUnique({
         where: { id: validated.categoryId },
@@ -324,7 +340,6 @@ export const updateExpense = async (
       }
     }
 
-    // Verify supplier exists if provided
     if (validated.supplierId) {
       const supplier = await prisma.supplier.findUnique({
         where: { id: validated.supplierId },
@@ -341,41 +356,72 @@ export const updateExpense = async (
         ? new Date(validated.incurredAt)
         : validated.incurredAt;
 
-    const expense = await prisma.expense.update({
-      where: { id: validated.id },
-      data: {
-        categoryId: validated.categoryId || null,
-        supplierId: validated.supplierId || null,
-        description: validated.description || null,
-        invoiceNo: validated.invoiceNo || null,
-        amount,
-        paymentMethod: validated.paymentMethod,
-        bankId: validated.bankId || null,
-        reference: validated.reference || null,
-        incurredAt,
-        attachment: validated.attachment || null,
-      },
-      include: {
-        category: true,
-        supplier: true,
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.accountTransaction.deleteMany({
+        where: { expenseId: validated.id },
+      });
+
+      const expense = await tx.expense.update({
+        where: { id: validated.id },
+        data: {
+          categoryId: validated.categoryId || null,
+          supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
+          businessLineId: validated.businessLineId || null,
+          description: validated.description || null,
+          invoiceNo: validated.invoiceNo || null,
+          amount,
+          paymentMethod: validated.paymentMethod,
+          accountId: validated.accountId,
+          reference: validated.reference || null,
+          incurredAt,
+          attachment: validated.attachment || null,
         },
-        items: true,
-      },
+        include: {
+          category: true,
+          supplier: true,
+          account: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              accountNumber: true,
+            },
+          },
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          items: true,
+        },
+      });
+
+      await tx.accountTransaction.create({
+        data: {
+          accountId: validated.accountId,
+          type: "EXPENSE" as any,
+          amount: amount.negated(),
+          description: `Gasto${validated.description ? `: ${validated.description}` : ""}${validated.invoiceNo ? ` (Factura: ${validated.invoiceNo})` : ""}`,
+          reference: validated.reference || null,
+          transactionDate: incurredAt,
+          expenseId: expense.id,
+          createdById: session.user.id,
+        },
+      });
+
+      return expense;
     });
 
     revalidatePath("/expenses");
-    revalidatePath(`/expenses/${expense.id}`);
+    revalidatePath(`/expenses/${result.id}`);
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
-    return { success: true, data: serializeExpense(expense) };
+    return { success: true, data: serializeExpense(result) };
   } catch (error) {
     console.error("Error updating expense:", error);
     return {
@@ -404,13 +450,19 @@ export const deleteExpense = async (
       return { success: false, error: t("notFound") };
     }
 
-    await prisma.expense.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      await tx.accountTransaction.deleteMany({
+        where: { expenseId: id },
+      });
+
+      await tx.expense.delete({
+        where: { id },
+      });
     });
 
     revalidatePath("/expenses");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return { success: true, data: undefined };

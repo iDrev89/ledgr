@@ -15,9 +15,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 import { BarChart3 } from "lucide-react";
 
-export const SalesChart = () => {
+interface SalesChartProps {
+  branchId?: string;
+  businessLineId?: string;
+}
+
+export const SalesChart = ({ branchId, businessLineId }: SalesChartProps = {}) => {
   const t = useTranslations("Dashboard");
-  const { data, isLoading } = useSalesChartData();
+  const { data, isLoading } = useSalesChartData({ branchId, businessLineId });
 
   const chartConfig = {
     sales: {

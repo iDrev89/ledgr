@@ -7,7 +7,9 @@ import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import {
   createStockMovementSchema,
+  stockTransferSchema,
   type CreateStockMovementInput,
+  type StockTransferInput,
 } from "@/lib/validations/inventory";
 import type { StockMovement, Product } from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
@@ -17,7 +19,6 @@ type ActionResponse<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-// Serialize Decimal fields to strings for client components
 const serializeStockMovement = (movement: any): any => {
   return {
     ...movement,
@@ -30,6 +31,20 @@ const serializeStockMovement = (movement: any): any => {
         }
       : undefined,
   };
+};
+
+const calculateStock = (
+  movements: { moveType: StockMoveType; quantity: number }[],
+): number => {
+  let stock = 0;
+  movements.forEach((m) => {
+    if (m.moveType === StockMoveType.SALE) {
+      stock -= Math.abs(m.quantity);
+    } else {
+      stock += m.quantity;
+    }
+  });
+  return stock;
 };
 
 const requireAuth = async () => {
@@ -46,6 +61,7 @@ const requireAuth = async () => {
 
 export const getStockMovements = async (params?: {
   productId?: string;
+  branchId?: string;
   moveType?: StockMoveType;
   limit?: number;
   offset?: number;
@@ -60,12 +76,16 @@ export const getStockMovements = async (params?: {
   try {
     await requireAuth();
 
-    const { productId, moveType, limit = 50, offset = 0 } = params || {};
+    const { productId, branchId, moveType, limit = 50, offset = 0 } = params || {};
 
     const where: any = {};
 
     if (productId) {
       where.productId = productId;
+    }
+
+    if (branchId) {
+      where.branchId = branchId;
     }
 
     if (moveType) {
@@ -80,12 +100,12 @@ export const getStockMovements = async (params?: {
         orderBy: { createdAt: "desc" },
         include: {
           product: true,
+          branch: { select: { id: true, name: true } },
         },
       }),
       prisma.stockMovement.count({ where }),
     ]);
 
-    // Serialize Decimal fields to strings
     const serializedMovements = movements.map(serializeStockMovement);
 
     return { success: true, data: { movements: serializedMovements, total } };
@@ -110,6 +130,7 @@ export const getStockMovement = async (
       where: { id },
       include: {
         product: true,
+        branch: { select: { id: true, name: true } },
       },
     });
 
@@ -137,7 +158,6 @@ export const createStockMovement = async (
 
     const validated = createStockMovementSchema.parse(input);
 
-    // Verify product exists
     const product = await prisma.product.findUnique({
       where: { id: validated.productId },
     });
@@ -146,10 +166,10 @@ export const createStockMovement = async (
       return { success: false, error: t("productNotFound") };
     }
 
-    // Create stock movement
     const movement = await prisma.stockMovement.create({
       data: {
         productId: validated.productId,
+        branchId: validated.branchId || null,
         moveType: validated.moveType,
         quantity: validated.quantity,
         unitCost: validated.unitCost ? new Decimal(validated.unitCost) : null,
@@ -171,18 +191,26 @@ export const createStockMovement = async (
 
 export const getProductStock = async (
   productId: string,
+  branchId?: string,
 ): Promise<ActionResponse<{ currentStock: number; movements: any[] }>> => {
   const t = await getTranslations("Inventory.errors");
 
   try {
     await requireAuth();
 
+    const movementWhere: any = { productId };
+    if (branchId) {
+      movementWhere.branchId = branchId;
+    }
+
     const movements = await prisma.stockMovement.findMany({
-      where: { productId },
+      where: movementWhere,
       orderBy: { createdAt: "desc" },
+      include: {
+        branch: { select: { id: true, name: true } },
+      },
     });
 
-    // Fetch related Purchase and Sale data
     const enrichedMovements = await Promise.all(
       movements.map(async (movement) => {
         let refData = null;
@@ -201,29 +229,11 @@ export const getProductStock = async (
           refData = sale;
         }
 
-        return {
-          ...movement,
-          refData,
-        };
+        return { ...movement, refData };
       }),
     );
 
-    // Calculate current stock based on movements
-    let currentStock = 0;
-    movements.forEach((movement) => {
-      if (
-        movement.moveType === StockMoveType.PURCHASE ||
-        movement.moveType === StockMoveType.ADJUSTMENT
-      ) {
-        if (movement.quantity > 0) {
-          currentStock += movement.quantity;
-        } else {
-          currentStock += movement.quantity; // ADJUSTMENT can be negative
-        }
-      } else if (movement.moveType === StockMoveType.SALE) {
-        currentStock -= Math.abs(movement.quantity);
-      }
-    });
+    const currentStock = calculateStock(movements);
 
     const serializedMovements = enrichedMovements.map((movement) => ({
       ...serializeStockMovement(movement),
@@ -245,6 +255,7 @@ export const getProductStock = async (
 
 export const getInventorySummary = async (params?: {
   search?: string;
+  branchId?: string;
   limit?: number;
   offset?: number;
 }): Promise<
@@ -268,9 +279,9 @@ export const getInventorySummary = async (params?: {
   try {
     await requireAuth();
 
-    const { search = "", limit, offset = 0 } = params || {};
+    const { search = "", branchId, limit, offset = 0 } = params || {};
 
-    const where: any = { active: true, type: "PRODUCT" }; // Only physical products
+    const where: any = { active: true, type: "PRODUCT" };
 
     if (search) {
       where.OR = [
@@ -279,7 +290,11 @@ export const getInventorySummary = async (params?: {
       ];
     }
 
-    // Get products with pagination
+    const stockMoveWhere: any = {};
+    if (branchId) {
+      stockMoveWhere.branchId = branchId;
+    }
+
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
@@ -290,12 +305,12 @@ export const getInventorySummary = async (params?: {
       prisma.product.count({ where }),
     ]);
 
-    // Calculate global stats (fetch minimal data for all products)
     const allProductsForStats = await prisma.product.findMany({
       where: { active: true, type: "PRODUCT" },
       select: {
         id: true,
         stockMoves: {
+          where: stockMoveWhere,
           select: { moveType: true, quantity: true },
         },
       },
@@ -309,43 +324,20 @@ export const getInventorySummary = async (params?: {
     };
 
     allProductsForStats.forEach((p) => {
-      let currentStock = 0;
-      p.stockMoves.forEach((m) => {
-        if (
-          m.moveType === StockMoveType.PURCHASE ||
-          m.moveType === StockMoveType.ADJUSTMENT
-        ) {
-          currentStock += m.quantity;
-        } else if (m.moveType === StockMoveType.SALE) {
-          currentStock -= Math.abs(m.quantity);
-        }
-      });
-
+      const currentStock = calculateStock(p.stockMoves);
       if (currentStock === 0) stats.outOfStock++;
-      else if (currentStock <= 10)
-        stats.lowStock++; // Assuming low stock threshold is 10
+      else if (currentStock <= 10) stats.lowStock++;
       else stats.inStock++;
     });
 
-    // Get stock for each product
     const inventorySummary = await Promise.all(
       products.map(async (product) => {
         const movements = await prisma.stockMovement.findMany({
-          where: { productId: product.id },
+          where: { productId: product.id, ...stockMoveWhere },
           orderBy: { createdAt: "desc" },
         });
 
-        let currentStock = 0;
-        movements.forEach((movement) => {
-          if (
-            movement.moveType === StockMoveType.PURCHASE ||
-            movement.moveType === StockMoveType.ADJUSTMENT
-          ) {
-            currentStock += movement.quantity;
-          } else if (movement.moveType === StockMoveType.SALE) {
-            currentStock -= Math.abs(movement.quantity);
-          }
-        });
+        const currentStock = calculateStock(movements);
 
         return {
           product: {
@@ -370,6 +362,84 @@ export const getInventorySummary = async (params?: {
     return {
       success: false,
       error: error instanceof Error ? error.message : t("fetchFailed"),
+    };
+  }
+};
+
+export const transferStock = async (
+  input: StockTransferInput,
+): Promise<ActionResponse<{ fromMovement: StockMovement; toMovement: StockMovement }>> => {
+  const t = await getTranslations("Inventory.errors");
+
+  try {
+    await requireAuth();
+
+    const validated = stockTransferSchema.parse(input);
+
+    if (validated.fromBranchId === validated.toBranchId) {
+      return { success: false, error: t("sameBranch") };
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id: validated.productId },
+    });
+
+    if (!product) {
+      return { success: false, error: t("productNotFound") };
+    }
+
+    const originMovements = await prisma.stockMovement.findMany({
+      where: { productId: validated.productId, branchId: validated.fromBranchId },
+      select: { moveType: true, quantity: true },
+    });
+
+    const originStock = calculateStock(originMovements);
+
+    if (originStock < validated.quantity) {
+      return { success: false, error: t("insufficientStock") };
+    }
+
+    const refId = `transfer-${Date.now()}`;
+
+    const [fromMovement, toMovement] = await prisma.$transaction([
+      prisma.stockMovement.create({
+        data: {
+          productId: validated.productId,
+          branchId: validated.fromBranchId,
+          moveType: StockMoveType.TRANSFER,
+          quantity: -validated.quantity,
+          refType: "Transfer",
+          refId,
+          note: validated.note || null,
+        },
+      }),
+      prisma.stockMovement.create({
+        data: {
+          productId: validated.productId,
+          branchId: validated.toBranchId,
+          moveType: StockMoveType.TRANSFER,
+          quantity: validated.quantity,
+          refType: "Transfer",
+          refId,
+          note: validated.note || null,
+        },
+      }),
+    ]);
+
+    revalidatePath("/inventory");
+
+    return {
+      success: true,
+      data: {
+        fromMovement: serializeStockMovement(fromMovement),
+        toMovement: serializeStockMovement(toMovement),
+      },
+    };
+  } catch (error) {
+    console.error("Error transferring stock:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : t("transferFailed"),
     };
   }
 };

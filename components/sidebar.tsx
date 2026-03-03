@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  Database,
+  Layers,
   LayoutDashboard,
   Settings,
   ShoppingCart,
@@ -17,7 +17,11 @@ import {
   Warehouse,
   Banknote,
   UserCircle,
-  Building2,
+  Wallet,
+  Building,
+  GitBranch,
+  Vault,
+  Scale,
   Receipt,
   ShoppingBag,
   Truck,
@@ -133,10 +137,22 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           requiredPermission: ROUTE_PERMISSIONS["/payroll"],
         },
         {
-          titleKey: "banks",
-          icon: Building2,
-          href: "/banks",
-          requiredPermission: ROUTE_PERMISSIONS["/banks"],
+          titleKey: "accounts",
+          icon: Wallet,
+          href: "/accounts",
+          requiredPermission: ROUTE_PERMISSIONS["/accounts"],
+        },
+        {
+          titleKey: "cashRegister",
+          icon: Vault,
+          href: "/cash-register",
+          requiredPermission: ROUTE_PERMISSIONS["/cash-register"],
+        },
+        {
+          titleKey: "reconciliation",
+          icon: Scale,
+          href: "/reconciliation",
+          requiredPermission: ROUTE_PERMISSIONS["/reconciliation"],
         },
       ],
     },
@@ -160,6 +176,18 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
           href: "/users",
           requiredPermission: ROUTE_PERMISSIONS["/users"],
         },
+        {
+          titleKey: "businessLines",
+          icon: Building,
+          href: "/business-lines",
+          requiredPermission: ROUTE_PERMISSIONS["/business-lines"],
+        },
+        {
+          titleKey: "branches",
+          icon: GitBranch,
+          href: "/branches",
+          requiredPermission: ROUTE_PERMISSIONS["/branches"],
+        },
       ],
     },
   ];
@@ -173,7 +201,7 @@ export function Sidebar({ open, toggleSidebar }: SidebarProps) {
     >
       <div className="flex justify-between items-center border-b px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold h-16">
-          <Database className="h-6 w-6 text-primary" />
+          <Layers className="h-6 w-6 text-primary" />
           <span className="text-xl">Ledgrly</span>
         </Link>
 

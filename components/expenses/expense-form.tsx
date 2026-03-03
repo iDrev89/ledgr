@@ -38,17 +38,13 @@ import {
 } from "@/lib/validations/expenses";
 import { CategorySelector } from "./category-selector";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
-import { useBanks } from "@/hooks/use-banks";
+import { useAccounts } from "@/hooks/use-accounts";
+import { getDefaultAccountForMethod, getAccountTypeLabel } from "@/lib/payment-utils";
 import { cn } from "@/lib/utils";
 import { AttachmentUpload } from "@/components/shared/attachment-upload";
-
-enum PaymentMethod {
-  CASH = "CASH",
-  CARD = "CARD",
-  TRANSFER = "TRANSFER",
-  DIGITAL = "DIGITAL",
-  OTHER = "OTHER",
-}
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
+import { PaymentMethod } from "@/prisma/prisma-client";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 
 interface ExpenseFormProps {
   expense?: ExpenseWithDetails;
@@ -64,9 +60,11 @@ export function ExpenseForm({
   isLoading,
 }: ExpenseFormProps) {
   const t = useTranslations("Expenses");
-  const { data } = useBanks();
-  const banks = data?.banks || [];
+  const tAccounts = useTranslations("Accounts");
+  const { data } = useAccounts({ activeOnly: true });
+  const accounts = data?.accounts || [];
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const { activeBranchId } = useActiveBranch();
 
   const { createExpenseSchema } = useMemo(() => getExpenseSchemas(t), [t]);
 
@@ -89,11 +87,13 @@ export function ExpenseForm({
     defaultValues: {
       categoryId: expense?.categoryId || "",
       supplierId: expense?.supplierId || undefined,
+      branchId: expense?.branchId || activeBranchId || null,
+      businessLineId: expense?.businessLineId || null,
       description: expense?.description || "",
       invoiceNo: expense?.invoiceNo || "",
       amount: expense?.amount ? expense.amount.toString() : "",
       paymentMethod: (expense as any)?.paymentMethod || PaymentMethod.CASH,
-      bankId: (expense as any)?.bankId || undefined,
+      accountId: (expense as any)?.accountId || undefined,
       reference: (expense as any)?.reference || "",
       incurredAt: expense?.incurredAt
         ? typeof expense.incurredAt === "string"
@@ -161,6 +161,26 @@ export function ExpenseForm({
             </FormItem>
           )}
         />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="businessLineId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("businessLine")}</FormLabel>
+                <FormControl>
+                  <BusinessLineSelector
+                    value={field.value || null}
+                    onValueChange={(val) => field.onChange(val)}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Amount */}
@@ -264,17 +284,8 @@ export function ExpenseForm({
                     <SelectItem value={PaymentMethod.CASH}>
                       {t("paymentCash")}
                     </SelectItem>
-                    <SelectItem value={PaymentMethod.CARD}>
-                      {t("paymentCard")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.TRANSFER}>
-                      {t("paymentTransfer")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.DIGITAL}>
-                      {t("paymentDigital")}
-                    </SelectItem>
-                    <SelectItem value={PaymentMethod.OTHER}>
-                      {t("paymentOther")}
+                    <SelectItem value={PaymentMethod.BANK_TRANSFER}>
+                      {t("paymentBankTransfer")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -304,42 +315,43 @@ export function ExpenseForm({
           />
         </div>
 
-        {/* Bank and Reference (only for TRANSFER) */}
-        {paymentMethod === PaymentMethod.TRANSFER && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Bank */}
-            <FormField
-              control={form.control}
-              name="bankId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("bank")} <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || undefined}
-                    disabled={isLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("bankPlaceholder")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {banks.map((bank) => (
-                        <SelectItem key={bank.id} value={bank.id}>
-                          {bank.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        {/* Account and Reference */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Account */}
+          <FormField
+            control={form.control}
+            name="accountId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("destinationAccount")}{" "}
+                  <span className="text-destructive">*</span>
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || undefined}
+                  disabled={isLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("accountPlaceholder")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {accounts.map((account) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name} ({getAccountTypeLabel(account.type, tAccounts)})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* Reference */}
+          {/* Reference (all methods except CASH) */}
+          {paymentMethod !== PaymentMethod.CASH && (
             <FormField
               control={form.control}
               name="reference"
@@ -353,13 +365,15 @@ export function ExpenseForm({
                       disabled={isLoading}
                     />
                   </FormControl>
-                  <FormDescription>{t("referenceDescription")}</FormDescription>
+                  <FormDescription>
+                    {t("referenceDescription")}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Attachment */}
         <FormField

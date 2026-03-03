@@ -113,18 +113,16 @@ export function PurchaseDetailDialog({
           <div className="bg-muted rounded-lg p-3">
             <Badge>
               {purchase.paymentMethod === "CASH" && t("paymentCash")}
-              {purchase.paymentMethod === "TRANSFER" && t("paymentTransfer")}
-              {purchase.paymentMethod === "CARD" && t("paymentCard")}
-              {purchase.paymentMethod === "DIGITAL" && t("paymentDigital")}
+              {purchase.paymentMethod === "BANK_TRANSFER" && t("paymentBankTransfer")}
             </Badge>
           </div>
         </div>
 
-        {purchase.bank && (
+        {purchase.account && (
           <div>
-            <h3 className="text-sm font-semibold mb-2">{t("bank")}</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("destinationAccount")}</h3>
             <div className="bg-muted rounded-lg p-3">
-              <p className="font-medium">{purchase.bank.name}</p>
+              <p className="font-medium">{purchase.account.name}</p>
               {purchase.reference && (
                 <p className="text-sm text-muted-foreground mt-1">
                   {t("reference")}: {purchase.reference}

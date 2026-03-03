@@ -75,6 +75,7 @@ const createProductSchemas = (messages?: {
     categoryId: z
       .string()
       .min(1, messages?.categoryIdRequired || "Category is required"),
+    businessLineId: z.string().optional().nullable(),
     active: z.boolean(),
   });
 

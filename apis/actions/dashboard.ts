@@ -72,7 +72,10 @@ const getColombiaDateBoundaries = () => {
 };
 
 // Get dashboard statistics
-export const getDashboardStats = async (): Promise<
+export const getDashboardStats = async (params?: {
+  branchId?: string;
+  businessLineId?: string;
+}): Promise<
   ActionResponse<{
     totalSales: string;
     salesCount: number;
@@ -90,10 +93,21 @@ export const getDashboardStats = async (): Promise<
     const { startOfMonth, startOfLastMonth, endOfLastMonth } =
       getColombiaDateBoundaries();
 
+    const saleWhereBase: any = {};
+    if (params?.branchId) saleWhereBase.branchId = params.branchId;
+    if (params?.businessLineId) {
+      saleWhereBase.items = { some: { product: { businessLineId: params.businessLineId } } };
+    }
+
+    const expenseWhereBase: any = {};
+    if (params?.branchId) expenseWhereBase.branchId = params.branchId;
+    if (params?.businessLineId) expenseWhereBase.businessLineId = params.businessLineId;
+
     // Current month sales
     const [salesThisMonth, salesLastMonth] = await Promise.all([
       prisma.sale.aggregate({
         where: {
+          ...saleWhereBase,
           createdAt: {
             gte: startOfMonth,
           },
@@ -105,6 +119,7 @@ export const getDashboardStats = async (): Promise<
       }),
       prisma.sale.aggregate({
         where: {
+          ...saleWhereBase,
           createdAt: {
             gte: startOfLastMonth,
             lte: endOfLastMonth,
@@ -120,6 +135,7 @@ export const getDashboardStats = async (): Promise<
     const [expensesThisMonth, expensesLastMonth] = await Promise.all([
       prisma.expense.aggregate({
         where: {
+          ...expenseWhereBase,
           incurredAt: {
             gte: startOfMonth,
           },
@@ -130,6 +146,7 @@ export const getDashboardStats = async (): Promise<
       }),
       prisma.expense.aggregate({
         where: {
+          ...expenseWhereBase,
           incurredAt: {
             gte: startOfLastMonth,
             lte: endOfLastMonth,
@@ -195,7 +212,10 @@ const utcToColombiaDateString = (utcDate: Date): string => {
 };
 
 // Get sales chart data (last 7 days including today)
-export const getSalesChartData = async (): Promise<
+export const getSalesChartData = async (params?: {
+  branchId?: string;
+  businessLineId?: string;
+}): Promise<
   ActionResponse<
     Array<{
       date: string;
@@ -212,29 +232,32 @@ export const getSalesChartData = async (): Promise<
     const { startOfToday, startOfTomorrow, todayString, year, month, day } =
       getColombiaDateBoundaries();
 
-    // Calculate start date (6 days ago from today in Colombia)
     const startDate = new Date(startOfToday.getTime() - 6 * 24 * 60 * 60 * 1000);
+
+    const saleWhere: any = {
+      createdAt: { gte: startDate, lt: startOfTomorrow },
+    };
+    if (params?.branchId) saleWhere.branchId = params.branchId;
+    if (params?.businessLineId) {
+      saleWhere.items = { some: { product: { businessLineId: params.businessLineId } } };
+    }
+
+    const expenseWhere: any = {
+      incurredAt: { gte: startDate, lt: startOfTomorrow },
+    };
+    if (params?.branchId) expenseWhere.branchId = params.branchId;
+    if (params?.businessLineId) expenseWhere.businessLineId = params.businessLineId;
 
     const [sales, expenses] = await Promise.all([
       prisma.sale.findMany({
-        where: {
-          createdAt: {
-            gte: startDate,
-            lt: startOfTomorrow,
-          },
-        },
+        where: saleWhere,
         select: {
           createdAt: true,
           total: true,
         },
       }),
       prisma.expense.findMany({
-        where: {
-          incurredAt: {
-            gte: startDate,
-            lt: startOfTomorrow,
-          },
-        },
+        where: expenseWhere,
         select: {
           incurredAt: true,
           amount: true,
@@ -290,7 +313,10 @@ export const getSalesChartData = async (): Promise<
 };
 
 // Get top selling products (only PRODUCT type, not services)
-export const getTopProducts = async (): Promise<
+export const getTopProducts = async (params?: {
+  branchId?: string;
+  businessLineId?: string;
+}): Promise<
   ActionResponse<
     Array<{
       productId: string;
@@ -308,18 +334,16 @@ export const getTopProducts = async (): Promise<
 
     const { startOfMonth } = getColombiaDateBoundaries();
 
-    // Get all sale items from this month
+    const saleWhere: any = { createdAt: { gte: startOfMonth } };
+    if (params?.branchId) saleWhere.branchId = params.branchId;
+
+    const productWhere: any = { type: "PRODUCT", active: true };
+    if (params?.businessLineId) productWhere.businessLineId = params.businessLineId;
+
     const saleItems = await prisma.saleItem.findMany({
       where: {
-        sale: {
-          createdAt: {
-            gte: startOfMonth,
-          },
-        },
-        product: {
-          type: "PRODUCT", // Only get PRODUCT type, exclude SERVICE
-          active: true,
-        },
+        sale: saleWhere,
+        product: productWhere,
       },
       include: {
         product: {
@@ -376,7 +400,9 @@ export const getTopProducts = async (): Promise<
 };
 
 // Get low stock alerts
-export const getLowStockAlerts = async (): Promise<
+export const getLowStockAlerts = async (params?: {
+  branchId?: string;
+}): Promise<
   ActionResponse<
     Array<{
       productId: string;
@@ -389,6 +415,11 @@ export const getLowStockAlerts = async (): Promise<
 
   try {
     await requireAuth();
+
+    const movementWhere: any = {};
+    if (params?.branchId) {
+      movementWhere.branchId = params.branchId;
+    }
 
     const products = await prisma.product.findMany({
       where: {
@@ -405,18 +436,15 @@ export const getLowStockAlerts = async (): Promise<
 
     for (const product of products) {
       const movements = await prisma.stockMovement.findMany({
-        where: { productId: product.id },
+        where: { productId: product.id, ...movementWhere },
       });
 
       let currentStock = 0;
       movements.forEach((movement) => {
-        if (
-          movement.moveType === StockMoveType.PURCHASE ||
-          movement.moveType === StockMoveType.ADJUSTMENT
-        ) {
-          currentStock += movement.quantity;
-        } else if (movement.moveType === StockMoveType.SALE) {
+        if (movement.moveType === StockMoveType.SALE) {
           currentStock -= Math.abs(movement.quantity);
+        } else {
+          currentStock += movement.quantity;
         }
       });
 

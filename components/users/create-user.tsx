@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,8 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useCreateUser, UserRole } from "@/hooks/use-users";
+import { useAssignUserToBranch } from "@/hooks/use-branches";
+import { BranchSelector } from "@/components/ui/branch-selector";
 import { toast } from "sonner";
 import { createUserSchema, type CreateUserInput } from "@/lib/validations/user";
 import { useTranslations } from "next-intl";
@@ -35,6 +37,8 @@ interface CreateUserProps {
 export function CreateUser({ onSuccess }: CreateUserProps) {
   const t = useTranslations("Users");
   const createUserMutation = useCreateUser();
+  const assignBranchMutation = useAssignUserToBranch();
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
 
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
@@ -46,11 +50,22 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
     },
   });
 
+  const isLoading = createUserMutation.isPending || assignBranchMutation.isPending;
+
   const onSubmit = async (data: CreateUserInput) => {
     try {
-      await createUserMutation.mutateAsync(data);
+      const result = await createUserMutation.mutateAsync(data);
+
+      if (selectedBranchId && result?.id) {
+        await assignBranchMutation.mutateAsync({
+          userId: result.id,
+          branchId: selectedBranchId,
+        });
+      }
+
       toast.success(t("userCreatedSuccess"));
       form.reset();
+      setSelectedBranchId(null);
       onSuccess();
     } catch (error: any) {
       toast.error(error.message || t("createUserError"));
@@ -71,7 +86,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                   <Input
                     placeholder={t("name")}
                     {...field}
-                    disabled={createUserMutation.isPending}
+                    disabled={isLoading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -90,7 +105,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                     type="email"
                     placeholder={t("email")}
                     {...field}
-                    disabled={createUserMutation.isPending}
+                    disabled={isLoading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -111,7 +126,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                     type="password"
                     placeholder={t("password")}
                     {...field}
-                    disabled={createUserMutation.isPending}
+                    disabled={isLoading}
                   />
                 </FormControl>
                 <FormDescription>{t("passwordHelper")}</FormDescription>
@@ -129,7 +144,7 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={createUserMutation.isPending}
+                  disabled={isLoading}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -151,6 +166,16 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
           />
         </div>
 
+        <div className="space-y-2">
+          <FormLabel>{t("branch")}</FormLabel>
+          <BranchSelector
+            value={selectedBranchId}
+            onValueChange={setSelectedBranchId}
+            disabled={isLoading}
+          />
+          <FormDescription>{t("branchDescription")}</FormDescription>
+        </div>
+
         {createUserMutation.error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -161,8 +186,8 @@ export function CreateUser({ onSuccess }: CreateUserProps) {
         )}
 
         <div className="flex justify-end space-x-2">
-          <Button type="submit" disabled={createUserMutation.isPending}>
-            {createUserMutation.isPending ? (
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 {t("creating")}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { format, parseISO } from "date-fns";
 import { es, enUS } from "date-fns/locale";
@@ -18,9 +18,17 @@ import {
   ShoppingBag,
   CalendarIcon,
   X,
+  Landmark,
+  Banknote,
+  Smartphone,
+  Building2,
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { ExportButton } from "@/components/reports/export-button";
+import { BranchSelector } from "@/components/ui/branch-selector";
+import { BusinessLineSelector } from "@/components/ui/business-line-selector";
+import { useActiveBranch } from "@/hooks/use-active-branch";
+import { useBusinessLines } from "@/hooks/use-business-lines";
 import { MetricCard } from "@/components/reports/metric-card";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +39,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getDailySalesReport } from "@/apis/actions/reports";
 import { usePermissions } from "@/hooks/use-permissions";
 import { cn } from "@/lib/utils";
+import { getPaymentMethodLabel } from "@/lib/payment-utils";
 
 export default function DailySalesReportPage() {
   const t = useTranslations("Reports");
@@ -41,29 +50,58 @@ export default function DailySalesReportPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sellerId, setSellerId] = useState<string | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const { activeBranchId } = useActiveBranch();
+  const { data: blData } = useBusinessLines({ activeOnly: true });
+  const [branchId, setBranchId] = useState<string | null>(null);
+  const [businessLineId, setBusinessLineId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    if (!activeBranchId) return;
+
+    setBranchId(activeBranchId);
+
+    const lines = blData?.businessLines;
+    if (lines?.length === 1) {
+      setBusinessLineId(lines[0].id);
+    }
+
+    setInitialized(true);
+  }, [activeBranchId, blData, initialized]);
 
   const {
     data: reportData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["daily-sales-report", format(selectedDate, "yyyy-MM-dd"), sellerId],
+    queryKey: ["daily-sales-report", format(selectedDate, "yyyy-MM-dd"), sellerId, branchId, businessLineId],
     queryFn: async () => {
-      // Calculate start and end of day in local timezone and send as ISO strings
       const startDate = new Date(selectedDate);
       startDate.setHours(0, 0, 0, 0);
       const endDate = new Date(selectedDate);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const response = await getDailySalesReport({
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
         sellerId,
+        branchId: branchId || undefined,
+        businessLineId: businessLineId || undefined,
       });
       if (!response.success) throw new Error(response.error);
       return response.data!;
     },
   });
+
+  const getAccountIcon = (accountType: string) => {
+    switch (accountType) {
+      case "BANK": return <Landmark className="h-5 w-5 text-blue-500" />;
+      case "CASH_REGISTER": return <Banknote className="h-5 w-5 text-green-500" />;
+      case "DIGITAL_WALLET": return <Smartphone className="h-5 w-5 text-purple-500" />;
+      default: return <Building2 className="h-5 w-5 text-gray-500" />;
+    }
+  };
 
   const formatCurrency = (value: string | number) => {
     const numValue = typeof value === "string" ? parseFloat(value) : value;
@@ -85,16 +123,8 @@ export default function DailySalesReportPage() {
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getPaymentMethodLabel = (method: string) => {
-    const labels: Record<string, string> = {
-      CASH: t("paymentMethodCash"),
-      TRANSFER: t("paymentMethodTransfer"),
-      CARD: t("paymentMethodCard"),
-      CHECK: t("paymentMethodCheck"),
-      OTHER: t("paymentMethodOther"),
-    };
-    return labels[method] || method;
-  };
+  const getPaymentMethodLabelLocalized = (method: string) =>
+    getPaymentMethodLabel(method, t);
 
   const columns = useMemo<ColumnDef<DailySaleDetail>[]>(
     () => [
@@ -148,7 +178,7 @@ export default function DailySalesReportPage() {
             return "-";
           }
           
-          return methods.map((m) => getPaymentMethodLabel(m)).join(", ");
+          return methods.map((m) => getPaymentMethodLabelLocalized(m)).join(", ");
         },
       },
       {
@@ -224,7 +254,7 @@ export default function DailySalesReportPage() {
       <div className="flex flex-col gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {/* Date Picker */}
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-muted-foreground">
@@ -287,6 +317,30 @@ export default function DailySalesReportPage() {
                   />
                 </div>
               )}
+
+              {/* Branch Filter */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-muted-foreground">
+                  {t("filterByBranch")}
+                </Label>
+                <BranchSelector
+                  value={branchId}
+                  onValueChange={setBranchId}
+                  allowNone
+                />
+              </div>
+
+              {/* Business Line Filter */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-muted-foreground">
+                  {t("filterByBusinessLine")}
+                </Label>
+                <BusinessLineSelector
+                  value={businessLineId}
+                  onValueChange={setBusinessLineId}
+                  allowNone
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -322,28 +376,31 @@ export default function DailySalesReportPage() {
             />
           </div>
 
-          {/* Payment Methods Breakdown */}
+          {/* Income by Account Breakdown */}
           <Card>
             <CardContent className="pt-6">
               <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-muted-foreground" />
-                {t("totalByPaymentMethod")}
+                <Landmark className="h-5 w-5 text-muted-foreground" />
+                {t("incomeByAccount")}
               </h3>
               <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                {reportData.metrics.byPaymentMethod.map((pm) => (
+                {reportData.metrics.byAccount.map((account) => (
                   <div
-                    key={pm.method}
+                    key={account.accountId}
                     className="flex flex-col gap-1 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
                   >
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {getPaymentMethodLabel(pm.method)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {getAccountIcon(account.accountType)}
+                      <span className="text-sm font-medium text-muted-foreground truncate">
+                        {account.accountName}
+                      </span>
+                    </div>
                     <span className="text-2xl font-bold">
-                      {formatCurrency(pm.total)}
+                      {formatCurrency(account.total)}
                     </span>
                   </div>
                 ))}
-                
+
                 {/* Pending Balance */}
                 <div className="flex flex-col gap-1 p-4 rounded-lg border bg-destructive/5 border-destructive/20 hover:bg-destructive/10 transition-colors">
                   <span className="text-sm font-medium text-destructive">

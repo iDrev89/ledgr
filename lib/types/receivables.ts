@@ -2,7 +2,7 @@ import {
   AccountsReceivable,
   AccountsReceivablePayment,
   Customer,
-  Bank,
+  FinancialAccount,
   Product,
 } from "@/prisma/prisma-client";
 
@@ -55,7 +55,7 @@ export type ReceivableWithDetails = Omit<
   } | null;
   payments: (Omit<AccountsReceivablePayment, "amount"> & {
     amount: string;
-    bank?: Bank | null;
+    account?: FinancialAccount | null;
   })[];
   _count?: {
     payments: number;

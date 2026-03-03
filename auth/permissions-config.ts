@@ -22,10 +22,14 @@ export const ROUTE_PERMISSIONS: Record<string, RoutePermission> = {
   "/expenses": { statement: "expenses", action: "read" },
   "/inventory": { statement: "inventory", action: "read" },
   "/receivables": { statement: "receivables", action: "read" },
-  "/banks": { statement: "banks", action: "read" },
+  "/accounts": { statement: "accounts", action: "read" },
   "/payroll": { statement: "payroll", action: "read" },
   "/reports": { statement: "reports", action: "read" },
   "/dashboard": { statement: "dashboard", action: "read" },
+  "/business-lines": { statement: "business-lines", action: "read" },
+  "/branches": { statement: "branches", action: "read" },
+  "/cash-register": { statement: "cash-register", action: "read" },
+  "/reconciliation": { statement: "reconciliation", action: "read" },
 } as const;
 
 /**

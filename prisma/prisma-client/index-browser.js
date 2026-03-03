@@ -172,6 +172,68 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BusinessLineScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  color: 'color',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BranchScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  address: 'address',
+  phone: 'phone',
+  active: 'active',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserBranchScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  branchId: 'branchId',
+  role: 'role'
+};
+
+exports.Prisma.FinancialAccountScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  name: 'name',
+  accountNumber: 'accountNumber',
+  institution: 'institution',
+  initialBalance: 'initialBalance',
+  active: 'active',
+  isDefault: 'isDefault',
+  branchId: 'branchId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountTransactionScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  type: 'type',
+  amount: 'amount',
+  description: 'description',
+  reference: 'reference',
+  transactionDate: 'transactionDate',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  salePaymentId: 'salePaymentId',
+  receivablePaymentId: 'receivablePaymentId',
+  expenseId: 'expenseId',
+  purchaseId: 'purchaseId',
+  relatedAccountId: 'relatedAccountId',
+  transferPairId: 'transferPairId'
+};
+
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -180,15 +242,6 @@ exports.Prisma.CustomerScalarFieldEnum = {
   docId: 'docId',
   birthdate: 'birthdate',
   note: 'note',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BankScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  accountNo: 'accountNo',
-  active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -211,6 +264,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   cost: 'cost',
   commissionPercent: 'commissionPercent',
   categoryId: 'categoryId',
+  businessLineId: 'businessLineId',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -222,11 +276,13 @@ exports.Prisma.SaleScalarFieldEnum = {
   createdById: 'createdById',
   soldById: 'soldById',
   customerId: 'customerId',
+  branchId: 'branchId',
   currency: 'currency',
   subtotal: 'subtotal',
   discountTotal: 'discountTotal',
   taxTotal: 'taxTotal',
   total: 'total',
+  tip: 'tip',
   status: 'status',
   note: 'note',
   createdAt: 'createdAt',
@@ -252,7 +308,7 @@ exports.Prisma.SalePaymentScalarFieldEnum = {
   method: 'method',
   paidAt: 'paidAt',
   reference: 'reference',
-  bankId: 'bankId',
+  accountId: 'accountId',
   attachmentUrl: 'attachmentUrl'
 };
 
@@ -281,13 +337,15 @@ exports.Prisma.ExpenseScalarFieldEnum = {
   createdById: 'createdById',
   categoryId: 'categoryId',
   supplierId: 'supplierId',
+  branchId: 'branchId',
+  businessLineId: 'businessLineId',
   description: 'description',
   invoiceNo: 'invoiceNo',
   attachment: 'attachment',
   currency: 'currency',
   amount: 'amount',
   paymentMethod: 'paymentMethod',
-  bankId: 'bankId',
+  accountId: 'accountId',
   reference: 'reference',
   incurredAt: 'incurredAt',
   createdAt: 'createdAt',
@@ -309,12 +367,13 @@ exports.Prisma.PurchaseScalarFieldEnum = {
   id: 'id',
   purchaseNumber: 'purchaseNumber',
   supplierId: 'supplierId',
+  branchId: 'branchId',
   currency: 'currency',
   invoiceNo: 'invoiceNo',
   status: 'status',
   note: 'note',
   paymentMethod: 'paymentMethod',
-  bankId: 'bankId',
+  accountId: 'accountId',
   reference: 'reference',
   subtotal: 'subtotal',
   taxTotal: 'taxTotal',
@@ -336,6 +395,7 @@ exports.Prisma.PurchaseItemScalarFieldEnum = {
 exports.Prisma.StockMovementScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
+  branchId: 'branchId',
   moveType: 'moveType',
   quantity: 'quantity',
   unitCost: 'unitCost',
@@ -364,7 +424,7 @@ exports.Prisma.AccountsReceivablePaymentScalarFieldEnum = {
   paidAt: 'paidAt',
   method: 'method',
   note: 'note',
-  bankId: 'bankId'
+  accountId: 'accountId'
 };
 
 exports.Prisma.PayrollEntryScalarFieldEnum = {
@@ -405,23 +465,54 @@ exports.Prisma.PayrollRunItemScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.BankTransactionScalarFieldEnum = {
+exports.Prisma.CashSessionScalarFieldEnum = {
   id: 'id',
-  bankId: 'bankId',
-  type: 'type',
-  amount: 'amount',
-  description: 'description',
-  reference: 'reference',
-  transactionDate: 'transactionDate',
-  createdById: 'createdById',
+  accountId: 'accountId',
+  branchId: 'branchId',
+  status: 'status',
+  openedAt: 'openedAt',
+  openedById: 'openedById',
+  openingBalance: 'openingBalance',
+  openingNotes: 'openingNotes',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
+  expectedBalance: 'expectedBalance',
+  actualBalance: 'actualBalance',
+  difference: 'difference',
+  retainedAmount: 'retainedAmount',
+  depositAmount: 'depositAmount',
+  depositAccountId: 'depositAccountId',
+  closingNotes: 'closingNotes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  salePaymentId: 'salePaymentId',
-  receivablePaymentId: 'receivablePaymentId',
-  expenseId: 'expenseId',
-  purchaseId: 'purchaseId',
-  relatedBankId: 'relatedBankId',
-  transferPairId: 'transferPairId'
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountReconciliationScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  openingBalance: 'openingBalance',
+  closingBalance: 'closingBalance',
+  statementBalance: 'statementBalance',
+  difference: 'difference',
+  status: 'status',
+  reconciledAt: 'reconciledAt',
+  reconciledById: 'reconciledById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReconciliationItemScalarFieldEnum = {
+  id: 'id',
+  reconciliationId: 'reconciliationId',
+  transactionId: 'transactionId',
+  externalRef: 'externalRef',
+  externalAmount: 'externalAmount',
+  externalDate: 'externalDate',
+  status: 'status',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -438,6 +529,22 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.AccountType = exports.$Enums.AccountType = {
+  BANK: 'BANK',
+  CASH_REGISTER: 'CASH_REGISTER',
+  PETTY_CASH: 'PETTY_CASH',
+  DIGITAL_WALLET: 'DIGITAL_WALLET',
+  CREDIT_LINE: 'CREDIT_LINE'
+};
+
+exports.AccountTransactionType = exports.$Enums.AccountTransactionType = {
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE',
+  TRANSFER_OUT: 'TRANSFER_OUT',
+  TRANSFER_IN: 'TRANSFER_IN',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
 exports.ProductType = exports.$Enums.ProductType = {
   PRODUCT: 'PRODUCT',
   SERVICE: 'SERVICE'
@@ -450,10 +557,7 @@ exports.SaleStatus = exports.$Enums.SaleStatus = {
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   CASH: 'CASH',
-  CARD: 'CARD',
-  TRANSFER: 'TRANSFER',
-  DIGITAL: 'DIGITAL',
-  OTHER: 'OTHER'
+  BANK_TRANSFER: 'BANK_TRANSFER'
 };
 
 exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
@@ -467,7 +571,8 @@ exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
 exports.StockMoveType = exports.$Enums.StockMoveType = {
   PURCHASE: 'PURCHASE',
   SALE: 'SALE',
-  ADJUSTMENT: 'ADJUSTMENT'
+  ADJUSTMENT: 'ADJUSTMENT',
+  TRANSFER: 'TRANSFER'
 };
 
 exports.AccountsReceivableStatus = exports.$Enums.AccountsReceivableStatus = {
@@ -496,12 +601,15 @@ exports.PayrollRunStatus = exports.$Enums.PayrollRunStatus = {
   PAID: 'PAID'
 };
 
-exports.BankTransactionType = exports.$Enums.BankTransactionType = {
-  INCOME: 'INCOME',
-  EXPENSE: 'EXPENSE',
-  TRANSFER_OUT: 'TRANSFER_OUT',
-  TRANSFER_IN: 'TRANSFER_IN',
-  ADJUSTMENT: 'ADJUSTMENT'
+exports.CashSessionStatus = exports.$Enums.CashSessionStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+exports.ReconciliationStatus = exports.$Enums.ReconciliationStatus = {
+  DRAFT: 'DRAFT',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED'
 };
 
 exports.Prisma.ModelName = {
@@ -509,8 +617,12 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  BusinessLine: 'BusinessLine',
+  Branch: 'Branch',
+  UserBranch: 'UserBranch',
+  FinancialAccount: 'FinancialAccount',
+  AccountTransaction: 'AccountTransaction',
   Customer: 'Customer',
-  Bank: 'Bank',
   ProductCategory: 'ProductCategory',
   Product: 'Product',
   Sale: 'Sale',
@@ -528,7 +640,9 @@ exports.Prisma.ModelName = {
   PayrollEntry: 'PayrollEntry',
   PayrollRun: 'PayrollRun',
   PayrollRunItem: 'PayrollRunItem',
-  BankTransaction: 'BankTransaction'
+  CashSession: 'CashSession',
+  AccountReconciliation: 'AccountReconciliation',
+  ReconciliationItem: 'ReconciliationItem'
 };
 
 /**

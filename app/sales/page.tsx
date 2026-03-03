@@ -5,15 +5,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { es, enUS } from "date-fns/locale";
-import { Plus, AlertCircle, Check, CalendarIcon, X, User } from "lucide-react";
+import { Plus, AlertCircle, Check, CalendarIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -46,6 +39,7 @@ import type { SaleWithDetails } from "@/lib/types/sales";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { SalesStatsCards } from "@/components/sales/sales-stats-cards";
+import { BirthdaysBanner } from "@/components/sales/birthdays-banner";
 
 export default function SalesPage() {
   const t = useTranslations("Sales");
@@ -211,23 +205,21 @@ export default function SalesPage() {
             {t("description")}
           </p>
         </div>
-        <Button onClick={handleCreate} className="shadow-sm">
+        <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
           {t("createSale")}
         </Button>
       </div>
 
+      <BirthdaysBanner />
+
       {/* Employee Sales Stats Cards */}
       <SalesStatsCards sellerId={sellerId} />
 
-      <Card>
-        <CardHeader className="pb-3">
-          <div>
-            <CardTitle>{t("salesHistory")}</CardTitle>
-            <CardDescription>{t("salesHistoryDescription")}</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
+      <div className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {t("salesHistory")}
+        </p>
           <Tabs
             value={activeTab}
             onValueChange={(tab) => {
@@ -243,13 +235,13 @@ export default function SalesPage() {
                 <TabsList className="w-full sm:w-auto grid grid-cols-2 h-10 p-1 bg-muted/50">
                   <TabsTrigger value="completed" className="px-4">
                     {t("completedSales")}{" "}
-                    <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                    <span className="ml-2 text-xs bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-sm tabular-nums">
                       {completedData?.total || 0}
                     </span>
                   </TabsTrigger>
                   <TabsTrigger value="draft" className="px-4">
                     {t("openSales")}{" "}
-                    <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                    <span className="ml-2 text-xs bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-sm tabular-nums">
                       {draftData?.total || 0}
                     </span>
                   </TabsTrigger>
@@ -284,8 +276,8 @@ export default function SalesPage() {
 
                 {/* Filters - Responsive Grid/Flex */}
                 {activeTab === "completed" && isAdmin() && (
-                  <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-                    <div className="w-full sm:w-auto sm:min-w-[200px]">
+                  <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <div className="flex-1 sm:flex-none sm:min-w-[200px]">
                       <UserSelector
                         value={sellerId}
                         onValueChange={handleSellerChange}
@@ -384,10 +376,6 @@ export default function SalesPage() {
 
             {/* Draft Sales Tab */}
             <TabsContent value="draft" className="space-y-4 mt-0">
-              <div className="text-sm text-muted-foreground">
-                {t("openSalesDescription")}
-              </div>
-
               {draftError && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -429,8 +417,7 @@ export default function SalesPage() {
               )}
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+      </div>
 
       <SaleDetailDialog
         open={detailDialogOpen}
@@ -458,12 +445,14 @@ export default function SalesPage() {
                 </div>
                 <div className="font-semibold text-sm">
                   {t("total")}:{" "}
-                  {new Intl.NumberFormat("es-CO", {
-                    style: "currency",
-                    currency: "COP",
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  }).format(parseFloat(saleToClose.total))}
+                  <span className="font-mono tabular-nums">
+                    {new Intl.NumberFormat("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }).format(parseFloat(saleToClose.total))}
+                  </span>
                 </div>
               </div>
             )}

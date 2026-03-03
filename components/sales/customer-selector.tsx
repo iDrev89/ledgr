@@ -2,30 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import {
-  Check,
-  ChevronsUpDown,
-  Plus,
-  Search,
-  Loader2,
-  Cake,
-} from "lucide-react";
+import { Plus, Search, Loader2, Cake, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { CustomerDialog } from "@/components/customers/customer-dialog";
 import { useCustomers } from "@/hooks/use-customers";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -41,9 +26,6 @@ const isBirthdayToday = (date: Date | string | null | undefined) => {
   if (!date) return false;
   const birthDate = new Date(date);
   const today = new Date();
-
-  // Compare UTC birth day/month with local today day/month
-  // This assumes birthdate is stored as UTC midnight (standard for date fields)
   return (
     birthDate.getUTCDate() === today.getDate() &&
     birthDate.getUTCMonth() === today.getMonth()
@@ -60,18 +42,14 @@ export function CustomerSelector({
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  // Store the last known customer name to prevent flickering
   const [lastCustomerName, setLastCustomerName] = useState<string>("");
+  const [lastCustomerPhone, setLastCustomerPhone] = useState<string>("");
   const [lastCustomerBirthdate, setLastCustomerBirthdate] = useState<
     Date | string | null
   >(null);
 
-  // Debounce search query to avoid too many server requests
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // Fetch customers with server-side search
-  // When searching: no limit (find any customer)
-  // When not searching: limit to 100 for initial load performance
   const queryParams = debouncedSearch
     ? { search: debouncedSearch }
     : { limit: 100 };
@@ -79,183 +57,203 @@ export function CustomerSelector({
   const { data, isLoading } = useCustomers(queryParams);
   const customers = data?.customers || [];
 
-  // Debug: Log search queries
-  useEffect(() => {
-    if (debouncedSearch) {
-      console.log("🔍 Searching customers:", debouncedSearch, queryParams);
-    }
-  }, [debouncedSearch, queryParams]);
-
   const selectedCustomer = customers.find((c) => c.id === value);
   const isSelectedBirthday = isBirthdayToday(
     selectedCustomer?.birthdate || lastCustomerBirthdate,
   );
 
-  // Update last known name and birthdate when customer is found
   useEffect(() => {
     if (selectedCustomer) {
       setLastCustomerName(selectedCustomer.name);
       setLastCustomerBirthdate(selectedCustomer.birthdate);
+      setLastCustomerPhone(selectedCustomer.phone || selectedCustomer.email || "");
     }
   }, [selectedCustomer]);
 
   const handleSelect = (customerId: string) => {
     onValueChange(customerId);
     setOpen(false);
+    setSearchInput("");
   };
 
   const handleCreateCustomer = () => {
     setOpen(false);
+    setSearchInput("");
     setDialogOpen(true);
   };
 
   const handleCustomerCreated = (newCustomer: Customer) => {
-    // Automatically select the newly created customer
     onValueChange(newCustomer.id);
     setLastCustomerName(newCustomer.name);
+    setLastCustomerPhone(newCustomer.phone || newCustomer.email || "");
   };
 
-  const handleDialogClose = (open: boolean) => {
-    setDialogOpen(open);
-  };
-
-  const handlePopoverOpenChange = (isOpen: boolean) => {
+  const handleSheetOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    // Reset search when closing
-    if (!isOpen) {
-      setSearchInput("");
-    }
+    if (!isOpen) setSearchInput("");
   };
+
+  const displayName = value
+    ? (selectedCustomer?.name || lastCustomerName || t("selectCustomer"))
+    : null;
+
+  const displayPhone = value
+    ? (selectedCustomer?.phone || selectedCustomer?.email || lastCustomerPhone || null)
+    : null;
 
   return (
     <>
-      <Popover open={open} onOpenChange={handlePopoverOpenChange}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-            disabled={disabled}
-          >
-            {value ? (
-              <span className="truncate flex items-center gap-2">
-                {selectedCustomer?.name ||
-                  lastCustomerName ||
-                  t("selectCustomer")}
-                {isSelectedBirthday && (
-                  <Badge
-                    variant="secondary"
-                    className="h-5 px-1.5 bg-pink-100 text-pink-700 hover:bg-pink-100 border-pink-200 gap-1 flex items-center"
-                  >
-                    <Cake className="size-3" />
-                    <span className="text-[10px] font-medium hidden sm:inline">
-                      Cumpleaños
-                    </span>
-                  </Badge>
-                )}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                {t("selectCustomer")}
-              </span>
+      {/* Trigger — ledger-style, shows name + phone once selected */}
+      <button
+        type="button"
+        onClick={() => !disabled && setOpen(true)}
+        disabled={disabled}
+        className={cn(
+          "w-full flex items-center justify-between rounded-md border border-input bg-background px-3 py-2.5 text-left text-sm transition-colors hover:bg-accent/50 active:bg-accent disabled:opacity-50 disabled:pointer-events-none min-h-[2.5rem]",
+          !value && "text-muted-foreground",
+        )}
+      >
+        {value ? (
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-sm truncate">{displayName}</span>
+              {isSelectedBirthday && (
+                <span className="inline-flex h-5 items-center gap-1 rounded-full bg-pink-100 px-2 text-[10px] font-medium text-pink-700 dark:bg-pink-900/30 dark:text-pink-400 shrink-0">
+                  <Cake className="size-3" />
+                  <span className="hidden sm:inline">Cumpleaños</span>
+                </span>
+              )}
+            </div>
+            {displayPhone && (
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                {displayPhone}
+              </p>
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-          <Command shouldFilter={false}>
-            <CommandInput
-              placeholder={t("searchCustomer")}
-              value={searchInput}
-              onValueChange={setSearchInput}
-            />
-            <CommandList>
-              {/* Fixed Create Button - Always visible at the top */}
-              <CommandGroup>
-                <CommandItem
-                  onSelect={handleCreateCustomer}
-                  className="text-primary"
+          </div>
+        ) : (
+          <span>{t("selectCustomer")}</span>
+        )}
+        <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
+      </button>
+
+      {/* Customer picker drawer — vaul, swipe-to-dismiss */}
+      <Drawer open={open} onOpenChange={handleSheetOpenChange} shouldScaleBackground={false}>
+        <DrawerContent
+          className="h-[85vh] flex flex-col"
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
+        >
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("selectCustomer")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
+
+          <div className="px-4 flex flex-col gap-3 flex-1 min-h-0 pb-4">
+            {/* Search input */}
+            <div className="relative shrink-0">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder={t("searchCustomer")}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="h-11 pl-9 pr-9"
+              />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => setSearchInput("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  <span className="font-medium">
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* List */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="rounded-md border overflow-hidden">
+                {/* Create customer — pinned at top, always visible */}
+                <button
+                  type="button"
+                  onClick={handleCreateCustomer}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 border-b border-border text-left hover:bg-accent/50 active:bg-accent transition-colors"
+                >
+                  <div className="h-8 w-8 rounded-full bg-primary/8 flex items-center justify-center shrink-0">
+                    <Plus className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium text-sm text-primary">
                     {tCustomers("createCustomer")}
                   </span>
-                </CommandItem>
-              </CommandGroup>
+                </button>
 
-              {/* Separator */}
-              <div className="border-b" />
+                {/* Loading */}
+                {isLoading && (
+                  <div className="flex items-center justify-center py-10">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  </div>
+                )}
 
-              {/* Loading State */}
-              {isLoading && (
-                <div className="flex items-center justify-center py-6">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
-              )}
+                {/* Empty */}
+                {!isLoading && customers.length === 0 && (
+                  <div className="flex flex-col items-center gap-2 py-10 text-muted-foreground">
+                    <Search className="h-7 w-7 opacity-40" />
+                    <p className="text-sm">{t("noCustomersFound")}</p>
+                  </div>
+                )}
 
-              {/* Customers List */}
-              {!isLoading && (
-                <>
-                  <CommandEmpty>
-                    <div className="flex flex-col items-center justify-center gap-2 py-6">
-                      <Search className="h-8 w-8 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        {t("noCustomersFound")}
-                      </p>
-                    </div>
-                  </CommandEmpty>
-                  <CommandGroup
-                    heading={customers.length > 0 ? t("customers") : undefined}
-                  >
-                    {customers.map((customer) => {
-                      const isBirthday = isBirthdayToday(customer.birthdate);
-                      return (
-                        <CommandItem
-                          key={customer.id}
-                          value={customer.id}
-                          onSelect={() => handleSelect(customer.id)}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              value === customer.id
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                          <div className="flex flex-col flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">
-                                {customer.name}
-                              </span>
-                              {isBirthday && (
-                                <span className="flex h-5 items-center gap-1 rounded-full bg-pink-100 px-2 text-[10px] font-medium text-pink-700 dark:bg-pink-900/30 dark:text-pink-400">
-                                  <Cake className="size-3" />
-                                  Hoy
-                                </span>
+                {/* Customer rows */}
+                {!isLoading &&
+                  customers.map((customer) => {
+                    const isBirthday = isBirthdayToday(customer.birthdate);
+                    const isSelected = customer.id === value;
+                    return (
+                      <button
+                        key={customer.id}
+                        type="button"
+                        onClick={() => handleSelect(customer.id)}
+                        className={cn(
+                          "flex items-center gap-3 w-full px-4 py-3.5 border-b border-border/40 last:border-0 text-left hover:bg-accent/50 active:bg-accent transition-colors",
+                          isSelected && "bg-accent/40",
+                        )}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p
+                              className={cn(
+                                "text-sm font-medium truncate",
+                                isSelected && "text-primary",
                               )}
-                            </div>
-                            {(customer.email || customer.phone) && (
-                              <span className="text-xs text-muted-foreground">
-                                {customer.email || customer.phone}
+                            >
+                              {customer.name}
+                            </p>
+                            {isBirthday && (
+                              <span className="inline-flex h-5 items-center gap-1 rounded-full bg-pink-100 px-2 text-[10px] font-medium text-pink-700 dark:bg-pink-900/30 dark:text-pink-400 shrink-0">
+                                <Cake className="size-3" />
+                                Hoy
                               </span>
                             )}
                           </div>
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
-                </>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+                          {(customer.phone || customer.email) && (
+                            <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                              {customer.phone || customer.email}
+                            </p>
+                          )}
+                        </div>
+                        {isSelected && (
+                          <div className="h-2 w-2 rounded-full bg-primary shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       <CustomerDialog
         open={dialogOpen}
-        onOpenChange={handleDialogClose}
+        onOpenChange={setDialogOpen}
         onSuccess={handleCustomerCreated}
       />
     </>

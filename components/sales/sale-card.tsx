@@ -10,6 +10,8 @@ import {
   Edit,
   Check,
   User,
+  StickyNote,
+  HandCoins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,12 +21,15 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import { useTranslations } from "next-intl";
+import {
+  getPaymentMethodLabel,
+  getPaymentMethodBadgeVariant,
+} from "@/lib/payment-utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,39 +62,12 @@ const getPaymentMethodBadge = (
   method: PaymentMethod,
   t: (key: string) => string,
 ) => {
-  const variants: Record<
-    PaymentMethod,
-    { label: string; variant: "default" | "secondary" | "outline" }
-  > = {
-    [PaymentMethod.CASH]: {
-      label: t("paymentCash"),
-      variant: "default",
-    },
-    [PaymentMethod.CARD]: {
-      label: t("paymentCard"),
-      variant: "secondary",
-    },
-    [PaymentMethod.TRANSFER]: {
-      label: t("paymentTransfer"),
-      variant: "outline",
-    },
-    [PaymentMethod.DIGITAL]: {
-      label: t("paymentDigital"),
-      variant: "secondary",
-    },
-    [PaymentMethod.OTHER]: {
-      label: t("paymentOther"),
-      variant: "outline",
-    },
-  };
-
-  const config = variants[method];
   return (
     <Badge
-      variant={config.variant}
+      variant={getPaymentMethodBadgeVariant(method)}
       className="font-normal text-xs px-2 py-0.5 pointer-events-none"
     >
-      {config.label}
+      {getPaymentMethodLabel(method, t)}
     </Badge>
   );
 };
@@ -120,7 +98,7 @@ export function SaleCard({
 
   return (
     <Card
-      className="group overflow-hidden ring-1 ring-border shadow-md transition-all duration-200 hover:shadow-lg hover:ring-primary/50 bg-background rounded-xl cursor-pointer"
+      className="group overflow-hidden border transition-colors hover:bg-accent/50 bg-background rounded-lg cursor-pointer"
       onClick={onView}
     >
       <CardContent className="p-0 relative">
@@ -139,11 +117,17 @@ export function SaleCard({
                 locale: dateLocale,
               })}
             </span>
+            {sale.note && (
+              <StickyNote className="h-3 w-3 text-muted-foreground/60" />
+            )}
+            {parseFloat(sale.tip || "0") > 0 && (
+              <HandCoins className="h-3 w-3 text-muted-foreground/60" />
+            )}
           </div>
 
           {/* Price in Header */}
           <div className="flex items-center gap-2">
-            <span className="font-bold text-base tabular-nums">
+            <span className="font-mono font-bold text-base tabular-nums">
               {formatCurrency(sale.total)}
             </span>
             {/* Action Menu */}
@@ -198,14 +182,12 @@ export function SaleCard({
                 {sale.customer.name}
               </p>
               {hasReceivable && sale.receivable && (
-                <span className="inline-flex items-center text-[10px] font-medium text-amber-600 dark:text-amber-500 mt-1">
+                <span className="inline-flex items-center text-[10px] font-medium text-warning mt-1">
                   {t("balance")}: {formatCurrency(sale.receivable.balance)}
                 </span>
               )}
             </div>
           </div>
-
-          <Separator className="bg-border/50" />
 
           {/* Bottom Row: Details & Quick Info */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
@@ -280,7 +262,7 @@ export function SaleCard({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-9 px-3 text-xs font-medium border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-sm"
+                  className="h-9 px-3 text-xs font-medium border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     onView();

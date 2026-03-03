@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, Trash2, Edit, Check } from "lucide-react";
+import { MoreHorizontal, Eye, Trash2, Edit, Check, StickyNote, HandCoins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +16,10 @@ import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import type { SaleWithDetails } from "@/lib/types/sales";
 import { PaymentMethod } from "@/prisma/prisma-client";
+import {
+  getPaymentMethodLabel,
+  getPaymentMethodBadgeVariant,
+} from "@/lib/payment-utils";
 
 interface CreateSaleColumnsProps {
   onView: (sale: SaleWithDetails) => void;
@@ -42,36 +46,9 @@ const getPaymentMethodBadge = (
   method: PaymentMethod,
   t: (key: string) => string,
 ) => {
-  const variants: Record<
-    PaymentMethod,
-    { label: string; variant: "default" | "secondary" | "outline" }
-  > = {
-    [PaymentMethod.CASH]: {
-      label: t("paymentCash"),
-      variant: "default",
-    },
-    [PaymentMethod.CARD]: {
-      label: t("paymentCard"),
-      variant: "secondary",
-    },
-    [PaymentMethod.TRANSFER]: {
-      label: t("paymentTransfer"),
-      variant: "outline",
-    },
-    [PaymentMethod.DIGITAL]: {
-      label: t("paymentDigital"),
-      variant: "secondary",
-    },
-    [PaymentMethod.OTHER]: {
-      label: t("paymentOther"),
-      variant: "outline",
-    },
-  };
-
-  const config = variants[method];
   return (
-    <Badge variant={config.variant} className="font-normal">
-      {config.label}
+    <Badge variant={getPaymentMethodBadgeVariant(method)} className="font-normal">
+      {getPaymentMethodLabel(method, t)}
     </Badge>
   );
 };
@@ -92,9 +69,14 @@ export const createSaleColumns = ({
     cell: ({ row }) => {
       const saleNumber = row.getValue("saleNumber") as number;
       return (
-        <span className="font-mono font-semibold">
-          #{String(saleNumber).padStart(4, "0")}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-mono font-semibold">
+            #{String(saleNumber).padStart(4, "0")}
+          </span>
+          {row.original.note && (
+            <StickyNote className="h-3 w-3 text-muted-foreground/60 shrink-0" />
+          )}
+        </div>
       );
     },
   },
@@ -167,7 +149,7 @@ export const createSaleColumns = ({
             {payments.length} {t("payments")}
           </Badge>
           {hasReceivable && sale.receivable && (
-            <span className="text-xs text-amber-600 dark:text-amber-400">
+            <span className="text-xs text-warning font-mono tabular-nums">
               {t("balance")}: {formatCurrency(sale.receivable.balance)}
             </span>
           )}
@@ -180,8 +162,14 @@ export const createSaleColumns = ({
     header: () => <div className="text-right">{t("total")}</div>,
     cell: ({ row }) => {
       const total = row.getValue("total") as string;
+      const hasTip = parseFloat(row.original.tip || "0") > 0;
       return (
-        <div className="text-right font-medium">{formatCurrency(total)}</div>
+        <div className="flex items-center justify-end gap-1.5">
+          {hasTip && (
+            <HandCoins className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" aria-label={t("tip")} />
+          )}
+          <span className="font-mono tabular-nums font-medium">{formatCurrency(total)}</span>
+        </div>
       );
     },
   },

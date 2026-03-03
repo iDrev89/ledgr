@@ -17,7 +17,6 @@ import type {
   SalePayment,
   Customer,
   Product,
-  Bank,
 } from "@/prisma/prisma-client";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { SaleWithDetails } from "@/lib/types/sales";
@@ -52,6 +51,7 @@ const serializeSale = (sale: any): SaleWithDetails => {
     discountTotal: sale.discountTotal.toString(),
     taxTotal: sale.taxTotal.toString(),
     total: sale.total.toString(),
+    tip: sale.tip.toString(),
     customer: sale.customer
       ? {
           ...sale.customer,
@@ -103,7 +103,7 @@ const serializeSale = (sale: any): SaleWithDetails => {
       ? sale.payments.map((payment: any) => ({
           ...payment,
           amount: payment.amount.toString(),
-          bank: payment.bank || null,
+          account: payment.account || null,
           attachmentUrl: payment.attachmentUrl || null,
         }))
       : [],
@@ -245,7 +245,14 @@ export const getSales = async (params?: {
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
             },
           },
           receivable: {
@@ -336,7 +343,14 @@ export const getSale = async (
         },
         payments: {
           include: {
-            bank: true,
+            account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
           },
         },
         receivable: {
@@ -453,6 +467,7 @@ export const createSale = async (
 
     const taxTotal = new Decimal(0); // TODO: Implement tax calculation in future
     const total = subtotal.minus(discountTotal).plus(taxTotal);
+    const tip = new Decimal(validated.tip || "0");
 
     // Calculate total paid and validate
     let totalPaid = new Decimal(0);
@@ -462,22 +477,22 @@ export const createSale = async (
       return {
         amount,
         method: payment.method,
-        bankId: payment.bankId || null,
+        accountId: payment.accountId,
         reference: payment.reference || null,
         attachmentUrl: payment.attachmentUrl || null,
       };
     });
 
-    // Validate that payments don't exceed total
-    if (totalPaid.gt(total)) {
+    // Validate that payments don't exceed total + tip
+    if (totalPaid.gt(total.plus(tip))) {
       return {
         success: false,
         error: t("paymentsExceedTotal"),
       };
     }
 
-    // Calculate balance for receivable
-    const balance = total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(total.minus(totalPaid), 0);
 
     // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
@@ -492,11 +507,13 @@ export const createSale = async (
           createdById: session.user.id,
           soldById: validated.soldById || session.user.id || null,
           customerId: validated.customerId,
+          branchId: validated.branchId || null,
           currency: "COP",
           subtotal,
           discountTotal,
           taxTotal,
           total,
+          tip,
           status: isDraft ? "DRAFT" : "COMPLETED",
           note: validated.note || null,
           ...(customDate && { createdAt: customDate }),
@@ -537,16 +554,21 @@ export const createSale = async (
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
             },
           },
         },
       });
 
-      // Only create AccountsReceivable, stock movements, and bank transactions if not DRAFT
       let receivable = null;
       if (!isDraft) {
-        // Create AccountsReceivable if there's a balance
         if (balance.gt(0)) {
           receivable = await tx.accountsReceivable.create({
             data: {
@@ -568,13 +590,13 @@ export const createSale = async (
           });
         }
 
-        // Create stock movements for each item (if product type is PRODUCT)
         for (const item of itemsWithTotals) {
           const product = products.find((p) => p.id === item.productId);
           if (product?.type === "PRODUCT") {
             await tx.stockMovement.create({
               data: {
                 productId: item.productId,
+                branchId: newSale.branchId || null,
                 moveType: StockMoveType.SALE,
                 quantity: item.quantity,
                 unitCost: product.cost,
@@ -585,22 +607,19 @@ export const createSale = async (
           }
         }
 
-        // Create bank transactions for payments with bank
         for (const payment of newSale.payments) {
-          if (payment.bankId) {
-            await tx.bankTransaction.create({
-              data: {
-                bankId: payment.bankId,
-                type: "INCOME" as any,
-                amount: payment.amount,
-                description: `Venta #${String(newSale.saleNumber).padStart(4, "0")}${newSale.customer ? ` - ${newSale.customer.name}` : ""}`,
-                reference: payment.reference || null,
-                transactionDate: payment.paidAt,
-                salePaymentId: payment.id,
-                createdById: session.user.id,
-              },
-            });
-          }
+          await tx.accountTransaction.create({
+            data: {
+              accountId: payment.accountId,
+              type: "INCOME" as any,
+              amount: payment.amount,
+              description: `Venta #${String(newSale.saleNumber).padStart(4, "0")}${newSale.customer ? ` - ${newSale.customer.name}` : ""}`,
+              reference: payment.reference || null,
+              transactionDate: payment.paidAt,
+              salePaymentId: payment.id,
+              createdById: session.user.id,
+            },
+          });
         }
       }
 
@@ -610,7 +629,7 @@ export const createSale = async (
     revalidatePath("/sales");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return { success: true, data: serializeSale(sale) };
@@ -642,7 +661,14 @@ export const completeSale = async (
         },
         payments: {
           include: {
-            bank: true,
+            account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
           },
         },
         customer: true,
@@ -661,13 +687,14 @@ export const completeSale = async (
       };
     }
 
-    // Calculate balance
+    // Calculate balance (tip not included — receivable is only for sale total)
     let totalPaid = new Decimal(0);
     existingSale.payments.forEach((payment) => {
       totalPaid = totalPaid.plus(payment.amount);
     });
 
-    const balance = existingSale.total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(existingSale.total.minus(totalPaid), 0);
 
     // Complete the sale in a transaction
     const completedSale = await prisma.$transaction(async (tx) => {
@@ -709,6 +736,7 @@ export const completeSale = async (
           await tx.stockMovement.create({
             data: {
               productId: item.productId,
+              branchId: existingSale.branchId || null,
               moveType: StockMoveType.SALE,
               quantity: item.quantity,
               unitCost: item.product.cost,
@@ -719,25 +747,21 @@ export const completeSale = async (
         }
       }
 
-      // Create bank transactions for payments with bank
       for (const payment of existingSale.payments) {
-        if (payment.bankId) {
-          await tx.bankTransaction.create({
-            data: {
-              bankId: payment.bankId,
-              type: "INCOME" as any,
-              amount: payment.amount,
-              description: `Venta #${String(existingSale.saleNumber).padStart(4, "0")}${existingSale.customer ? ` - ${existingSale.customer.name}` : ""}`,
-              reference: payment.reference || null,
-              transactionDate: payment.paidAt,
-              salePaymentId: payment.id,
-              createdById: session.user.id,
-            },
-          });
-        }
+        await tx.accountTransaction.create({
+          data: {
+            accountId: payment.accountId,
+            type: "INCOME" as any,
+            amount: payment.amount,
+            description: `Venta #${String(existingSale.saleNumber).padStart(4, "0")}${existingSale.customer ? ` - ${existingSale.customer.name}` : ""}`,
+            reference: payment.reference || null,
+            transactionDate: payment.paidAt,
+            salePaymentId: payment.id,
+            createdById: session.user.id,
+          },
+        });
       }
 
-      // Update sale status to COMPLETED
       const updatedSale = await tx.sale.update({
         where: { id: saleId },
         data: {
@@ -773,7 +797,14 @@ export const completeSale = async (
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
             },
           },
           receivable: {
@@ -793,7 +824,7 @@ export const completeSale = async (
     revalidatePath("/sales");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/receivables");
     revalidatePath("/reports");
 
@@ -913,6 +944,7 @@ export const updateSale = async (
 
     const taxTotal = new Decimal(0);
     const total = subtotal.minus(discountTotal).plus(taxTotal);
+    const tip = new Decimal(validated.tip || "0");
 
     // Calculate total paid and validate
     let totalPaid = new Decimal(0);
@@ -922,22 +954,22 @@ export const updateSale = async (
       return {
         amount,
         method: payment.method,
-        bankId: payment.bankId || null,
+        accountId: payment.accountId,
         reference: payment.reference || null,
         attachmentUrl: payment.attachmentUrl || null,
       };
     });
 
-    // Validate that payments don't exceed total
-    if (totalPaid.gt(total)) {
+    // Validate that payments don't exceed total + tip
+    if (totalPaid.gt(total.plus(tip))) {
       return {
         success: false,
         error: t("paymentsExceedTotal"),
       };
     }
 
-    // Calculate balance for receivable
-    const balance = total.minus(totalPaid);
+    // Balance for receivable: tip is informational only, doesn't affect what's owed
+    const balance = Decimal.max(total.minus(totalPaid), 0);
 
     // Parse custom date if provided (using Colombia timezone)
     const customDate = validated.customDate
@@ -952,7 +984,19 @@ export const updateSale = async (
         select: { saleNumber: true },
       });
 
-      // Delete old items, payments, stock movements, and receivable
+      // Delete old account transactions, items, payments, stock movements, and receivable
+      const oldPayments = await tx.salePayment.findMany({
+        where: { saleId: validated.id },
+        select: { id: true },
+      });
+      if (oldPayments.length > 0) {
+        await tx.accountTransaction.deleteMany({
+          where: {
+            salePaymentId: { in: oldPayments.map((p) => p.id) },
+          },
+        });
+      }
+
       await tx.saleItem.deleteMany({
         where: { saleId: validated.id },
       });
@@ -984,10 +1028,12 @@ export const updateSale = async (
         data: {
           customerId: validated.customerId,
           soldById: validated.soldById || null,
+          branchId: validated.branchId || null,
           subtotal,
           discountTotal,
           taxTotal,
           total,
+          tip,
           note: validated.note || null,
           ...(customDate && { createdAt: customDate }),
           items: {
@@ -1027,14 +1073,20 @@ export const updateSale = async (
           },
           payments: {
             include: {
-              bank: true,
+              account: {
+  select: {
+    id: true,
+    name: true,
+    type: true,
+    accountNumber: true,
+  },
+},
             },
           },
         },
       });
 
-      // Only create AccountsReceivable and stock movements for COMPLETED sales
-      // DRAFT sales don't create these records until the sale is closed
+      // Only create AccountsReceivable, stock movements, and account transactions for COMPLETED sales
       let receivable = null;
       if (existingSale.status === "COMPLETED") {
         // Create AccountsReceivable if there's a balance
@@ -1059,13 +1111,13 @@ export const updateSale = async (
           });
         }
 
-        // Create new stock movements for products
         for (const item of itemsWithTotals) {
           const product = products.find((p) => p.id === item.productId);
           if (product?.type === "PRODUCT") {
             await tx.stockMovement.create({
               data: {
                 productId: item.productId,
+                branchId: updatedSale.branchId || null,
                 moveType: StockMoveType.SALE,
                 quantity: item.quantity,
                 unitCost: product.cost,
@@ -1074,6 +1126,21 @@ export const updateSale = async (
               },
             });
           }
+        }
+
+        for (const payment of updatedSale.payments) {
+          await tx.accountTransaction.create({
+            data: {
+              accountId: payment.accountId,
+              type: "INCOME" as any,
+              amount: payment.amount,
+              description: `Venta #${String(updatedSale.saleNumber).padStart(4, "0")}`,
+              reference: payment.reference || null,
+              transactionDate: payment.paidAt,
+              salePaymentId: payment.id,
+              createdById: session.user.id,
+            },
+          });
         }
       }
 
@@ -1084,7 +1151,7 @@ export const updateSale = async (
     revalidatePath(`/sales/${sale.id}`);
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/receivables");
     revalidatePath("/reports");
 
@@ -1148,8 +1215,7 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
         },
       });
 
-      // Delete bank transactions related to sale payments (if any)
-      await tx.bankTransaction.deleteMany({
+      await tx.accountTransaction.deleteMany({
         where: {
           salePaymentId: {
             in: sale.payments.map((p) => p.id),
@@ -1178,7 +1244,7 @@ export const deleteSale = async (id: string): Promise<ActionResponse<void>> => {
     revalidatePath("/sales");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/receivables");
     revalidatePath("/reports");
 
@@ -1197,8 +1263,7 @@ export type EmployeeSalesStats = {
   transactionCount: number;
   cashAmount: string;
   transferAmount: string;
-  cardAmount: string;
-  digitalAmount: string;
+  tipAmount: string;
 };
 
 export const getEmployeeSalesStats = async (params?: {
@@ -1259,25 +1324,19 @@ export const getEmployeeSalesStats = async (params?: {
     let totalAmount = new Decimal(0);
     let cashAmount = new Decimal(0);
     let transferAmount = new Decimal(0);
-    let cardAmount = new Decimal(0);
-    let digitalAmount = new Decimal(0);
+    let tipAmount = new Decimal(0);
 
     for (const sale of sales) {
       totalAmount = totalAmount.plus(sale.total);
+      tipAmount = tipAmount.plus(sale.tip || 0);
 
       for (const payment of sale.payments) {
         switch (payment.method) {
           case "CASH":
             cashAmount = cashAmount.plus(payment.amount);
             break;
-          case "TRANSFER":
+          case "BANK_TRANSFER":
             transferAmount = transferAmount.plus(payment.amount);
-            break;
-          case "CARD":
-            cardAmount = cardAmount.plus(payment.amount);
-            break;
-          case "DIGITAL":
-            digitalAmount = digitalAmount.plus(payment.amount);
             break;
         }
       }
@@ -1290,8 +1349,7 @@ export const getEmployeeSalesStats = async (params?: {
         transactionCount: sales.length,
         cashAmount: cashAmount.toString(),
         transferAmount: transferAmount.toString(),
-        cardAmount: cardAmount.toString(),
-        digitalAmount: digitalAmount.toString(),
+        tipAmount: tipAmount.toString(),
       },
     };
   } catch (error) {

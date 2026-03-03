@@ -184,18 +184,18 @@ export async function getPurchaseReportEnhanced(
     previousEndDate.setDate(previousEndDate.getDate() - 1);
 
     // Fetch current period purchases
+    const purchaseWhere: any = {
+      createdAt: { gte: startDate, lte: endDate },
+      status:
+        filters.status && filters.status.length > 0
+          ? { in: filters.status }
+          : undefined,
+      supplierId: filters.supplierId || undefined,
+    };
+    if (filters.branchId) purchaseWhere.branchId = filters.branchId;
+
     const purchases = await prisma.purchase.findMany({
-      where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status:
-          filters.status && filters.status.length > 0
-            ? { in: filters.status }
-            : undefined,
-        supplierId: filters.supplierId || undefined,
-      },
+      where: purchaseWhere,
       include: {
         supplier: {
           select: {
@@ -220,18 +220,18 @@ export async function getPurchaseReportEnhanced(
     });
 
     // Fetch previous period purchases for comparison
+    const prevPurchaseWhere: any = {
+      createdAt: { gte: previousStartDate, lte: previousEndDate },
+      status:
+        filters.status && filters.status.length > 0
+          ? { in: filters.status }
+          : undefined,
+      supplierId: filters.supplierId || undefined,
+    };
+    if (filters.branchId) prevPurchaseWhere.branchId = filters.branchId;
+
     const previousPurchases = await prisma.purchase.findMany({
-      where: {
-        createdAt: {
-          gte: previousStartDate,
-          lte: previousEndDate,
-        },
-        status:
-          filters.status && filters.status.length > 0
-            ? { in: filters.status }
-            : undefined,
-        supplierId: filters.supplierId || undefined,
-      },
+      where: prevPurchaseWhere,
     });
 
     // Transform current period purchases with details
@@ -388,14 +388,17 @@ export async function getBusinessSummary(
     const endDate = new Date(filters.endDate);
 
     // 1. Get sales (only COMPLETED)
+    const saleWhere: any = {
+      createdAt: { gte: startDate, lte: endDate },
+      status: "COMPLETED",
+    };
+    if (filters.branchId) saleWhere.branchId = filters.branchId;
+    if (filters.businessLineId) {
+      saleWhere.items = { some: { product: { businessLineId: filters.businessLineId } } };
+    }
+
     const sales = await prisma.sale.findMany({
-      where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status: "COMPLETED",
-      },
+      where: saleWhere,
       include: {
         items: {
           include: {
@@ -412,20 +415,25 @@ export async function getBusinessSummary(
           select: {
             amount: true,
             method: true,
+            account: {
+              select: { id: true, name: true, type: true },
+            },
           },
         },
       },
     });
 
     // 2. Get stock movements (for COGS)
+    const stockMovementWhere: any = {
+      moveType: StockMoveType.SALE,
+      createdAt: { gte: startDate, lte: endDate },
+    };
+    if (filters.branchId) {
+      stockMovementWhere.branchId = filters.branchId;
+    }
+
     const stockMovements = await prisma.stockMovement.findMany({
-      where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
+      where: stockMovementWhere,
       select: {
         quantity: true,
         unitCost: true,
@@ -434,13 +442,14 @@ export async function getBusinessSummary(
     });
 
     // 3. Get expenses
+    const expenseWhere: any = {
+      incurredAt: { gte: startDate, lte: endDate },
+    };
+    if (filters.branchId) expenseWhere.branchId = filters.branchId;
+    if (filters.businessLineId) expenseWhere.businessLineId = filters.businessLineId;
+
     const expenses = await prisma.expense.findMany({
-      where: {
-        incurredAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
+      where: expenseWhere,
       include: {
         category: {
           select: {
@@ -548,6 +557,32 @@ export async function getBusinessSummary(
 
     const netCash = cashReceived - cashSpent;
 
+    // Account breakdown from sale payments
+    const accountTotals = new Map<string, { accountName: string; accountType: string; total: number }>();
+    sales.forEach((sale) => {
+      sale.payments.forEach((payment) => {
+        if (payment.account) {
+          const key = payment.account.id;
+          const existing = accountTotals.get(key);
+          if (existing) {
+            existing.total += toNumber(payment.amount);
+          } else {
+            accountTotals.set(key, {
+              accountName: payment.account.name,
+              accountType: payment.account.type,
+              total: toNumber(payment.amount),
+            });
+          }
+        }
+      });
+    });
+    const byAccount = Array.from(accountTotals.entries()).map(([accountId, data]) => ({
+      accountId,
+      accountName: data.accountName,
+      accountType: data.accountType,
+      total: data.total,
+    })).sort((a, b) => b.total - a.total);
+
     // Generate Timeline
     const timeline = generateTimeline(sales, expenses, startDate, endDate);
 
@@ -575,6 +610,7 @@ export async function getBusinessSummary(
         cashReceived,
         cashSpent,
         netCash,
+        byAccount,
       },
       timeline,
     };
@@ -612,15 +648,40 @@ export async function getBusinessSummaryEnhanced(
     const previousEndDate = new Date(startDate);
     previousEndDate.setDate(previousEndDate.getDate() - 1);
 
+    // Build where clauses with branch/businessLine filters
+    const saleWhereEnhanced: any = {
+      createdAt: { gte: startDate, lte: endDate },
+      status: "COMPLETED",
+    };
+    if (filters.branchId) saleWhereEnhanced.branchId = filters.branchId;
+    if (filters.businessLineId) {
+      saleWhereEnhanced.items = { some: { product: { businessLineId: filters.businessLineId } } };
+    }
+
+    const prevSaleWhere: any = {
+      createdAt: { gte: previousStartDate, lte: previousEndDate },
+      status: "COMPLETED",
+    };
+    if (filters.branchId) prevSaleWhere.branchId = filters.branchId;
+    if (filters.businessLineId) {
+      prevSaleWhere.items = { some: { product: { businessLineId: filters.businessLineId } } };
+    }
+
+    const expenseWhereEnhanced: any = {
+      incurredAt: { gte: startDate, lte: endDate },
+    };
+    if (filters.branchId) expenseWhereEnhanced.branchId = filters.branchId;
+    if (filters.businessLineId) expenseWhereEnhanced.businessLineId = filters.businessLineId;
+
+    const prevExpenseWhere: any = {
+      incurredAt: { gte: previousStartDate, lte: previousEndDate },
+    };
+    if (filters.branchId) prevExpenseWhere.branchId = filters.branchId;
+    if (filters.businessLineId) prevExpenseWhere.businessLineId = filters.businessLineId;
+
     // Fetch current period sales (only COMPLETED)
     const sales = await prisma.sale.findMany({
-      where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status: "COMPLETED",
-      },
+      where: saleWhereEnhanced,
       include: {
         customer: {
           select: {
@@ -643,6 +704,9 @@ export async function getBusinessSummaryEnhanced(
           select: {
             amount: true,
             method: true,
+            account: {
+              select: { id: true, name: true, type: true },
+            },
           },
         },
         createdBy: {
@@ -655,13 +719,7 @@ export async function getBusinessSummaryEnhanced(
 
     // Fetch previous period sales (only COMPLETED)
     const previousSales = await prisma.sale.findMany({
-      where: {
-        createdAt: {
-          gte: previousStartDate,
-          lte: previousEndDate,
-        },
-        status: "COMPLETED",
-      },
+      where: prevSaleWhere,
       include: {
         items: {
           include: {
@@ -676,13 +734,15 @@ export async function getBusinessSummaryEnhanced(
     });
 
     // Get stock movements for COGS (current period)
+    const smWhere: any = { moveType: StockMoveType.SALE };
+    if (filters.branchId) {
+      smWhere.branchId = filters.branchId;
+    }
+
     const stockMovements = await prisma.stockMovement.findMany({
       where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
+        ...smWhere,
+        createdAt: { gte: startDate, lte: endDate },
       },
       select: {
         quantity: true,
@@ -693,11 +753,8 @@ export async function getBusinessSummaryEnhanced(
     // Get stock movements for COGS (previous period)
     const previousStockMovements = await prisma.stockMovement.findMany({
       where: {
-        moveType: StockMoveType.SALE,
-        createdAt: {
-          gte: previousStartDate,
-          lte: previousEndDate,
-        },
+        ...smWhere,
+        createdAt: { gte: previousStartDate, lte: previousEndDate },
       },
       select: {
         quantity: true,
@@ -707,12 +764,7 @@ export async function getBusinessSummaryEnhanced(
 
     // Get expenses (current period)
     const expenses = await prisma.expense.findMany({
-      where: {
-        incurredAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
+      where: expenseWhereEnhanced,
       include: {
         category: {
           select: {
@@ -730,12 +782,7 @@ export async function getBusinessSummaryEnhanced(
 
     // Get expenses (previous period)
     const previousExpenses = await prisma.expense.findMany({
-      where: {
-        incurredAt: {
-          gte: previousStartDate,
-          lte: previousEndDate,
-        },
-      },
+      where: prevExpenseWhere,
       include: {
         category: {
           select: {
@@ -1043,6 +1090,32 @@ export async function getBusinessSummaryEnhanced(
       .filter((e) => e.paymentMethod === PaymentMethod.CASH)
       .reduce((sum, e) => sum + toNumber(e.amount), 0);
 
+    // Account breakdown
+    const enhancedAccountTotals = new Map<string, { accountName: string; accountType: string; total: number }>();
+    sales.forEach((sale) => {
+      sale.payments.forEach((payment) => {
+        if (payment.account) {
+          const key = payment.account.id;
+          const existing = enhancedAccountTotals.get(key);
+          if (existing) {
+            existing.total += toNumber(payment.amount);
+          } else {
+            enhancedAccountTotals.set(key, {
+              accountName: payment.account.name,
+              accountType: payment.account.type,
+              total: toNumber(payment.amount),
+            });
+          }
+        }
+      });
+    });
+    const enhancedByAccount = Array.from(enhancedAccountTotals.entries()).map(([accountId, d]) => ({
+      accountId,
+      accountName: d.accountName,
+      accountType: d.accountType,
+      total: d.total,
+    })).sort((a, b) => b.total - a.total);
+
     // Sales and expense breakdowns for drill-down
     const salesBreakdown: SaleDetail[] = sales.map((sale) => ({
       id: sale.id,
@@ -1109,6 +1182,7 @@ export async function getBusinessSummaryEnhanced(
         cashReceived,
         cashSpent,
         netCash: cashReceived - cashSpent,
+        byAccount: enhancedByAccount,
       },
       charts: {
         salesTrend: timeline,
@@ -1218,14 +1292,17 @@ export async function getDailySalesReport(
         gte: startDate,
         lte: endDate,
       },
-      status: "COMPLETED", // Only show completed sales in reports
+      status: "COMPLETED",
     };
 
-    // Filter by seller if provided (only for admins)
+    if (filters.branchId) where.branchId = filters.branchId;
+    if (filters.businessLineId) {
+      where.items = { some: { product: { businessLineId: filters.businessLineId } } };
+    }
+
     if (filters.sellerId) {
       where.soldById = filters.sellerId;
     } else if (session.user.role !== "admin") {
-      // Non-admin users can only see their own sales
       where.soldById = session.user.id;
     }
 
@@ -1258,6 +1335,9 @@ export async function getDailySalesReport(
           select: {
             method: true,
             amount: true,
+            account: {
+              select: { id: true, name: true, type: true },
+            },
           },
         },
       },
@@ -1269,28 +1349,40 @@ export async function getDailySalesReport(
     const salesCount = sales.length;
     const averageTicket = salesCount > 0 ? totalSales / salesCount : 0;
 
-    // Calculate totals by payment method and total paid
-    const paymentMethodTotals = new Map<string, number>();
+    // Calculate totals by account and total paid
+    const dailyAccountTotals = new Map<string, { accountName: string; accountType: string; total: number }>();
     let totalPaid = 0;
-    
+
     sales.forEach((sale) => {
       if (sale.payments && sale.payments.length > 0) {
         sale.payments.forEach((payment) => {
-          const method = payment.method;
           const amount = toNumber(payment.amount);
           totalPaid += amount;
-          const currentTotal = paymentMethodTotals.get(method) || 0;
-          paymentMethodTotals.set(method, currentTotal + amount);
+          if (payment.account) {
+            const key = payment.account.id;
+            const existing = dailyAccountTotals.get(key);
+            if (existing) {
+              existing.total += amount;
+            } else {
+              dailyAccountTotals.set(key, {
+                accountName: payment.account.name,
+                accountType: payment.account.type,
+                total: amount,
+              });
+            }
+          }
         });
       }
     });
 
-    const byPaymentMethod = Array.from(paymentMethodTotals.entries()).map(
-      ([method, total]) => ({
-        method,
-        total,
+    const byAccount = Array.from(dailyAccountTotals.entries()).map(
+      ([accountId, d]) => ({
+        accountId,
+        accountName: d.accountName,
+        accountType: d.accountType,
+        total: d.total,
       })
-    );
+    ).sort((a, b) => b.total - a.total);
 
     // Calculate pending balance
     const pendingBalance = totalSales - totalPaid;
@@ -1336,7 +1428,7 @@ export async function getDailySalesReport(
           averageTicket,
           totalPaid,
           pendingBalance,
-          byPaymentMethod,
+          byAccount,
         },
         sales: salesDetails,
       },

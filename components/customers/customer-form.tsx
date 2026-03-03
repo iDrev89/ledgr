@@ -11,10 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -183,6 +184,7 @@ export function CustomerForm({
                   {...field}
                   placeholder={t("namePlaceholder")}
                   disabled={isLoading}
+                  className="h-11 text-base"
                 />
               </FormControl>
               <FormMessage />
@@ -200,8 +202,10 @@ export function CustomerForm({
                 <Input
                   {...field}
                   type="email"
+                  inputMode="email"
                   placeholder={t("emailPlaceholder")}
                   disabled={isLoading}
+                  className="h-11 text-base"
                 />
               </FormControl>
               <FormMessage />
@@ -218,8 +222,11 @@ export function CustomerForm({
               <FormControl>
                 <Input
                   {...field}
+                  type="tel"
+                  inputMode="tel"
                   placeholder={t("phonePlaceholder")}
                   disabled={isLoading}
+                  className="h-11 text-base"
                 />
               </FormControl>
               <FormMessage />
@@ -238,6 +245,7 @@ export function CustomerForm({
                   {...field}
                   placeholder={t("docIdPlaceholder")}
                   disabled={isLoading}
+                  className="h-11 text-base"
                 />
               </FormControl>
               <FormMessage />
@@ -259,25 +267,31 @@ export function CustomerForm({
                     placeholder="DD/MM/YYYY"
                     disabled={isLoading}
                     maxLength={10}
-                    className="flex-1"
+                    inputMode="numeric"
+                    className="flex-1 h-11"
                   />
                 </FormControl>
-                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      disabled={isLoading}
-                      className="shrink-0"
-                    >
-                      <CalendarIcon className="h-4 w-4" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto overflow-hidden p-0"
-                    align="end"
-                  >
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  disabled={isLoading}
+                  className="h-11 w-11 shrink-0"
+                  onClick={() => setCalendarOpen(true)}
+                >
+                  <CalendarIcon className="h-4 w-4" />
+                </Button>
+              </div>
+              <FormMessage />
+              {/* Calendar as bottom drawer — vaul, swipe-to-dismiss, keyboard-safe on mobile */}
+              <Drawer open={calendarOpen} onOpenChange={setCalendarOpen} shouldScaleBackground={false}>
+                <DrawerContent className="flex flex-col">
+                  <div className="shrink-0 px-4 pb-2">
+                    <DrawerHeader className="p-0 pt-1 text-left">
+                      <DrawerTitle>{t("birthdate")}</DrawerTitle>
+                    </DrawerHeader>
+                  </div>
+                  <div className="flex justify-center px-4 pb-8">
                     <Calendar
                       mode="single"
                       selected={birthdate}
@@ -287,10 +301,9 @@ export function CustomerForm({
                       endMonth={new Date()}
                       onSelect={handleCalendarSelect}
                     />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <FormMessage />
+                  </div>
+                </DrawerContent>
+              </Drawer>
             </FormItem>
           )}
         />
@@ -314,20 +327,20 @@ export function CustomerForm({
           )}
         />
 
-        <div className="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4">
+        <div className="flex gap-3 pt-2">
           <Button
             type="button"
             variant="outline"
             onClick={onCancel}
             disabled={isLoading}
-            className="w-full sm:w-auto"
+            className="h-12 flex-1"
           >
             {t("cancel")}
           </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full sm:w-auto"
+            className="h-12 flex-1"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {customer ? t("update") : t("create")}

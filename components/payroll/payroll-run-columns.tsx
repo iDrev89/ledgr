@@ -27,7 +27,7 @@ const formatCurrency = (value: string | number) => {
   }).format(numValue);
 };
 
-const getStatusBadge = (status: PayrollRunStatus) => {
+const getStatusBadge = (status: PayrollRunStatus, t: (key: string) => string) => {
   const variants = {
     [PayrollRunStatus.DRAFT]: "secondary",
     [PayrollRunStatus.FINALIZED]: "default",
@@ -35,9 +35,9 @@ const getStatusBadge = (status: PayrollRunStatus) => {
   } as const;
 
   const labels = {
-    [PayrollRunStatus.DRAFT]: "Borrador",
-    [PayrollRunStatus.FINALIZED]: "Finalizado",
-    [PayrollRunStatus.PAID]: "Pagado",
+    [PayrollRunStatus.DRAFT]: t("statusDraft"),
+    [PayrollRunStatus.FINALIZED]: t("statusFinalized"),
+    [PayrollRunStatus.PAID]: t("statusPaid"),
   };
 
   return <Badge variant={variants[status] as any}>{labels[status]}</Badge>;
@@ -70,25 +70,25 @@ export const getPayrollRunColumns = (
     accessorKey: "periodType",
     header: t("periodType"),
     cell: ({ row }) => {
-      const types = {
-        DAILY: "Diario",
-        BIWEEKLY: "Quincenal",
-        CUSTOM: "Personalizado",
+      const types: Record<string, string> = {
+        DAILY: t("periodTypeDaily"),
+        BIWEEKLY: t("periodTypeBiweekly"),
+        CUSTOM: t("periodTypeCustom"),
       };
-      return types[row.original.periodType as keyof typeof types];
+      return types[row.original.periodType] ?? row.original.periodType;
     },
   },
   {
     accessorKey: "status",
     header: t("status"),
-    cell: ({ row }) => getStatusBadge(row.original.status),
+    cell: ({ row }) => getStatusBadge(row.original.status, t),
   },
   {
     accessorKey: "items",
-    header: t("employee"),
+    header: t("employees"),
     cell: ({ row }) => {
       const count = row.original.items?.length || 0;
-      return `${count} ${count === 1 ? "empleado" : "empleados"}`;
+      return `${count} ${t("employees").toLowerCase()}`;
     },
   },
   {
@@ -100,7 +100,9 @@ export const getPayrollRunColumns = (
           (sum, item) => sum + parseFloat(item.payableTotal),
           0,
         ) || 0;
-      return formatCurrency(total);
+      return (
+        <span className="font-mono tabular-nums">{formatCurrency(total)}</span>
+      );
     },
   },
   {

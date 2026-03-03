@@ -6,10 +6,12 @@ import { useTranslations } from "next-intl";
 import { AlertTriangle, Package } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { useActiveBranch } from "@/hooks/use-active-branch";
 
 export const LowStockCard = () => {
   const t = useTranslations("Dashboard");
-  const { data, isLoading } = useLowStockAlerts();
+  const { activeBranchId } = useActiveBranch();
+  const { data, isLoading } = useLowStockAlerts(activeBranchId);
 
   const getStockLevel = (stock: number) => {
     if (stock === 0)

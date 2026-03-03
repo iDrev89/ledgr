@@ -45,8 +45,17 @@ const withPWA = withPWAInit({
   ],
 });
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : [];
+
 const nextConfig = {
   output: "standalone",
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", ...allowedOrigins],
+    },
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

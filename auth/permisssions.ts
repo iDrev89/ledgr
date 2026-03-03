@@ -18,9 +18,13 @@ const statements = {
   reports: ["read"],
   inventory: ["create", "read", "update", "delete"],
   receivables: ["create", "read", "update", "delete"],
-  banks: ["create", "read", "update", "delete"],
+  accounts: ["create", "read", "update", "delete"],
   payroll: ["create", "read", "update", "delete"],
   dashboard: ["read"],
+  "business-lines": ["create", "read", "update", "delete"],
+  branches: ["create", "read", "update", "delete"],
+  "cash-register": ["create", "read", "delete"],
+  reconciliation: ["create", "read", "update", "delete"],
 } as const;
 
 export const accessControl = createAccessControl(statements);
@@ -49,7 +53,11 @@ export const admin = accessControl.newRole({
   reports: ["read"],
   inventory: ["create", "read", "update", "delete"],
   receivables: ["create", "read", "update", "delete"],
-  banks: ["create", "read", "update", "delete"],
+  accounts: ["create", "read", "update", "delete"],
   payroll: ["create", "read", "update", "delete"],
   dashboard: ["read"],
+  "business-lines": ["create", "read", "update", "delete"],
+  branches: ["create", "read", "update", "delete"],
+  "cash-register": ["create", "read", "delete"],
+  reconciliation: ["create", "read", "update", "delete"],
 });

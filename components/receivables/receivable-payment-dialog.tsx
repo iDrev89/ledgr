@@ -32,7 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { getReceivableSchemas } from "@/lib/validations/receivables";
 import { useCreateReceivablePayment } from "@/hooks/use-receivables";
-import { useBanks } from "@/hooks/use-banks";
+import { useAccounts } from "@/hooks/use-accounts";
 import { PaymentMethod } from "@/prisma/prisma-client";
 import type { ReceivableWithDetails } from "@/lib/types/receivables";
 
@@ -50,15 +50,15 @@ export function ReceivablePaymentDialog({
   const t = useTranslations("Receivables");
   const { receivablePaymentSchema } = getReceivableSchemas(t);
   const createPaymentMutation = useCreateReceivablePayment();
-  const { data: banksData } = useBanks({ activeOnly: true });
-  const banks = banksData?.banks || [];
+  const { data: accountsData } = useAccounts({ activeOnly: true });
+  const accounts = accountsData?.accounts || [];
 
   const form = useForm({
     resolver: zodResolver(receivablePaymentSchema),
     defaultValues: {
       amount: "",
       method: PaymentMethod.CASH,
-      bankId: "",
+      accountId: "",
       note: "",
     },
   });
@@ -73,7 +73,7 @@ export function ReceivablePaymentDialog({
         receivableId: receivable.id,
         amount: data.amount,
         method: data.method,
-        bankId: data.bankId || undefined,
+        accountId: data.accountId || undefined,
         note: data.note || undefined,
       });
 
@@ -177,17 +177,8 @@ export function ReceivablePaymentDialog({
                       <SelectItem value={PaymentMethod.CASH}>
                         {t("paymentCash")}
                       </SelectItem>
-                      <SelectItem value={PaymentMethod.CARD}>
-                        {t("paymentCard")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.TRANSFER}>
-                        {t("paymentTransfer")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.DIGITAL}>
-                        {t("paymentDigital")}
-                      </SelectItem>
-                      <SelectItem value={PaymentMethod.OTHER}>
-                        {t("paymentOther")}
+                      <SelectItem value={PaymentMethod.BANK_TRANSFER}>
+                        {t("paymentBankTransfer")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -196,37 +187,35 @@ export function ReceivablePaymentDialog({
               )}
             />
 
-            {selectedMethod === PaymentMethod.TRANSFER && (
-              <FormField
-                control={form.control}
-                name="bankId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("paymentBank")}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={createPaymentMutation.isPending}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={t("selectBank")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {banks.map((bank) => (
-                          <SelectItem key={bank.id} value={bank.id}>
-                            {bank.name}
-                            {bank.accountNo && ` - ${bank.accountNo}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+            <FormField
+              control={form.control}
+              name="accountId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("destinationAccount")}</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={createPaymentMutation.isPending}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("selectAccount")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts.map((account) => (
+                        <SelectItem key={account.id} value={account.id}>
+                          {account.name}
+                          {account.accountNumber && ` - ${account.accountNumber}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

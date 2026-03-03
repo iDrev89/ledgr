@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,6 +31,12 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Edit, Loader2 } from "lucide-react";
 import { User, useUpdateUser, UserRole } from "@/hooks/use-users";
+import {
+  useUserBranches,
+  useAssignUserToBranch,
+  useRemoveUserFromBranch,
+} from "@/hooks/use-branches";
+import { BranchSelector } from "@/components/ui/branch-selector";
 import { toast } from "sonner";
 import { updateUserSchema, type UpdateUserInput } from "@/lib/validations/user";
 import { useTranslations } from "next-intl";
@@ -43,6 +50,16 @@ interface EditUserProps {
 export function EditUser({ user, open, onOpenChange }: EditUserProps) {
   const t = useTranslations("Users");
   const updateUserMutation = useUpdateUser();
+  const assignBranchMutation = useAssignUserToBranch();
+  const removeBranchMutation = useRemoveUserFromBranch();
+  const { data: userBranches } = useUserBranches(user.id);
+
+  const currentBranchId = userBranches?.[0]?.branchId ?? null;
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSelectedBranchId(currentBranchId);
+  }, [currentBranchId]);
 
   const form = useForm<UpdateUserInput>({
     resolver: zodResolver(updateUserSchema),
@@ -53,7 +70,6 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
     },
   });
 
-  // Reset form when user changes
   useEffect(() => {
     if (user) {
       form.reset({
@@ -64,12 +80,34 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
     }
   }, [user, form]);
 
+  const isLoading =
+    updateUserMutation.isPending ||
+    assignBranchMutation.isPending ||
+    removeBranchMutation.isPending;
+
   const onSubmit = async (data: UpdateUserInput) => {
     try {
       await updateUserMutation.mutateAsync({
         id: user.id,
         ...data,
       });
+
+      const branchChanged = selectedBranchId !== currentBranchId;
+      if (branchChanged) {
+        if (currentBranchId) {
+          await removeBranchMutation.mutateAsync({
+            userId: user.id,
+            branchId: currentBranchId,
+          });
+        }
+        if (selectedBranchId) {
+          await assignBranchMutation.mutateAsync({
+            userId: user.id,
+            branchId: selectedBranchId,
+          });
+        }
+      }
+
       toast.success(t("userUpdatedSuccess"));
       onOpenChange(false);
     } catch (error: any) {
@@ -101,7 +139,7 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                       <Input
                         placeholder={t("name")}
                         {...field}
-                        disabled={updateUserMutation.isPending}
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -120,7 +158,7 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                         type="email"
                         placeholder={t("email")}
                         {...field}
-                        disabled={updateUserMutation.isPending}
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -129,35 +167,47 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("role")}</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={updateUserMutation.isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("role")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value={UserRole.USER}>
-                        {t("roleUser")}
-                      </SelectItem>
-                      <SelectItem value={UserRole.ADMIN}>
-                        {t("roleAdmin")}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("role")}</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("role")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={UserRole.USER}>
+                          {t("roleUser")}
+                        </SelectItem>
+                        <SelectItem value={UserRole.ADMIN}>
+                          {t("roleAdmin")}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-2">
+                <FormLabel>{t("branch")}</FormLabel>
+                <BranchSelector
+                  value={selectedBranchId}
+                  onValueChange={setSelectedBranchId}
+                  disabled={isLoading}
+                />
+                <FormDescription>{t("branchDescription")}</FormDescription>
+              </div>
+            </div>
 
             {updateUserMutation.error && (
               <Alert variant="destructive">
@@ -173,12 +223,12 @@ export function EditUser({ user, open, onOpenChange }: EditUserProps) {
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={updateUserMutation.isPending}
+                disabled={isLoading}
               >
                 {t("cancel")}
               </Button>
-              <Button type="submit" disabled={updateUserMutation.isPending}>
-                {updateUserMutation.isPending ? (
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     {t("saving")}

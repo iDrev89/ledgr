@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth/auth";
 import { Decimal } from "@prisma/client/runtime/library";
-import { StockMoveType, BankTransactionType } from "@/prisma/prisma-client";
+import { StockMoveType, AccountTransactionType } from "@/prisma/prisma-client";
 import type {
   PurchaseWithDetails,
   SerializedPurchase,
@@ -17,7 +17,6 @@ type ActionResponse<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-// Helper to check authentication
 const requireAuth = async () => {
   const headersList = await headers();
   const session = await auth.api.getSession({
@@ -30,7 +29,6 @@ const requireAuth = async () => {
   return session;
 };
 
-// Helper to serialize purchase
 const serializePurchase = (
   purchase: PurchaseWithDetails,
 ): SerializedPurchase => {
@@ -44,10 +42,9 @@ const serializePurchase = (
     status: purchase.status,
     note: purchase.note,
 
-    // Campos de pago
     paymentMethod: purchase.paymentMethod,
-    bankId: purchase.bankId,
-    bank: purchase.bank,
+    accountId: purchase.accountId,
+    account: purchase.account,
     reference: purchase.reference,
 
     subtotal: purchase.subtotal.toString(),
@@ -68,9 +65,6 @@ const serializePurchase = (
   };
 };
 
-/**
- * Get all purchases
- */
 export async function getPurchases(params?: {
   search?: string;
   supplierId?: string;
@@ -82,7 +76,7 @@ export async function getPurchases(params?: {
   ActionResponse<{ purchases: SerializedPurchase[]; total: number }>
 > {
   try {
-    const session = await requireAuth();
+    await requireAuth();
 
     const {
       search = "",
@@ -131,7 +125,7 @@ export async function getPurchases(params?: {
               name: true,
             },
           },
-          bank: {
+          account: {
             select: {
               id: true,
               name: true,
@@ -178,9 +172,6 @@ export async function getPurchases(params?: {
   }
 }
 
-/**
- * Get purchase by ID
- */
 export async function getPurchaseById(
   id: string,
 ): Promise<ActionResponse<SerializedPurchase>> {
@@ -196,7 +187,7 @@ export async function getPurchaseById(
             name: true,
           },
         },
-        bank: {
+        account: {
           select: {
             id: true,
             name: true,
@@ -240,19 +231,14 @@ export async function getPurchaseById(
   }
 }
 
-/**
- * Create new purchase with inventory integration
- */
 export async function createPurchase(
   input: CreatePurchaseInput,
 ): Promise<ActionResponse<SerializedPurchase>> {
   try {
     const session = await requireAuth();
 
-    // Validate input
     const validated = createPurchaseSchema.parse(input);
 
-    // Calculate totals
     const subtotal = validated.items.reduce(
       (sum, item) => sum + item.lineTotal,
       0,
@@ -260,20 +246,18 @@ export async function createPurchase(
     const taxTotal = validated.taxTotal || 0;
     const total = subtotal + taxTotal;
 
-    // Create purchase with items in a transaction
     const purchase = await prisma.$transaction(async (tx) => {
-      // 1. Create purchase with APPROVED status
       const newPurchase = await tx.purchase.create({
         data: {
           supplierId: validated.supplierId || null,
+          branchId: validated.branchId || null,
           currency: "COP",
           invoiceNo: validated.invoiceNo || null,
           status: "APPROVED",
           note: validated.note || null,
 
-          // Campos de pago
           paymentMethod: validated.paymentMethod,
-          bankId: validated.bankId || null,
+          accountId: validated.accountId,
           reference: validated.reference || null,
 
           subtotal: new Decimal(subtotal),
@@ -296,7 +280,7 @@ export async function createPurchase(
               name: true,
             },
           },
-          bank: {
+          account: {
             select: {
               id: true,
               name: true,
@@ -320,11 +304,11 @@ export async function createPurchase(
         },
       });
 
-      // 2. Create stock movements for each item (PURCHASE type)
       for (const item of validated.items) {
         await tx.stockMovement.create({
           data: {
             productId: item.productId,
+            branchId: newPurchase.branchId || null,
             moveType: StockMoveType.PURCHASE,
             quantity: item.quantity,
             unitCost: new Decimal(item.unitCost),
@@ -335,21 +319,18 @@ export async function createPurchase(
         });
       }
 
-      // 3. Create bank transaction if bank is associated and method is TRANSFER
-      if (validated.bankId && validated.paymentMethod === "TRANSFER") {
-        await tx.bankTransaction.create({
-          data: {
-            bankId: validated.bankId,
-            type: BankTransactionType.EXPENSE, // Salida de dinero por compra
-            amount: new Decimal(total),
-            description: `Compra #${newPurchase.purchaseNumber}${validated.invoiceNo ? ` - ${validated.invoiceNo}` : ""}`,
-            reference: validated.reference || null,
-            transactionDate: new Date(),
-            purchaseId: newPurchase.id,
-            createdById: session.user.id,
-          },
-        });
-      }
+      await tx.accountTransaction.create({
+        data: {
+          accountId: validated.accountId,
+          type: AccountTransactionType.EXPENSE,
+          amount: new Decimal(total).negated(),
+          description: `Compra #${newPurchase.purchaseNumber}${validated.invoiceNo ? ` - ${validated.invoiceNo}` : ""}`,
+          reference: validated.reference || null,
+          transactionDate: new Date(),
+          purchaseId: newPurchase.id,
+          createdById: session.user.id,
+        },
+      });
 
       return newPurchase;
     });
@@ -357,7 +338,7 @@ export async function createPurchase(
     revalidatePath("/purchases");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return {
@@ -373,24 +354,33 @@ export async function createPurchase(
   }
 }
 
-/**
- * Delete purchase
- * Note: This will also delete associated stock movements via cascade
- */
 export async function deletePurchase(
   id: string,
 ): Promise<ActionResponse<void>> {
   try {
     await requireAuth();
 
-    await prisma.purchase.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      await tx.accountTransaction.deleteMany({
+        where: { purchaseId: id },
+      });
+
+      await tx.stockMovement.deleteMany({
+        where: {
+          refId: id,
+          moveType: StockMoveType.PURCHASE,
+        },
+      });
+
+      await tx.purchase.delete({
+        where: { id },
+      });
     });
 
     revalidatePath("/purchases");
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
-    revalidatePath("/banks");
+    revalidatePath("/accounts");
     revalidatePath("/reports");
 
     return {

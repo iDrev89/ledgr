@@ -2,23 +2,18 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, Package } from "lucide-react";
+import { Plus, Minus, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { useProducts } from "@/hooks/use-products";
+import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
 
 export interface SaleItemRow {
@@ -40,9 +35,17 @@ interface SaleItemsProps {
   disabled?: boolean;
 }
 
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+
 export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
   const t = useTranslations("Sales");
-  const [openProductSheet, setOpenProductSheet] = useState(false);
+  const [productPickerOpen, setProductPickerOpen] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [productSearch, setProductSearch] = useState("");
 
@@ -53,97 +56,53 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
   });
   const products = productsData?.products || [];
 
-  const handleAddItem = () => {
-    const newItem: SaleItemRow = {
-      id: `temp-${Date.now()}`,
-      productId: "",
-      productName: "",
-      productType: undefined,
-      quantity: 1,
-      unitPrice: "0",
-      discount: "0",
-      lineTotal: 0,
-      performedById: undefined,
-      performedByName: undefined,
-    };
-    onItemsChange([...items, newItem]);
-    setEditingItemId(newItem.id);
-    handleCloseSheet(true);
+  const editingItem = items.find((i) => i.id === editingItemId) ?? null;
+
+  const recalcLineTotal = (item: SaleItemRow): SaleItemRow => {
+    const unitPrice = parseFloat(item.unitPrice || "0");
+    const discount = parseFloat(item.discount || "0");
+    return { ...item, lineTotal: unitPrice * item.quantity - discount };
   };
 
-  const handleRemoveItem = (itemId: string) => {
-    onItemsChange(items.filter((item) => item.id !== itemId));
+  const handleAddItem = () => {
+    setProductPickerOpen(true);
   };
 
   const handleSelectProduct = (product: Product) => {
-    if (!editingItemId) return;
-
-    const updatedItems = items.map((item) => {
-      if (item.id === editingItemId) {
-        const unitPrice = product.price.toString();
-        const lineTotal = parseFloat(unitPrice) * item.quantity;
-        return {
-          ...item,
-          productId: product.id,
-          productName: product.name,
-          productType: product.type,
-          unitPrice,
-          lineTotal,
-        };
-      }
-      return item;
-    });
-    onItemsChange(updatedItems);
-    setOpenProductSheet(false);
-    setEditingItemId(null);
+    const newId = `temp-${Date.now()}`;
+    const unitPrice = product.price.toString();
+    const newItem: SaleItemRow = {
+      id: newId,
+      productId: product.id,
+      productName: product.name,
+      productType: product.type,
+      quantity: 1,
+      unitPrice,
+      discount: "0",
+      lineTotal: parseFloat(unitPrice),
+    };
+    onItemsChange([...items, newItem]);
     setProductSearch("");
+    setProductPickerOpen(false);
+    // Open edit sheet after picker sheet animates out
+    setTimeout(() => setEditingItemId(newId), 350);
   };
 
-  const handleCloseSheet = (open: boolean) => {
-    if (!open && editingItemId) {
-      // Si se cierra el sheet sin haber seleccionado un producto, eliminar el item vacío
-      const editingItem = items.find((item) => item.id === editingItemId);
-      if (editingItem && !editingItem.productId) {
-        handleRemoveItem(editingItemId);
-      }
-      setEditingItemId(null);
-      setProductSearch("");
-    }
-    setOpenProductSheet(open);
+  const handleUpdateEditingItem = (field: keyof SaleItemRow, value: any) => {
+    if (!editingItemId) return;
+    onItemsChange(
+      items.map((item) => {
+        if (item.id !== editingItemId) return item;
+        return recalcLineTotal({ ...item, [field]: value });
+      }),
+    );
   };
 
-  const handleUpdateItem = (
-    itemId: string,
-    field: keyof SaleItemRow,
-    value: any,
-  ) => {
-    const updatedItems = items.map((item) => {
-      if (item.id === itemId) {
-        const updated = { ...item, [field]: value };
-
-        // Recalculate lineTotal
-        const unitPrice = parseFloat(updated.unitPrice || "0");
-        const quantity = updated.quantity;
-        const discount = parseFloat(updated.discount || "0");
-        updated.lineTotal = unitPrice * quantity - discount;
-
-        return updated;
-      }
-      return item;
-    });
-    onItemsChange(updatedItems);
+  const handleRemoveItem = (id: string) => {
+    onItemsChange(items.filter((i) => i.id !== id));
+    if (editingItemId === id) setEditingItemId(null);
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
   const subtotal = items.reduce(
     (sum, item) => sum + parseFloat(item.unitPrice || "0") * item.quantity,
     0,
@@ -152,341 +111,304 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
     (sum, item) => sum + parseFloat(item.discount || "0"),
     0,
   );
+  const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
+    <div className="space-y-3">
+      {/* Section header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Package className="h-5 w-5 text-muted-foreground" />
-          <h3 className="text-base font-semibold">
-            {t("items")} ({items.length})
-          </h3>
-        </div>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {t("items")}
+          {items.length > 0 && ` (${items.length})`}
+        </h3>
         <Button
           type="button"
           size="sm"
+          variant="outline"
           onClick={handleAddItem}
           disabled={disabled}
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-3.5 w-3.5 mr-1.5" />
           {t("addItem")}
         </Button>
       </div>
 
-      {/* Items List */}
+      {/* Empty state — tappable */}
       {items.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <Package className="h-12 w-12 text-muted-foreground mb-3 opacity-50" />
-            <p className="text-sm text-muted-foreground">{t("noItems")}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {t("tapAddItemToStart")}
-            </p>
-          </CardContent>
-        </Card>
+        <button
+          type="button"
+          onClick={handleAddItem}
+          disabled={disabled}
+          className="w-full rounded-md border border-dashed py-10 flex flex-col items-center gap-2 text-muted-foreground hover:bg-accent/50 active:bg-accent transition-colors"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="text-sm">{t("tapAddItemToStart")}</span>
+        </button>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {items.map((item, index) => (
-            <Card
-              key={item.id}
-              className="relative border-2 hover:border-primary/50 transition-colors shadow-sm hover:shadow-md"
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    {item.productName ? (
-                      <>
-                        <CardTitle className="text-base truncate">
-                          {item.productName}
-                        </CardTitle>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Item #{index + 1}
-                        </p>
-                      </>
-                    ) : (
-                      <Sheet
-                        open={openProductSheet && editingItemId === item.id}
-                        onOpenChange={(open) => {
-                          if (open) setEditingItemId(item.id);
-                          handleCloseSheet(open);
-                        }}
-                      >
-                        <SheetTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start h-auto py-3"
-                            disabled={disabled}
-                          >
-                            <span className="text-muted-foreground">
-                              {t("selectProduct")}
-                            </span>
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent side="bottom" className="h-[85vh]">
-                          <SheetHeader>
-                            <SheetTitle>{t("selectProduct")}</SheetTitle>
-                            <SheetDescription>
-                              {t("selectProductDescription")}
-                            </SheetDescription>
-                          </SheetHeader>
-                          <div className="mt-4 space-y-4">
-                            <Input
-                              placeholder={t("searchProduct")}
-                              value={productSearch}
-                              onChange={(e) => setProductSearch(e.target.value)}
-                              className="w-full"
-                            />
-                            <ScrollArea className="h-[calc(85vh-180px)]">
-                              <div className="space-y-2 pr-4">
-                                {products.length === 0 ? (
-                                  <div className="text-center py-12">
-                                    <p className="text-sm text-muted-foreground">
-                                      {t("noProductsFound")}
-                                    </p>
-                                  </div>
-                                ) : (
-                                  products.map((product) => (
-                                    <Card
-                                      key={product.id}
-                                      className="cursor-pointer hover:bg-accent transition-colors"
-                                      onClick={() =>
-                                        handleSelectProduct(product)
-                                      }
-                                    >
-                                      <CardContent className="p-4">
-                                        <div className="flex items-start justify-between gap-3">
-                                          <div className="flex-1 min-w-0">
-                                            <p className="font-medium truncate">
-                                              {product.name}
-                                            </p>
-                                            {product.sku && (
-                                              <p className="text-xs text-muted-foreground mt-0.5">
-                                                SKU: {product.sku}
-                                              </p>
-                                            )}
-                                            <Badge
-                                              variant="secondary"
-                                              className="mt-2"
-                                            >
-                                              {product.type === "PRODUCT"
-                                                ? t("productTypeProduct")
-                                                : t("productTypeService")}
-                                            </Badge>
-                                          </div>
-                                          <p className="text-base font-bold shrink-0">
-                                            {formatCurrency(
-                                              parseFloat(
-                                                product.price.toString(),
-                                              ),
-                                            )}
-                                          </p>
-                                        </div>
-                                      </CardContent>
-                                    </Card>
-                                  ))
-                                )}
-                              </div>
-                            </ScrollArea>
-                          </div>
-                        </SheetContent>
-                      </Sheet>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveItem(item.id)}
-                    disabled={disabled}
-                    className="shrink-0 h-8 w-8"
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+        /* Items as ledger rows */
+        <div className="rounded-md border overflow-hidden">
+          {items.map((item) => {
+            const discount = parseFloat(item.discount || "0");
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setEditingItemId(item.id)}
+                disabled={disabled}
+                className="flex items-center gap-3 w-full px-3 py-3 border-b border-border/40 last:border-0 hover:bg-accent/50 active:bg-accent transition-colors text-left"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium leading-tight truncate">
+                    {item.productName}
+                  </p>
+                  {discount > 0 && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      -{formatCurrency(discount)} dto.
+                    </p>
+                  )}
                 </div>
-              </CardHeader>
+                <span className="text-sm text-muted-foreground shrink-0">
+                  ×{item.quantity}
+                </span>
+                <span className="font-mono text-sm font-medium tabular-nums shrink-0 w-24 text-right">
+                  {formatCurrency(item.lineTotal)}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              </button>
+            );
+          })}
 
-              {item.productId && (
-                <CardContent className="space-y-3 pt-0">
-                  <Separator />
-
-                  {/* Quantity */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`quantity-${item.id}`} className="text-xs">
-                      {t("quantity")}
-                    </Label>
-                    <Input
-                      id={`quantity-${item.id}`}
-                      type="number"
-                      min="1"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleUpdateItem(
-                          item.id,
-                          "quantity",
-                          parseInt(e.target.value) || 1,
-                        )
-                      }
-                      disabled={disabled}
-                      className="text-base h-11"
-                    />
-                  </div>
-
-                  {/* Unit Price */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`price-${item.id}`} className="text-xs">
-                      {t("unitPrice")}
-                    </Label>
-                    <Input
-                      id={`price-${item.id}`}
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={item.unitPrice}
-                      onChange={(e) =>
-                        handleUpdateItem(item.id, "unitPrice", e.target.value)
-                      }
-                      disabled={disabled}
-                      className="text-base h-11"
-                    />
-                  </div>
-
-                  {/* Discount */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`discount-${item.id}`} className="text-xs">
-                      {t("discount")}
-                    </Label>
-                    <Input
-                      id={`discount-${item.id}`}
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={item.discount}
-                      onChange={(e) =>
-                        handleUpdateItem(item.id, "discount", e.target.value)
-                      }
-                      disabled={disabled}
-                      className="text-base h-11"
-                    />
-                  </div>
-
-                  {/* Line Total */}
-                  <div className="pt-2 border-t">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("lineTotal")}
-                      </span>
-                      <span className="text-lg font-bold">
-                        {formatCurrency(item.lineTotal)}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Summary */}
-      {items.length > 0 && (
-        <Card className="bg-primary/5 border-primary/20 border-2 shadow-md">
-          <CardContent className="p-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground font-medium">
-                {t("subtotal")}
-              </span>
-              <span className="font-semibold">{formatCurrency(subtotal)}</span>
-            </div>
-            {totalDiscount > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground font-medium">
+          {/* Summary rows — ledger-line style */}
+          {totalDiscount > 0 && (
+            <>
+              <div className="flex items-center justify-between px-3 py-2 bg-muted/40 border-t border-border/40">
+                <span className="text-xs text-muted-foreground">
+                  {t("subtotal")}
+                </span>
+                <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                  {formatCurrency(subtotal)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between px-3 py-2 bg-muted/40 border-t border-border/40">
+                <span className="text-xs text-muted-foreground">
                   {t("discountTotal")}
                 </span>
-                <span className="font-semibold text-destructive">
+                <span className="font-mono text-xs tabular-nums text-destructive">
                   -{formatCurrency(totalDiscount)}
                 </span>
               </div>
-            )}
-            <Separator className="bg-primary/20" />
-            <div className="flex justify-between pt-1">
-              <span className="text-base font-bold">{t("total")}</span>
-              <span className="text-2xl font-bold text-primary">
-                {formatCurrency(total)}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+            </>
+          )}
+          <div className="flex items-center justify-between px-3 py-3 bg-muted/40 border-t">
+            <span className="text-sm font-semibold">{t("total")}</span>
+            <span className="font-mono text-base font-bold tabular-nums">
+              {formatCurrency(total)}
+            </span>
+          </div>
+        </div>
       )}
 
-      {/* Product Selection Sheet */}
-      <Sheet
-        open={
-          openProductSheet &&
-          editingItemId !== null &&
-          items.find((i) => i.id === editingItemId)?.productId === ""
-        }
-        onOpenChange={handleCloseSheet}
+      {/* Product picker drawer — vaul, swipe-to-dismiss */}
+      <Drawer
+        open={productPickerOpen}
+        onOpenChange={(open) => {
+          setProductPickerOpen(open);
+          if (!open) setProductSearch("");
+        }}
+        shouldScaleBackground={false}
       >
-        <SheetContent side="bottom" className="h-[85vh]">
-          <SheetHeader>
-            <SheetTitle>{t("selectProduct")}</SheetTitle>
-            <SheetDescription>{t("selectProductDescription")}</SheetDescription>
-          </SheetHeader>
-          <div className="mt-4 space-y-4">
+        <DrawerContent
+          className="h-[85vh] flex flex-col"
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
+        >
+          <div className="shrink-0 px-4 pb-3">
+            <DrawerHeader className="p-0 pt-1 text-left">
+              <DrawerTitle>{t("selectProduct")}</DrawerTitle>
+            </DrawerHeader>
+          </div>
+          <div className="px-4 flex flex-col gap-3 flex-1 min-h-0 pb-4">
             <Input
               placeholder={t("searchProduct")}
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
-              className="w-full"
+              className="h-11 shrink-0"
             />
-            <ScrollArea className="h-[calc(85vh-180px)]">
-              <div className="space-y-2 pr-4">
+            <div className="flex-1 overflow-y-auto">
+              <div className="rounded-md border overflow-hidden">
                 {products.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-sm text-muted-foreground">
-                      {t("noProductsFound")}
-                    </p>
-                  </div>
+                  <p className="text-sm text-muted-foreground text-center py-10">
+                    {t("noProductsFound")}
+                  </p>
                 ) : (
                   products.map((product) => (
-                    <Card
+                    <button
                       key={product.id}
-                      className="cursor-pointer hover:bg-accent transition-colors"
+                      type="button"
                       onClick={() => handleSelectProduct(product)}
+                      className="flex items-center justify-between w-full px-4 py-3.5 border-b border-border/40 last:border-0 hover:bg-accent/50 active:bg-accent transition-colors text-left"
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">
-                              {product.name}
-                            </p>
-                            {product.sku && (
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                SKU: {product.sku}
-                              </p>
-                            )}
-                            <Badge variant="secondary" className="mt-2">
-                              {product.type === "PRODUCT"
-                                ? t("productTypeProduct")
-                                : t("productTypeService")}
-                            </Badge>
-                          </div>
-                          <p className="text-base font-bold shrink-0">
-                            {formatCurrency(
-                              parseFloat(product.price.toString()),
-                            )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {product.name}
+                        </p>
+                        {product.sku && (
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            SKU: {product.sku}
                           </p>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        )}
+                      </div>
+                      <span className="font-mono text-sm font-semibold tabular-nums shrink-0 ml-4">
+                        {formatCurrency(parseFloat(product.price.toString()))}
+                      </span>
+                    </button>
                   ))
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Item edit drawer — vaul, swipe-to-dismiss */}
+      <Drawer
+        open={editingItemId !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditingItemId(null);
+        }}
+        shouldScaleBackground={false}
+      >
+        <DrawerContent className="flex flex-col">
+          {editingItem && (
+            <div className="flex flex-col gap-5 px-4 pb-8">
+              <div className="shrink-0 pb-1">
+                <DrawerHeader className="p-0 pt-1 text-left">
+                  <DrawerTitle className="text-base truncate">
+                    {editingItem.productName}
+                  </DrawerTitle>
+                </DrawerHeader>
+              </div>
+
+              {/* Quantity stepper */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t("quantity")}
+                </Label>
+                <div className="flex items-stretch h-12">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-full w-14 rounded-r-none shrink-0"
+                    onClick={() =>
+                      handleUpdateEditingItem(
+                        "quantity",
+                        Math.max(1, editingItem.quantity - 1),
+                      )
+                    }
+                    disabled={disabled || editingItem.quantity <= 1}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <div className="h-full flex-1 flex items-center justify-center border-y border-input font-mono text-lg font-semibold tabular-nums">
+                    {editingItem.quantity}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-full w-14 rounded-l-none shrink-0"
+                    onClick={() =>
+                      handleUpdateEditingItem(
+                        "quantity",
+                        editingItem.quantity + 1,
+                      )
+                    }
+                    disabled={disabled}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Unit price */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="edit-unit-price"
+                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  {t("unitPrice")}
+                </Label>
+                <Input
+                  id="edit-unit-price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editingItem.unitPrice}
+                  onChange={(e) =>
+                    handleUpdateEditingItem("unitPrice", e.target.value)
+                  }
+                  disabled={disabled}
+                  className="h-12 text-base font-mono tabular-nums"
+                />
+              </div>
+
+              {/* Discount */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="edit-discount"
+                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  {t("discount")}
+                </Label>
+                <Input
+                  id="edit-discount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editingItem.discount}
+                  onChange={(e) =>
+                    handleUpdateEditingItem("discount", e.target.value)
+                  }
+                  onFocus={(e) => e.target.select()}
+                  disabled={disabled}
+                  className="h-12 text-base font-mono tabular-nums"
+                />
+              </div>
+
+              {/* Line total */}
+              <div className="rounded-md border overflow-hidden">
+                <div className="flex items-center justify-between px-3 py-3">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {t("lineTotal")}
+                  </span>
+                  <span className="font-mono text-lg font-bold tabular-nums">
+                    {formatCurrency(editingItem.lineTotal)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-12 w-12 shrink-0 text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => handleRemoveItem(editingItem.id)}
+                  disabled={disabled}
+                  aria-label="Eliminar item"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  className="h-12 flex-1"
+                  onClick={() => setEditingItemId(null)}
+                >
+                  {t("done")}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
