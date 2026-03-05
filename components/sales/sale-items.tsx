@@ -277,26 +277,31 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
         }}
         shouldScaleBackground={false}
       >
-        <DrawerContent className="flex flex-col max-h-[90vh]">
+        <DrawerContent
+          className="h-[85vh] flex flex-col p-0 gap-0"
+          onOpenAutoFocus={(e: Event) => e.preventDefault()}
+        >
           {editingItem && (
-            <div
-              className="flex flex-col gap-5 px-4 pb-8 overflow-y-auto overscroll-contain"
-              onFocus={(e) => {
-                const target = e.target as HTMLElement;
-                if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
-                  setTimeout(() => {
-                    target.scrollIntoView({ block: "center", behavior: "smooth" });
-                  }, 50);
-                }
-              }}
-            >
-              <div className="shrink-0 pb-1">
-                <DrawerHeader className="p-0 pt-1 text-left">
+            <>
+              <div className="px-4 pt-3 pb-3 shrink-0 border-b">
+                <DrawerHeader className="p-0 text-left">
                   <DrawerTitle className="text-base truncate">
                     {editingItem.productName}
                   </DrawerTitle>
                 </DrawerHeader>
               </div>
+              <div
+                className="flex-1 overflow-y-auto overscroll-contain"
+                onFocus={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+                    setTimeout(() => {
+                      target.scrollIntoView({ block: "center", behavior: "smooth" });
+                    }, 50);
+                  }
+                }}
+              >
+                <div className="flex flex-col gap-5 px-4 py-5 pb-8">
 
               {/* Quantity stepper */}
               <div className="space-y-2">
@@ -418,7 +423,9 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                   {t("done")}
                 </Button>
               </div>
-            </div>
+                </div>
+              </div>
+            </>
           )}
         </DrawerContent>
       </Drawer>
