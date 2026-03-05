@@ -279,7 +279,17 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
       >
         <DrawerContent className="flex flex-col max-h-[90vh]">
           {editingItem && (
-            <div className="flex flex-col gap-5 px-4 pb-8 overflow-y-auto">
+            <div
+              className="flex flex-col gap-5 px-4 pb-8 overflow-y-auto overscroll-contain"
+              onFocus={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+                  setTimeout(() => {
+                    target.scrollIntoView({ block: "center", behavior: "smooth" });
+                  }, 50);
+                }
+              }}
+            >
               <div className="shrink-0 pb-1">
                 <DrawerHeader className="p-0 pt-1 text-left">
                   <DrawerTitle className="text-base truncate">
@@ -346,10 +356,7 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                   onChange={(e) =>
                     handleUpdateEditingItem("unitPrice", e.target.value)
                   }
-                  onFocus={(e) => {
-                    e.target.select();
-                    setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
-                  }}
+                  onFocus={(e) => e.target.select()}
                   disabled={disabled}
                   className="h-12 text-base font-mono tabular-nums"
                 />
@@ -373,10 +380,7 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                   onChange={(e) =>
                     handleUpdateEditingItem("discount", e.target.value)
                   }
-                  onFocus={(e) => {
-                    e.target.select();
-                    setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
-                  }}
+                  onFocus={(e) => e.target.select()}
                   disabled={disabled}
                   className="h-12 text-base font-mono tabular-nums"
                 />

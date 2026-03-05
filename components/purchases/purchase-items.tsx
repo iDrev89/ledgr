@@ -222,7 +222,7 @@ export function PurchaseItems({
                           }
                           onFocus={(e) => {
                             e.target.select();
-                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
                           }}
                           disabled={disabled || !item.productId}
                         />
@@ -247,7 +247,7 @@ export function PurchaseItems({
                           }
                           onFocus={(e) => {
                             e.target.select();
-                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
                           }}
                           disabled={disabled || !item.productId}
                         />
