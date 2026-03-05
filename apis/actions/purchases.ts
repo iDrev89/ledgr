@@ -12,6 +12,7 @@ import type {
   CreatePurchaseInput,
 } from "@/lib/types/purchases";
 import { createPurchaseSchema } from "@/lib/validations/purchases";
+import { resolveUserBranchId } from "@/lib/server-auth";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -246,11 +247,13 @@ export async function createPurchase(
     const taxTotal = validated.taxTotal || 0;
     const total = subtotal + taxTotal;
 
+    const branchId = await resolveUserBranchId(session.user.id, validated.branchId);
+
     const purchase = await prisma.$transaction(async (tx) => {
       const newPurchase = await tx.purchase.create({
         data: {
           supplierId: validated.supplierId || null,
-          branchId: validated.branchId || null,
+          branchId,
           currency: "COP",
           invoiceNo: validated.invoiceNo || null,
           status: "APPROVED",

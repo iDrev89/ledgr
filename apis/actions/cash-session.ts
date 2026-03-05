@@ -16,6 +16,7 @@ import type {
   CashSessionTurnSummary,
 } from "@/lib/types/cash-session";
 import { Decimal } from "@prisma/client/runtime/library";
+import { resolveUserBranchId } from "@/lib/server-auth";
 import { AccountTransactionType } from "@/prisma/prisma-client";
 
 type ActionResponse<T = unknown> =
@@ -105,10 +106,12 @@ export const openCashSession = async (
       return { success: false, error: t("sessionAlreadyOpen") };
     }
 
+    const branchId = await resolveUserBranchId(authSession.user.id, validated.branchId);
+
     const cashSession = await prisma.cashSession.create({
       data: {
         accountId: validated.accountId,
-        branchId: validated.branchId ?? null,
+        branchId,
         openedById: authSession.user.id,
         openingBalance: new Decimal(validated.openingBalance),
         openingNotes: validated.openingNotes || null,

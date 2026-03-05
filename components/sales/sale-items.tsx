@@ -277,9 +277,9 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
         }}
         shouldScaleBackground={false}
       >
-        <DrawerContent className="flex flex-col">
+        <DrawerContent className="flex flex-col max-h-[90vh]">
           {editingItem && (
-            <div className="flex flex-col gap-5 px-4 pb-8">
+            <div className="flex flex-col gap-5 px-4 pb-8 overflow-y-auto">
               <div className="shrink-0 pb-1">
                 <DrawerHeader className="p-0 pt-1 text-left">
                   <DrawerTitle className="text-base truncate">
@@ -339,12 +339,17 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                 <Input
                   id="edit-unit-price"
                   type="number"
+                  inputMode="decimal"
                   step="0.01"
                   min="0"
                   value={editingItem.unitPrice}
                   onChange={(e) =>
                     handleUpdateEditingItem("unitPrice", e.target.value)
                   }
+                  onFocus={(e) => {
+                    e.target.select();
+                    setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                  }}
                   disabled={disabled}
                   className="h-12 text-base font-mono tabular-nums"
                 />
@@ -361,13 +366,17 @@ export function SaleItems({ items, onItemsChange, disabled }: SaleItemsProps) {
                 <Input
                   id="edit-discount"
                   type="number"
+                  inputMode="decimal"
                   step="0.01"
                   min="0"
                   value={editingItem.discount}
                   onChange={(e) =>
                     handleUpdateEditingItem("discount", e.target.value)
                   }
-                  onFocus={(e) => e.target.select()}
+                  onFocus={(e) => {
+                    e.target.select();
+                    setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                  }}
                   disabled={disabled}
                   className="h-12 text-base font-mono tabular-nums"
                 />

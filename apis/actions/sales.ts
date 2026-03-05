@@ -30,6 +30,7 @@ import {
   getBusinessDayStart,
   getBusinessDayEnd,
 } from "@/lib/date-utils";
+import { resolveUserBranchId } from "@/lib/server-auth";
 
 // Normalize text by removing accents for search
 const normalizeText = (text: string): string => {
@@ -499,6 +500,8 @@ export const createSale = async (
       ? parseBusinessDate(validated.customDate)
       : undefined;
 
+    const branchId = await resolveUserBranchId(session.user.id, validated.branchId);
+
     // Create sale with items in a transaction
     const sale = await prisma.$transaction(async (tx) => {
       // Create the sale
@@ -507,7 +510,7 @@ export const createSale = async (
           createdById: session.user.id,
           soldById: validated.soldById || session.user.id || null,
           customerId: validated.customerId,
-          branchId: validated.branchId || null,
+          branchId,
           currency: "COP",
           subtotal,
           discountTotal,
@@ -1022,13 +1025,15 @@ export const updateSale = async (
         }
       }
 
+      const updateBranchId = await resolveUserBranchId(session.user.id, validated.branchId);
+
       // Update the sale with new items and payments
       const updatedSale = await tx.sale.update({
         where: { id: validated.id },
         data: {
           customerId: validated.customerId,
           soldById: validated.soldById || null,
-          branchId: validated.branchId || null,
+          branchId: updateBranchId,
           subtotal,
           discountTotal,
           taxTotal,

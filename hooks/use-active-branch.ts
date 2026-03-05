@@ -1,15 +1,27 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useBranches } from "./use-branches";
+import { useSession } from "@/auth/auth-client";
+import { useUserBranches } from "./use-branches";
+import type { Branch } from "@/lib/types/branch";
 
 const ACTIVE_BRANCH_KEY = "ledgr-active-branch-id";
 
 export const useActiveBranch = () => {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
+  const { data: userBranches, isLoading } = useUserBranches(userId ?? "");
+
   const [activeBranchId, setActiveBranchIdState] = useState<string | undefined>(
     undefined,
   );
   const [isHydrated, setIsHydrated] = useState(false);
 
-  const { data: branchesData } = useBranches({ activeOnly: true });
+  const activeBranches = useMemo(() => {
+    if (!userBranches) return [];
+    return userBranches
+      .filter((ub) => ub.branch?.active)
+      .map((ub) => ub.branch as Branch);
+  }, [userBranches]);
 
   useEffect(() => {
     const stored = localStorage.getItem(ACTIVE_BRANCH_KEY);
@@ -20,24 +32,28 @@ export const useActiveBranch = () => {
   }, []);
 
   useEffect(() => {
-    if (!isHydrated || !branchesData?.branches) return;
+    if (!isHydrated || activeBranches.length === 0) return;
 
-    const branches = branchesData.branches;
-
-    if (activeBranchId && branches.find((b) => b.id === activeBranchId)) {
+    if (activeBranchId && activeBranches.find((b) => b.id === activeBranchId)) {
       return;
     }
 
-    if (branches.length === 1) {
-      setActiveBranchIdState(branches[0].id);
-      localStorage.setItem(ACTIVE_BRANCH_KEY, branches[0].id);
+    if (activeBranches.length === 1) {
+      setActiveBranchIdState(activeBranches[0].id);
+      localStorage.setItem(ACTIVE_BRANCH_KEY, activeBranches[0].id);
       return;
     }
 
-    const systemDefault = branches.find((b: any) => b.isDefault);
-    if (systemDefault) {
-      setActiveBranchIdState(systemDefault.id);
-      localStorage.setItem(ACTIVE_BRANCH_KEY, systemDefault.id);
+    const defaultBranch = activeBranches.find((b) => b.isDefault);
+    if (defaultBranch) {
+      setActiveBranchIdState(defaultBranch.id);
+      localStorage.setItem(ACTIVE_BRANCH_KEY, defaultBranch.id);
+      return;
+    }
+
+    if (activeBranches.length > 0) {
+      setActiveBranchIdState(activeBranches[0].id);
+      localStorage.setItem(ACTIVE_BRANCH_KEY, activeBranches[0].id);
       return;
     }
 
@@ -45,7 +61,7 @@ export const useActiveBranch = () => {
       setActiveBranchIdState(undefined);
       localStorage.removeItem(ACTIVE_BRANCH_KEY);
     }
-  }, [isHydrated, branchesData, activeBranchId]);
+  }, [isHydrated, activeBranches, activeBranchId]);
 
   const setActiveBranchId = useCallback((id: string | undefined) => {
     setActiveBranchIdState(id);
@@ -57,13 +73,15 @@ export const useActiveBranch = () => {
   }, []);
 
   const activeBranch = useMemo(() => {
-    if (!activeBranchId || !branchesData?.branches) return undefined;
-    return branchesData.branches.find((b) => b.id === activeBranchId);
-  }, [activeBranchId, branchesData]);
+    if (!activeBranchId) return undefined;
+    return activeBranches.find((b) => b.id === activeBranchId);
+  }, [activeBranchId, activeBranches]);
 
   return {
     activeBranchId,
     setActiveBranchId,
     activeBranch,
+    userBranches: activeBranches,
+    isLoading,
   };
 };

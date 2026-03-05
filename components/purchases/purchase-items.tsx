@@ -210,6 +210,7 @@ export function PurchaseItems({
                         <Input
                           id={`quantity-${item.id}`}
                           type="number"
+                          inputMode="numeric"
                           min="1"
                           step="1"
                           value={item.quantity}
@@ -219,6 +220,10 @@ export function PurchaseItems({
                               parseInt(e.target.value) || 1,
                             )
                           }
+                          onFocus={(e) => {
+                            e.target.select();
+                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                          }}
                           disabled={disabled || !item.productId}
                         />
                       </div>
@@ -230,6 +235,7 @@ export function PurchaseItems({
                         <Input
                           id={`unitCost-${item.id}`}
                           type="number"
+                          inputMode="decimal"
                           min="0"
                           step="0.01"
                           value={item.unitCost}
@@ -239,7 +245,10 @@ export function PurchaseItems({
                               parseFloat(e.target.value) || 0,
                             )
                           }
-                          onFocus={(e) => e.target.select()}
+                          onFocus={(e) => {
+                            e.target.select();
+                            setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+                          }}
                           disabled={disabled || !item.productId}
                         />
                       </div>

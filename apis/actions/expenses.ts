@@ -13,6 +13,7 @@ import {
 } from "@/lib/validations/expenses";
 import type { ExpenseWithDetails } from "@/lib/types/expenses";
 import { Decimal } from "@prisma/client/runtime/library";
+import { resolveUserBranchId } from "@/lib/server-auth";
 
 type ActionResponse<T = unknown> =
   | { success: true; data: T }
@@ -237,13 +238,15 @@ export const createExpense = async (
         ? new Date(validated.incurredAt)
         : validated.incurredAt;
 
+    const branchId = await resolveUserBranchId(session.user.id, validated.branchId);
+
     const result = await prisma.$transaction(async (tx) => {
       const expense = await tx.expense.create({
         data: {
           createdById: session.user.id,
           categoryId: validated.categoryId || null,
           supplierId: validated.supplierId || null,
-          branchId: validated.branchId || null,
+          branchId,
           businessLineId: validated.businessLineId || null,
           description: validated.description || null,
           invoiceNo: validated.invoiceNo || null,
@@ -356,6 +359,8 @@ export const updateExpense = async (
         ? new Date(validated.incurredAt)
         : validated.incurredAt;
 
+    const updateBranchId = await resolveUserBranchId(session.user.id, validated.branchId);
+
     const result = await prisma.$transaction(async (tx) => {
       await tx.accountTransaction.deleteMany({
         where: { expenseId: validated.id },
@@ -366,7 +371,7 @@ export const updateExpense = async (
         data: {
           categoryId: validated.categoryId || null,
           supplierId: validated.supplierId || null,
-          branchId: validated.branchId || null,
+          branchId: updateBranchId,
           businessLineId: validated.businessLineId || null,
           description: validated.description || null,
           invoiceNo: validated.invoiceNo || null,
