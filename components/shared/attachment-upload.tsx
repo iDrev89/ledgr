@@ -1,7 +1,7 @@
 "use client";
 
 import { Image, X, Upload } from "lucide-react";
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 
@@ -38,8 +38,17 @@ export function AttachmentUpload({
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const fileInputId = useId();
+  const cameraInputId = useId();
 
   const validFileTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    setIsAndroid(/Android/i.test(navigator.userAgent));
+  }, []);
 
   const compressImage = async (file: File): Promise<File> => {
     const options = {
@@ -183,6 +192,9 @@ export function AttachmentUpload({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = "";
+    }
     onUploadComplete("");
   };
 
@@ -214,7 +226,7 @@ export function AttachmentUpload({
               />
               <div className="mt-4 text-sm leading-6 text-muted-foreground">
                 <label
-                  htmlFor="attachment-upload"
+                  htmlFor={fileInputId}
                   className={`relative font-medium text-primary ${
                     disabled
                       ? "cursor-not-allowed"
@@ -223,7 +235,7 @@ export function AttachmentUpload({
                 >
                   <span>Seleccionar archivo</span>
                   <input
-                    id="attachment-upload"
+                    id={fileInputId}
                     name="attachment-upload"
                     type="file"
                     className="sr-only"
@@ -233,7 +245,34 @@ export function AttachmentUpload({
                     disabled={disabled}
                   />
                 </label>
-                <span className="mx-1">o arrastra aquí</span>
+                {isAndroid ? (
+                  <span className="mx-1">o</span>
+                ) : (
+                  <span className="mx-1">o arrastra aquí</span>
+                )}
+                {isAndroid && (
+                  <label
+                    htmlFor={cameraInputId}
+                    className={`relative font-medium text-primary ${
+                      disabled
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer hover:underline"
+                    }`}
+                  >
+                    <span>Tomar foto</span>
+                    <input
+                      id={cameraInputId}
+                      name="attachment-camera-upload"
+                      type="file"
+                      className="sr-only"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleFileChange}
+                      ref={cameraInputRef}
+                      disabled={disabled}
+                    />
+                  </label>
+                )}
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
                 PNG, JPG, WEBP hasta 10MB

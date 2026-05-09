@@ -42,6 +42,9 @@ export function CustomerSelector({
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [drawerHeight, setDrawerHeight] = useState<number | null>(null);
   const [lastCustomerName, setLastCustomerName] = useState<string>("");
   const [lastCustomerPhone, setLastCustomerPhone] = useState<string>("");
   const [lastCustomerBirthdate, setLastCustomerBirthdate] = useState<
@@ -69,6 +72,39 @@ export function CustomerSelector({
       setLastCustomerPhone(selectedCustomer.phone || selectedCustomer.email || "");
     }
   }, [selectedCustomer]);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    setIsAndroid(/Android/i.test(navigator.userAgent));
+  }, []);
+
+  useEffect(() => {
+    if (!open || !isAndroid || typeof window === "undefined") {
+      setIsKeyboardOpen(false);
+      setDrawerHeight(null);
+      return;
+    }
+
+    const baseViewportHeight = window.innerHeight;
+    const visualViewport = window.visualViewport;
+
+    const updateViewportState = () => {
+      const visibleHeight = visualViewport?.height || window.innerHeight;
+      const keyboardVisible = visibleHeight < baseViewportHeight * 0.82;
+      setIsKeyboardOpen(keyboardVisible);
+      setDrawerHeight(Math.round(visibleHeight * 0.85));
+    };
+
+    updateViewportState();
+
+    visualViewport?.addEventListener("resize", updateViewportState);
+    window.addEventListener("resize", updateViewportState);
+
+    return () => {
+      visualViewport?.removeEventListener("resize", updateViewportState);
+      window.removeEventListener("resize", updateViewportState);
+    };
+  }, [open, isAndroid]);
 
   const handleSelect = (customerId: string) => {
     onValueChange(customerId);
@@ -137,9 +173,21 @@ export function CustomerSelector({
       </button>
 
       {/* Customer picker drawer — vaul, swipe-to-dismiss */}
-      <Drawer open={open} onOpenChange={handleSheetOpenChange} shouldScaleBackground={false}>
+      <Drawer
+        open={open}
+        onOpenChange={handleSheetOpenChange}
+        shouldScaleBackground={false}
+        handleOnly={isAndroid}
+        repositionInputs={!isAndroid}
+        dismissible={!isKeyboardOpen}
+      >
         <DrawerContent
-          className="h-[85vh] flex flex-col"
+          className="h-[85vh] max-h-[85vh] flex flex-col"
+          style={
+            drawerHeight
+              ? { height: `${drawerHeight}px`, maxHeight: `${drawerHeight}px` }
+              : undefined
+          }
           onOpenAutoFocus={(e: Event) => e.preventDefault()}
         >
           <div className="shrink-0 px-4 pb-3">
